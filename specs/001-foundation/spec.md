@@ -8,15 +8,15 @@ run against a real installed workspace.
 
 ## Problem
 
-We need a trustworthy, Windows-friendly baseline before asking Claude to build
+We need a trustworthy, cross-platform baseline before asking Claude to build
 React packages. The system must be explicitly modular, scoped for npm, compatible
 with Tailwind CSS v4 and usable through official Spec Kit workflows.
 
 ## User stories / acceptance scenarios
 
-**US-01 (P0) — I can bootstrap the repository on Windows**
+**US-01 (P0) — I can bootstrap the repository on Windows, Linux and macOS**
 
-Given a clean Node 22.13+ and pnpm 12 environment, when I unzip the archive into
+Given a clean Node 22.13+ and pnpm 12 environment on any of the three systems, when I unpack into
 an empty repository root and run `pnpm install`, I get a lockfile and a resolved
 workspace with no missing package references or scripts.
 
@@ -55,14 +55,18 @@ without any npm token or publish action.
 - FR-006: Provide Storybook and Vite scaffold apps that consume built CSS from the workspace.
 - FR-007: Keep every package private until authorized; no automatic npm publishing.
 - FR-008: Provide project constitution, agent context, feature spec, ADR, README, release guide.
-- FR-009: Include Windows-friendly bootstrap script for official Spec Kit integration.
+- FR-009: Provide a platform-neutral Node script using official Spec Kit `--script py` integration.
 - FR-010: Verify package export targets after build; do not claim only workspace linking proves publishability.
 - FR-011: Produce initial lockfile during real install and commit it.
 - FR-012: Keep config schema/CLI, React components and Capsize functionality out of this bootstrap.
+- FR-013: Run native GitHub Actions jobs on Windows, Linux and macOS with platform-independent scripts.
+- FR-014: Detect basic script portability mistakes and case-collision paths.
+- FR-015: Include regression tests for paths with whitespace and Unicode.
+- FR-016: Do not equate a single-platform local run with cross-platform verification.
 
 ## Nonfunctional requirements
 
-- Node 22.13+, pnpm 12.x, Windows 11/PowerShell 7 support.
+- Node 22.13+, pnpm 12.x, first-class Windows, Linux and macOS support.
 - Public-facing docs in English; local maintainer setup available in Spanish.
 - ESM output, type declarations, zero React copies bundled in libraries.
 - Repo should be free from secret files, personal backstory and publication credentials.
@@ -70,11 +74,11 @@ without any npm token or publish action.
 
 ## Release gate / evidence required
 
-1. `pnpm install` succeeds on a maintainer-supported Windows environment.
+1. `pnpm install` succeeds on supported Windows, Linux and macOS CI environments.
 2. `pnpm check:workspace`, `pnpm build:packages`, `pnpm check:exports`, `pnpm test`,
    `pnpm typecheck`, `pnpm lint` all pass after formatting/fixes.
 3. `pnpm build:playground` and `pnpm build:storybook` pass, previews are inspected.
-4. `pnpm-lock.yaml` committed. CI green.
+4. `pnpm-lock.yaml` committed. CI green on all three native OS runners; Node 24 Linux lane green.
 5. Official Spec Kit Claude integration installed; project constitution preserved.
 6. No `private: true` flags removed, no npm packages published.
 

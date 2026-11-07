@@ -1,6 +1,6 @@
 # Neshel-UI Constitution
 
-**Version:** 1.0.0  
+**Version:** 1.1.0  
 **Ratified:** 2026-11-07  
 **Last amended:** 2026-11-07  
 **Scope:** every package, app, script, artifact and specification in this repository.
@@ -61,6 +61,13 @@ The packages remain `private: true` until they pass a release gate and the owner
 authorizes publication. Verify npm scope, naming rights, content, API stability,
 package provenance and CI. No automated npm publish, release, destructive git
 operations or remote push without the maintainer's approval.
+
+## IX. Cross-platform parity and honest validation
+
+Windows, Linux and macOS are equally supported development and package-consumption
+environments. npm scripts must remain shell-neutral; file/path operations should
+use Node standard-library APIs. Run CI on native runners for all three OSes.
+Do not infer parity from one developer machine. See ADR 0003 for rationale.
 
 ## Governance
 

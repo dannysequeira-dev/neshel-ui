@@ -11,7 +11,8 @@ and package name availability are unverified.
 3. Finalize public exports, `files`, dependency/peer ranges, license and
    `publishConfig: { "access": "public" }` on each *approved* public package.
 4. Execute `pnpm install` and commit the real `pnpm-lock.yaml`.
-5. Run lint/typecheck/tests and all package/app builds.
+5. Run `pnpm doctor` and lint/typecheck/tests and all package/app builds. Require native
+   Windows, Linux and macOS GitHub Actions checks to pass before release.
 6. For every publishable package, use `pnpm pack --pack-destination ...`, inspect
    the archive and install it into isolated Vite and Next applications.
 7. Verify CSS/theme, Capsize typography, React peer resolution, SSR, tree shaking,

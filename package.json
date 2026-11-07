@@ -20,14 +20,17 @@
     "typecheck": "pnpm -r --if-present typecheck",
     "lint": "biome check .",
     "format": "biome check --write .",
-    "test": "node --test tests/*.test.mjs",
+    "test": "node --test",
     "check:workspace": "node scripts/check-workspace.mjs",
     "check:exports": "node scripts/check-exports.mjs",
-    "check": "pnpm check:workspace && pnpm lint && pnpm typecheck && pnpm test && pnpm build:packages && pnpm check:exports",
+    "check": "pnpm run doctor && pnpm lint && pnpm typecheck && pnpm test && pnpm build:packages && pnpm check:exports",
     "changeset": "changeset",
     "changeset:status": "changeset status",
     "version-packages": "changeset version",
-    "clean": "node scripts/clean.mjs"
+    "clean": "node scripts/clean.mjs",
+    "doctor": "node scripts/check-platform.mjs && node scripts/check-workspace.mjs && node scripts/check-portability.mjs",
+    "check:portability": "node scripts/check-portability.mjs",
+    "spec-kit:init": "node scripts/bootstrap-spec-kit.mjs"
   },
   "devDependencies": {
     "@biomejs/biome": "catalog:",

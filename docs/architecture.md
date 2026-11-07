@@ -68,6 +68,15 @@ Default theme: `:root`, overridden by `[data-neshel-theme="light|dark"]`.
 Future CLI must namespace safely and define cascade/precedence for custom tokens.
 Applications load their fonts; no remote fetch required by the library.
 
+## Cross-platform development and delivery
+
+- Windows 11 / PowerShell is the maintainer environment, but **Linux and macOS are first-class**.
+- Every root/package npm script must run in the native default shell of each platform.
+- File operations use Node (path-safe) helpers; no absolute drives or POSIX shell assumptions.
+- GitHub Actions runs the same build/test matrix on three OSes and an extra Node 24 Linux lane.
+- Spec Kit uses its official `--script py` mode through `pnpm spec-kit:init`.
+- See [ADR 0003](decisions/0003-cross-platform-ci.md).
+
 ## Cross-package quality gates
 
 - No circular dependencies; no runtime imports from apps into packages.

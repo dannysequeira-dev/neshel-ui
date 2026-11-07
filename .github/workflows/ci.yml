@@ -4,42 +4,78 @@ on:
   push:
     branches: [main]
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
 
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   validate:
-    runs-on: ubuntu-latest
+    name: ${{ matrix.os }} / Node ${{ matrix.node }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            node: '22'
+          - os: windows-latest
+            node: '22'
+          - os: macos-latest
+            node: '22'
+          - os: ubuntu-latest
+            node: '24'
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
-          node-version: '22'
-      - name: Install pnpm
-        run: npm install --global pnpm@12.16.1
-      - name: Install dependencies
-        # A frozen lockfile becomes mandatory after the first local pnpm install is committed.
-        run: |
-          if [ -f pnpm-lock.yaml ]; then
-            pnpm install --frozen-lockfile
-          else
-            pnpm install --no-frozen-lockfile
-          fi
-      - name: Validate workspace structure
-        run: pnpm check:workspace
-      - name: Typecheck
-        run: pnpm typecheck
+          node-version: ${{ matrix.node }}
+
+      # Reads the exact version from packageManager in the root package.json.
+      # Avoid a shell-specific global npm install for pnpm.
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          run_install: false
+
+      # This is a bootstrap repository. Once generated, pnpm-lock.yaml MUST
+      # be committed and the frozen install is the only path taken.
+      - name: Install dependencies (frozen)
+        if: hashFiles('pnpm-lock.yaml') != ''
+        run: pnpm install --frozen-lockfile
+
+      - name: Install dependencies (initial bootstrap only)
+        if: hashFiles('pnpm-lock.yaml') == ''
+        run: pnpm install --no-frozen-lockfile
+
+      - name: OS and repository health
+        run: pnpm run doctor
+
       - name: Tests
         run: pnpm test
+
+      - name: Typecheck
+        run: pnpm typecheck
+
       - name: Build packages
         run: pnpm build:packages
-      - name: Audit package export targets
+
+      - name: Verify package exports
         run: pnpm check:exports
+
       - name: Build Vite consumer
         run: pnpm --filter @neshel-ui/playground-vite build
+
       - name: Build Storybook
         run: pnpm --filter @neshel-ui/storybook build
-      # Enable Biome as a blocking check after formatting first commit:
-      # - name: Lint
-      #   run: pnpm lint
+
+      # Lint is still a manual gate in the original foundation scaffold.
+      # Promote it to blocking CI once the first complete Biome pass is clean.

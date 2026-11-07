@@ -1,5 +1,8 @@
 # Neshel-UI: preparar el repositorio en Windows 11 / PowerShell 7
 
+> Esta guía es para el maintainer en Windows. Para Linux/macOS y el CI multiplataforma,
+> ver [`CROSS-PLATFORM.es.md`](CROSS-PLATFORM.es.md).
+
 ## 0. Requisitos
 
 - Node.js 22.13 o superior (`node --version`)
@@ -30,7 +33,7 @@ pnpm --version
 # Si falta pnpm: npm install --global pnpm@12.16.1
 
 pnpm install
-pnpm check:workspace
+pnpm run doctor
 pnpm build:packages
 pnpm check:exports
 pnpm test
@@ -78,13 +81,12 @@ Instalación oficial: https://github.github.io/spec-kit/installation.html
 ```powershell
 uv tool install specify-cli
 specify version
-.\scripts\bootstrap-spec-kit.ps1
+pnpm run spec-kit:init
 ```
 
-Si PowerShell bloquea la ejecución de scripts, revisá tu política y usá una
-sesión que permita ejecutar el `.ps1` local. El script preserva el contenido de
-nuestra constitución e invoca el `specify init` oficial con integración `claude`
-y scripts para PowerShell.
+Este comando usa Node y el modo de scripts Python oficial de Spec Kit (`--script py`),
+por lo que funciona también en Linux/macOS. Conserva los archivos de contexto
+y la constitución del proyecto. El wrapper anterior `.ps1` sigue existiendo.
 
 Revisá `git status` y `git diff` antes de aceptar cualquier cambio generado.
 No confundás `specify` (terminal) con `/speckit-*` (dentro de Claude Code).

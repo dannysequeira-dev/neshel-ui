@@ -14,7 +14,8 @@ install without monorepo internals. **Do not implement the entire library in one
 
 ## User and environment
 
-- Primary maintainer develops on **Windows 11 with PowerShell 7**.
+- Primary maintainer develops on **Windows 11 with PowerShell 7**, but **Windows, Linux, and macOS are equally supported** for contributors and package consumers.
+- Do not introduce OS-specific npm scripts or assume shell commands are portable; use Node.js standard library and pnpm scripts. CI must validate all three native OS runners.
 - Use pnpm workspaces; npm/yarn must not create separate lockfiles.
 - Documentation and public APIs are in **English**. Communicate with the maintainer in Spanish.
 - Project tagline: **Rooted in faith. Built with hope.** Do not assume or publish
@@ -40,7 +41,7 @@ install without monorepo internals. **Do not implement the entire library in one
 ## Workflow: specification before implementation
 
 1. Identify current feature (`specs/001-foundation/` initially).
-2. Verify or bootstrap official Spec Kit integration (see `docs/SETUP-WINDOWS.es.md`).
+2. Verify or bootstrap official Spec Kit integration with `pnpm run spec-kit:init` (see `docs/CROSS-PLATFORM.es.md`).
 3. Use its clarify -> plan -> tasks -> analyze workflow before implementation.
 4. Small vertical slice; minimal implementation and tests; package build / Storybook proof.
 5. Record any unresolved contracts or DGS-like external constraints as blockers, not assumptions.
@@ -50,6 +51,9 @@ install without monorepo internals. **Do not implement the entire library in one
 
 ## Current runnable commands
 
+- `pnpm run doctor` — Node version, workspace layout and OS portability audit.
+- `pnpm check:portability` — detect problematic scripts and case-colliding paths.
+- `pnpm run spec-kit:init` — install official Claude Spec Kit helpers using portable Python mode.
 - `pnpm check:workspace` — verify bootstrap structure (works without dependencies).
 - `pnpm install` — install dependencies and generate `pnpm-lock.yaml` (commit it).
 - `pnpm build:packages` — build TS package exports and copy styles.
@@ -69,8 +73,17 @@ install without monorepo internals. **Do not implement the entire library in one
 - Built package can be consumed from packed artifact in a different project
   when its published API, stylesheet or dependency graph changes.
 - `pnpm typecheck`, `pnpm test`, `pnpm lint`, relevant build(s) pass.
+- Changes pass native Linux, Windows and macOS CI (or are marked unverified).
 - Changelog / README / examples updated when user-facing behavior changes.
 - No private details or credentials in source control.
+
+## Cross-platform governance
+
+- Read `docs/CROSS-PLATFORM.es.md` and ADR 0003 before changing tooling.
+- Prefer `node:fs`, `node:path` and `node:url`; never hardcode Windows drive paths, POSIX shell operations, or platform-specific script extensions in package scripts.
+- Respect `pnpm-lock.yaml` once generated and committed.
+- Test file handling with paths containing spaces and Unicode.
+- A Linux-only run does NOT establish Windows/macOS compatibility.
 
 ## Do not
 

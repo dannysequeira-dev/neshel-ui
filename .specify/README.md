@@ -4,23 +4,23 @@ This ZIP ships **project-specific Spec Kit content**, including the constitution
 an initial feature spec, but does **not** vendor GitHub Spec Kit's official scripts,
 templates or Claude integration skills. Those must come from the official CLI.
 
-On Windows / PowerShell:
-
-```powershell
-uv tool install specify-cli
-specify version
-.\scripts\bootstrap-spec-kit.ps1
-```
-
-`scripts/bootstrap-spec-kit.ps1` invokes the official initializer with:
+On **Windows, Linux or macOS** (PowerShell, Bash or Zsh):
 
 ```text
-specify init --here --force --non-interactive --integration claude --script ps --ignore-agent-tools
+uv tool install specify-cli
+specify version
+pnpm run spec-kit:init
 ```
 
-It makes a temporary in-memory backup of `constitution.md` and restores it after
+`scripts/bootstrap-spec-kit.mjs` invokes the official initializer with:
+
+```text
+specify init --here --force --non-interactive --integration claude --script py --ignore-agent-tools
+```
+
+It backs up and restores our existing Claude context and constitution during
 initialization. Review `git diff` afterwards and verify `.claude/skills/` and
-`.specify/scripts/powershell/` were installed. Then use `/speckit-*` commands in
+`.specify/scripts/python/` were installed. The previous PowerShell wrapper still works. Then use `/speckit-*` commands in
 Claude Code. Do not mistake the CLI command `specify` for the chat commands.
 
 Docs: https://github.github.io/spec-kit/installation.html

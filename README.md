@@ -32,14 +32,14 @@ precise typography (Capsize), composable layouts, and independently consumable n
 
 The `@neshel-ui` npm scope is **proposed, not verified or reserved**.
 
-## Developer quick start (PowerShell)
+## Developer quick start (Windows, Linux and macOS)
 
-Requirements: Node.js 22.13+; pnpm 12; Git; optional Claude Code and Spec Kit CLI.
+Requirements: Node.js 22.13+; pnpm **12.16.1**; Git; optional Claude Code and Spec Kit CLI.
 
-```powershell
-# From the unpacked repository root
+```bash
+# From the repository root, in PowerShell, Bash or Zsh
 pnpm install
-pnpm check:workspace
+pnpm run doctor
 pnpm build:packages
 pnpm test
 pnpm dev:playground
@@ -48,7 +48,9 @@ pnpm dev:storybook
 ```
 
 On the first install, commit the generated `pnpm-lock.yaml`. CI will thereafter
-use a frozen lockfile. For the full Windows / GitHub flow, see
+use a frozen lockfile. For setup and native CI on all three systems, see
+[`docs/CROSS-PLATFORM.es.md`](docs/CROSS-PLATFORM.es.md).
+For Windows-specific initial extraction, see
 [`docs/SETUP-WINDOWS.es.md`](docs/SETUP-WINDOWS.es.md).
 
 ## Planned consumer experience (not yet released)
@@ -76,7 +78,7 @@ Start by reading [`CLAUDE.md`](CLAUDE.md),
 [`.specify/memory/constitution.md`](.specify/memory/constitution.md).
 
 Spec Kit's official scripts / Claude commands are installed separately with
-`scripts/bootstrap-spec-kit.ps1` after installing the official `specify` CLI.
+`pnpm run spec-kit:init` on Windows, Linux and macOS after installing the official `specify` CLI.
 The ZIP already includes the constitution and first feature specification, but
 **does not claim to include the official Spec Kit command distribution**.
 
@@ -88,6 +90,7 @@ The ZIP already includes the constitution and first feature specification, but
 - [Theme and token design](docs/theming.md)
 - [Capsize / typography design](docs/typography.md)
 - [Roadmap and acceptance gates](docs/roadmap.md)
+- [Windows, Linux and macOS setup + CI (Spanish)](docs/CROSS-PLATFORM.es.md)
 - [Windows setup and GitHub instructions (Spanish)](docs/SETUP-WINDOWS.es.md)
 - [Working with Claude and Spec Kit](docs/CLAUDE-FIRST-PROMPT.md)
 - [Release and npm publication checklist](docs/releasing.md)
