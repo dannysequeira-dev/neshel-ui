@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install pnpm
+        run: npm install --global pnpm@12.16.1
+      - name: Install dependencies
+        # A frozen lockfile becomes mandatory after the first local pnpm install is committed.
+        run: |
+          if [ -f pnpm-lock.yaml ]; then
+            pnpm install --frozen-lockfile
+          else
+            pnpm install --no-frozen-lockfile
+          fi
+      - name: Validate workspace structure
+        run: pnpm check:workspace
+      - name: Typecheck
+        run: pnpm typecheck
+      - name: Tests
+        run: pnpm test
+      - name: Build packages
+        run: pnpm build:packages
+      - name: Audit package export targets
+        run: pnpm check:exports
+      - name: Build Vite consumer
+        run: pnpm --filter @neshel-ui/playground-vite build
+      - name: Build Storybook
+        run: pnpm --filter @neshel-ui/storybook build
+      # Enable Biome as a blocking check after formatting first commit:
+      # - name: Lint
+      #   run: pnpm lint

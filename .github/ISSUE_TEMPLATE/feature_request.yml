@@ -1,0 +1,17 @@
+name: Feature request
+description: Propose a new feature or component
+labels: ['enhancement']
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem to solve
+    validations:
+      required: true
+  - type: textarea
+    id: public_api
+    attributes:
+      label: Proposed usage API
+      description: Include a tiny TypeScript/JSX example if possible.
+    validations:
+      required: true

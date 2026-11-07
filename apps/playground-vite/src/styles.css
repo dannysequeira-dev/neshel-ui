@@ -1,0 +1,5 @@
+@import "tailwindcss";
+@import "@neshel-ui/config/styles.css";
+
+/* When component implementations arrive, import their distributed CSS here. */
+/* If a dependency ships uncompiled Tailwind utilities, add an explicit @source path. */

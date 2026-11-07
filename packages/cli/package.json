@@ -1,0 +1,36 @@
+{
+  "name": "@neshel-ui/cli",
+  "version": "0.0.0",
+  "description": "Configuration and CSS generation CLI",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@neshel-ui/config": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "catalog:",
+    "@types/node": "catalog:"
+  },
+  "bin": {
+    "neshel": "./dist/index.js"
+  }
+}

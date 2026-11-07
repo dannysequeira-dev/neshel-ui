@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "ask": [
+      "Bash(git push *)",
+      "Bash(gh repo create *)"
+    ],
+    "deny": [
+      "Bash(npm publish *)",
+      "Bash(npm publish)",
+      "Bash(pnpm publish *)",
+      "Bash(pnpm publish)",
+      "Bash(pnpm -r publish *)",
+      "Bash(npx changeset publish *)",
+      "Bash(git push --force*)",
+      "Bash(git reset --hard*)",
+      "Read(.env*)",
+      "Read(**/*.pem)"
+    ]
+  }
+}

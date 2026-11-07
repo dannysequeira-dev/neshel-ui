@@ -1,0 +1,36 @@
+/* Foundation-only baseline. The token contract will be finalized in feature 002. */
+:root,
+[data-neshel-theme="light"] {
+  color-scheme: light;
+  --neshel-primary: #6d28d9;
+  --neshel-primary-foreground: #ffffff;
+  --neshel-background: #ffffff;
+  --neshel-foreground: #18121f;
+  --neshel-surface: #f7f4fa;
+  --neshel-border: #e6deee;
+  --neshel-radius-base: 0.75rem;
+  --neshel-font-body: Inter, ui-sans-serif, system-ui, sans-serif;
+  --neshel-font-display: Inter, ui-sans-serif, system-ui, sans-serif;
+}
+
+[data-neshel-theme="dark"] {
+  color-scheme: dark;
+  --neshel-primary: #c4a6ff;
+  --neshel-primary-foreground: #18121f;
+  --neshel-background: #0d0b13;
+  --neshel-foreground: #f6f2fa;
+  --neshel-surface: #191521;
+  --neshel-border: #292136;
+}
+
+@theme inline {
+  --color-neshel-primary: var(--neshel-primary);
+  --color-neshel-primary-foreground: var(--neshel-primary-foreground);
+  --color-neshel-background: var(--neshel-background);
+  --color-neshel-foreground: var(--neshel-foreground);
+  --color-neshel-surface: var(--neshel-surface);
+  --color-neshel-border: var(--neshel-border);
+  --font-neshel-body: var(--neshel-font-body);
+  --font-neshel-display: var(--neshel-font-display);
+  --radius-neshel-base: var(--neshel-radius-base);
+}

@@ -1,0 +1,39 @@
+{
+  "name": "@neshel-ui/components",
+  "version": "0.0.0",
+  "description": "Accessible React UI components",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./styles.css": "./dist/styles.css"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json && node ../../scripts/copy-css.mjs src/styles.css dist/styles.css",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@neshel-ui/core": "workspace:*",
+    "@neshel-ui/config": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "catalog:",
+    "@types/react": "catalog:",
+    "react": "catalog:"
+  },
+  "peerDependencies": {
+    "react": ">=18.3.0 <21.0.0"
+  }
+}

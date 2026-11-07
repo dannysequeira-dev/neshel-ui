@@ -1,0 +1,81 @@
+# Claude Code — Neshel-UI Project Contract
+
+**Current phase:** repository bootstrap only. All npm packages are private placeholders.
+**Mission:** build a small, modular, accessible React design system that consumers can
+install without monorepo internals. **Do not implement the entire library in one pass.**
+
+## Mandatory reading order (before proposing changes)
+
+1. `.specify/memory/constitution.md` — binding engineering principles.
+2. `docs/vision.md` and `docs/architecture.md` — intent and package boundaries.
+3. `docs/package-contracts.md`, `docs/theming.md`, `docs/typography.md` — public contracts.
+4. `docs/roadmap.md` and current `specs/<feature>/spec.md` — scope/gates.
+5. `docs/decisions/` — existing choices, propose an ADR for nontrivial deviations.
+
+## User and environment
+
+- Primary maintainer develops on **Windows 11 with PowerShell 7**.
+- Use pnpm workspaces; npm/yarn must not create separate lockfiles.
+- Documentation and public APIs are in **English**. Communicate with the maintainer in Spanish.
+- Project tagline: **Rooted in faith. Built with hope.** Do not assume or publish
+  private personal stories, identities, or relationships behind the project name.
+- The package scope `@neshel-ui` has **not** been verified on npm. Do not claim otherwise.
+
+## Technology / architecture
+
+- Node >=22.13; pnpm pinned by `packageManager`.
+- React + TypeScript strict, CSS-first Tailwind v4, Storybook React/Vite, Vite sandbox.
+- Capsize is for typography with real font metrics and deterministic generated CSS.
+- Radix may be used selectively for complex accessibility. Prefer native semantic HTML.
+- React and React DOM must remain peer dependencies in published React packages.
+- `config` is CSS/token infrastructure; `core` stays private; `layout` and `typography`
+  must not depend on `components`; shared behavior flows toward `core`.
+- No `@neshel-ui/components` import from `@neshel-ui/layout` or `@neshel-ui/typography`.
+- Do not dynamically concatenate Tailwind class names. Prefer static variants,
+  CSS variables and distributed, compiled CSS; Tailwind does not scan node_modules by default.
+- No global CSS resets from library packages beyond documented, opt-in global styles.
+- No runtime reading/evaluation of the consumer's TypeScript config in the browser.
+- Avoid React providers for basic theme switching; use CSS custom properties and `data-neshel-theme`.
+
+## Workflow: specification before implementation
+
+1. Identify current feature (`specs/001-foundation/` initially).
+2. Verify or bootstrap official Spec Kit integration (see `docs/SETUP-WINDOWS.es.md`).
+3. Use its clarify -> plan -> tasks -> analyze workflow before implementation.
+4. Small vertical slice; minimal implementation and tests; package build / Storybook proof.
+5. Record any unresolved contracts or DGS-like external constraints as blockers, not assumptions.
+6. Run quality gates and document actual results. Never report an unrun test as passing.
+7. Stop at owner approval before any npm publish, GitHub release, remote push, or
+   removal of package `private` guard.
+
+## Current runnable commands
+
+- `pnpm check:workspace` — verify bootstrap structure (works without dependencies).
+- `pnpm install` — install dependencies and generate `pnpm-lock.yaml` (commit it).
+- `pnpm build:packages` — build TS package exports and copy styles.
+- `pnpm check:exports` — check exported paths exist (requires build).
+- `pnpm test` — starter Node.js workspace tests.
+- `pnpm typecheck` — workspace typecheck.
+- `pnpm lint` / `pnpm format` — Biome.
+- `pnpm dev:storybook` / `pnpm dev:playground` — startup in local dev.
+- `pnpm build:playground` / `pnpm build:storybook` — CI consumer smoke builds.
+
+## Definition of done for every feature
+
+- Specification updated and any decisions documented.
+- APIs typed, accessible, independent, and SSR-safe as applicable.
+- Unit/integration tests and relevant Storybook stories.
+- ESM `exports`, `.d.ts`, CSS exports and `sideEffects` verified.
+- Built package can be consumed from packed artifact in a different project
+  when its published API, stylesheet or dependency graph changes.
+- `pnpm typecheck`, `pnpm test`, `pnpm lint`, relevant build(s) pass.
+- Changelog / README / examples updated when user-facing behavior changes.
+- No private details or credentials in source control.
+
+## Do not
+
+- Publish automatically. Do not invent npm scope availability.
+- Redesign scope/palette/API silently without documenting the decision.
+- Modify the user's other projects or repositories.
+- Add unrelated abstractions or a full product app.
+- Create a duplicate set of Spec Kit official commands manually; use `specify init`.
