@@ -1,6 +1,7 @@
 # ADR 0010 — Custom breakpoints: order-free runtime, generated component CSS and type registry
 
-- Status: **Accepted** (2026-11-08, within the owner's Phase 004 brief)
+- Status: **Accepted** (2026-11-08, within the owner's Phase 004 brief); implemented and
+  CI-verified in feature 004 (run 42488883635, 5/5 jobs)
 - Date: 2026-11-08
 - Feature: [004](../../specs/004-typography-breakpoints/spec.md); normative detail in
   [contracts/breakpoints.md](../../specs/004-typography-breakpoints/contracts/breakpoints.md) and
@@ -66,7 +67,7 @@ breakpoint in a fixed order, so it cannot handle names whose order is only known
 
 ## Verification
 
-Planned evidence (recorded in `specs/004-typography-breakpoints/evidence.md`): CLI validation
+Evidence (details in `specs/004-typography-breakpoints/evidence.md`, CI run 42488883635): CLI validation
 matrix and goldens; renderer drift tests; layout unit tests and unchanged Phase 003 browser cases;
 type fixtures for zero-config, `extend` and `replace` in NodeNext and Bundler consumers; boundary
 sweeps (1 px below / at each threshold) in packed `extend` and `replace` consumers; Tailwind

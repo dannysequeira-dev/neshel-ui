@@ -4,8 +4,8 @@
 
 **Created**: 2026-11-08
 
-**Status**: Specified (004.0). Implementation status is tracked in [tasks.md](tasks.md) and
-[evidence.md](evidence.md). No package is published.
+**Status**: Implemented — milestones 004.0–004.5 complete; CI-verified in run 42488883635 (5/5).
+Evidence: [evidence.md](evidence.md), [traceability.md](traceability.md). No package is published.
 
 **Input**: Owner brief "Neshel-UI — Phase 004: Typography System & Custom Responsive Breakpoints"
 (2026-11-08), summarised in [brief.md](brief.md). The brief is authoritative and pre-authorises

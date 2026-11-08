@@ -63,4 +63,4 @@ Dependency-ordered. `[P]` = can run in parallel with the previous task. Status: 
 - [x] T060 docs: typography.md, layout.md, theming.md, package-contracts.md, architecture.md, roadmap.md, READMEs
 - [x] T061 changeset
 - [x] T062 `pnpm check`, consumers, browser locally; evidence.md
-- [ ] T063 push; CI 5/5; traceability.md; closure status
+- [x] T063 push; CI 5/5; traceability.md; closure status

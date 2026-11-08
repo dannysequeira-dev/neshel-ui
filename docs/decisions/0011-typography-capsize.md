@@ -1,6 +1,7 @@
 # ADR 0011 — Typography: Capsize trimming through font-metric custom properties
 
-- Status: **Accepted** (2026-11-08, within the owner's Phase 004 brief)
+- Status: **Accepted** (2026-11-08, within the owner's Phase 004 brief); implemented and
+  CI-verified in feature 004 (run 42488883635, 5/5 jobs)
 - Date: 2026-11-08
 - Feature: [004](../../specs/004-typography-breakpoints/spec.md); normative detail in
   [contracts/typography-api.md](../../specs/004-typography-breakpoints/contracts/typography-api.md)
@@ -57,7 +58,7 @@ Capsize styles per (font role × size × leading × breakpoint) would multiply t
 
 ## Verification
 
-Planned evidence (`specs/004-typography-breakpoints/evidence.md`): CLI equivalence tests against
+Evidence (details in `specs/004-typography-breakpoints/evidence.md`, CI run 42488883635): CLI equivalence tests against
 `@capsizecss/core` for several fonts, sizes and leadings; unit/SSR/hydration tests; type fixtures;
 browser geometry checks of cap-height and baseline alignment with in-page metrics plus a mismatch
 negative control; packed consumers with and without Tailwind; CI on three OSes.
