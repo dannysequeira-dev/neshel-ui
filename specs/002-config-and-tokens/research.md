@@ -1,229 +1,265 @@
 # Research — Feature 002 (Phase 0)
 
-Prepared 2026-11-07 from the repository state at `b8c6198` (Phase 001 closed). Nothing here is
-implemented. ⚑ marks the five decisions that need the owner.
+First pass 2026-11-07 from `b8c6198` (Phase 001 closed); revised the same day after the owner's
+002.0 approval (D1–D5, amendments A–F). Nothing here is implemented. Spikes ran outside the
+repository (session scratch directory) on Windows 11, Node 26.13.0; they verify facts, not code.
 
 ## Brief audit
 
-| Brief item / readiness decision                                                                                                                                   | Status after this pass                                                                                                                                         | Where          |
-| ----------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
-| Typed `defineConfig`                                                                                                                                              | Specified                                                                                                                                                      | R7, config-api |
-| Light/dark semantic tokens                                                                                                                                        | Specified (21 roles)                                                                                                                                           | R1, tokens     |
-| CSS-first baseline                                                                                                                                                | Specified (`tokens.css` / `tailwind.css`)                                                                                                                      | R3             |
-| Custom config discovery                                                                                                                                           | Specified (cwd only, 4 extensions)                                                                                                                             | R6, cli        |
-| Safe validation                                                                                                                                                   | Specified; "safe" = no browser evaluation, no sandbox claim                                                                                                    | R6, R7         |
-| Deterministic generated CSS                                                                                                                                       | Specified                                                                                                                                                      | R13            |
-| Capsize metrics hooks                                                                                                                                             | **Narrowed**: reserved shape only; Capsize in 004                                                                                                              | R12            |
-| Explicit `neshel generate`                                                                                                                                        | Specified + `validate`, `--check`                                                                                                                              | cli            |
-| Test categories (CSS-only, invalid values, determinism, concurrent themes, missing metrics, contrast, zero Node deps, tree shaking, exit codes, tarball consumer) | All mapped to tests; "concurrent applications" interpreted as nested/side-by-side theme scopes; two _different generated configs_ on one page are out of scope | R14            |
-| Decisions 1–9                                                                                                                                                     | R1–R9 below                                                                                                                                                    |                |
+| Brief item / readiness decision | Outcome                                                                                                                            | Where          |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| Typed `defineConfig`            | Specified                                                                                                                          | R7, config-api |
+| Light/dark semantic tokens      | 21 roles + named themes                                                                                                            | R1, R11        |
+| CSS-first baseline              | `tokens.css` / `tailwind.css` / alias                                                                                              | R3             |
+| Custom config discovery         | cwd only, 4 extensions                                                                                                             | R6, cli        |
+| Safe validation                 | No browser evaluation; trusted-code model; no sandbox claim                                                                        | R6, R7         |
+| Deterministic generated CSS     | Specified                                                                                                                          | R13, R18       |
+| Capsize metrics hooks           | Narrowed to reserved shape; Capsize in 004 (amendment E)                                                                           | R12            |
+| Explicit `neshel generate`      | + `validate`, `--check`                                                                                                            | cli            |
+| Test categories                 | All mapped; "concurrent applications" = nested/side-by-side theme scopes; two different generated configs on one page out of scope | R14, R17       |
+| Readiness decisions 1–9         | R1–R9                                                                                                                              |                |
 
 ## R1 — Token vocabulary
 
-- **Decision**: fixed vocabulary of 21 colour roles (9 fill/foreground pairs + `border`,
-  `input`, `focus`), radius scale `base/sm/md/lg/xl/full` derived from `base`, `spacing` unit,
-  font families `body/display/mono`, focus width/offset. All nine Phase 001 names keep their
-  meaning; `--neshel-radius-base` stays the knob.
-- **Rationale**: covers the states the owner listed (background, foreground, surfaces, borders,
-  primary/secondary/accent, focus, disabled, destructive, selected) and what features 003–005
-  need, without hover/active tokens that components can derive. A closed vocabulary keeps
-  one contract for zero-config and configured modes and keeps Tailwind utilities static.
-- **Tradeoffs**: no custom roles in 0.x (a consumer wanting `brand-teal` uses their own
-  Tailwind theme). Adding roles later is additive; removing would be breaking, hence minimal.
-- **Alternatives**: shadcn-style list (`card`, `popover`, `ring`, `chart-*`) — more component-
-  specific names; numeric palettes (`navy-50…950`) — not semantic, invites hardcoding.
+- **Decision**: 21 colour roles (9 fill/foreground pairs + `border`, `input`, `focus`), radius
+  scale from `base`, spacing unit, three font families, focus width/offset. Phase 001 names kept.
+- **Rationale**: covers the owner's list and the needs of 003–005; closed vocabulary keeps one
+  contract and static Tailwind utilities.
+- **Tradeoffs**: no custom roles in 0.x; additions are additive.
+- **Alternatives**: shadcn-style component names; numeric palettes (not semantic).
 
 ## R2 — Contrast policy
 
-- **Decision**: WCAG 2.x ratio. Text pairs ≥ 4.5:1, focus and input boundaries ≥ 3:1
-  (1.4.11; focus also informed by 2.4.13). Built-ins enforced by tests (failure blocks the
-  build). Custom themes: warnings by default; `--strict` or `contrast: "error"` makes them
-  errors. Disabled pair and `border` exempt and documented.
-- **Rationale**: guarantees what the library controls; gives consumers actionable diagnostics
-  without blocking exploratory themes. Never claims conformance — usage decides conformance.
-- **Tradeoffs**: default-warn means an inaccessible custom theme can ship; mitigated by
-  recommending `--strict` in CI scripts. Large-text 3:1 is not modelled (role-based, not
-  size-based).
-- **Alternatives**: errors by default (safer, more friction); APCA (not a standard yet).
+- **Decision**: WCAG 2.1 ratio; text 4.5:1, focus/input 3:1; built-ins enforced by tests; custom
+  themes warn by default, error under `--strict` or `contrast: "error"`; disabled and border exempt.
+- **Precedence** (amendment B): `--strict` › config `contrast` › `"warn"`. A flag can only
+  tighten; configuration cannot weaken CI's `--strict`.
+- **Tradeoffs**: default-warn lets an inaccessible custom theme ship; recommended scripts use
+  `--strict`. Large-text 3:1 not modelled (role-based).
+- **Alternatives**: errors by default; APCA (not a standard).
 
-## R3 — CSS export names and `styles.css` ⚑ Q2
+## R3 — CSS exports (D2)
 
-- **Decision**: `./tokens.css` and `./tailwind.css`, both self-contained and generated by the
-  engine. Recommended: keep `./styles.css` as a byte-identical deprecated alias of
-  `tailwind.css` for 0.x, removal decided by ADR before 1.0.
-- **Rationale**: names state what each file needs. Nothing is published, so no external
-  consumer depends on `styles.css`; the alias costs one file copy and preserves the
-  "`./styles.css` per package" convention used by layout/typography/components and
-  documentation written in Phase 001.
-- **Alternative**: remove `styles.css` now and migrate the two internal apps and
-  `check:consumer` (cleaner; breaks the per-package naming convention for `config` only).
+- **Decision**: `./tokens.css`, `./tailwind.css`, `./styles.css` (byte-identical alias during 0.x);
+  consumers import one of `tokens.css` / `tailwind.css`.
+- **Rationale**: preserves the Phase 001 consumer contract (`styles.css` + `*-neshel-*` utilities)
+  while naming the split explicitly.
 
-## R4 — Cascade and theme selection ⚑ Q1
+## R4 — Theme selection (D1)
 
-- **Decision**: layers `@layer neshel.defaults, neshel.config;` at the top of every Neshel
-  stylesheet; `[data-neshel-theme]` on any element with `light | dark | system | <named>`;
-  `system` maps to `prefers-color-scheme`. Recommended: no attribute ⇒ light (Phase 001
-  behaviour); following the OS is opt-in via `system`.
-- **Rationale**: a repeated layer statement makes precedence independent of import order —
-  the first statement fixes order and both name the same order. Opt-in `system` avoids
-  turning pages dark that have non-token colours (images, third-party widgets) and keeps
-  Phase 001 behaviour. Pure CSS: no provider, no flash of wrong theme for `system`.
-- **Tradeoffs**: unlayered consumer overrides beat everything, including dark — must be
-  documented. Apps persisting a user choice still set the attribute themselves (server or
-  inline script); no helper is shipped.
-- **Alternative (Q1)**: no attribute ⇒ follow OS (`:root:not([data-neshel-theme])` in the
-  media block). Better out-of-box dark support; a visible behaviour change for Phase 001 users.
-- **Alternatives rejected**: specificity tricks (`:where()` / doubled selectors) — fragile with
-  consumer CSS; Tailwind `dark:` variant — Tailwind-only.
+- **Decision**: no attribute ⇒ light; `light`/`dark` force; `system` follows
+  `prefers-color-scheme`; named themes via the same attribute; any element can scope.
+- **Rationale**: Phase 001 behaviour preserved; no flash of wrong theme for `system` (pure CSS);
+  no provider.
 
-## R5 — Tailwind namespace and collisions
+## R5 — Tailwind namespace
 
-- **Decision**: keep `--color-neshel-*`, `--radius-neshel-*`, `--font-neshel-*` under
-  `@theme inline`; reserve the `--neshel-*` / `--*-neshel-*` prefixes; no unprefixed utilities,
-  no override of Tailwind defaults, no custom variants in 0.x.
-- **Rationale**: matches Phase 001 (CI-verified utilities), cannot collide with consumer
-  `--color-primary`, and `inline` lets scoped and generated values flow through `var()`.
-- **Alternatives**: unprefixed `bg-primary` (collides with most Tailwind apps and shadcn).
+- **Decision**: `--color-neshel-*`, `--radius-neshel-*`, `--font-neshel-*` under `@theme inline`;
+  reserved prefixes; no unprefixed utilities, no default overrides, no custom variants in 0.x.
 
-## R6 — Loading `neshel.config.ts` ⚑ Q4
+## R6 — Loading `neshel.config.ts` (D4)
 
-- **Facts**: Node's unflagged TypeScript type stripping exists in Node 23.6+ and later 22.x
-  releases, but **not in 22.13** (the floor); it only strips erasable syntax and does not
-  rewrite import specifiers. Requiring it would raise `cli`'s `engines` above the
-  contributor floor and still fail for some valid TS.
-- **Decision (recommended)**: `jiti` (v2, ESM, zero dependencies, maintained, used by the
-  Tailwind v4 Node tooling to load configs) as the only runtime dependency besides
-  `@neshel-ui/config`. Pin an exact minor range; licence check (MIT) at implementation.
-- **Rationale**: works on every supported Node line and OS, full TS syntax, in-memory.
-- **Tradeoffs**: one third-party dependency in a Node-only package; browser consumers never
-  receive it (`config` stays dependency-free).
-- **Alternatives**: raise `cli` to Node ≥ 22.18 (or the exact first unflagged release, to be
-  verified) and use native stripping + `.mjs` fallback — zero deps, narrower support, erasable
-  syntax only; `tsx`/`esbuild` — heavier; ask users to write `.mjs` only — poor DX.
-- **Discovery**: working directory only, four extensions, ambiguity is an error. Upward search
-  is rejected: surprising in monorepos and harder to reason about in CI.
+- **Facts**: unflagged type stripping is unavailable on Node 22.13 (the floor) and handles only
+  erasable syntax.
+- **Decision**: `jiti` 2.x in `@neshel-ui/cli`.
+- **Spike (2026-11-07)**: `jiti@2.7.0` — MIT, ESM with types, **no dependencies**, 1.7 MB unpacked,
+  last published 2026-05. `createJiti(url, { fsCache: false, moduleCache: false }).import(file,
+  { default: true })` loaded a TS file using `enum` from `dir with spaces ñ/` and wrote no files.
+  Linux/macOS and Node 22/24 behaviour is verified by CI in 002.4.
+- **Discovery**: cwd only; ambiguity is an error.
 
-## R7 — Validation approach and engine location
+## R7 — Validation and generator location (amendments B, C)
 
-- **Decision**: hand-written validators in `@neshel-ui/config/engine` (pure, browser-safe),
-  `defineConfig` + types in `.`; `cli` does discovery, loading, I/O and exit codes.
-- **Rationale**: the schema is small and closed; colour parsing and contrast must be written
-  anyway; constitution II asks for minimal dependencies; one engine generates both the shipped
-  stylesheets and consumer CSS (FR-012). Keeping the engine off `.` keeps config files and
-  browser bundles tiny.
-- **Tradeoffs**: more code to own (colour parsing for hex/rgb/hsl/oklch, error messages); the
-  engine subpath is a semver surface → marked experimental in 0.x.
-- **Alternatives**: `zod`/`valibot` in `cli` (good messages, but types would be duplicated or
-  inferred from a schema the browser entry cannot import); engine inside `cli` (then
-  `config`'s build would depend on `cli`, inverting the dependency direction).
-- **Versioning**: optional `version: 1`; any other value is an error, so a future v2 can be
-  detected.
+- **Decision**: `@neshel-ui/config` `.` exports `defineConfig`, types and contract data
+  (`colorRoles`, `contrastPairs`, `defaults`). Structural validation (hand-written), colour
+  processing (Color.js), resolution and CSS generation are **private modules of `@neshel-ui/cli`**.
+  No `./engine` subpath.
+- **Rationale**: an exported subpath is consumable API regardless of labels; keeping the generator
+  private avoids a premature semver surface. Contract data in `config` keeps constitution II
+  (config owns tokens) and lets the CLI, the shipped stylesheets and tests share one source.
+  Color.js stays out of every browser-reachable entry.
+- **How shipped CSS is produced**: a repository script runs the built CLI generator on `defaults`
+  and writes `packages/config/src/tokens.css` and `tailwind.css` (committed, "do not edit"
+  header). `config`'s build only copies CSS (as today) plus the alias, so there is no build-time
+  cycle (`cli` → `config` at runtime; `config` never imports `cli`). A drift test fails when the
+  committed files differ from generator output.
+- **Dependency kind**: `cli` declares `@neshel-ui/config` as a **peer** (`workspace:^`) and dev
+  dependency, so the CLI and the user's `neshel.config.ts` resolve the same copy of the contract.
+  `check:pack` must accept a public workspace peer and still reject internal packages.
+- **Alternatives**: engine subpath in `config` (public surface + Color.js in `config`'s install
+  graph); generator in `config` with a runtime dependency on Color.js (browser-adjacent package
+  gains a 16 MB dependency); `zod`/`valibot` for structure (unneeded for a small closed schema).
 
 ## R8 — Testing TypeScript sources
 
-- **Decision**: keep `node:test`. Package unit tests are `.test.mjs` files that import the
-  built `dist` output; `pnpm check` runs `build:packages` before tests that need it (order to
-  be fixed in the plan). Type contracts are tested by `tsc --noEmit` on fixture files with
-  `@ts-expect-error` negatives as part of `pnpm typecheck`.
-- **Rationale**: no new runner; tests exercise what is shipped; works on Node 22.13.
-- **Tradeoffs**: build-before-test; no TS in test files. Revisit if test volume grows (Vitest
-  would be the candidate, by ADR).
+- **Decision**: keep `node:test`. Repository tests stay in `tests/**/*.test.mjs` (run before
+  build). Package tests live in `packages/*/test/**/*.test.mjs`, import built `dist`, and run via
+  a new `pnpm test:packages` after `build:packages`; root `test` becomes an explicit glob so it
+  does not pick up package tests. Type contracts are checked by `tsc --noEmit` on fixture files
+  (`@ts-expect-error` negatives) inside `pnpm typecheck`.
+- **Rationale**: tests exercise shipped output; works on Node 22.13; no new runner.
 
 ## R9 — Gate extensions
 
-- `check:pack`: expect `./engine`, `./tokens.css`, `./tailwind.css` (+ alias); fail if
-  `dist/index.js` or `dist/engine/**` import `node:` modules or any package; allow the
-  `cli → config` public workspace dependency (rewritten to an exact version on pack) while
-  still rejecting internal ones; verify `jiti` is the only third-party runtime dependency.
-- `check:consumer`: three generated apps from tarballs in a spaces+Unicode path —
-  (a) Vite + Tailwind with `tailwind.css`, (b) Vite without Tailwind with `tokens.css`,
-  (c) Vite + Tailwind + packed CLI running `neshel generate` on a `neshel.config.ts`, then
-  asserting configured values and layer order in the built CSS. Expectations derive from the
-  shipped/generated CSS, as in Phase 001.
-- CI: unchanged 5-job matrix; determinism golden files compared on every job.
+- `check:pack`: `config` exports exactly `.`, `./tokens.css`, `./tailwind.css`, `./styles.css`;
+  alias identical to `tailwind.css`; `config` has no `dependencies`; `dist/index.js` imports
+  nothing; `cli` runtime dependencies exactly `jiti`, `colorjs.io`; peer `@neshel-ui/config`
+  rewritten to a caret range; internal packages still rejected.
+- `check:consumer`: three generated TypeScript apps from tarballs in a spaces+Unicode path —
+  Tailwind (`tailwind.css`), plain (`tokens.css`), configured (packed CLI + `neshel.config.ts`).
+- `check:browser` (new, R17) on all three CI OSes.
 
-## R10 — Default palette ⚑ Q3
+## R10 — Palette (D3)
 
-- **Decision (proposed)**: values in [contracts/tokens.md](contracts/tokens.md), anchored on
-  colours sampled from the approved logo; all 18 checked pairs per theme pass (computed).
-- **Notes**: brand gold fails as text/focus on ivory, so it is a fill (`accent`) with navy
-  text, and the light focus ring uses bronze `#8f6d3f`. Destructive red is not a brand colour;
-  chosen for contrast. The owner may adjust any value; tests will hold the thresholds.
+- **Decision**: [contracts/tokens.md](contracts/tokens.md). Dark background moved from `#06132a`
+  to Midnight `#040d1d` after D3; all pairs re-verified with Color.js (`contrastWCAG21`), results
+  identical to an independent WCAG formula implementation for overlapping values.
+- **Notes**: gold is a fill with navy text; light focus uses bronze `#8f6d3f` (4.51:1 — closest to
+  its threshold; any change must keep ≥ 3:1).
 
-## R11 — Named themes ⚑ Q5
+## R11 — Named themes (D5)
 
-- **Decision (recommended)**: allow named themes in configuration with
-  `extends: "light" | "dark"` (no chains), selected by the same attribute, emitted after the
-  built-ins, alphabetically. Not in the shipped defaults.
-- **Rationale**: the owner's brief lists theme variants; the cost is a small validation and
-  generation loop on the same contract. `system` cannot target them.
-- **Conflict**: `docs/package-contracts.md` says "defer extra modes until needed" — this
-  decision would amend it.
-- **Alternative**: light/dark only in 002; named themes later (additive).
+- **Decision**: object keys under `themes` other than `light`/`dark`; must declare
+  `extends: "light" | "dark"`; resolved from the resolved base; no chains; `system` reserved;
+  names `^[a-z][a-z0-9-]{0,31}$` (unique by construction as object keys, and lower-case only,
+  so no case-variant duplicates). Emitted after built-ins, alphabetically, each block complete. `color-scheme` from the base.
+- Amends `docs/package-contracts.md` ("defer extra modes until needed").
 
-## R12 — Font metrics and Capsize
+## R12 — Typography scope (amendment E)
 
-- **Decision**: `typography.metrics` accepted with Capsize-compatible field names, validated
-  for shape, informational diagnostic, no CSS. No `@capsizecss/*` dependency in 002.
-- **Rationale**: reserves the extension point the brief asks for without implementing
-  feature 004; field names follow Capsize's `FontMetrics` to avoid a later rename.
-- **Risk**: feature 004 may need a different shape (e.g. per-weight); the key is documented
-  as reserved/experimental.
+- **Decision**: family tokens; `typography.metrics` reserved with Capsize-compatible names,
+  shape-validated, `info` diagnostic, no CSS, no `@capsizecss/*` dependency.
 
 ## R13 — Determinism
 
-- Fixed role order (contract order), theme order (light, dark, named alphabetical), fixed
-  indentation, LF, trailing newline, colours emitted as authored (hex lower-cased), font stacks
-  quoted deterministically, header with package version but no timestamp/path.
-- Shipped stylesheets are generated during `pnpm build:packages` by a Node script that imports
-  the freshly built engine; a test re-generates and compares (no drift between engine and
-  `dist/*.css`). Golden files in the repository are compared byte-for-byte on all CI jobs.
+Fixed role order (contract), theme order (light, system-dark, dark, named alphabetical),
+two-space indentation, LF, trailing newline, authored colour values (hex lower-cased),
+deterministic font-stack quoting, headers without versions/timestamps/paths. Golden files are
+compared byte-for-byte on all CI jobs.
 
 ## R14 — Testing and accessibility strategy
 
-| Layer                  | What                                                                                                                                                                   | Tool                                                            |
-| ---------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| Engine unit            | colour parsing (valid/invalid per format), luminance against WCAG reference values, resolution order, every diagnostic code, generation golden files                   | `node:test` on `dist`                                           |
-| Built-in accessibility | every contrast pair of every built-in theme meets its threshold                                                                                                        | `node:test`                                                     |
-| Type contract          | positive/negative `defineConfig` fixtures                                                                                                                              | `tsc --noEmit`                                                  |
-| CSS structure          | layer statement first; only allowed selectors; no resets/`@font-face`/`url()`; `color-scheme` per block; Tailwind-free file has no `@theme`                            | `node:test`                                                     |
-| Browser safety         | `.` and `./engine` import no `node:` and no packages; `.` < 1 kB minified                                                                                              | `check:pack` / test                                             |
-| CLI                    | negative matrix in [contracts/cli.md](contracts/cli.md) in temp dirs with spaces + Unicode; spawn `dist/bin.js` and assert exit code, stderr path, file written or not | `node:test`                                                     |
-| Determinism            | golden outputs on 5 CI jobs; generate twice → identical; unchanged output keeps mtime                                                                                  | `node:test`, CI                                                 |
-| Packed consumers       | three consumers (R9)                                                                                                                                                   | `check:consumer`                                                |
-| Theme behaviour        | precedence matrix incl. emulated `prefers-color-scheme` and import order                                                                                               | headless Chrome via CDP, recorded in evidence (as US-03 in 001) |
-| Visual/a11y            | Storybook "Foundations/Tokens" story with every pair in light/dark; `@storybook/addon-a11y` run                                                                        | Storybook                                                       |
+| Layer                 | What                                                                                                                 | Tool                  |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------- | --------------------- |
+| Contract data         | `colorRoles` order/uniqueness, `defaults` complete and frozen, `contrastPairs` reference valid roles                 | `node:test` (config)  |
+| Built-in a11y         | every pair of both built-in themes meets its threshold                                                               | `node:test` (cli)     |
+| Generator             | golden CSS for defaults and fixtures; complete blocks; selector/at-rule allowlist; idempotence                       | `node:test` (cli)     |
+| Drift                 | committed `tokens.css`/`tailwind.css` equal generator output; alias identical                                        | `node:test`           |
+| Colour                | allowlist, parse, alpha, gamut, contrast vectors                                                                     | `node:test` (cli)     |
+| Structural validation | each diagnostic code; did-you-mean; sorting; all-errors-in-one-pass                                                  | `node:test` (cli)     |
+| Types                 | positive/negative `defineConfig` fixtures                                                                            | `tsc --noEmit`        |
+| CLI                   | negative matrix of [contracts/cli.md](contracts/cli.md) via spawned `dist/bin.js` in temp dirs with spaces + Unicode | `node:test`           |
+| Packaging             | exports, dependency sets, `node:`-free entry, bundle size of `defineConfig` import                                   | `check:pack`, test    |
+| Consumers             | Tailwind, plain, configured — from tarballs, TypeScript                                                              | `check:consumer`      |
+| Cascade / themes      | precedence matrix + cascade cases of [contracts/css.md](contracts/css.md), computed styles                           | `check:browser` (R17) |
+| Visual / a11y         | Storybook token pairs in light/dark + `@storybook/addon-a11y`                                                        | Storybook             |
 
-Browser verification stays a recorded milestone step, not a CI job, unless the owner wants a
-browser dependency in CI (not proposed).
+## R15 — Colour library evaluation (amendment B)
 
-## Conflicts with Phase 001 documents and ADRs
+Spike 2026-11-07 (`colorjs.io@0.7.1`, `culori@4.0.2`), same inputs:
 
-| Source                                                                              | Conflict                                                | Resolution                                                             |
-| ----------------------------------------------------------------------------------- | ------------------------------------------------------- | ---------------------------------------------------------------------- |
-| `docs/architecture.md` "exports … plus `./styles.css`"; ADR 0004                    | `config` gains `tokens.css`, `tailwind.css`, `./engine` | ADR 0006 amends; architecture updated in 002.1                         |
-| `docs/package-contracts.md` distribution table: `cli` runtime deps "none"           | `cli` → `@neshel-ui/config`, `jiti`                     | ADR 0007; table updated when implemented                               |
-| `docs/architecture.md` "no package has a runtime dependency on another" (R9 of 001) | first real inter-package dependency (`cli → config`)    | Expected by the diagram; `check:pack` must allow public workspace deps |
-| `docs/package-contracts.md` "defer extra modes until needed"                        | named themes (R11)                                      | ⚑ Q5                                                                   |
-| `docs/typography.md` step 1–2: metrics in config, Capsize in CLI                    | consistent; 002 reserves only                           | none                                                                   |
-| `docs/theming.md` illustrative config (flat `themes.light.primary`, violet)         | new shape nests roles under `colors`; navy/gold palette | Replace example in 002.5                                               |
-| `docs/architecture.md` theme model: generated file imported "after base CSS"        | order no longer matters (layers)                        | Update diagram text in 002.1                                           |
-| `pnpm check` order (test before build)                                              | package tests need `dist`                               | Reorder in plan (R8)                                                   |
-| ADR 0002, 0003, 0005                                                                | no conflict                                             | —                                                                      |
+| Criterion              | Color.js 0.7.1                                                                     | culori 4.0.2                      |
+| ---------------------- | ---------------------------------------------------------------------------------- | --------------------------------- |
+| Licence / deps         | MIT / none                                                                         | MIT / none                        |
+| Module format / types  | ESM, bundled `.d.ts`                                                               | ESM, types via `@types/culori`    |
+| Unpacked size          | 15.8 MB (15 MB prebuilt `dist/`; ESM `src/` ≈ 0.55 MB)                             | 1.1 MB                            |
+| Last publish           | 2026-07                                                                            | 2026-04                           |
+| Restrict spaces        | procedural `colorjs.io/fn` + `ColorSpace.register` (unregistered `lab()` rejected) | `culori/fn` + mode registration   |
+| Hex/rgb/hsl/oklch      | yes (incl. legacy comma syntax, alpha)                                             | yes                               |
+| Named colours          | accepted (`navy`) → needs our allowlist                                            | accepted → same                   |
+| `var()`, `color-mix()` | rejected                                                                           | rejected                          |
+| WCAG 2.1 contrast      | `contrastWCAG21`                                                                   | `wcagContrast`                    |
+| Gamut mapping          | CSS Color 4 algorithm (`toGamut`, method `css`)                                    | `toGamut` (approximation options) |
+| Results on palette     | identical ratios (e.g. 16.36, 3.57, 4.51, 6.75)                                    | identical                         |
 
-No conflict blocks the phase; none reopens Phase 001.
+- **Decision**: Color.js via `colorjs.io/fn`, registering sRGB, HSL and OKLCH only, in
+  `@neshel-ui/cli` `dependencies`. Our syntax allowlist runs first.
+- **Rationale**: the owner's suggestion; maintained by CSS Color specification editors, so parsing
+  and gamut mapping follow the spec; bundled types; no transitive dependencies.
+- **Tradeoffs**: 15.8 MB install weight for the Node-only CLI (never in browser bundles; not
+  installed by zero-config consumers). Pin `~0.7.x` (0.x semver); wrap behind one internal module
+  (`colour.ts`) so a swap to culori is local.
+- **Transparency behaviour**: both expose alpha; we reject alpha < 1 on paired roles instead of
+  compositing (background of a translucent colour is unknown at build time).
+
+## R16 — Cascade analysis (amendment A)
+
+Findings recorded in [contracts/css.md](contracts/css.md#cascade-layers):
+
+1. First appearance fixes layer order → identical statement in every file; sublayers under a
+   single `neshel` parent so consumers can position Neshel among their layers.
+2. Tailwind v4 layers declared first under the canonical order; only `color-scheme` can overlap
+   (with `scheme-*` utilities) — documented, tested (C9).
+3. Unlayered consumer CSS wins over all layers — documented pattern, tested (C5, C6).
+4. Import order: precedence between `neshel.defaults` and `neshel.config` does not depend on import
+   order **by the cascade rules**, but bundlers (Tailwind's import inlining, Lightning CSS
+   minification) could reorder or merge statements; independence is claimed only for orders
+   that pass the browser check (C1–C3).
+5. **Leakage hazard found**: layer precedence beats specificity, and `:root` matches a dark root;
+   a partial generated `:root` block would override dark values. Fix: complete blocks for every
+   theme in every file (FR-009), tested by C4 and matrix rows 7–12.
+6. Nested scopes rely on inheritance being replaced by the scoped block; complete blocks make
+   isolation total, including named themes (rows 11–12).
+
+## R17 — Browser verification approach (amendment F)
+
+- **Decision**: `pnpm check:browser`, a zero-dependency Node script driving an installed
+  Chrome/Chromium through the DevTools Protocol (`--headless=new`, `--remote-debugging-port=0`,
+  global `WebSocket`, available unflagged on Node 22). It loads static HTML fixtures composed from
+  shipped/generated CSS in each supported order, plus the built output of the three
+  `check:consumer` apps, emulates `prefers-color-scheme` (`Emulation.setEmulatedMedia`), and
+  asserts `getComputedStyle` values for every matrix row and cascade case.
+- Browser discovery: `NESHEL_CHROME` env, then standard install paths per OS. Locally, absence
+  prints `SKIPPED (no Chrome found)` and exits 0 **only** outside CI; with `CI=true` absence fails.
+- **Rationale**: real cascade evaluation; no Playwright download; works on GitHub-hosted images,
+  which ship Google Chrome on all three OSes (assumption verified in 002.2).
+- **Alternatives**: Playwright (large browser downloads, new dependency); jsdom (does not implement
+  cascade layers/`@media` emulation faithfully); manual CDP as in 001 (not regression-proof).
+
+## R18 — Output path and atomic writes (amendment D)
+
+- `--out` relative to cwd; config `output` relative to the config file; default next to the config.
+- Reject non-`.css`, `node_modules` segments, the config file itself, existing directories.
+- Temp sibling + `rename` (same directory ⇒ same volume ⇒ atomic replace on POSIX; on Windows
+  Node's `rename` replaces existing files; transient `EPERM`/`EBUSY` from scanners or editors are
+  retried, then exit 5 with the previous file intact).
+- Byte comparison before writing keeps runs idempotent and avoids dev-server reload loops.
+
+## Conflicts with Phase 001 documents and ADRs (resolved)
+
+| Source                                                           | Conflict                                       | Resolution (task)                                                    |
+| ---------------------------------------------------------------- | ---------------------------------------------- | -------------------------------------------------------------------- |
+| `docs/architecture.md` "exports … plus `./styles.css`"; ADR 0004 | `config` gains `tokens.css`, `tailwind.css`    | ADR 0006 amends; architecture updated now                            |
+| `docs/package-contracts.md` `cli` runtime deps "none"            | `jiti`, `colorjs.io`, peer `@neshel-ui/config` | ADR 0007; table marked planned now, updated on implementation (T066) |
+| `docs/architecture.md` "no runtime dependency between packages"  | first real one: `cli` → `config` (peer)        | Expected by the diagram; `check:pack` change (T012)                  |
+| `docs/package-contracts.md` "defer extra modes until needed"     | named themes (D5)                              | Updated now                                                          |
+| `docs/package-contracts.md` "token validation" in config         | validation lives in `cli`                      | Updated now                                                          |
+| `docs/theming.md` illustrative config, violet; "after base CSS"  | new shape, palette, canonical order            | Status note now; rewrite in T067                                     |
+| Architecture theme model diagram                                 | generated order/precedence wording             | Updated now                                                          |
+| `pnpm check` / CI run tests before build                         | package tests need `dist`                      | `test:packages` after build (T004, T005)                             |
+| ADR 0002, 0003, 0005                                             | none                                           | —                                                                    |
+
+## Dependencies introduced by feature 002 (planned)
+
+| Package                           | Kind       | Where | Reason                       |
+| --------------------------------- | ---------- | ----- | ---------------------------- |
+| `jiti` `^2.7.0`                   | runtime    | `cli` | TS config loading (D4)       |
+| `colorjs.io` `~0.7.1`             | runtime    | `cli` | parsing, gamut, contrast (B) |
+| `@neshel-ui/config` `workspace:^` | peer + dev | `cli` | token contract and defaults  |
+
+No new dependency in `config`, `layout`, `typography`, `components`, `core` or the root.
 
 ## Risks and compatibility implications
 
-| Risk                                                                                | Impact | Mitigation                                                                  |
-| ----------------------------------------------------------------------------------- | ------ | --------------------------------------------------------------------------- |
-| Tailwind/Lightning CSS reorders or drops repeated `@layer` statements when bundling | High   | Consumer tests assert layer statement and order in built CSS; browser check |
-| Unlayered consumer overrides unexpectedly beat dark theme                           | Medium | Documented pattern; example in README and Storybook                         |
-| `jiti` behaviour change or maintenance risk                                         | Medium | Exact range, loader isolated behind one module, CLI tests per OS/Node       |
-| Engine subpath becomes a de-facto stable API                                        | Medium | "experimental" label in 0.x docs and types                                  |
-| Palette disagreement after implementation                                           | Low    | Owner approval in 002.0; values are data, thresholds are tests              |
-| Visual change for Phase 001 users (violet → navy/gold, more tokens)                 | Low    | Nothing published; changeset documents the pre-1.0 change                   |
-| Colour parsing bugs (hsl/oklch → sRGB) produce wrong contrast numbers               | Medium | Reference vectors from the CSS Color 4 spec; cross-check with known ratios  |
-| Generated file stale in CI                                                          | Low    | `generate --check` exit 4                                                   |
-| Browser verification is manual                                                      | Medium | Scripted CDP steps and recorded values, as accepted in Phase 001            |
-| `check:consumer` needs the registry (Tailwind, Vite, jiti)                          | Low    | Already accepted in 001; tarballs remain the source of Neshel code          |
+| Risk                                                       | Impact | Mitigation                                                                          |
+| ---------------------------------------------------------- | ------ | ----------------------------------------------------------------------------------- |
+| Bundlers reorder/merge `@layer` statements                 | High   | Consumer CSS assertions + browser check per order; claims limited (FR-011)          |
+| Consumer unlayered overrides beat dark                     | Medium | Documented pattern; C5/C6 regression tests                                          |
+| Chrome unavailable or different on a CI image              | Medium | Explicit discovery, CI fails loudly; `NESHEL_CHROME` override                       |
+| Color.js 0.x API change / install weight                   | Medium | Exact-minor pin; single wrapper module; culori fallback documented                  |
+| `jiti` behaviour change                                    | Medium | Range pin; loader isolated; CLI tests on 5 jobs                                     |
+| Peer-dependency skew between `cli` and `config`            | Medium | Same-minor caret peer; release together; changeset `fixed` group decided before 007 |
+| Contract data in `.` grows the public surface              | Low    | Three frozen exports, documented versioning policy                                  |
+| Visual change from violet to navy/gold for Phase 001 users | Low    | Nothing published; changeset documents the pre-1.0 change                           |
+| Committed generated CSS edited by hand                     | Low    | "do not edit" header + drift test                                                   |
+| Network needed by `check:consumer`                         | Low    | Already accepted in 001; Neshel code only from tarballs                             |

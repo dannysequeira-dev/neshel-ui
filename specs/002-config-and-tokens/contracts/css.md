@@ -1,156 +1,212 @@
-# Contract — Stylesheets, cascade and theme selection (proposed)
+# Contract — Stylesheets, cascade and theme selection
 
-Status: **proposed**, not implemented. Recorded as ADR 0006 (Proposed).
+Status: **approved for implementation** (ADR 0006 Accepted, 2026-11-07); not implemented.
+Claims marked _verified by SC-005_ are design intent until the 002.2/002.5 browser checks pass.
 
 ## Package exports of `@neshel-ui/config`
 
 ```jsonc
 "exports": {
-  ".":            { "types": "./dist/index.d.ts",  "import": "./dist/index.js" },
-  "./engine":     { "types": "./dist/engine/index.d.ts", "import": "./dist/engine/index.js" },
+  ".":              { "types": "./dist/index.d.ts", "import": "./dist/index.js" },
   "./tokens.css":   "./dist/tokens.css",
   "./tailwind.css": "./dist/tailwind.css",
-  "./styles.css":   "./dist/styles.css"   // ⚑ Q2: deprecated alias of tailwind.css, or removed
+  "./styles.css":   "./dist/styles.css"   // 0.x compatibility alias of tailwind.css (D2)
 },
 "sideEffects": ["**/*.css"]
 ```
 
-| Import                              | Contains                                     | Requires Tailwind |
-| ----------------------------------- | -------------------------------------------- | ----------------- |
-| `@neshel-ui/config/tokens.css`      | layer order + default tokens                 | no                |
-| `@neshel-ui/config/tailwind.css`    | everything in `tokens.css` + `@theme inline` | yes (v4.1+)       |
-| `@neshel-ui/config/styles.css`      | identical to `tailwind.css` (deprecated)     | yes               |
-| `./neshel.generated.css` (consumer) | layer order + complete resolved tokens       | no                |
+No other subpath is exported (amendment C).
 
-Files are self-contained (no nested `@import`), so they work with any bundler and with a
-plain `<link>`.
+| Import                            | Contains                                     | Requires Tailwind |
+| --------------------------------- | -------------------------------------------- | ----------------- |
+| `@neshel-ui/config/tokens.css`    | layer statement + default tokens             | no                |
+| `@neshel-ui/config/tailwind.css`  | everything in `tokens.css` + `@theme inline` | yes (v4.1+)       |
+| `@neshel-ui/config/styles.css`    | byte-identical to `tailwind.css` (0.x alias) | yes               |
+| `neshel.generated.css` (consumer) | layer statement + complete resolved tokens   | no                |
 
-## Import recipes
+Consumers import **either** `tokens.css` **or** `tailwind.css` (or the alias), not both; doing
+both only duplicates identical declarations. Files are self-contained (no nested `@import`).
+
+## Canonical import order
 
 ```css
-/* Zero-config, Tailwind */
-@import "tailwindcss";
-@import "@neshel-ui/config/tailwind.css";
+/* Tailwind consumers */
+@import "tailwindcss"; /* 1. Tailwind (declares its layers first) */
+@import "@neshel-ui/config/tailwind.css"; /* 2. Neshel defaults + utilities mapping   */
+@import "./neshel.generated.css"; /* 3. optional: configured tokens           */
+/* 4. application CSS */
 
-/* Zero-config, no Tailwind */
+/* Plain CSS consumers */
 @import "@neshel-ui/config/tokens.css";
-
-/* Configured, Tailwind: generated file may come before or after; it wins either way */
-@import "tailwindcss";
-@import "@neshel-ui/config/tailwind.css";
-@import "./neshel.generated.css";
-
-/* Configured, no Tailwind: the generated file is complete on its own */
-@import "./neshel.generated.css";
+@import "./neshel.generated.css"; /* optional */
 ```
+
+Supported alternative orders, **claimed only once verified by SC-005**:
+
+- generated file imported before the Neshel stylesheet;
+- generated file alone (plain CSS) — it is complete;
+- generated file + `tailwind.css` without `tokens.css`.
 
 ## Cascade layers
 
-Every Neshel stylesheet starts with the same statement:
+Every Neshel stylesheet starts with:
 
 ```css
 @layer neshel.defaults, neshel.config;
 ```
 
-The first statement that names these layers fixes their order, so `neshel.config`
-(generated) always beats `neshel.defaults` (shipped) regardless of import order.
-Consequences, documented for consumers:
+This creates a parent layer `neshel` with two sublayers. Facts the design relies on (CSS
+Cascade 5) and their consequences:
 
-- Unlayered consumer CSS beats both layers. A manual override written as
-  `:root { --neshel-primary: … }` therefore also overrides the **dark** theme. The
-  documented pattern for manual overrides is to write them inside `@layer neshel.config`
-  and per theme selector, or to use the CLI.
-- Neshel layers contain only custom properties and `color-scheme`, so their position relative
-  to Tailwind's `theme/base/components/utilities` layers never decides a utility conflict.
+1. **Layer order is fixed by first appearance.** The statement is identical in every Neshel file,
+   so whichever is parsed first yields `defaults < config` inside `neshel`. A consumer may place
+   the whole `neshel` layer relative to their own layers with an earlier statement such as
+   `@layer reset, neshel, app;` without changing the sublayer order.
+2. **Tailwind v4's layers** (`theme, base, components, utilities`) are declared by
+   `@import "tailwindcss"`. Under the canonical order `neshel` comes after them. Neshel declares
+   only `--neshel-*` custom properties and `color-scheme`; Tailwind's `theme` layer declares
+   `--color-*`, `--font-*`, … — no overlap. The single shared property is `color-scheme`: an
+   element carrying both `data-neshel-theme` and a Tailwind `scheme-*` utility gets the Neshel
+   value under the canonical order (documented; regression-tested).
+3. **Unlayered CSS beats all layers.** A consumer's unlayered `:root { --neshel-primary: … }`
+   wins over every Neshel theme, including dark. Documented override pattern:
 
-## Theme blocks (shape of the generated CSS)
+   ```css
+   @layer neshel.config {
+     :root, [data-neshel-theme="light"], [data-neshel-theme="system"] { --neshel-primary: #1d3f73; }
+     @media (prefers-color-scheme: dark) { [data-neshel-theme="system"] { --neshel-primary: #a9c2ee; } }
+     [data-neshel-theme="dark"] { --neshel-primary: #a9c2ee; }
+   }
+   ```
 
-Shown with the recommended answer to ⚑ Q1 (no attribute ⇒ light; `system` is opt-in).
+   (or use the CLI, which emits exactly this structure, complete).
+4. **Layer precedence beats specificity.** Because `:root` also matches a root carrying
+   `data-neshel-theme="dark"`, a partial `neshel.config` block on `:root` would leak into dark.
+   Therefore every theme block in every Neshel file declares **all 21 colour roles** and
+   `color-scheme` (FR-009). Within one layer, later blocks of equal specificity win.
+5. **Custom properties inherit.** A scoped block on an element replaces inherited values for that
+   subtree. Complete blocks guarantee a nested scope never inherits a role from its parent theme
+   (no light/dark leakage, also for named themes).
+
+## Theme block structure (shipped and generated)
 
 ```css
-/* @neshel-ui/config 0.x — generated by the Neshel engine; do not edit. */
+/* <header: see below> */
 @layer neshel.defaults, neshel.config;
 
 @layer neshel.defaults {
+  /* generated files use neshel.config */
   :root {
     --neshel-radius-base: 0.75rem;
-    /* … radius scale, spacing, fonts, focus geometry … */
+    /* radius scale, spacing, fonts, focus geometry */
   }
 
   :root,
   [data-neshel-theme="light"],
   [data-neshel-theme="system"] {
     color-scheme: light;
-    --neshel-background: #fbf9f6;
-    /* … 21 colour roles in contract order … */
+    /* all 21 roles, light values, canonical order */
   }
 
   @media (prefers-color-scheme: dark) {
     [data-neshel-theme="system"] {
       color-scheme: dark;
-      /* … dark roles … */
+      /* all 21 roles, dark values */
     }
   }
 
   [data-neshel-theme="dark"] {
     color-scheme: dark;
-    /* … dark roles … */
+    /* all 21 roles, dark values */
   }
 
-  /* configured named themes, alphabetical: [data-neshel-theme="<name>"] { … } */
+  [data-neshel-theme="sepia"] {
+    /* named themes, alphabetical, generated files only */
+    color-scheme: light; /* from extends */
+    /* all 21 roles, resolved */
+  }
 }
 ```
 
-If the owner chooses "follow the OS when no attribute is set" (⚑ Q1 alternative), the media
-block selector becomes `:root:not([data-neshel-theme]), [data-neshel-theme="system"]`.
+Every selector has specificity (0,1,0). Order inside the layer: theme-independent `:root`, light,
+system-dark media block, dark, named themes.
 
-Generated consumer CSS uses the identical structure inside `@layer neshel.config`.
+Headers: shipped — `/* @neshel-ui/config default tokens. Generated from defaults; do not edit. */`;
+generated — `/* Generated by "neshel generate" from <config file name> (config schema 1); do not edit. */`.
+No package versions, timestamps or absolute paths (FR-024).
 
-### Precedence rules
+## Theme selection (D1, D5)
 
-1. Higher layer wins: consumer unlayered > `neshel.config` > `neshel.defaults`.
-2. Within a layer, an element's **own** `data-neshel-theme` wins over inherited values
-   (custom properties inherit; a scoped declaration on the element replaces them).
-3. Explicit `light`/`dark`/named values ignore the OS preference.
-4. `system` resolves through `prefers-color-scheme`.
-5. Theme-independent tokens are declared on `:root` only and inherited by all scopes.
+| `data-neshel-theme` | Result                                                                                |
+| ------------------- | ------------------------------------------------------------------------------------- |
+| absent              | light                                                                                 |
+| `light`             | light, regardless of OS preference                                                    |
+| `dark`              | dark, regardless of OS preference                                                     |
+| `system`            | follows `prefers-color-scheme`                                                        |
+| `<named>`           | that configured theme (generated CSS only)                                            |
+| unknown value       | on the root: light (`:root` still matches); elsewhere: inherits from the parent scope |
 
-### Precedence matrix (to verify in a browser, SC-005)
+Works on the root or any element; no provider or script is required.
 
-| Root attribute                                      | OS pref | Nested `light` scope | Expected root   | Expected nested |
-| --------------------------------------------------- | ------- | -------------------- | --------------- | --------------- |
-| none                                                | light   | —                    | light           | —               |
-| none                                                | dark    | —                    | light (⚑ Q1)    | —               |
-| `light`                                             | dark    | —                    | light           | —               |
-| `dark`                                              | light   | yes                  | dark            | light           |
-| `system`                                            | dark    | yes                  | dark            | light           |
-| `system`                                            | light   | —                    | light           | —               |
-| `dark` + generated imported **before** tailwind.css | any     | —                    | configured dark | —               |
+## Precedence matrix (SC-005, automated browser test)
+
+Each row is checked for all 21 roles plus `color-scheme`, on an element with the attribute and on
+a descendant, with OS preference emulated, for the plain-CSS and Tailwind fixtures.
+
+| #   | Root attr | OS    | Nested attr | Expected root | Expected nested   |
+| --- | --------- | ----- | ----------- | ------------- | ----------------- |
+| 1   | —         | light | —           | light         | light             |
+| 2   | —         | dark  | —           | light         | light             |
+| 3   | `light`   | dark  | —           | light         | light             |
+| 4   | `dark`    | light | —           | dark          | dark              |
+| 5   | `system`  | light | —           | light         | light             |
+| 6   | `system`  | dark  | —           | dark          | dark              |
+| 7   | `dark`    | light | `light`     | dark          | light             |
+| 8   | `light`   | dark  | `dark`      | light         | dark              |
+| 9   | `dark`    | dark  | `system`    | dark          | dark              |
+| 10  | `dark`    | light | `system`    | dark          | light             |
+| 11  | `dark`    | any   | `sepia`     | dark          | sepia (generated) |
+| 12  | `sepia`   | dark  | `light`     | sepia         | light (generated) |
+
+Additional cascade cases:
+
+| #   | Case                                                               | Expected                                  |
+| --- | ------------------------------------------------------------------ | ----------------------------------------- |
+| C1  | Generated after `tailwind.css` (canonical)                         | configured values in every theme          |
+| C2  | Generated before `tailwind.css`                                    | configured values (claim depends on test) |
+| C3  | Generated only (plain CSS)                                         | configured values                         |
+| C4  | Config overrides only `light.primary`; root `dark`                 | dark `primary` = default dark (no leak)   |
+| C5  | Consumer unlayered `:root{--neshel-primary}`; root `dark`          | consumer value (documented hazard)        |
+| C6  | Documented `@layer neshel.config` override pattern; root `dark`    | dark override applies                     |
+| C7  | Consumer statement `@layer neshel, app;` first; app-layer override | app value wins over all Neshel themes     |
+| C8  | Utility `bg-neshel-primary` under each theme                       | computed background equals role value     |
+| C9  | `data-neshel-theme="dark"` + `scheme-light` on the same element    | `color-scheme: dark` (documented)         |
 
 ## Tailwind integration (`tailwind.css` only)
 
 ```css
 @theme inline {
   --color-neshel-background: var(--neshel-background);
-  /* … one entry per colour role … */
+  /* … one entry per colour role, canonical order … */
   --radius-neshel-base: var(--neshel-radius-base);
   --radius-neshel-sm: var(--neshel-radius-sm);
-  /* md, lg, xl, full */
+  --radius-neshel-md: var(--neshel-radius-md);
+  --radius-neshel-lg: var(--neshel-radius-lg);
+  --radius-neshel-xl: var(--neshel-radius-xl);
+  --radius-neshel-full: var(--neshel-radius-full);
   --font-neshel-body: var(--neshel-font-body);
   --font-neshel-display: var(--neshel-font-display);
   --font-neshel-mono: var(--neshel-font-mono);
 }
 ```
 
-- `inline` makes utilities reference `var(--neshel-*)` directly, so generated overrides and
-  theme scopes flow through without regenerating Tailwind theme variables.
-- Namespaces `--color-neshel-*`, `--radius-neshel-*`, `--font-neshel-*` and the `--neshel-*`
-  variables are reserved. Consumer theme variables (`--color-primary`, etc.) are untouched.
-- No `@source` is needed: the file defines theme variables only, no utilities in markup.
-- No custom variant (e.g. `neshel-dark:`) in 0.x; consumers style per theme through tokens.
+- `inline` makes utilities reference `var(--neshel-*)`, so scopes and generated values flow
+  through without regenerating Tailwind variables.
+- Reserved namespaces: `--neshel-*`, `--color-neshel-*`, `--radius-neshel-*`, `--font-neshel-*`.
+  Consumer theme variables are untouched; no Tailwind defaults are overridden.
+- No `@source` is needed. No custom variant in 0.x.
 
 ## Rules for every Neshel stylesheet
 
-- No element, universal or `html/body` selectors; no resets; no `@font-face`; no `url()`.
-- Only `:root` and `[data-neshel-theme=…]` selectors.
-- LF line endings, trailing newline, deterministic ordering.
+- Only `:root` and `[data-neshel-theme=…]` selectors; no resets, `@font-face` or `url()`.
+- LF line endings, two-space indentation, trailing newline, canonical ordering.
