@@ -26,6 +26,9 @@ import any React component package. React packages declare React 19 as a peer.
 Since milestone 001.2, workspace dependencies are declared only when a source file
 imports them (research R9). The only inter-package dependency today is `cli` → `config`
 (peer, feature 002); the other arrows become real in the slices that introduce those imports.
+`layout` (feature 003) imports no workspace package: it consumes the `config` tokens only through
+CSS custom properties (`--neshel-spacing`, `--neshel-border`) and depends at runtime on
+`@radix-ui/react-slot` and `tailwind-variants` (ADR 0008/0009).
 The workspace apps use Vite 8 with `@vitejs/plugin-react` 5 since milestone 001.4
 ([ADR 0005](decisions/0005-vite-8.md)); published packages do not depend on Vite.
 
@@ -117,9 +120,19 @@ Applications load their fonts; no remote fetch required by the library.
 Status of each decision (implemented / locally verified / CI-verified) is tracked in
 `specs/001-foundation/evidence.md`.
 
+## Feature 003 decisions (2026-11-08)
+
+- Component-level CSS distribution: Neshel-namespaced classes generated from TypeScript tables
+  into a precompiled stylesheet in `@layer components.neshel`; `tailwind-variants/lite` composes
+  them ([ADR 0008](decisions/0008-layout-styling-and-css-distribution.md)). Canonical import
+  order: Tailwind → config stylesheet → generated config CSS → package stylesheets → app CSS.
+- Polymorphism: closed `as` list, `asChild` via Radix Slot, React 19 ref-as-prop, runtime prop
+  validation ([ADR 0009](decisions/0009-layout-composition-aschild-separators.md)); typography
+  may adopt it in feature 004.
+
 ## Open decisions
 
-- Component-level CSS distribution strategy and choice of class variance tooling.
-- Stable polymorphism / `asChild` / refs contract for layouts and typography.
+- Whether typography and components reuse the layout styling pipeline (feature 004/005).
+- Configurable breakpoints (would need a generated layout stylesheet).
 
 See [`docs/decisions/`](decisions/0001-architecture.md).

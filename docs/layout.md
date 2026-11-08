@@ -1,0 +1,175 @@
+# Layout guide (`@neshel-ui/layout`)
+
+Status: **implemented in feature 003**, verified from packed tarballs; **not published**. The
+normative contracts are [layout-api.md](../specs/003-layout-system/contracts/layout-api.md) and
+[layout-css.md](../specs/003-layout-system/contracts/layout-css.md); decisions in
+[ADR 0008](decisions/0008-layout-styling-and-css-distribution.md) and
+[ADR 0009](decisions/0009-layout-composition-aschild-separators.md).
+
+## Setup
+
+Install `@neshel-ui/config` and `@neshel-ui/layout` (React 19 is a peer dependency) and import
+the stylesheets once, in this order:
+
+```css
+@import "tailwindcss"; /* optional */
+@import "@neshel-ui/config/tailwind.css"; /* without Tailwind: @neshel-ui/config/tokens.css */
+@import "./neshel.generated.css"; /* optional: neshel generate output */
+@import "@neshel-ui/layout/styles.css";
+/* your application CSS */
+```
+
+No Tailwind build, `@source` entry or PostCSS plugin is needed for the layout styles: the
+package ships precompiled CSS. Import the layout stylesheet **after** Tailwind; imported before
+it, Tailwind's preflight (`base` layer) is ordered after the layout layer and removes
+Container's automatic margins.
+
+## Primitives
+
+| Primitive   | CSS                                                    | Use it for                                  |
+| ----------- | ------------------------------------------------------ | ------------------------------------------- |
+| `Box`       | none (element default), optional responsive `display`  | Semantic wrappers, responsive show/hide     |
+| `Stack`     | `display: flex; flex-direction: column`                | Vertical groups                             |
+| `Inline`    | `display: flex; flex-direction: row`                   | Horizontal groups, toolbars, tags           |
+| `Flex`      | `display: flex`, responsive `direction` and `wrap`     | Layouts that change direction               |
+| `Grid`      | `display: grid`, 1–12 equal `columns`                  | Two-dimensional layouts                     |
+| `Center`    | flex, centred on both axes                             | Centring content                            |
+| `Container` | `width: 100%; margin-inline: auto; max-width` (`size`) | Page-width constraints with inline `gutter` |
+
+```tsx
+import { Container, Grid, Inline, Stack } from "@neshel-ui/layout";
+
+<Container size="lg" gutter={{ base: "4", md: "8" }}>
+  <Stack space="6">
+    <Inline as="nav" aria-label="Main" justify="between" align="center" separator>
+      <a href="/">Home</a>
+      <a href="/docs">Docs</a>
+    </Inline>
+    <Grid columns={{ base: 1, md: 2, lg: 4 }} space={{ base: "2", md: "4" }}>
+      {cards}
+    </Grid>
+  </Stack>
+</Container>;
+```
+
+## Spacing
+
+| Prop     | CSS          | Notes                                       |
+| -------- | ------------ | ------------------------------------------- |
+| `space`  | `gap`        | Cannot be combined with `spaceX` / `spaceY` |
+| `spaceX` | `column-gap` | May be combined with `spaceY`               |
+| `spaceY` | `row-gap`    | May be combined with `spaceX`               |
+
+Tokens: `"0" "0.5" "1" "1.5" "2" "2.5" "3" "4" "5" "6" "8" "10" "12" "16" "20" "24"`, each
+`calc(var(--neshel-spacing) * n)` — `"4"` is 1rem with the default 0.25rem unit. Changing
+`--neshel-spacing` (in `neshel.config.ts` or a theme scope) rescales every layout gap.
+
+`<Stack space="4" spaceX="2">` is a TypeScript error and, from JavaScript, throws
+`NeshelLayoutError`. These are Neshel props, not Tailwind's margin-based `space-x-*` utilities.
+
+## Alignment
+
+X is the inline axis (horizontal in horizontal writing modes), Y the block axis.
+
+| Primitive | X                                             | Y                                             |
+| --------- | --------------------------------------------- | --------------------------------------------- |
+| Stack     | `align-items`                                 | `justify-content`                             |
+| Inline    | `justify-content`                             | `align-items`                                 |
+| Center    | `justify-content` (default `center`)          | `align-items` (default `center`)              |
+| Grid      | `justify-items`                               | `align-items`                                 |
+| Flex      | row: `justify-content`, column: `align-items` | row: `align-items`, column: `justify-content` |
+
+- `align` sets both axes; `alignX` / `alignY` override one axis.
+- `justify` (`start`, `center`, `end`, `between`, `around`, `evenly`) distributes the main axis on
+  Flex, Stack and Inline. `alignX="between"` is not valid.
+- **Precedence** per breakpoint, after responsive cascading: `justify` > `alignX`/`alignY` >
+  `align`. `<Inline align="center" justify="between">` centres vertically and spreads
+  horizontally.
+- Value sets: an axis that maps to `justify-content` accepts `start | center | end`; axes that
+  map to `align-items` add `stretch` (and `baseline` on row layouts); Grid accepts
+  `start | center | end | stretch`. Flex validates at runtime because its axes move with
+  `direction`; when a direction change vacates a property it resets to `normal`.
+- Without alignment props nothing is emitted, so native `stretch`/`normal` behaviour stays.
+- **RTL and writing modes**: keywords are logical (`start`/`end`). In RTL, `alignX="start"` is the
+  right edge; `row-reverse` does not flip X. Vertical writing modes are not supported.
+
+## Responsive values
+
+Any responsive prop accepts a value or an object keyed by breakpoint; values cascade upwards
+(mobile first):
+
+| Key    | `min-width` |
+| ------ | ----------- |
+| `base` | 0           |
+| `sm`   | 40rem       |
+| `md`   | 48rem       |
+| `lg`   | 64rem       |
+| `xl`   | 80rem       |
+| `2xl`  | 96rem       |
+
+Breakpoints equal Tailwind v4's defaults and are fixed in this version. Responsive props compile
+to static, precompiled classes (`neshel-md-gap-4`); nothing is interpolated at runtime and no
+inline styles are written.
+
+## Composition: `as` and `asChild`
+
+- `as` picks the element from a fixed list (`div`, `span`, `section`, `article`, `aside`,
+  `header`, `footer`, `main`, `nav`, `ul`, `ol`, `li`, `form`, `fieldset`, `figure`, `address`).
+- `asChild` applies the layout to its single child element instead of rendering a wrapper
+  (Radix Slot): `className` is joined, `style` merged (child wins), event handlers and refs
+  composed.
+
+```tsx
+<Stack asChild space="4">
+  <section aria-label="Settings">
+    <Profile />
+    <Preferences />
+  </section>
+</Stack>;
+```
+
+Rules and limitations:
+
+- `as` together with `asChild` throws.
+- `asChild` needs exactly one React element child; text, several children or a Fragment throw.
+- The child must forward `className` and `ref` to a DOM element (React 19 components receive
+  `ref` as a prop). A component that drops them silently loses the layout styles — this cannot be
+  detected.
+- Refs on every primitive resolve to the rendered DOM element.
+
+## Separators (Stack, Inline)
+
+```tsx
+<Stack separator space="4">{items}</Stack>
+<Inline separator={<span aria-hidden="true">|</span>} space="3">{links}</Inline>
+```
+
+- `true` renders a decorative rule (`aria-hidden`, colour `--neshel-border`): horizontal in Stack,
+  vertical in Inline; it is an `li` inside `ul`/`ol`, a `span` inside `span`, otherwise a `div`.
+- A custom element is inserted unchanged (only a `key` is added) and keeps its own semantics.
+- Separators appear only between rendered items; `null`, `undefined`, booleans and `""` are
+  skipped; item keys are preserved; items are never wrapped.
+- Spacing applies on both sides of each separator (separators are flex items).
+- A Fragment counts as one item.
+- `separator` with `wrap` throws (a wrapped line could start with a separator).
+- `separator` with `asChild` works for a DOM element child (separators go inside it) and throws
+  for a component child.
+
+## Overriding styles
+
+Layout rules live in the cascade layer `components.neshel`. Tailwind utilities (layer
+`utilities`) and any unlayered application CSS override them:
+`<Stack className="md:flex-row">` works. Prefer the primitives' props for responsive changes.
+
+## Errors
+
+Invalid usage throws an `Error` named `NeshelLayoutError`, with messages starting
+`[@neshel-ui/layout] <Component>:`, on the server and the client alike: conflicting spacing,
+`as` + `asChild`, invalid `asChild` children, unknown breakpoints or values, a Flex main-axis
+`stretch`/`baseline`, `separator` + `wrap`, `separator` + `asChild` with a component child, and
+invalid `separator` values. `null` is treated as an absent prop.
+
+## Not included
+
+Spacer (deferred: use `justify` or nested Inline), item-level props (`grow`, `span`), grid rows
+or areas, container queries and configurable breakpoints.

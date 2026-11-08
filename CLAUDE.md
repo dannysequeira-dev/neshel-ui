@@ -1,7 +1,7 @@
 # Claude Code — Neshel-UI Project Contract
 
-**Current phase:** feature 002 (config & tokens) implemented and closed pending owner review;
-see `specs/002-config-and-tokens/`. Feature 001 is closed (PASS). Do not start feature 003 without approval.
+**Current phase:** feature 003 (layout system) implemented and closed pending owner review;
+see `specs/003-layout-system/`. Features 001 and 002 are closed (PASS). Do not start feature 004 without approval.
 All npm packages are private placeholders with validated distribution tooling.
 **Mission:** build a small, modular, accessible React design system that consumers can
 install without monorepo internals. **Do not implement the entire library in one pass.**

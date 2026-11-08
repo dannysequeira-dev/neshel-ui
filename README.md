@@ -19,8 +19,8 @@
 
 > [!IMPORTANT]
 > **Pre-release.** Neshel-UI is not published to npm yet. The design tokens, themes and
-> configuration CLI (phase 002) are implemented and verified from packed tarballs; layout,
-> typography and components are still planned.
+> configuration CLI (phase 002) and the layout primitives (phase 003) are implemented and
+> verified from packed tarballs; typography and components are still planned.
 
 ## Vision
 
@@ -49,7 +49,7 @@ Neshel-UI is organized as independent packages with one shared design vocabulary
 | Package                 | Planned responsibility                                          | Status                    |
 | ----------------------- | --------------------------------------------------------------- | ------------------------- |
 | `@neshel-ui/config`     | Semantic tokens, themes, CSS exports, typed configuration       | Implemented (unpublished) |
-| `@neshel-ui/layout`     | Box, Stack, Inline, Grid, Center, Container                     | Planned                   |
+| `@neshel-ui/layout`     | Box, Flex, Stack, Inline, Grid, Center, Container               | Implemented (unpublished) |
 | `@neshel-ui/typography` | Heading, Text, Paragraph, Caption, Capsize integration          | Planned                   |
 | `@neshel-ui/components` | Accessible Button, Card, Badge, Input, Separator, Skeleton      | Planned                   |
 | `@neshel-ui/cli`        | Read/validate user configuration and generate deterministic CSS | Implemented (unpublished) |
@@ -127,7 +127,8 @@ pnpm dev:storybook    # Storybook on port 6006
 Platform guides (Spanish): [Windows setup](docs/SETUP-WINDOWS.es.md) and
 [cross-platform policy](docs/CROSS-PLATFORM.es.md). Current verification status, separated
 into implemented, locally verified and CI-verified: [Phase 001 evidence](specs/001-foundation/evidence.md),
-[Phase 002 evidence](specs/002-config-and-tokens/evidence.md).
+[Phase 002 evidence](specs/002-config-and-tokens/evidence.md),
+[Phase 003 evidence](specs/003-layout-system/evidence.md). Layout usage: [docs/layout.md](docs/layout.md).
 
 ### Architecture and working agreements
 
