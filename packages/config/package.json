@@ -23,13 +23,15 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
+    "./tokens.css": "./dist/tokens.css",
+    "./tailwind.css": "./dist/tailwind.css",
     "./styles.css": "./dist/styles.css"
   },
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.build.json && node ../../scripts/copy-css.mjs src/styles.css dist/styles.css",
+    "build": "tsc -p tsconfig.build.json && node ../../scripts/copy-css.mjs src/tokens.css dist/tokens.css src/tailwind.css dist/tailwind.css src/tailwind.css dist/styles.css",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "devDependencies": {

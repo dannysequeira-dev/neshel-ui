@@ -1,7 +1,10 @@
 {
   "extends": "../../tsconfig.library.json",
   "compilerOptions": {
-    "rootDir": "src"
+    "types": ["node"],
+    "paths": {
+      "@neshel-ui/config": ["../config/src/index.ts"]
+    }
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx"]
+  "include": ["src/**/*.ts"]
 }

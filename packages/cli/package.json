@@ -35,7 +35,15 @@
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
+  "dependencies": {
+    "colorjs.io": "~0.7.1",
+    "jiti": "^2.7.0"
+  },
+  "peerDependencies": {
+    "@neshel-ui/config": "workspace:^"
+  },
   "devDependencies": {
+    "@neshel-ui/config": "workspace:^",
     "typescript": "catalog:",
     "@types/node": "catalog:"
   }
