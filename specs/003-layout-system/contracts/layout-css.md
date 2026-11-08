@@ -31,17 +31,17 @@ Status: **planned** (003.0). Normative for 003.1–003.4.
 
 ## Base classes
 
-| Class                         | Declarations                                                                                                     |
-| ----------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| `neshel-flex`                 | `display: flex`                                                                                                  |
-| `neshel-stack`                | `display: flex; flex-direction: column`                                                                          |
-| `neshel-inline`               | `display: flex; flex-direction: row`                                                                             |
-| `neshel-center`               | `display: flex; align-items: center; justify-content: center`                                                    |
-| `neshel-grid`                 | `display: grid`                                                                                                  |
-| `neshel-container`            | `box-sizing: border-box; width: 100%; margin-inline: auto`                                                       |
-| `neshel-separator`            | `flex: none; align-self: stretch; margin: 0; padding: 0; list-style: none; border: 0 solid var(--neshel-border)` |
-| `neshel-separator-horizontal` | `border-block-start-width: 1px`                                                                                  |
-| `neshel-separator-vertical`   | `border-inline-start-width: 1px`                                                                                 |
+| Class                         | Declarations                                                                                                         |
+| ----------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `neshel-flex`                 | `display: flex`                                                                                                      |
+| `neshel-stack`                | `display: flex; flex-direction: column`                                                                              |
+| `neshel-inline`               | `display: flex; flex-direction: row`                                                                                 |
+| `neshel-center`               | `display: flex` (centring comes from default variants `neshel-ai-center neshel-jc-center`, so axis props replace it) |
+| `neshel-grid`                 | `display: grid`                                                                                                      |
+| `neshel-container`            | `box-sizing: border-box; width: 100%; margin-inline: auto`                                                           |
+| `neshel-separator`            | `flex: none; align-self: stretch; margin: 0; padding: 0; list-style: none; border: 0 solid var(--neshel-border)`     |
+| `neshel-separator-horizontal` | `border-block-start-width: 1px`                                                                                      |
+| `neshel-separator-vertical`   | `border-inline-start-width: 1px`                                                                                     |
 
 ## Property classes
 
@@ -64,6 +64,10 @@ block. Dots in values are escaped in selectors (`.neshel-gap-0\.5`).
 | `mw`    | `max-width`             | `sm` 40rem, `md` 48rem, `lg` 64rem, `xl` 80rem, `2xl` 96rem, `full` → `none`                                                                    |
 
 Breakpoints: `sm` 40rem, `md` 48rem, `lg` 64rem, `xl` 80rem, `2xl` 96rem (`min-width`).
+
+Default variants (tailwind-variants `defaultVariants`): Center → `neshel-ai-center`,
+`neshel-jc-center`; Container → `neshel-mw-xl`. They are replaced, not overridden, when the
+matching base-breakpoint prop is set.
 
 ## Consistency rules (tested)
 
