@@ -75,6 +75,11 @@ jobs:
       - name: Verify packed artifacts
         run: pnpm check:pack --no-build
 
+      # Installs the packed @neshel-ui/config tarball into a generated React 19 +
+      # Vite + Tailwind v4 app outside the workspace (tools come from the registry).
+      - name: Verify external consumer
+        run: pnpm check:consumer --no-build
+
       - name: Build Vite consumer
         run: pnpm --filter @neshel-ui/playground-vite build
 

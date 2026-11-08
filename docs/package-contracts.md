@@ -65,9 +65,9 @@ commands available. Requires Node `>=22.13` (`engines`).
 
 ## Distribution contract (implemented in milestone 001.2)
 
-Status: **implemented and locally verified** with `pnpm check:pack` (Windows, Node 26).
-Native CI verification is pending. **No package is published**; all six keep
-`private: true`, and the `@neshel-ui` scope remains unverified on npm.
+Status: **implemented and CI-verified** with `pnpm check:pack` (run 42434061443: Node 22 on
+Linux, Windows and macOS; Node 24 on Linux; locally on Windows with Node 26). **No package is
+published**; all six keep `private: true`, and the `@neshel-ui` scope remains unverified on npm.
 
 | Package                 | Intended public | Runtime deps | Peer deps       | Exports                              |
 | ----------------------- | --------------- | ------------ | --------------- | ------------------------------------ |
@@ -95,14 +95,52 @@ Native CI verification is pending. **No package is published**; all six keep
 How pnpm rewrites manifests when packing (observed, research R7): `workspace:*` becomes the
 exact version, `catalog:` becomes the catalog range, `private` is preserved.
 
+## Consuming the packages (milestone 001.3)
+
+Nothing is published yet. Consumers are verified with the packed tarball, exactly as the
+external smoke test (`pnpm check:consumer`) does:
+
+```text
+pnpm build:packages
+cd packages/config && pnpm pack --pack-destination <dir>
+# in the consumer app:
+pnpm add file:./vendor/neshel-ui-config-0.0.0.tgz
+```
+
+Import the stylesheet after Tailwind in the app's global CSS. No `@source` entry and no
+PostCSS configuration are required for `@neshel-ui/config`:
+
+```css
+@import "tailwindcss";
+@import "@neshel-ui/config/styles.css";
+```
+
+This yields the `--neshel-*` custom properties (light on `:root`, overrides on
+`[data-neshel-theme="light|dark"]`) and Tailwind utilities such as `bg-neshel-primary`.
+The token names are the Phase 001 baseline; feature 002 defines the final contract and
+separates the plain CSS tokens from the Tailwind integration.
+
+### Tested versus intended compatibility
+
+| Aspect                      | Tested (automated)                                                               | Intended, not yet tested                         |
+| --------------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------ |
+| Package under consumer test | `@neshel-ui/config` (CSS + empty JS entry)                                       | layout, typography, components, cli in real apps |
+| Bundler / framework         | Vite 7.3.7 + `@vitejs/plugin-react` 5.2.0                                        | Vite 8 (001.4 spike), Next.js (feature 006)      |
+| Tailwind CSS                | 4.3.5 via `@tailwindcss/vite`                                                    | other Tailwind 4.x minors; PostCSS plugin setup  |
+| React                       | 19.3.1                                                                           | other React 19.x; React 18 is not supported      |
+| TypeScript                  | 5.9.3, `moduleResolution` Bundler (consumer) and NodeNext/Bundler (`check:pack`) | other 5.x versions                               |
+| Package manager             | pnpm 12.16.1                                                                     | npm, Yarn, Bun                                   |
+| Node.js (build tooling)     | 26 locally; 22 and 24 in CI (consumer CI step added in 001.3, pending push)      | Node 26 in CI (001.4)                            |
+| OS                          | Windows locally; CI on Windows, Linux and macOS for `check:pack`                 | —                                                |
+
 ## Build conventions
 
 - React `peerDependencies` and ESM declarations.
 - Browser-safe code in visual packages; Node-specific code only in CLI.
 - `./styles.css` export published per visual package.
 - Tree-shakeable, no hidden global resets or network fonts.
-- `pnpm check:pack` validates real tarballs (milestone 001.2); independent Vite/Next
-  consumer builds follow in 001.3 and feature 006.
+- `pnpm check:pack` validates real tarballs (001.2); `pnpm check:consumer` builds an external
+  Vite + Tailwind app from the `config` tarball (001.3); Next.js consumers follow in feature 006.
 
 **All component, layout, typography and configuration APIs above are proposed, not
 implemented.**

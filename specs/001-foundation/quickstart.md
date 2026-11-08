@@ -32,8 +32,14 @@ prints no telemetry notice. In CI, the log shows a pnpm cache restore/save, the
 
 ## 001.3 — external consumer
 
-Consumer smoke command (named in 001.3) → Vite build succeeds outside the repository; CSS
-output contains `--neshel-` tokens.
+```text
+pnpm build:packages
+pnpm check:consumer --no-build
+```
+
+Expected: exit 0 and `check:consumer passed`. Needs registry access for Vite, Tailwind,
+React and TypeScript; `@neshel-ui/config` comes only from the local tarball. Add `--keep`
+to inspect the generated app (its path is printed; delete it afterwards).
 
 ## 001.4 / 001.5 — matrix and CI
 
