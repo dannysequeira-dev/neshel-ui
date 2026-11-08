@@ -11,7 +11,8 @@ permissions:
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  # Supersede outdated pull request runs; every push to main keeps a complete result.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   validate:
@@ -20,29 +21,34 @@ jobs:
     timeout-minutes: 25
     strategy:
       fail-fast: false
+      # Node 26 (primary, .nvmrc) on every OS; Node 22 and 24 compatibility on Linux only.
+      # Deliberately not a full OS x Node product (research R17).
       matrix:
         include:
           - os: ubuntu-latest
-            node: "22"
+            node: "26"
           - os: windows-latest
-            node: "22"
+            node: "26"
           - os: macos-latest
+            node: "26"
+          - os: ubuntu-latest
             node: "22"
           - os: ubuntu-latest
             node: "24"
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       # Reads the exact version from packageManager in the root package.json.
       # Runs before setup-node so its pnpm store cache can locate the pnpm binary.
       - name: Set up pnpm
-        uses: pnpm/action-setup@v4
+        # Third-party action pinned to the v6.1.1 commit (research R18).
+        uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
         with:
           run_install: false
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: ${{ matrix.node }}
           cache: pnpm
