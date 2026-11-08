@@ -10,6 +10,7 @@
       "!**/coverage",
       "!packages/config/src/tokens.css",
       "!packages/config/src/tailwind.css",
+      "!packages/layout/src/styles.css",
       "!packages/cli/test/fixtures",
       "!**/neshel.generated.css",
       "!.claude/skills/speckit-*",
