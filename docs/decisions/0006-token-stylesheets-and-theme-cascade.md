@@ -1,7 +1,7 @@
 # ADR 0006 — Token stylesheets, cascade layers and theme selection
 
 - Status: **Accepted** (2026-11-07, owner approval of milestone 002.0 with amendment A);
-  not implemented — verification planned in feature 002 milestones 002.1–002.5
+  implemented and CI-verified in feature 002 (see Verification)
 - Date: 2026-11-07
 - Feature: [002](../../specs/002-config-and-tokens/spec.md); normative detail in
   [contracts/css.md](../../specs/002-config-and-tokens/contracts/css.md)
@@ -54,8 +54,14 @@ computed-style browser tests.
 - Precedence by import order or specificity tricks: fragile in consumer setups.
 - React provider / runtime switcher: rejected by the project contract.
 
-## Verification (planned)
+## Verification
 
-Golden and structure tests (002.1), precedence matrix and cascade cases C1–C9 in a real browser
-on Windows, Linux and macOS (002.2 for shipped CSS, 002.5 for generated CSS); SC-001, SC-003,
-SC-005 of feature 002. Until then this ADR states design intent, not verified behaviour.
+- Golden, structure and drift tests (`packages/cli/test/generate.test.mjs`,
+  `packages/config/test/default-css.test.mjs`); complete blocks in every theme.
+- `pnpm check:browser` on Windows, Linux and macOS CI runners: matrix rows 1–12 and cases C1–C9
+  for shipped CSS, generated CSS in three import orders and three packed consumers, with a negative
+  control proving that a partial `neshel.config` block leaks into dark (why decision 3 exists).
+- Finding: Lightning CSS rewrites `@layer a, b; @layer a {…}` as `@layer a {…} @layer b;`; layer
+  order is preserved, so consumer assertions check order semantically.
+- Import-order independence is claimed for: canonical order, generated before the Neshel
+  stylesheet, generated alone. Run IDs: `specs/002-config-and-tokens/evidence.md`.

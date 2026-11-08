@@ -1,7 +1,7 @@
 # ADR 0007 — Configuration API boundary, colour processing and CLI loading
 
 - Status: **Accepted** (2026-11-07, owner approval of milestone 002.0 with amendments B, C, D);
-  not implemented — verification planned in feature 002 milestones 002.1–002.5
+  implemented and CI-verified in feature 002 (see Verification)
 - Date: 2026-11-07
 - Feature: [002](../../specs/002-config-and-tokens/spec.md); normative detail in
   [contracts/config-api.md](../../specs/002-config-and-tokens/contracts/config-api.md) and
@@ -59,9 +59,14 @@ and noted that any exported subpath is public regardless of an "experimental" la
 - Native type stripping: excludes Node 22.13 and non-erasable syntax.
 - Schema libraries (`zod`, `valibot`): unnecessary for a small closed schema.
 
-## Verification (planned)
+## Verification
 
-Spikes on 2026-11-07 (Windows, Node 26, outside the repository) confirmed jiti loading in a
-spaces/Unicode path and identical contrast results from Color.js and culori. Required evidence:
-CLI negative matrix and determinism on the five CI jobs (002.4), packaging checks (002.1),
-configured packed consumer and browser check (002.5).
+- `check:pack`: `config` exports exactly `.`, `./tokens.css`, `./tailwind.css`, `./styles.css`; no
+  runtime dependencies; relative imports only; `cli` dependencies exactly `jiti` + `colorjs.io`;
+  `@neshel-ui/config` peer packed as a caret range; no install lifecycle scripts.
+- CLI negative matrix (exit codes 1–5, every diagnostic code), jiti loading of TypeScript with
+  non-erasable syntax without cache files, injected I/O failures and three byte-identical goldens,
+  on Node 22, 24 and 26 (Linux) and Node 26 on Windows and macOS.
+- The configured external consumer runs the packed `neshel generate` through its installed bin.
+- A bundle importing only `defineConfig` is 272 bytes minified with no contract data (SC-006).
+- Run IDs: `specs/002-config-and-tokens/evidence.md`.

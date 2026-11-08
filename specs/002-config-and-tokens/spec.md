@@ -4,8 +4,8 @@
 
 **Created**: 2026-11-07
 
-**Status**: Approved direction (owner, 2026-11-07); clarified. Milestone 002.0 (architecture and
-planning) complete pending owner review; nothing implemented.
+**Status**: Implemented — milestones 002.0–002.5 complete; closure recorded in
+[evidence.md](evidence.md) and [traceability.md](traceability.md). No package is published.
 
 **Input**: Owner brief "Neshel-UI — Phase 002: Design Tokens & Theming" (2026-11-07),
 [brief.md](brief.md) and the owner's "Phase 002.0 Architecture Approval" (decisions D1–D5,

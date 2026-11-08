@@ -123,7 +123,7 @@ US5 validate/generate. **Nothing below is started; 002.1 requires owner authoriz
 - [x] T054 [P] [US5] Test I/O failures in `packages/cli/test/io.test.mjs`: unwritable target and injected rename failure exit 5 with the previous file intact
 - [x] T055 [US5] Golden outputs for three fixture configs in `packages/cli/test/fixtures/golden/`, compared byte-for-byte on every CI job (SC-003)
 - [x] T056 [P] [US5] Update `packages/cli/README.md`: commands, exit codes, output rules, trust model (FR-027)
-- [ ] T057 Record evidence; stop for owner review and approved push (SC-003, SC-004)
+- [x] T057 Record evidence; stop for owner review and approved push (SC-003, SC-004)
 
 ---
 
@@ -131,21 +131,21 @@ US5 validate/generate. **Nothing below is started; 002.1 requires owner authoriz
 
 ### Phase 8: User Story 5 — part 2, and cross-cutting polish
 
-- [ ] T058 [US5] Add a `configured` variant to `scripts/check-consumer.mjs`: packed `cli` + `config`, `neshel.config.ts` with light/dark overrides and a `sepia` theme, `neshel generate` via the installed bin, build, assert generated declarations and layer statement
-- [ ] T059 [US5] Extend `scripts/check-browser.mjs` with generated CSS: rows 11–12 and cases C1–C4 (import orders, leakage) on static fixtures and the configured consumer
-- [ ] T060 [P] [US5] Cover configured expectations in `tests/consumer-checks.test.mjs` and `tests/browser-matrix.test.mjs`
-- [ ] T061 [US5] Add CI steps for the configured consumer and generated-CSS browser cases
-- [ ] T062 [P] [US3] Add a named-theme demo to `apps/playground-vite` using a workspace `neshel.config.ts` and explicit `neshel generate &&` in its `dev`/`build` scripts (FR-031; pnpm skips `pre*` scripts by default)
-- [ ] T063 Execute [quickstart.md](quickstart.md) against packed tarballs and record it in `evidence.md` (SC-007)
-- [ ] T064 [P] Finalize `packages/config/README.md`
-- [ ] T065 [P] Update root `README.md` (theming section, links)
-- [ ] T066 [P] Update `docs/package-contracts.md` distribution table and tested compatibility
-- [ ] T067 [P] Rewrite `docs/theming.md` for the implemented contract
-- [ ] T068 [P] Update `docs/architecture.md` statuses (implemented / verified)
-- [ ] T069 Add a changeset (`.changeset/*.md`): `@neshel-ui/config` minor (new exports, tokens, palette, alias) and `@neshel-ui/cli` minor (commands)
-- [ ] T070 Create `specs/002-config-and-tokens/traceability.md` mapping FR-001–FR-032, SC-001–SC-007 and US1–US5 to evidence
-- [ ] T071 Run the full gate suite; update the Verification sections of ADR 0006/0007 with evidence
-- [ ] T072 Closure report; stop for owner approval (no push or publish without approval; `private` guards unchanged)
+- [x] T058 [US5] Add a `configured` variant to `scripts/check-consumer.mjs`: packed `cli` + `config`, `neshel.config.ts` with light/dark overrides and a `sepia` theme, `neshel generate` via the installed bin, build, assert generated declarations and layer statement
+- [x] T059 [US5] Extend `scripts/check-browser.mjs` with generated CSS: rows 11–12 and cases C1–C4 (import orders, leakage) on static fixtures and the configured consumer
+- [x] T060 [P] [US5] Cover configured expectations in `tests/consumer-checks.test.mjs` and `tests/browser-matrix.test.mjs`
+- [x] T061 [US5] Add CI steps for the configured consumer and generated-CSS browser cases
+- [x] T062 [P] [US3] Add a named-theme demo to `apps/playground-vite` using a workspace `neshel.config.ts` and explicit `neshel generate &&` in its `dev`/`build` scripts (FR-031; pnpm skips `pre*` scripts by default)
+- [x] T063 Execute [quickstart.md](quickstart.md) against packed tarballs and record it in `evidence.md` (SC-007)
+- [x] T064 [P] Finalize `packages/config/README.md`
+- [x] T065 [P] Update root `README.md` (theming section, links)
+- [x] T066 [P] Update `docs/package-contracts.md` distribution table and tested compatibility
+- [x] T067 [P] Rewrite `docs/theming.md` for the implemented contract
+- [x] T068 [P] Update `docs/architecture.md` statuses (implemented / verified)
+- [x] T069 Add a changeset (`.changeset/*.md`): `@neshel-ui/config` minor (new exports, tokens, palette, alias) and `@neshel-ui/cli` minor (commands)
+- [x] T070 Create `specs/002-config-and-tokens/traceability.md` mapping FR-001–FR-032, SC-001–SC-007 and US1–US5 to evidence
+- [x] T071 Run the full gate suite; update the Verification sections of ADR 0006/0007 with evidence
+- [x] T072 Closure report; stop for owner approval (no push or publish without approval; `private` guards unchanged)
 
 ---
 
