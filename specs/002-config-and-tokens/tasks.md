@@ -111,18 +111,18 @@ US5 validate/generate. **Nothing below is started; 002.1 requires owner authoriz
 
 **Goal**: `neshel validate` / `generate` per contract. **Independent test**: CLI negative matrix.
 
-- [ ] T045 [US5] Implement discovery in `packages/cli/src/load/discover.ts`
-- [ ] T046 [US5] Implement jiti loading in `packages/cli/src/load/load-config.ts` (`fsCache: false`, `moduleCache: false`, plain-object default export, error mapping to exit 3)
-- [ ] T047 [US5] Implement `packages/cli/src/output.ts`: resolution order, rejections, byte compare, temp sibling + rename, Windows `EPERM`/`EBUSY` retry, cleanup
-- [ ] T048 [US5] Implement `packages/cli/src/commands/validate.ts` and `generate.ts` (`--check`, `--strict`)
-- [ ] T049 [US5] Rewrite `packages/cli/src/bin.ts`: `parseArgs`, help/version, exit codes 0–5, `--debug`, stderr diagnostics / stdout summary; `src/index.ts` stays empty
-- [ ] T050 [P] [US5] Test helpers in `packages/cli/test/helpers.mjs`: temp dirs with spaces and Unicode, spawn `dist/bin.js`, fixture writers
-- [ ] T051 [P] [US5] Test discovery and loading (all exit 3 cases) in `packages/cli/test/load.test.mjs`, asserting that loading a TS config creates no files (FR-022)
-- [ ] T052 [P] [US5] Test `validate` (exit 1 cases with paths) in `packages/cli/test/cmd-validate.test.mjs`
-- [ ] T053 [P] [US5] Test `generate` in `packages/cli/test/cmd-generate.test.mjs`: write, unchanged keeps mtime, `--check` 0/4/4, output rejections and usage errors exit 2
-- [ ] T054 [P] [US5] Test I/O failures in `packages/cli/test/io.test.mjs`: unwritable target and injected rename failure exit 5 with the previous file intact
-- [ ] T055 [US5] Golden outputs for three fixture configs in `packages/cli/test/fixtures/golden/`, compared byte-for-byte on every CI job (SC-003)
-- [ ] T056 [P] [US5] Update `packages/cli/README.md`: commands, exit codes, output rules, trust model (FR-027)
+- [x] T045 [US5] Implement discovery in `packages/cli/src/load/discover.ts`
+- [x] T046 [US5] Implement jiti loading in `packages/cli/src/load/load-config.ts` (`fsCache: false`, `moduleCache: false`, plain-object default export, error mapping to exit 3)
+- [x] T047 [US5] Implement `packages/cli/src/output.ts`: resolution order, rejections, byte compare, temp sibling + rename, Windows `EPERM`/`EBUSY` retry, cleanup
+- [x] T048 [US5] Implement `packages/cli/src/commands/validate.ts` and `generate.ts` (`--check`, `--strict`)
+- [x] T049 [US5] Rewrite `packages/cli/src/bin.ts`: `parseArgs`, help/version, exit codes 0–5, `--debug`, stderr diagnostics / stdout summary; `src/index.ts` stays empty
+- [x] T050 [P] [US5] Test helpers in `packages/cli/test/helpers.mjs`: temp dirs with spaces and Unicode, spawn `dist/bin.js`, fixture writers
+- [x] T051 [P] [US5] Test discovery and loading (all exit 3 cases) in `packages/cli/test/load.test.mjs`, asserting that loading a TS config creates no files (FR-022)
+- [x] T052 [P] [US5] Test `validate` (exit 1 cases with paths) in `packages/cli/test/cmd-validate.test.mjs`
+- [x] T053 [P] [US5] Test `generate` in `packages/cli/test/cmd-generate.test.mjs`: write, unchanged keeps mtime, `--check` 0/4/4, output rejections and usage errors exit 2
+- [x] T054 [P] [US5] Test I/O failures in `packages/cli/test/io.test.mjs`: unwritable target and injected rename failure exit 5 with the previous file intact
+- [x] T055 [US5] Golden outputs for three fixture configs in `packages/cli/test/fixtures/golden/`, compared byte-for-byte on every CI job (SC-003)
+- [x] T056 [P] [US5] Update `packages/cli/README.md`: commands, exit codes, output rules, trust model (FR-027)
 - [ ] T057 Record evidence; stop for owner review and approved push (SC-003, SC-004)
 
 ---
