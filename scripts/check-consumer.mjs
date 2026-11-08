@@ -77,7 +77,7 @@ function writeApp(appDir, tarballName) {
       null,
       2,
     )}\n`,
-    // Mirrors the repository: esbuild (Vite 7) needs its install script.
+    // Mirrors the repository; a no-op with Vite 8, needed if a Vite 7 toolchain is pinned.
     "pnpm-workspace.yaml": "allowBuilds:\n  esbuild: true\n",
     "index.html": `<!doctype html>
 <html lang="en">

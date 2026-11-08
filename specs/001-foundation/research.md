@@ -236,3 +236,11 @@ Observed Tailwind 4.3.5 output for the current `@neshel-ui/config/styles.css`:
 - **Decision**: validate the contributor workflow from a fresh `git clone` of the committed
   history into a temp path with spaces and Unicode: `pnpm install --frozen-lockfile`,
   `pnpm check`, `pnpm check:consumer --no-build`, Spec Kit feature selection as documented.
+
+## R21 — Vite 8 spike outcome
+
+- **Decision**: adopt Vite 8 (`^8.3.0`, resolved 8.3.6); see
+  [ADR 0005](../../docs/decisions/0005-vite-8.md) for the full evidence.
+- All gates passed on the spike branch; output differences are minifier-only (Lightning CSS),
+  limited to internal app builds; `DEP0205` exists with Vite 7 too. Follow-ups:
+  `@vitejs/plugin-react` 6, continuous Vite 7 consumer coverage if ever required.
