@@ -185,6 +185,7 @@ const allVariants = {
         <span className="rounded-neshel-md bg-neshel-destructive">Danger</span>
         <input aria-label="Name" className="border border-neshel-input" />
         <code className="font-neshel-mono">code</code>
+        <div data-neshel-theme="dark" className="scheme-light">Scheme interaction (C9)</div>
       </section>
     </main>
   );

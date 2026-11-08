@@ -26,6 +26,7 @@
     "check:exports": "node scripts/check-exports.mjs",
     "check:pack": "node scripts/check-pack.mjs",
     "check:consumer": "node scripts/check-consumer.mjs",
+    "check:browser": "node scripts/check-browser.mjs",
     "generate:tokens": "node scripts/generate-default-css.mjs",
     "check": "pnpm run doctor && pnpm lint && pnpm typecheck && pnpm test && pnpm build:packages && pnpm test:packages && pnpm check:exports && pnpm check:pack --no-build",
     "changeset": "changeset",
