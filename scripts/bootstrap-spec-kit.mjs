@@ -1,6 +1,7 @@
-import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { spawnSync } from "node:child_process";
-import { resolve } from "node:path";
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 // Spec Kit is optional: do not vendor its official templates or pretend they
@@ -9,14 +10,22 @@ const root = fileURLToPath(new URL("../", import.meta.url));
 const protectedFiles = [
   "CLAUDE.md",
   "AGENTS.md",
+  "README.md",
+  "package.json",
+  ".gitignore",
+  ".gitattributes",
   ".claude/settings.json",
+  ".claude/skills/neshel-audit/SKILL.md",
+  ".claude/skills/neshel-slice/SKILL.md",
+  ".vscode/settings.json",
+  ".vscode/extensions.json",
   ".specify/README.md",
   ".specify/memory/constitution.md",
 ];
 const backups = new Map();
 for (const rel of protectedFiles) {
   const path = resolve(root, rel);
-  if (existsSync(path)) backups.set(path, readFileSync(path));
+  if (existsSync(path)) backups.set(rel, readFileSync(path));
 }
 
 if (process.argv.includes("--help")) {
@@ -37,7 +46,21 @@ let outcome;
 try {
   outcome = spawnSync(command, args, { cwd: root, stdio: "inherit" });
 } finally {
-  for (const [path, bytes] of backups) writeFileSync(path, bytes);
+  // Restore protected files. When Spec Kit changed one, keep its proposed
+  // version outside the repository so a maintainer can review and merge it.
+  let proposedDir;
+  for (const [rel, bytes] of backups) {
+    const path = resolve(root, rel);
+    const current = existsSync(path) ? readFileSync(path) : undefined;
+    if (current && !current.equals(bytes)) {
+      proposedDir ??= mkdtempSync(join(tmpdir(), "neshel-spec-kit-proposed-"));
+      const proposed = join(proposedDir, rel);
+      mkdirSync(dirname(proposed), { recursive: true });
+      writeFileSync(proposed, current);
+      console.warn(`Restored ${rel}; Spec Kit's proposed version: ${proposed}`);
+    }
+    writeFileSync(path, bytes);
+  }
 }
 if (outcome.error) {
   console.error(`Unable to execute ${command}: ${outcome.error.message}`);

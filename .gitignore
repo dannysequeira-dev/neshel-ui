@@ -18,3 +18,5 @@ Thumbs.db
 .npm/
 *.log
 *.tgz
+__pycache__/
+*.pyc

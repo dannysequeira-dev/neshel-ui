@@ -1,6 +1,7 @@
 # Keep all source, scripts, and documentation normalized on every host.
 # PowerShell 7 accepts LF, so no contributor needs platform-specific checkout rules.
-* text=auto
+# eol=lf also keeps hash-tracked Spec Kit files identical on every OS (core.autocrlf-proof).
+* text=auto eol=lf
 *.sh text eol=lf
 *.ps1 text eol=lf
 *.mjs text eol=lf
