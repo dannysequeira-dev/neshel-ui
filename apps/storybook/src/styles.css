@@ -1,2 +1,5 @@
 @import "tailwindcss";
 @import "@neshel-ui/config/tailwind.css";
+/* The same distributable stylesheet external applications import (feature 003, FR-080). */
+@import "@neshel-ui/layout/styles.css";
+@import "./themes.css";

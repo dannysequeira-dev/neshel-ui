@@ -308,6 +308,9 @@ importers:
       '@neshel-ui/config':
         specifier: workspace:*
         version: link:../../packages/config
+      '@neshel-ui/layout':
+        specifier: workspace:*
+        version: link:../../packages/layout
       react:
         specifier: 'catalog:'
         version: 19.3.1

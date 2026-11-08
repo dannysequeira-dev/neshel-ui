@@ -1,0 +1,33 @@
+/*
+ * Storybook-only named theme for the "custom theme" stories. Same shape as `neshel generate`
+ * output (a complete block in @layer neshel.config, ADR 0006); values derived from the
+ * playground's sepia theme with a warmer border and a larger spacing unit, so layout stories
+ * show that gaps and separators follow the theme tokens.
+ */
+@layer neshel.config {
+  [data-neshel-theme="sepia"] {
+    color-scheme: light;
+    --neshel-spacing: 0.3125rem;
+    --neshel-background: #f4ecd8;
+    --neshel-foreground: #2b2118;
+    --neshel-surface: #fbf6ea;
+    --neshel-surface-foreground: #2b2118;
+    --neshel-muted: #ebe0c8;
+    --neshel-muted-foreground: #5a4a35;
+    --neshel-primary: #193767;
+    --neshel-primary-foreground: #ffffff;
+    --neshel-secondary: #e4e9f2;
+    --neshel-secondary-foreground: #193767;
+    --neshel-accent: #c49a59;
+    --neshel-accent-foreground: #071936;
+    --neshel-destructive: #b42318;
+    --neshel-destructive-foreground: #ffffff;
+    --neshel-selected: #dbe4f3;
+    --neshel-selected-foreground: #0d2347;
+    --neshel-disabled: #ece8e3;
+    --neshel-disabled-foreground: #8a8f99;
+    --neshel-border: #b89a64;
+    --neshel-input: #7d8494;
+    --neshel-focus: #8f6d3f;
+  }
+}

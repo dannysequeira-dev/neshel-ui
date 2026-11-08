@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@neshel-ui/config": "workspace:*",
+    "@neshel-ui/layout": "workspace:*",
     "react": "catalog:",
     "react-dom": "catalog:"
   },
