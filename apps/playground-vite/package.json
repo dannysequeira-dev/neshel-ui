@@ -11,7 +11,8 @@
   "dependencies": {
     "@neshel-ui/config": "workspace:*",
     "react": "catalog:",
-    "react-dom": "catalog:"
+    "react-dom": "catalog:",
+    "@neshel-ui/typography": "workspace:*"
   },
   "devDependencies": {
     "@neshel-ui/cli": "workspace:*",

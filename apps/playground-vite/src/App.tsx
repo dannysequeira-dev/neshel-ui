@@ -1,3 +1,4 @@
+import { Heading, Paragraph, Text } from "@neshel-ui/typography";
 import { useState } from "react";
 
 type Choice = "none" | "light" | "dark" | "system" | "sepia";
@@ -14,12 +15,16 @@ export function App() {
   return (
     <main className="min-h-screen bg-neshel-background p-10 font-neshel-body text-neshel-foreground">
       <div className="mx-auto max-w-2xl rounded-neshel-xl border border-neshel-border bg-neshel-surface p-8 text-neshel-surface-foreground">
-        <p className="text-sm font-medium text-neshel-primary">Neshel-UI</p>
-        <h1 className="mt-3 font-neshel-display text-3xl font-semibold">Token playground</h1>
-        <p className="mt-3 text-sm text-neshel-muted-foreground">
+        <Text size="sm" weight="medium" tone="primary">
+          Neshel-UI
+        </Text>
+        <Heading as="h1" size={{ base: "2xl", md: "3xl" }} className="mt-3">
+          Token playground
+        </Heading>
+        <Paragraph size="sm" tone="muted" className="mt-3">
           Themes switch with one attribute; no provider. Without an attribute the page is light.
           “sepia” is a named theme from neshel.config.ts.
-        </p>
+        </Paragraph>
 
         <fieldset className="mt-6">
           <legend className="text-sm font-medium">Root theme</legend>
