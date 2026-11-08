@@ -1,5 +1,6 @@
 // pnpm check:consumer [--no-build] [--keep] [--variant <name>]... [--artifacts <dir>]
-// Variants: tailwind, plain, configured, configured-extend, configured-replace.
+// Variants: tailwind, plain, configured, configured-extend, configured-replace, components-tailwind,
+// components-plain, components-extend, components-replace.
 // External consumer smoke tests (feature 001 R13–R16; feature 002 FR-029): packs the Neshel
 // packages, installs the tarballs into freshly generated React 19 + TypeScript + Vite apps
 // outside the repository (path with spaces and Unicode), builds them and asserts the CSS.
@@ -21,6 +22,7 @@ import { basename, dirname, join, relative, resolve, sep } from "node:path";
 import { BREAKPOINT_CASES, breakpointCasesTsx } from "./lib/breakpoint-cases.mjs";
 import { breakpointVariants, TYPOGRAPHY } from "./lib/consumer-breakpoints.mjs";
 import { checkConsumerCss, checkLayerStatement, checkPlainCss } from "./lib/consumer-checks.mjs";
+import { componentVariants } from "./lib/consumer-components.mjs";
 import { configuredVariant } from "./lib/consumer-configured.mjs";
 import {
   checkLayoutConsumerCss,
@@ -370,6 +372,8 @@ console.log(JSON.stringify({ bytes: Buffer.byteLength(code), code }));
   },
   configured: configuredVariant({ CONFIG, CLI, BASE_DEV, TAILWIND_DEV, viteConfig }),
   ...breakpointVariants({ CONFIG, CLI, LAYOUT, BASE_DEV, TAILWIND_DEV, viteConfig }),
+  // Feature 005: packed @neshel-ui/components (lab + shell pages, SSR, themes, breakpoints).
+  ...componentVariants({ CONFIG, CLI, BASE_DEV, TAILWIND_DEV, viteConfig }),
 };
 /** Variants available in this checkout (a variant module may return undefined). */
 export const variants = Object.fromEntries(
@@ -453,6 +457,7 @@ function runVariant(name, { workDir, tarballs, artifacts }) {
         outputCss,
         installed,
         appDir,
+        node,
         buildLog: `${build.stdout}${build.stderr}`,
       }),
     );

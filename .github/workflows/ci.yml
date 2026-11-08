@@ -85,7 +85,8 @@ jobs:
         run: pnpm check:pack --no-build
 
       # Installs packed tarballs into generated React 19 + Vite apps outside the workspace:
-      # Tailwind v4 and plain CSS (layout + typography), a configured theme app, and custom
+      # Tailwind v4 and plain CSS (layout + typography), component labs (feature 005: Tailwind,
+      # plain, extend, replace; SSR prerender; tree-shaking), a configured theme app, and custom
       # breakpoint apps (extend + Tailwind, replace + plain CSS) that run the packed
       # `neshel generate`, type-check in Bundler and NodeNext resolution and prerender (SSR).
       # Tools come from the registry. Builds feed the browser check.
@@ -96,6 +97,12 @@ jobs:
       # geometry in headless Chrome (preinstalled on GitHub runners).
       - name: Browser computed-style check
         run: pnpm check:browser --consumers "${{ runner.temp }}/neshel-consumers"
+
+      # Feature 005: real-input interaction, focus, Escape, selection, shell/mobile transitions,
+      # nested-theme portals, reduced motion, hydration and axe-core checks against the packed
+      # component consumers (Tailwind, plain CSS, extend and replace breakpoints).
+      - name: Browser interaction and accessibility check (components)
+        run: pnpm check:browser:components --consumers "${{ runner.temp }}/neshel-consumers"
 
       - name: Build Vite consumer
         run: pnpm --filter @neshel-ui/playground-vite build

@@ -158,6 +158,10 @@ export async function launchBrowser(executable = findBrowser()) {
     return {
       /** Uncaught exceptions and console.error messages seen by this page. */
       errors,
+      /** Raw CDP command on this page's session (input events, emulation). */
+      send(method, params = {}) {
+        return connection.send(method, params, sessionId);
+      },
       async screenshot() {
         const { data } = await connection.send(
           "Page.captureScreenshot",
