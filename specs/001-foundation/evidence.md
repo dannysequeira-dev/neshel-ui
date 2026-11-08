@@ -470,3 +470,6 @@ feature 002; `@neshel-ui` scope ownership unverified.
 
 Phase 001 is closed once the documentation-only closure commit that records this section
 receives the same five-job CI result. No package is published; all publication guards remain.
+
+**Closure confirmed (2026-11-07):** commit `b8c6198` passed all five jobs (Ubuntu Node 22/24/26,
+Windows Node 26, macOS Node 26) in GitHub Actions run 42441381954, as reported by the owner.

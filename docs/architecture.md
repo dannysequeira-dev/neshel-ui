@@ -109,7 +109,8 @@ Status of each decision (implemented / locally verified / CI-verified) is tracke
 
 ## Open decisions
 
-- Exact semantic token vocabulary and accessibility policy.
+- Exact semantic token vocabulary and accessibility policy — proposed in feature 002
+  ([spec](../specs/002-config-and-tokens/spec.md), ADRs 0006/0007, status Proposed).
 - Component-level CSS distribution strategy and choice of class variance tooling.
 - Stable polymorphism / `asChild` / refs contract for layouts and typography.
 

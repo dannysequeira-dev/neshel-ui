@@ -1,7 +1,8 @@
 # Feature brief 002 — typed configuration and semantic tokens
 
-**Not yet specified or implemented.** Expand with official `/speckit-specify`
-after feature 001 is verified.
+**Specified (draft, 2026-11-07); not implemented.** The specification is
+[spec.md](spec.md); decisions and the audit of this brief are in [research.md](research.md).
+This brief is kept as historical input.
 
 Purpose: typed `defineConfig`, light/dark semantic tokens, CSS-first baseline,
 custom config discovery, safe validation, deterministic generated CSS, Capsize
