@@ -172,9 +172,106 @@ test("renderComponentCss: registry, base rules, ascending media blocks, escaping
   assert.equal(escapeClass("neshel-gap-0.5"), "neshel-gap-0\\.5");
 });
 
+test("renderComponentCss schema 2: keyframes first, consecutive media rules grouped in order", () => {
+  const css = renderComponentCss(
+    {
+      ...manifest,
+      schema: 2,
+      keyframes: [
+        {
+          name: "neshel-fade",
+          frames: [
+            { selector: "from", declarations: [["opacity", "0"]] },
+            { selector: "to", declarations: [["opacity", "1"]] },
+          ],
+        },
+      ],
+      rules: [
+        { selector: ".neshel-a", declarations: [["animation", "neshel-fade 1s"]] },
+        {
+          selector: ".neshel-a",
+          declarations: [["animation", "none"]],
+          media: "(prefers-reduced-motion: reduce)",
+        },
+        {
+          selector: ".neshel-b",
+          declarations: [["animation", "none"]],
+          media: "(prefers-reduced-motion: reduce)",
+        },
+        { selector: ".neshel-c", declarations: [["display", "block"]] },
+      ],
+      responsive: [],
+    },
+    [],
+  );
+  assert.equal(
+    css,
+    `@layer components.neshel {
+  :root { --neshel-breakpoints: ""; }
+  @keyframes neshel-fade { from { opacity: 0; } to { opacity: 1; } }
+  .neshel-a { animation: neshel-fade 1s; }
+  @media (prefers-reduced-motion: reduce) {
+    .neshel-a { animation: none; }
+    .neshel-b { animation: none; }
+  }
+  .neshel-c { display: block; }
+
+}
+`,
+  );
+});
+
+test("manifest validation: schema-2 fields are checked and refused in schema 1", () => {
+  const v2 = { ...manifest, schema: 2 };
+  assert.deepEqual(
+    manifestProblems({
+      ...v2,
+      keyframes: [
+        { name: "neshel-x", frames: [{ selector: "50%", declarations: [["opacity", "1"]] }] },
+      ],
+      rules: [
+        { selector: ".neshel-x", declarations: [["opacity", "1"]], media: "(min-width: 10rem)" },
+      ],
+    }),
+    [],
+  );
+  assert.match(
+    manifestProblems({ ...manifest, keyframes: [] }).join(),
+    /keyframes require schema 2/,
+  );
+  assert.match(
+    manifestProblems({
+      ...manifest,
+      rules: [{ selector: ".a", declarations: [["opacity", "1"]], media: "(min-width: 1px)" }],
+    }).join(),
+    /media requires schema 2/,
+  );
+  for (const media of ["screen", "(a) { body", "(a);", "(min-width: 1px) /* x */"]) {
+    assert.ok(
+      manifestProblems({
+        ...v2,
+        rules: [{ selector: ".a", declarations: [["opacity", "1"]], media }],
+      }).length > 0,
+      media,
+    );
+  }
+  for (const keyframes of [
+    [{ name: "fade", frames: [{ selector: "from", declarations: [["opacity", "0"]] }] }],
+    [{ name: "neshel-x", frames: [] }],
+    [{ name: "neshel-x", frames: [{ selector: "middle", declarations: [["opacity", "0"]] }] }],
+    [
+      { name: "neshel-x", frames: [{ selector: "to", declarations: [["opacity", "0"]] }] },
+      { name: "neshel-x", frames: [{ selector: "to", declarations: [["opacity", "0"]] }] },
+    ],
+  ]) {
+    assert.ok(manifestProblems({ ...v2, keyframes }).length > 0, JSON.stringify(keyframes));
+  }
+});
+
 test("manifest validation rejects incompatible or unsafe manifests", () => {
   assert.deepEqual(manifestProblems(manifest, "@neshel-ui/example"), []);
-  assert.match(manifestProblems({ ...manifest, schema: 2 })[0], /unsupported schema 2/);
+  assert.match(manifestProblems({ ...manifest, schema: 3 })[0], /unsupported schema 3/);
+  assert.deepEqual(manifestProblems({ ...manifest, schema: 2 }), [], "schema 2 is a superset");
   assert.match(
     manifestProblems(manifest, "@neshel-ui/layout").join(),
     /expected "@neshel-ui\/layout"/,

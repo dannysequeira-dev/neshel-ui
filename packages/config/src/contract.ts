@@ -10,7 +10,7 @@ function deepFreeze<T>(value: T): T {
   return value;
 }
 
-/** The 21 semantic colour roles in canonical (emission) order. */
+/** The 25 semantic colour roles in canonical (emission) order. */
 export const colorRoles = /* @__PURE__ */ Object.freeze([
   "background",
   "foreground",
@@ -26,6 +26,10 @@ export const colorRoles = /* @__PURE__ */ Object.freeze([
   "accentForeground",
   "destructive",
   "destructiveForeground",
+  "success",
+  "successForeground",
+  "warning",
+  "warningForeground",
   "selected",
   "selectedForeground",
   "disabled",
@@ -55,6 +59,8 @@ export const contrastPairs: readonly ContrastPair[] = /* @__PURE__ */ deepFreeze
   },
   { foreground: "destructive", background: "background", minimum: 4.5, criterion: "1.4.3" },
   { foreground: "destructive", background: "surface", minimum: 4.5, criterion: "1.4.3" },
+  { foreground: "successForeground", background: "success", minimum: 4.5, criterion: "1.4.3" },
+  { foreground: "warningForeground", background: "warning", minimum: 4.5, criterion: "1.4.3" },
   { foreground: "selectedForeground", background: "selected", minimum: 4.5, criterion: "1.4.3" },
   { foreground: "focus", background: "background", minimum: 3, criterion: "1.4.11" },
   { foreground: "focus", background: "surface", minimum: 3, criterion: "1.4.11" },
@@ -93,6 +99,10 @@ export const defaults: Defaults = /* @__PURE__ */ deepFreeze({
       accentForeground: "#071936",
       destructive: "#b42318",
       destructiveForeground: "#ffffff",
+      success: "#1d6b3e",
+      successForeground: "#ffffff",
+      warning: "#f2c14e",
+      warningForeground: "#2b1d00",
       selected: "#dbe4f3",
       selectedForeground: "#0d2347",
       disabled: "#ece8e3",
@@ -116,6 +126,10 @@ export const defaults: Defaults = /* @__PURE__ */ deepFreeze({
       accentForeground: "#071936",
       destructive: "#f97066",
       destructiveForeground: "#1a0503",
+      success: "#6fd09a",
+      successForeground: "#04170b",
+      warning: "#f2c35b",
+      warningForeground: "#231800",
       selected: "#244679",
       selectedForeground: "#ffffff",
       disabled: "#13274a",

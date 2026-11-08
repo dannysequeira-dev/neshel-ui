@@ -3,7 +3,7 @@ import type { colorRoles } from "./contract.js";
 /** Default breakpoint names, ascending: sm 40rem, md 48rem, lg 64rem, xl 80rem, 2xl 96rem. */
 export type DefaultBreakpointName = "sm" | "md" | "lg" | "xl" | "2xl";
 
-/** One of the 21 semantic colour roles, in canonical order (see `colorRoles`). */
+/** One of the 25 semantic colour roles, in canonical order (see `colorRoles`). */
 export type ColorRole = (typeof colorRoles)[number];
 
 /**

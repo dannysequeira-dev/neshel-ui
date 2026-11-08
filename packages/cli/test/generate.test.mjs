@@ -33,7 +33,7 @@ test("default tailwind variant matches the golden file", () => {
   assert.equal(css, fixture("golden-defaults-tailwind.css"));
 });
 
-test("every theme block declares color-scheme and all 21 roles", () => {
+test("every theme block declares color-scheme and all 25 roles", () => {
   const config = resolveConfig({
     themes: { sepia: { extends: "light", colors: { background: "#F4ECD8" } } },
   });

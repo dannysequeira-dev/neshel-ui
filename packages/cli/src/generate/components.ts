@@ -1,19 +1,34 @@
 // Component stylesheet renderer shared by the package builds and `neshel generate`
-// (feature 004, contracts/generation.md "Style manifests" and "Rendering"). Pure and deterministic.
+// (feature 004, contracts/generation.md "Style manifests" and "Rendering"; schema 2 from feature 005,
+// specs/005-components-navigation-shell/contracts/components-css.md). Pure and deterministic.
 
-export const MANIFEST_SCHEMA = 1;
+/** Newest manifest schema this CLI reads (it also reads every older schema in SUPPORTED_SCHEMAS). */
+export const MANIFEST_SCHEMA = 2;
+export const SUPPORTED_SCHEMAS: readonly number[] = [1, 2];
 export const COMPONENT_LAYER = "components.neshel";
 
 export type Declaration = readonly [property: string, value: string];
 
+export interface ManifestKeyframes {
+  readonly name: string;
+  readonly frames: ReadonlyArray<{
+    readonly selector: string;
+    readonly declarations: readonly Declaration[];
+  }>;
+}
+
 export interface StyleManifest {
-  readonly schema: 1;
+  readonly schema: 1 | 2;
   readonly package: string;
   readonly version: string;
   readonly layer: typeof COMPONENT_LAYER;
+  /** Schema 2 only: `@keyframes` rendered before the rules. */
+  readonly keyframes?: readonly ManifestKeyframes[];
   readonly rules: ReadonlyArray<{
     readonly selector: string;
     readonly declarations: readonly Declaration[];
+    /** Schema 2 only: media condition wrapping the rule, e.g. "(prefers-reduced-motion: reduce)". */
+    readonly media?: string;
   }>;
   readonly responsive: ReadonlyArray<{
     readonly class: string;
@@ -29,6 +44,9 @@ export interface RenderBreakpoint {
 const CLASS_SUFFIX = /^[A-Za-z0-9._-]+$/;
 const UNSAFE = /[{};]|\*\/|\/\*/;
 const PROPERTY = /^(?:--)?[a-z][a-z0-9-]*$/;
+const MEDIA = /^\([a-z0-9 :().,-]+\)$/;
+const KEYFRAMES_NAME = /^neshel-[a-z0-9-]+$/;
+const FRAME_SELECTOR = /^(?:from|to|\d{1,3}(?:\.\d+)?%)$/;
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
@@ -57,11 +75,48 @@ function declarationProblems(value: unknown, where: string): string[] {
 export function manifestProblems(value: unknown, expectedPackage?: string): string[] {
   if (!isRecord(value)) return ["the manifest is not a JSON object"];
   const problems: string[] = [];
-  if (value.schema !== MANIFEST_SCHEMA) {
+  if (typeof value.schema !== "number" || !SUPPORTED_SCHEMAS.includes(value.schema)) {
     problems.push(
-      `unsupported schema ${JSON.stringify(value.schema)} (this CLI reads schema ${MANIFEST_SCHEMA})`,
+      `unsupported schema ${JSON.stringify(value.schema)} (this CLI reads schemas ${SUPPORTED_SCHEMAS.join(", ")})`,
     );
     return problems;
+  }
+  const schema2 = value.schema === 2;
+  if (value.keyframes !== undefined) {
+    if (!schema2) problems.push("keyframes require schema 2");
+    else if (!Array.isArray(value.keyframes)) problems.push("keyframes must be an array");
+    else {
+      const names = new Set<string>();
+      value.keyframes.forEach((entry, index) => {
+        if (
+          !isRecord(entry) ||
+          typeof entry.name !== "string" ||
+          !KEYFRAMES_NAME.test(entry.name)
+        ) {
+          problems.push(`keyframes[${index}]: invalid name`);
+          return;
+        }
+        if (names.has(entry.name))
+          problems.push(`keyframes[${index}]: duplicate name "${entry.name}"`);
+        names.add(entry.name);
+        if (!Array.isArray(entry.frames) || entry.frames.length === 0) {
+          problems.push(`keyframes[${index}]: frames must be a non-empty array`);
+          return;
+        }
+        entry.frames.forEach((frame, frameIndex) => {
+          const where = `keyframes[${index}].frames[${frameIndex}]`;
+          if (
+            !isRecord(frame) ||
+            typeof frame.selector !== "string" ||
+            !FRAME_SELECTOR.test(frame.selector)
+          ) {
+            problems.push(`${where}: invalid selector`);
+            return;
+          }
+          problems.push(...declarationProblems(frame.declarations, where));
+        });
+      });
+    }
   }
   if (typeof value.package !== "string" || (expectedPackage && value.package !== expectedPackage)) {
     problems.push(
@@ -82,6 +137,15 @@ export function manifestProblems(value: unknown, expectedPackage?: string): stri
       ) {
         problems.push(`rules[${index}]: invalid selector`);
         return;
+      }
+      if (rule.media !== undefined) {
+        if (!schema2) problems.push(`rules[${index}]: media requires schema 2`);
+        else if (
+          typeof rule.media !== "string" ||
+          !MEDIA.test(rule.media) ||
+          UNSAFE.test(rule.media)
+        )
+          problems.push(`rules[${index}]: invalid media condition`);
       }
       problems.push(...declarationProblems(rule.declarations, `rules[${index}]`));
     });
@@ -117,7 +181,8 @@ export function responsiveClass(breakpoint: string, suffix: string): string {
 }
 
 /**
- * Render a complete component stylesheet: the breakpoint registry, the base rules, the responsive
+ * Render a complete component stylesheet: the breakpoint registry, keyframes (schema 2), the base
+ * rules (consecutive rules sharing a media condition in one block), the responsive
  * rules at `base`, then one `min-width` block per breakpoint in the given (ascending) order.
  */
 export function renderComponentCss(
@@ -126,9 +191,21 @@ export function renderComponentCss(
 ): string {
   const lines = [`@layer ${manifest.layer} {`];
   lines.push(`  :root { --neshel-breakpoints: "${breakpoints.map((bp) => bp.name).join(" ")}"; }`);
-  for (const rule of manifest.rules) {
-    lines.push(`  ${rule.selector} { ${declarations(rule.declarations)} }`);
+  for (const { name, frames } of manifest.keyframes ?? []) {
+    const body = frames.map((frame) => `${frame.selector} { ${declarations(frame.declarations)} }`);
+    lines.push(`  @keyframes ${name} { ${body.join(" ")} }`);
   }
+  let openMedia: string | undefined;
+  for (const rule of manifest.rules) {
+    if (rule.media !== openMedia) {
+      if (openMedia !== undefined) lines.push("  }");
+      if (rule.media !== undefined) lines.push(`  @media ${rule.media} {`);
+      openMedia = rule.media;
+    }
+    const indent = openMedia === undefined ? "  " : "    ";
+    lines.push(`${indent}${rule.selector} { ${declarations(rule.declarations)} }`);
+  }
+  if (openMedia !== undefined) lines.push("  }");
   lines.push("");
   for (const rule of manifest.responsive) {
     lines.push(

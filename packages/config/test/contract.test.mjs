@@ -19,6 +19,10 @@ const expectedRoles = [
   "accentForeground",
   "destructive",
   "destructiveForeground",
+  "success",
+  "successForeground",
+  "warning",
+  "warningForeground",
   "selected",
   "selectedForeground",
   "disabled",
@@ -28,13 +32,13 @@ const expectedRoles = [
   "focus",
 ];
 
-test("colorRoles lists the 21 roles of contracts/tokens.md in canonical order", () => {
+test("colorRoles lists the 25 roles (contracts/tokens.md + feature 005 status roles) in canonical order", () => {
   assert.deepEqual([...colorRoles], expectedRoles);
   assert.equal(new Set(colorRoles).size, colorRoles.length);
 });
 
 test("contrastPairs reference valid, distinct roles with consistent thresholds", () => {
-  assert.equal(contrastPairs.length, 19);
+  assert.equal(contrastPairs.length, 21);
   for (const pair of contrastPairs) {
     assert.ok(colorRoles.includes(pair.foreground), pair.foreground);
     assert.ok(colorRoles.includes(pair.background), pair.background);

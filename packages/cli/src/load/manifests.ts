@@ -7,7 +7,11 @@ import { CliError, ExitCode } from "../errors.js";
 import { manifestProblems, type StyleManifest } from "../generate/components.js";
 
 /** Component packages in output order. */
-export const COMPONENT_PACKAGES = ["@neshel-ui/layout", "@neshel-ui/typography"] as const;
+export const COMPONENT_PACKAGES = [
+  "@neshel-ui/layout",
+  "@neshel-ui/typography",
+  "@neshel-ui/components",
+] as const;
 
 /**
  * Manifests of the component packages resolvable from `directory` (Node resolution honouring

@@ -171,7 +171,7 @@ test("installed packages without or with an incompatible manifest fail with exit
   const future = project({
     "neshel.config.mjs": config(REPLACE),
     ...fakePackage("@neshel-ui/typography", {
-      manifest: manifest("@neshel-ui/typography", { schema: 2 }),
+      manifest: manifest("@neshel-ui/typography", { schema: 3 }),
     }),
   });
   t.after(future.cleanup);

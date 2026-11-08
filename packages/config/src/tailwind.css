@@ -48,6 +48,10 @@
     --neshel-accent-foreground: #071936;
     --neshel-destructive: #b42318;
     --neshel-destructive-foreground: #ffffff;
+    --neshel-success: #1d6b3e;
+    --neshel-success-foreground: #ffffff;
+    --neshel-warning: #f2c14e;
+    --neshel-warning-foreground: #2b1d00;
     --neshel-selected: #dbe4f3;
     --neshel-selected-foreground: #0d2347;
     --neshel-disabled: #ece8e3;
@@ -74,6 +78,10 @@
       --neshel-accent-foreground: #071936;
       --neshel-destructive: #f97066;
       --neshel-destructive-foreground: #1a0503;
+      --neshel-success: #6fd09a;
+      --neshel-success-foreground: #04170b;
+      --neshel-warning: #f2c35b;
+      --neshel-warning-foreground: #231800;
       --neshel-selected: #244679;
       --neshel-selected-foreground: #ffffff;
       --neshel-disabled: #13274a;
@@ -100,6 +108,10 @@
     --neshel-accent-foreground: #071936;
     --neshel-destructive: #f97066;
     --neshel-destructive-foreground: #1a0503;
+    --neshel-success: #6fd09a;
+    --neshel-success-foreground: #04170b;
+    --neshel-warning: #f2c35b;
+    --neshel-warning-foreground: #231800;
     --neshel-selected: #244679;
     --neshel-selected-foreground: #ffffff;
     --neshel-disabled: #13274a;
@@ -125,6 +137,10 @@
   --color-neshel-accent-foreground: var(--neshel-accent-foreground);
   --color-neshel-destructive: var(--neshel-destructive);
   --color-neshel-destructive-foreground: var(--neshel-destructive-foreground);
+  --color-neshel-success: var(--neshel-success);
+  --color-neshel-success-foreground: var(--neshel-success-foreground);
+  --color-neshel-warning: var(--neshel-warning);
+  --color-neshel-warning-foreground: var(--neshel-warning-foreground);
   --color-neshel-selected: var(--neshel-selected);
   --color-neshel-selected-foreground: var(--neshel-selected-foreground);
   --color-neshel-disabled: var(--neshel-disabled);
