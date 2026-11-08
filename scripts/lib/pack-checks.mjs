@@ -2,6 +2,7 @@
 // Every function takes the packed manifest and/or a Map of package-relative POSIX paths to
 // file contents and returns a list of actionable error strings. No I/O happens here.
 import { posix } from "node:path";
+import { checkLayoutStylesheet } from "./layout-css.mjs";
 
 const RUNTIME_FIELDS = ["dependencies", "optionalDependencies", "peerDependencies"];
 const ALL_DEP_FIELDS = [...RUNTIME_FIELDS, "devDependencies"];
@@ -222,6 +223,53 @@ export function checkPublicPeers(manifest, publicNames = []) {
 }
 
 /** Bare (non-relative) import specifiers of an ES module source, including `node:` built-ins. */
+/** Bare specifiers the layout runtime may import (feature 003 FR-070/FR-071). */
+export const LAYOUT_ALLOWED_IMPORTS = [
+  "react",
+  "react/jsx-runtime",
+  "@radix-ui/react-slot",
+  "tailwind-variants/lite",
+];
+
+/**
+ * Feature 003 contract (ADR 0008/0009): exact exports and dependencies, React peer, browser-safe
+ * imports only, and a hygienic, layered stylesheet identical to the committed source (C4).
+ */
+export function checkLayoutContract(manifest, files, { layoutSourceCss } = {}) {
+  const errors = [];
+  if (!sameKeys(manifest.exports, [".", "./styles.css"])) {
+    errors.push("exports must be exactly ., ./styles.css");
+  }
+  if (!sameKeys(manifest.dependencies, ["@radix-ui/react-slot", "tailwind-variants"])) {
+    errors.push(
+      `dependencies must be exactly @radix-ui/react-slot and tailwind-variants; found ${Object.keys(manifest.dependencies ?? {}).join(", ") || "none"}`,
+    );
+  }
+  if (!sameKeys(manifest.peerDependencies, ["react"])) {
+    errors.push("peerDependencies must be exactly react");
+  }
+  for (const [path, contents] of files) {
+    if (!/^dist\/.*\.js$/.test(path)) continue;
+    for (const specifier of bareImports(contents.toString("utf8"))) {
+      if (!LAYOUT_ALLOWED_IMPORTS.includes(specifier)) {
+        errors.push(
+          `${path} imports "${specifier}"; allowed: ${LAYOUT_ALLOWED_IMPORTS.join(", ")}`,
+        );
+      }
+    }
+  }
+  const stylesheet = files.get("dist/styles.css")?.toString("utf8");
+  if (!stylesheet) {
+    errors.push("dist/styles.css is missing");
+  } else {
+    errors.push(...checkLayoutStylesheet(stylesheet).map((error) => `dist/styles.css: ${error}`));
+    if (layoutSourceCss !== undefined && stylesheet !== layoutSourceCss) {
+      errors.push("dist/styles.css differs from packages/layout/src/styles.css (stale build?)");
+    }
+  }
+  return errors;
+}
+
 export function bareImports(source) {
   const specifiers = [...source.matchAll(/(?:\bfrom\s*|\bimport\s*\(?\s*)["']([^"']+)["']/g)].map(
     (match) => match[1],
@@ -236,8 +284,10 @@ const sameKeys = (object, expected) =>
  * Package-specific contracts of feature 002 (ADR 0006/0007): exact `config` exports, a
  * dependency-free browser-safe entry, the styles.css alias, and the exact `cli` dependency set.
  */
-export function checkPackageContract(manifest, files) {
+export function checkPackageContract(manifest, files, context = {}) {
   const errors = [];
+  if (manifest.name === "@neshel-ui/layout")
+    errors.push(...checkLayoutContract(manifest, files, context));
   if (manifest.name === "@neshel-ui/config") {
     const expected = [".", "./tokens.css", "./tailwind.css", "./styles.css"];
     if (!sameKeys(manifest.exports, expected)) {

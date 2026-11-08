@@ -205,3 +205,76 @@ test("cli package contract: exact runtime dependencies and config peer", () => {
   );
   assert.equal(errors.length, 2);
 });
+
+const layoutCss = `/* header */
+@layer components.neshel {
+  .neshel-stack { display: flex; flex-direction: column; }
+}
+`;
+const layoutManifest = {
+  name: "@neshel-ui/layout",
+  exports: {
+    ".": { types: "./dist/index.d.ts", import: "./dist/index.js" },
+    "./styles.css": "./dist/styles.css",
+  },
+  dependencies: { "@radix-ui/react-slot": "^1.5.0", "tailwind-variants": "^3.3.1" },
+  peerDependencies: { react: "^19.0.0" },
+};
+const layoutFiles = (overrides = {}) =>
+  files({
+    "dist/index.js": 'export { Stack } from "./stack.js";',
+    "dist/stack.js":
+      'import { jsx } from "react/jsx-runtime";\nimport { Slot } from "@radix-ui/react-slot";\nimport { tv } from "tailwind-variants/lite";\nimport { Children } from "react";',
+    "dist/styles.css": layoutCss,
+    ...overrides,
+  });
+
+test("layout package contract: exports, deps, peers, imports and stylesheet (feature 003)", () => {
+  assert.deepEqual(
+    checkPackageContract(layoutManifest, layoutFiles(), { layoutSourceCss: layoutCss }),
+    [],
+  );
+});
+
+test("negative: layout contract detects broken exports, leaked deps and Node imports (SC-005)", () => {
+  const errors = checkPackageContract(
+    {
+      ...layoutManifest,
+      exports: { ".": layoutManifest.exports["."] },
+      dependencies: { ...layoutManifest.dependencies, "tailwind-merge": "^3.0.0" },
+      peerDependencies: { react: "^19.0.0", "react-dom": "^19.0.0" },
+    },
+    layoutFiles({
+      "dist/a.js":
+        'import { readFileSync } from "node:fs";\nimport "tailwind-variants";\nimport "@neshel-ui/components";',
+    }),
+  );
+  const text = errors.join("\n");
+  assert.match(text, /exports must be exactly \., \.\/styles\.css/);
+  assert.match(
+    text,
+    /dependencies must be exactly @radix-ui\/react-slot and tailwind-variants; found .*tailwind-merge/,
+  );
+  assert.match(text, /peerDependencies must be exactly react/);
+  assert.match(text, /dist\/a\.js imports "node:fs"/);
+  assert.match(text, /dist\/a\.js imports "tailwind-variants"; allowed/);
+  assert.match(text, /dist\/a\.js imports "@neshel-ui\/components"/);
+});
+
+test("negative: layout contract detects a missing, unhygienic or stale stylesheet (SC-005)", () => {
+  const missing = new Map([...layoutFiles()].filter(([path]) => path !== "dist/styles.css"));
+  assert.match(
+    checkPackageContract(layoutManifest, missing).join(),
+    /dist\/styles\.css is missing/,
+  );
+  const dirty = layoutFiles({
+    "dist/styles.css": `${layoutCss}\n@source "../src";\ndiv { margin: 0 }`,
+  });
+  const dirtyErrors = checkPackageContract(layoutManifest, dirty).join("\n");
+  assert.match(dirtyErrors, /@source/);
+  assert.match(dirtyErrors, /selector "div"/);
+  const stale = checkPackageContract(layoutManifest, layoutFiles(), {
+    layoutSourceCss: `${layoutCss}/* newer */`,
+  });
+  assert.match(stale.join(), /differs from packages\/layout\/src\/styles\.css/);
+});

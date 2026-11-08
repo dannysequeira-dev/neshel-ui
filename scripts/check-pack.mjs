@@ -39,6 +39,8 @@ const attwBin = join(dirname(attwPackage), JSON.parse(readFileSync(attwPackage, 
 // attw's esm-only profile: CommonJS resolution modes are intentionally unsupported.
 const IGNORED_RESOLUTIONS = new Set(["node10", "node16-cjs"]);
 
+const readOptional = (path) => (existsSync(path) ? readFileSync(path, "utf8") : undefined);
+
 function node(args, cwd) {
   return spawnSync(process.execPath, args, { cwd, encoding: "utf8" });
 }
@@ -257,7 +259,9 @@ async function main() {
         ...checkUnexpectedFiles(files),
         ...checkLifecycleScripts(manifest),
         ...checkPublicPeers(manifest, publicNames),
-        ...checkPackageContract(manifest, files),
+        ...checkPackageContract(manifest, files, {
+          layoutSourceCss: readOptional(join(pkg.dir, "src", "styles.css")),
+        }),
         ...determinismErrors,
       ];
       const lint = await runPublint(tarball, manifest);
