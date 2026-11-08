@@ -70,6 +70,11 @@ jobs:
       - name: Verify package exports
         run: pnpm check:exports
 
+      # Packs every intended public package and validates the real tarballs
+      # (manifest, targets, source maps, publint, attw, external consumer).
+      - name: Verify packed artifacts
+        run: pnpm check:pack --no-build
+
       - name: Build Vite consumer
         run: pnpm --filter @neshel-ui/playground-vite build
 
