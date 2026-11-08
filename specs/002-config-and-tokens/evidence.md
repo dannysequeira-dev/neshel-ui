@@ -62,3 +62,26 @@ Verified locally (2026-11-07, Chrome 156.0.8078.81): `pnpm check:browser --consu
 8251 computed-style assertions, 0 failures, negative control detected; supported import orders
 C1 (tokens → generated), C2 (generated → tokens, generated → tailwind) and C3 (generated only)
 behave identically. Visual capture: [visual-verification/](visual-verification/README.md).
+
+**Verified in GitHub Actions:** commit `1a6a1d3`, run 42448773620 — 5/5 jobs success; the
+"Browser cascade check" step ran on every job (11–16 s; it fails under `CI=true` when no browser
+exists, so success means Chrome was found and all assertions passed). Step logs were not read
+(authentication required); results are inferred from step conclusions.
+
+## 002.3 — Typed configuration and validation
+
+Implemented: T035–T044.
+
+- `defineConfig` (identity) and `ExactConfig`: unknown keys at every level, named themes without
+  `extends`, `extends` on `light`/`dark`, a `system` theme, wrong value types and extra keys on
+  reused objects are type errors. 15 negative fixtures (`@ts-expect-error`, unused directives fail
+  the build) and positive fixtures in `packages/config/type-tests/`, part of `pnpm typecheck`.
+- `packages/cli/src/diagnostics.ts` (codes, deterministic sorting, did-you-mean, aligned text,
+  ANSI only on request) and `validate/structure.ts` (all structural codes of data-model.md).
+- `validate/index.ts`: structure → colours (allowlist, parse, alpha only on `border`, gamut
+  warning) → contrast for customised and named themes; policy `--strict` › `contrast` › `warn`.
+- SC-006: the `plain` consumer bundles an entry importing only `defineConfig` with Vite
+  (minified): **272 bytes**, no contract data.
+
+Verified locally (2026-11-07): `pnpm typecheck`, `pnpm test:packages` (42 pass),
+`pnpm check:consumer --variant plain` (including the bundle check).

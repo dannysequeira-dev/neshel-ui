@@ -92,16 +92,16 @@ US5 validate/generate. **Nothing below is started; 002.1 requires owner authoriz
 **Goal**: `defineConfig` types catch mistakes; validation reports them precisely.
 **Independent test**: type fixtures and validator tests.
 
-- [ ] T035 [US4] Implement `defineConfig` and `ExactConfig` in `packages/config/src/define-config.ts`; export from `index.ts`
-- [ ] T036 [P] [US4] Positive type fixtures in `packages/config/type-tests/valid.ts` (contract example, named theme, metrics, readonly arrays)
-- [ ] T037 [P] [US4] Negative fixtures with `@ts-expect-error` in `packages/config/type-tests/invalid.ts`: misspelled role, named theme without `extends`, `extends` on `light`, `system` key, `version: 2`, unknown top-level key, extra key on a non-literal object
-- [ ] T038 [US4] Include `type-tests/` in `packages/config` typecheck only (excluded from build and pack)
-- [ ] T039 [US4] Implement `packages/cli/src/diagnostics.ts`: types, sorting, text formatting (TTY/`NO_COLOR`), did-you-mean (edit distance ≤ 2)
-- [ ] T040 [US4] Implement `packages/cli/src/validate/structure.ts` with every structural code of [data-model.md](data-model.md)
-- [ ] T041 [P] [US4] Test in `packages/cli/test/structure.test.mjs`: one negative case per code, all errors in one pass, sort order, metrics `info`
-- [ ] T042 [US4] Compose structure, colour and contrast stages with policy precedence in `packages/cli/src/validate/index.ts`
-- [ ] T043 [P] [US4] Test in `packages/cli/test/validate.test.mjs`: colour codes, alpha on `border` allowed, out-of-gamut warning, contrast under the four policy combinations of [contracts/cli.md](contracts/cli.md)
-- [ ] T044 [US4] Add a `defineConfig`-only bundle check to the `plain` consumer (`scripts/check-consumer.mjs`): size delta < 1 kB minified and no contract data in the chunk (SC-006); record evidence and stop for review
+- [x] T035 [US4] Implement `defineConfig` and `ExactConfig` in `packages/config/src/define-config.ts`; export from `index.ts`
+- [x] T036 [P] [US4] Positive type fixtures in `packages/config/type-tests/valid.ts` (contract example, named theme, metrics, readonly arrays)
+- [x] T037 [P] [US4] Negative fixtures with `@ts-expect-error` in `packages/config/type-tests/invalid.ts`: misspelled role, named theme without `extends`, `extends` on `light`, `system` key, `version: 2`, unknown top-level key, extra key on a non-literal object
+- [x] T038 [US4] Include `type-tests/` in `packages/config` typecheck only (excluded from build and pack)
+- [x] T039 [US4] Implement `packages/cli/src/diagnostics.ts`: types, sorting, text formatting (TTY/`NO_COLOR`), did-you-mean (edit distance ≤ 2)
+- [x] T040 [US4] Implement `packages/cli/src/validate/structure.ts` with every structural code of [data-model.md](data-model.md)
+- [x] T041 [P] [US4] Test in `packages/cli/test/structure.test.mjs`: one negative case per code, all errors in one pass, sort order, metrics `info`
+- [x] T042 [US4] Compose structure, colour and contrast stages with policy precedence in `packages/cli/src/validate/index.ts`
+- [x] T043 [P] [US4] Test in `packages/cli/test/validate.test.mjs`: colour codes, alpha on `border` allowed, out-of-gamut warning, contrast under the four policy combinations of [contracts/cli.md](contracts/cli.md)
+- [x] T044 [US4] Add a `defineConfig`-only bundle check to the `plain` consumer (`scripts/check-consumer.mjs`): size delta < 1 kB minified and no contract data in the chunk (SC-006); record evidence and stop for review
 
 ---
 
