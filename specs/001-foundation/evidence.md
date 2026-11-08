@@ -429,3 +429,44 @@ pass. Conditions before declaring Phase 001 fully closed:
 1. CI on the final 001.5 commits (documentation-only changes after `9af7a8f`).
 2. Maintainer visual inspection of `pnpm dev:playground` (including the theme toggle) and
    `pnpm dev:storybook`, or an explicit waiver of release-gate item 2.
+
+## Phase 001 final closure gates (2026-11-08)
+
+### 001.5 — native CI result (run 42438846553, commit `16a183c`)
+
+**CI pass** — all 5 jobs `success`, 19 steps each, none skipped/cancelled, attempt 1:
+ubuntu/Node 22 (35 s), ubuntu/Node 24 (29 s), ubuntu/Node 26 (39 s), windows/Node 26
+(79 s), macos/Node 26 (36 s). Annotations: informational only (Ubuntu 26 migration,
+macOS queue). Log contents not accessed (authentication required).
+
+### US-03 — browser verification
+
+Headless Chrome 156.0.8078.81 via the Chrome DevTools Protocol against `pnpm dev:playground`
+(Vite 8.3.6) and `pnpm dev:storybook` (Storybook 10.6.6) on `16a183c`; real mouse clicks on
+the theme toggle. Evidence and manual reproduction steps:
+[visual-verification/](visual-verification/README.md).
+
+- Playground loads; light tokens applied (`--neshel-primary #6d28d9`, white background).
+- Toggle → dark: `data-neshel-theme="dark"`, `color-scheme: dark`, 6 colour tokens and the
+  computed colours of page, card and button change; second toggle restores light.
+- Storybook renders "Foundations / Welcome – Default" with Neshel tokens in the preview.
+- Console: no application errors or exceptions; only `favicon.ico` 404s, Vite/React
+  informational logs and a Storybook UI deprecation warning.
+- "Neshel-UI" wordmark text present in both apps; brand assets and README unchanged.
+
+### Final status
+
+25/25 FR (3 qualified: FR-009, FR-023, FR-025), 7/7 SC, 6/6 US and all four release-gate
+items are met — see [traceability.md](traceability.md#reconciliation-final).
+
+Remaining accepted risks: Spec Kit bootstrap executed on Windows only; CI log-level details
+inferred; `check:consumer` needs the npm registry; only `config` exercised by an external
+consumer; attw bundles TypeScript 5.6.1-rc; Vite 7 no longer re-tested; Storybook `DEP0205`
+and Storybook 11 `ariaLabel` deprecation; concurrent dev servers trigger a duplicate package
+rebuild; baseline primary colour (violet) differs from the brand palette (navy/gold) until
+feature 002; `@neshel-ui` scope ownership unverified.
+
+### Recommendation: **PASS**
+
+Phase 001 is closed once the documentation-only closure commit that records this section
+receives the same five-job CI result. No package is published; all publication guards remain.
