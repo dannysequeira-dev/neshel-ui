@@ -1,4 +1,4 @@
-import { Box, Center, Container, Grid, Inline, Stack } from "@neshel-ui/layout";
+import { Box, Center, Container, Flex, Grid, Inline, Stack } from "@neshel-ui/layout";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import type { ComponentProps } from "react";
 import { Frame, Tile, tiles } from "./demo";
@@ -129,7 +129,15 @@ export const ApplicationShell: Story = {
     <Box className="min-h-screen bg-neshel-background text-neshel-foreground">
       <Box as="header" className="border-b border-neshel-border bg-neshel-surface">
         <Container size="xl" gutter={{ base: "4", md: "8" }}>
-          <Inline justify="between" alignY="center" style={{ minHeight: 64 }}>
+          {/* Column on small screens, row from 48rem; justify overrides the main-axis alignX. */}
+          <Flex
+            direction={{ base: "column", md: "row" }}
+            justify={{ base: "start", md: "between" }}
+            alignX="start"
+            alignY="center"
+            space="3"
+            className="py-4"
+          >
             <Inline space="2" alignY="center">
               <span aria-hidden="true" className="size-6 rounded-neshel-full bg-neshel-primary" />
               <strong>Neshel-UI</strong>
@@ -139,7 +147,7 @@ export const ApplicationShell: Story = {
               <a href="#projects">Projects</a>
               <a href="#settings">Settings</a>
             </Inline>
-          </Inline>
+          </Flex>
         </Container>
       </Box>
       <Container as="main" size="xl" gutter={{ base: "4", md: "8" }} className="py-8">
