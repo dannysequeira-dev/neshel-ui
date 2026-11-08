@@ -287,9 +287,9 @@ test("negative: layout contract detects broken exports, leaked deps and Node imp
   assert.match(text, /exports must be exactly \., \.\/styles\.css, \.\/style-manifest\.json/);
   assert.match(
     text,
-    /dependencies must be exactly @radix-ui\/react-slot and tailwind-variants; found .*tailwind-merge/,
+    /dependencies must be exactly @radix-ui\/react-slot, tailwind-variants; found .*tailwind-merge/,
   );
-  assert.match(text, /peerDependencies must be exactly @neshel-ui\/config and react/);
+  assert.match(text, /peerDependencies must be exactly @neshel-ui\/config, react$/m);
   assert.match(text, /dist\/a\.js imports "node:fs"/);
   assert.match(text, /dist\/a\.js imports "tailwind-variants"; allowed/);
   assert.match(text, /dist\/a\.js imports "@neshel-ui\/components"/);
@@ -311,4 +311,42 @@ test("negative: layout contract detects a missing, unhygienic or stale styleshee
     sourceCss: `${layoutCss}/* newer */`,
   });
   assert.match(stale.join(), /dist\/styles\.css differs from src\/styles\.css/);
+});
+
+test("negative: components contract rejects root Base UI imports, Neshel runtime imports and schema 1", () => {
+  const manifest = {
+    ...layoutManifest,
+    name: "@neshel-ui/components",
+    dependencies: { "@radix-ui/react-slot": "^1.5.0", "tailwind-variants": "^3.3.1" },
+    peerDependencies: { react: "^19.0.0" },
+  };
+  const files = layoutFiles({
+    "dist/a.js": [
+      'import { Select } from "@base-ui/react";',
+      'import { Stack } from "@neshel-ui/layout";',
+      'import * as D from "@radix-ui/react-dialog";',
+    ].join("\n"),
+    "dist/style-manifest.json": JSON.stringify({
+      schema: 1,
+      package: "@neshel-ui/components",
+      version: manifest.version,
+    }),
+  });
+  const text = checkPackageContract(manifest, files).join("\n");
+  assert.match(text, /dependencies must be exactly @base-ui\/react, /);
+  assert.match(text, /peerDependencies must be exactly @neshel-ui\/config, react, react-dom/);
+  assert.match(text, /dist\/a\.js imports "@base-ui\/react"; allowed/);
+  assert.match(text, /dist\/a\.js imports "@neshel-ui\/layout"; allowed/);
+  assert.doesNotMatch(text, /imports "@radix-ui\/react-dialog"/);
+  assert.match(text, /schema must be 2/);
+});
+
+test("bareImports ignores string literals that contain the word from", () => {
+  const source = [
+    'const k = [{ selector: "from", d: [] }, { selector: "to" }];',
+    'import x from "react";',
+    'export { y } from "./y.js";',
+    'await import("tailwind-variants/lite");',
+  ].join("\n");
+  assert.deepEqual(bareImports(source), ["react", "tailwind-variants/lite"]);
 });

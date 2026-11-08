@@ -1,7 +1,7 @@
 /**
  * Breakpoint keys of responsive props (ADR 0010; contracts/breakpoints.md §3).
- * Shared verbatim by @neshel-ui/layout and @neshel-ui/typography (a drift test keeps the two
- * copies identical; neither package may depend on the other or on the private core package).
+ * Shared verbatim by @neshel-ui/layout, @neshel-ui/typography and @neshel-ui/components (a drift
+ * test keeps the copies identical; none may depend on another or on the private core package).
  *
  * - `isBreakpointKey`: the grammar every key must match (authoritative everywhere).
  * - `warnUnknownBreakpoint`: browser-only diagnostic against the names declared by the loaded

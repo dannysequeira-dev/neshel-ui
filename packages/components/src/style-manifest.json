@@ -1,0 +1,5022 @@
+{
+  "schema": 2,
+  "package": "@neshel-ui/components",
+  "version": "0.0.0",
+  "layer": "components.neshel",
+  "keyframes": [
+    {
+      "name": "neshel-fade-in",
+      "frames": [
+        {
+          "selector": "from",
+          "declarations": [
+            [
+              "opacity",
+              "0"
+            ]
+          ]
+        },
+        {
+          "selector": "to",
+          "declarations": [
+            [
+              "opacity",
+              "1"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "neshel-fade-out",
+      "frames": [
+        {
+          "selector": "from",
+          "declarations": [
+            [
+              "opacity",
+              "1"
+            ]
+          ]
+        },
+        {
+          "selector": "to",
+          "declarations": [
+            [
+              "opacity",
+              "0"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "neshel-zoom-in",
+      "frames": [
+        {
+          "selector": "from",
+          "declarations": [
+            [
+              "opacity",
+              "0"
+            ],
+            [
+              "transform",
+              "scale(0.96)"
+            ]
+          ]
+        },
+        {
+          "selector": "to",
+          "declarations": [
+            [
+              "opacity",
+              "1"
+            ],
+            [
+              "transform",
+              "none"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "neshel-zoom-out",
+      "frames": [
+        {
+          "selector": "from",
+          "declarations": [
+            [
+              "opacity",
+              "1"
+            ],
+            [
+              "transform",
+              "none"
+            ]
+          ]
+        },
+        {
+          "selector": "to",
+          "declarations": [
+            [
+              "opacity",
+              "0"
+            ],
+            [
+              "transform",
+              "scale(0.96)"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "neshel-slide-in-left",
+      "frames": [
+        {
+          "selector": "from",
+          "declarations": [
+            [
+              "transform",
+              "translateX(-100%)"
+            ]
+          ]
+        },
+        {
+          "selector": "to",
+          "declarations": [
+            [
+              "transform",
+              "none"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "neshel-slide-out-left",
+      "frames": [
+        {
+          "selector": "from",
+          "declarations": [
+            [
+              "transform",
+              "none"
+            ]
+          ]
+        },
+        {
+          "selector": "to",
+          "declarations": [
+            [
+              "transform",
+              "translateX(-100%)"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "neshel-slide-in-right",
+      "frames": [
+        {
+          "selector": "from",
+          "declarations": [
+            [
+              "transform",
+              "translateX(100%)"
+            ]
+          ]
+        },
+        {
+          "selector": "to",
+          "declarations": [
+            [
+              "transform",
+              "none"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "neshel-slide-out-right",
+      "frames": [
+        {
+          "selector": "from",
+          "declarations": [
+            [
+              "transform",
+              "none"
+            ]
+          ]
+        },
+        {
+          "selector": "to",
+          "declarations": [
+            [
+              "transform",
+              "translateX(100%)"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "neshel-slide-in-top",
+      "frames": [
+        {
+          "selector": "from",
+          "declarations": [
+            [
+              "transform",
+              "translateY(-100%)"
+            ]
+          ]
+        },
+        {
+          "selector": "to",
+          "declarations": [
+            [
+              "transform",
+              "none"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "neshel-slide-out-top",
+      "frames": [
+        {
+          "selector": "from",
+          "declarations": [
+            [
+              "transform",
+              "none"
+            ]
+          ]
+        },
+        {
+          "selector": "to",
+          "declarations": [
+            [
+              "transform",
+              "translateY(-100%)"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "neshel-slide-in-bottom",
+      "frames": [
+        {
+          "selector": "from",
+          "declarations": [
+            [
+              "transform",
+              "translateY(100%)"
+            ]
+          ]
+        },
+        {
+          "selector": "to",
+          "declarations": [
+            [
+              "transform",
+              "none"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "neshel-slide-out-bottom",
+      "frames": [
+        {
+          "selector": "from",
+          "declarations": [
+            [
+              "transform",
+              "none"
+            ]
+          ]
+        },
+        {
+          "selector": "to",
+          "declarations": [
+            [
+              "transform",
+              "translateY(100%)"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "neshel-pulse",
+      "frames": [
+        {
+          "selector": "from",
+          "declarations": [
+            [
+              "opacity",
+              "1"
+            ]
+          ]
+        },
+        {
+          "selector": "50%",
+          "declarations": [
+            [
+              "opacity",
+              "0.5"
+            ]
+          ]
+        },
+        {
+          "selector": "to",
+          "declarations": [
+            [
+              "opacity",
+              "1"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "neshel-spin",
+      "frames": [
+        {
+          "selector": "from",
+          "declarations": [
+            [
+              "transform",
+              "rotate(0deg)"
+            ]
+          ]
+        },
+        {
+          "selector": "to",
+          "declarations": [
+            [
+              "transform",
+              "rotate(360deg)"
+            ]
+          ]
+        }
+      ]
+    }
+  ],
+  "rules": [
+    {
+      "selector": ".neshel-visually-hidden",
+      "declarations": [
+        [
+          "position",
+          "absolute"
+        ],
+        [
+          "inline-size",
+          "1px"
+        ],
+        [
+          "block-size",
+          "1px"
+        ],
+        [
+          "padding",
+          "0"
+        ],
+        [
+          "margin",
+          "-1px"
+        ],
+        [
+          "overflow",
+          "hidden"
+        ],
+        [
+          "clip",
+          "rect(0, 0, 0, 0)"
+        ],
+        [
+          "clip-path",
+          "inset(50%)"
+        ],
+        [
+          "white-space",
+          "nowrap"
+        ],
+        [
+          "border",
+          "0"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-field-size-sm",
+      "declarations": [
+        [
+          "--neshel-field-height",
+          "2rem"
+        ],
+        [
+          "--neshel-field-px",
+          "calc(var(--neshel-spacing) * 2.5)"
+        ],
+        [
+          "--neshel-field-font-size",
+          "0.8125rem"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-field-size-md",
+      "declarations": [
+        [
+          "--neshel-field-height",
+          "2.5rem"
+        ],
+        [
+          "--neshel-field-px",
+          "calc(var(--neshel-spacing) * 3)"
+        ],
+        [
+          "--neshel-field-font-size",
+          "0.875rem"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-field-size-lg",
+      "declarations": [
+        [
+          "--neshel-field-height",
+          "3rem"
+        ],
+        [
+          "--neshel-field-px",
+          "calc(var(--neshel-spacing) * 4)"
+        ],
+        [
+          "--neshel-field-font-size",
+          "1rem"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-icon",
+      "declarations": [
+        [
+          "flex",
+          "none"
+        ],
+        [
+          "inline-size",
+          "1em"
+        ],
+        [
+          "block-size",
+          "1em"
+        ],
+        [
+          "pointer-events",
+          "none"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-button",
+      "declarations": [
+        [
+          "position",
+          "relative"
+        ],
+        [
+          "display",
+          "inline-flex"
+        ],
+        [
+          "align-items",
+          "center"
+        ],
+        [
+          "justify-content",
+          "center"
+        ],
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 2)"
+        ],
+        [
+          "box-sizing",
+          "border-box"
+        ],
+        [
+          "min-block-size",
+          "var(--neshel-button-height, 2.5rem)"
+        ],
+        [
+          "margin",
+          "0"
+        ],
+        [
+          "padding-block",
+          "0"
+        ],
+        [
+          "padding-inline",
+          "var(--neshel-button-px, calc(var(--neshel-spacing) * 4))"
+        ],
+        [
+          "border",
+          "1px solid transparent"
+        ],
+        [
+          "border-radius",
+          "var(--neshel-radius-md)"
+        ],
+        [
+          "font-family",
+          "inherit"
+        ],
+        [
+          "font-size",
+          "var(--neshel-button-font-size, 0.875rem)"
+        ],
+        [
+          "font-weight",
+          "500"
+        ],
+        [
+          "line-height",
+          "1.25"
+        ],
+        [
+          "text-decoration",
+          "none"
+        ],
+        [
+          "white-space",
+          "nowrap"
+        ],
+        [
+          "cursor",
+          "pointer"
+        ],
+        [
+          "user-select",
+          "none"
+        ],
+        [
+          "transition",
+          "background-color 150ms ease, border-color 150ms ease, color 150ms ease"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-button:focus-visible",
+      "declarations": [
+        [
+          "outline",
+          "var(--neshel-focus-width) solid var(--neshel-focus)"
+        ],
+        [
+          "outline-offset",
+          "var(--neshel-focus-offset)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-button > svg, .neshel-button-content > svg",
+      "declarations": [
+        [
+          "flex",
+          "none"
+        ],
+        [
+          "inline-size",
+          "1.125em"
+        ],
+        [
+          "block-size",
+          "1.125em"
+        ],
+        [
+          "pointer-events",
+          "none"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-button-icon-only",
+      "declarations": [
+        [
+          "inline-size",
+          "var(--neshel-button-height, 2.5rem)"
+        ],
+        [
+          "padding-inline",
+          "0"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-button-full-width",
+      "declarations": [
+        [
+          "inline-size",
+          "100%"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-button-variant-primary",
+      "declarations": [
+        [
+          "background-color",
+          "var(--neshel-primary)"
+        ],
+        [
+          "color",
+          "var(--neshel-primary-foreground)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-button-variant-primary:hover:not(:disabled, [aria-disabled=\"true\"])",
+      "declarations": [
+        [
+          "background-color",
+          "color-mix(in srgb, var(--neshel-primary) 86%, var(--neshel-primary-foreground))"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-button-variant-primary:active:not(:disabled, [aria-disabled=\"true\"])",
+      "declarations": [
+        [
+          "background-color",
+          "color-mix(in srgb, var(--neshel-primary) 78%, var(--neshel-primary-foreground))"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-button-variant-secondary",
+      "declarations": [
+        [
+          "background-color",
+          "var(--neshel-secondary)"
+        ],
+        [
+          "color",
+          "var(--neshel-secondary-foreground)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-button-variant-secondary:hover:not(:disabled, [aria-disabled=\"true\"])",
+      "declarations": [
+        [
+          "background-color",
+          "color-mix(in srgb, var(--neshel-secondary) 86%, var(--neshel-secondary-foreground))"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-button-variant-secondary:active:not(:disabled, [aria-disabled=\"true\"])",
+      "declarations": [
+        [
+          "background-color",
+          "color-mix(in srgb, var(--neshel-secondary) 78%, var(--neshel-secondary-foreground))"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-button-variant-destructive",
+      "declarations": [
+        [
+          "background-color",
+          "var(--neshel-destructive)"
+        ],
+        [
+          "color",
+          "var(--neshel-destructive-foreground)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-button-variant-destructive:hover:not(:disabled, [aria-disabled=\"true\"])",
+      "declarations": [
+        [
+          "background-color",
+          "color-mix(in srgb, var(--neshel-destructive) 86%, var(--neshel-destructive-foreground))"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-button-variant-destructive:active:not(:disabled, [aria-disabled=\"true\"])",
+      "declarations": [
+        [
+          "background-color",
+          "color-mix(in srgb, var(--neshel-destructive) 78%, var(--neshel-destructive-foreground))"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-button-variant-outline",
+      "declarations": [
+        [
+          "background-color",
+          "transparent"
+        ],
+        [
+          "border-color",
+          "var(--neshel-input)"
+        ],
+        [
+          "color",
+          "var(--neshel-foreground)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-button-variant-ghost",
+      "declarations": [
+        [
+          "background-color",
+          "transparent"
+        ],
+        [
+          "color",
+          "var(--neshel-foreground)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-button-variant-outline:hover:not(:disabled, [aria-disabled=\"true\"]), .neshel-button-variant-ghost:hover:not(:disabled, [aria-disabled=\"true\"])",
+      "declarations": [
+        [
+          "background-color",
+          "var(--neshel-muted)"
+        ],
+        [
+          "color",
+          "var(--neshel-foreground)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-button-variant-outline:active:not(:disabled, [aria-disabled=\"true\"]), .neshel-button-variant-ghost:active:not(:disabled, [aria-disabled=\"true\"])",
+      "declarations": [
+        [
+          "background-color",
+          "color-mix(in srgb, var(--neshel-muted) 85%, var(--neshel-foreground))"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-button-variant-link",
+      "declarations": [
+        [
+          "background-color",
+          "transparent"
+        ],
+        [
+          "color",
+          "var(--neshel-primary)"
+        ],
+        [
+          "text-underline-offset",
+          "0.2em"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-button-variant-link:hover:not(:disabled, [aria-disabled=\"true\"])",
+      "declarations": [
+        [
+          "text-decoration",
+          "underline"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-button:disabled",
+      "declarations": [
+        [
+          "background-color",
+          "var(--neshel-disabled)"
+        ],
+        [
+          "color",
+          "var(--neshel-disabled-foreground)"
+        ],
+        [
+          "border-color",
+          "transparent"
+        ],
+        [
+          "cursor",
+          "not-allowed"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-button-variant-ghost:disabled, .neshel-button-variant-link:disabled",
+      "declarations": [
+        [
+          "background-color",
+          "transparent"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-button[aria-disabled=\"true\"]",
+      "declarations": [
+        [
+          "cursor",
+          "not-allowed"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-button[data-loading]",
+      "declarations": [
+        [
+          "cursor",
+          "progress"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-button-content",
+      "declarations": [
+        [
+          "display",
+          "inline-flex"
+        ],
+        [
+          "align-items",
+          "center"
+        ],
+        [
+          "gap",
+          "inherit"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-button[data-loading] > .neshel-button-content",
+      "declarations": [
+        [
+          "opacity",
+          "0"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-button-spinner",
+      "declarations": [
+        [
+          "position",
+          "absolute"
+        ],
+        [
+          "inset",
+          "0"
+        ],
+        [
+          "margin",
+          "auto"
+        ],
+        [
+          "inline-size",
+          "1.125em"
+        ],
+        [
+          "block-size",
+          "1.125em"
+        ],
+        [
+          "box-sizing",
+          "border-box"
+        ],
+        [
+          "border",
+          "2px solid currentColor"
+        ],
+        [
+          "border-inline-end-color",
+          "transparent"
+        ],
+        [
+          "border-radius",
+          "var(--neshel-radius-full)"
+        ],
+        [
+          "animation",
+          "neshel-spin 700ms linear infinite"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-button-spinner",
+      "declarations": [
+        [
+          "animation-duration",
+          "1500ms"
+        ]
+      ],
+      "media": "(prefers-reduced-motion: reduce)"
+    },
+    {
+      "selector": ".neshel-button",
+      "declarations": [
+        [
+          "transition",
+          "none"
+        ]
+      ],
+      "media": "(prefers-reduced-motion: reduce)"
+    },
+    {
+      "selector": ".neshel-card",
+      "declarations": [
+        [
+          "display",
+          "flex"
+        ],
+        [
+          "flex-direction",
+          "column"
+        ],
+        [
+          "gap",
+          "var(--neshel-card-gap, calc(var(--neshel-spacing) * 4))"
+        ],
+        [
+          "box-sizing",
+          "border-box"
+        ],
+        [
+          "min-inline-size",
+          "0"
+        ],
+        [
+          "padding",
+          "var(--neshel-card-padding, calc(var(--neshel-spacing) * 6))"
+        ],
+        [
+          "border-radius",
+          "var(--neshel-radius-lg)"
+        ],
+        [
+          "border",
+          "1px solid var(--neshel-border)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-card-padding-sm",
+      "declarations": [
+        [
+          "--neshel-card-padding",
+          "calc(var(--neshel-spacing) * 4)"
+        ],
+        [
+          "--neshel-card-gap",
+          "calc(var(--neshel-spacing) * 3)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-card-padding-md",
+      "declarations": [
+        [
+          "--neshel-card-padding",
+          "calc(var(--neshel-spacing) * 6)"
+        ],
+        [
+          "--neshel-card-gap",
+          "calc(var(--neshel-spacing) * 4)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-card-padding-lg",
+      "declarations": [
+        [
+          "--neshel-card-padding",
+          "calc(var(--neshel-spacing) * 8)"
+        ],
+        [
+          "--neshel-card-gap",
+          "calc(var(--neshel-spacing) * 6)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-card-variant-default",
+      "declarations": [
+        [
+          "background-color",
+          "var(--neshel-surface)"
+        ],
+        [
+          "color",
+          "var(--neshel-surface-foreground)"
+        ],
+        [
+          "box-shadow",
+          "0 1px 2px color-mix(in srgb, var(--neshel-foreground) 8%, transparent)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-card-variant-outline",
+      "declarations": [
+        [
+          "background-color",
+          "transparent"
+        ],
+        [
+          "color",
+          "inherit"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-card-variant-muted",
+      "declarations": [
+        [
+          "background-color",
+          "var(--neshel-muted)"
+        ],
+        [
+          "color",
+          "var(--neshel-foreground)"
+        ],
+        [
+          "border-color",
+          "transparent"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-card-header",
+      "declarations": [
+        [
+          "display",
+          "grid"
+        ],
+        [
+          "grid-template-columns",
+          "minmax(0, 1fr) auto"
+        ],
+        [
+          "column-gap",
+          "calc(var(--neshel-spacing) * 4)"
+        ],
+        [
+          "row-gap",
+          "calc(var(--neshel-spacing) * 1.5)"
+        ],
+        [
+          "align-items",
+          "start"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-card-header > :not(.neshel-card-action)",
+      "declarations": [
+        [
+          "grid-column",
+          "1"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-card-action",
+      "declarations": [
+        [
+          "grid-column",
+          "2"
+        ],
+        [
+          "grid-row",
+          "1 / span 2"
+        ],
+        [
+          "align-self",
+          "start"
+        ],
+        [
+          "justify-self",
+          "end"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-card-title",
+      "declarations": [
+        [
+          "margin",
+          "0"
+        ],
+        [
+          "font-size",
+          "1.125rem"
+        ],
+        [
+          "font-weight",
+          "600"
+        ],
+        [
+          "line-height",
+          "1.3"
+        ],
+        [
+          "color",
+          "inherit"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-card-description",
+      "declarations": [
+        [
+          "margin",
+          "0"
+        ],
+        [
+          "font-size",
+          "0.875rem"
+        ],
+        [
+          "line-height",
+          "1.5"
+        ],
+        [
+          "color",
+          "var(--neshel-muted-foreground)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-card-content",
+      "declarations": [
+        [
+          "min-inline-size",
+          "0"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-card-footer",
+      "declarations": [
+        [
+          "display",
+          "flex"
+        ],
+        [
+          "flex-wrap",
+          "wrap"
+        ],
+        [
+          "align-items",
+          "center"
+        ],
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 2)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-badge",
+      "declarations": [
+        [
+          "display",
+          "inline-flex"
+        ],
+        [
+          "align-items",
+          "center"
+        ],
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 1)"
+        ],
+        [
+          "box-sizing",
+          "border-box"
+        ],
+        [
+          "border",
+          "1px solid transparent"
+        ],
+        [
+          "border-radius",
+          "var(--neshel-radius-full)"
+        ],
+        [
+          "font-family",
+          "inherit"
+        ],
+        [
+          "font-weight",
+          "500"
+        ],
+        [
+          "line-height",
+          "1"
+        ],
+        [
+          "white-space",
+          "nowrap"
+        ],
+        [
+          "vertical-align",
+          "middle"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-badge > svg",
+      "declarations": [
+        [
+          "flex",
+          "none"
+        ],
+        [
+          "inline-size",
+          "0.875em"
+        ],
+        [
+          "block-size",
+          "0.875em"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-badge-size-sm",
+      "declarations": [
+        [
+          "padding",
+          "calc(var(--neshel-spacing) * 0.5) calc(var(--neshel-spacing) * 2)"
+        ],
+        [
+          "font-size",
+          "0.75rem"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-badge-size-md",
+      "declarations": [
+        [
+          "padding",
+          "calc(var(--neshel-spacing) * 1) calc(var(--neshel-spacing) * 2.5)"
+        ],
+        [
+          "font-size",
+          "0.8125rem"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-badge-variant-default",
+      "declarations": [
+        [
+          "background-color",
+          "var(--neshel-primary)"
+        ],
+        [
+          "color",
+          "var(--neshel-primary-foreground)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-badge-variant-secondary",
+      "declarations": [
+        [
+          "background-color",
+          "var(--neshel-secondary)"
+        ],
+        [
+          "color",
+          "var(--neshel-secondary-foreground)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-badge-variant-success",
+      "declarations": [
+        [
+          "background-color",
+          "var(--neshel-success)"
+        ],
+        [
+          "color",
+          "var(--neshel-success-foreground)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-badge-variant-warning",
+      "declarations": [
+        [
+          "background-color",
+          "var(--neshel-warning)"
+        ],
+        [
+          "color",
+          "var(--neshel-warning-foreground)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-badge-variant-destructive",
+      "declarations": [
+        [
+          "background-color",
+          "var(--neshel-destructive)"
+        ],
+        [
+          "color",
+          "var(--neshel-destructive-foreground)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-badge-variant-accent",
+      "declarations": [
+        [
+          "background-color",
+          "var(--neshel-accent)"
+        ],
+        [
+          "color",
+          "var(--neshel-accent-foreground)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-badge-variant-outline",
+      "declarations": [
+        [
+          "background-color",
+          "transparent"
+        ],
+        [
+          "border-color",
+          "var(--neshel-border)"
+        ],
+        [
+          "color",
+          "var(--neshel-foreground)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-input",
+      "declarations": [
+        [
+          "box-sizing",
+          "border-box"
+        ],
+        [
+          "inline-size",
+          "100%"
+        ],
+        [
+          "min-inline-size",
+          "0"
+        ],
+        [
+          "margin",
+          "0"
+        ],
+        [
+          "border",
+          "1px solid var(--neshel-input)"
+        ],
+        [
+          "border-radius",
+          "var(--neshel-radius-md)"
+        ],
+        [
+          "background-color",
+          "var(--neshel-surface)"
+        ],
+        [
+          "color",
+          "var(--neshel-surface-foreground)"
+        ],
+        [
+          "font-family",
+          "inherit"
+        ],
+        [
+          "font-size",
+          "var(--neshel-field-font-size, 0.875rem)"
+        ],
+        [
+          "line-height",
+          "1.25"
+        ],
+        [
+          "min-block-size",
+          "var(--neshel-field-height, 2.5rem)"
+        ],
+        [
+          "padding-block",
+          "calc(var(--neshel-spacing) * 1.5)"
+        ],
+        [
+          "padding-inline",
+          "var(--neshel-field-px, calc(var(--neshel-spacing) * 3))"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-input::placeholder",
+      "declarations": [
+        [
+          "color",
+          "var(--neshel-muted-foreground)"
+        ],
+        [
+          "opacity",
+          "1"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-input:focus-visible",
+      "declarations": [
+        [
+          "outline",
+          "var(--neshel-focus-width) solid var(--neshel-focus)"
+        ],
+        [
+          "outline-offset",
+          "var(--neshel-focus-offset)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-input::file-selector-button",
+      "declarations": [
+        [
+          "margin-inline-end",
+          "calc(var(--neshel-spacing) * 3)"
+        ],
+        [
+          "border",
+          "0"
+        ],
+        [
+          "background-color",
+          "transparent"
+        ],
+        [
+          "color",
+          "var(--neshel-foreground)"
+        ],
+        [
+          "font",
+          "inherit"
+        ],
+        [
+          "font-weight",
+          "500"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-input:read-only:not(:disabled)",
+      "declarations": [
+        [
+          "background-color",
+          "var(--neshel-muted)"
+        ],
+        [
+          "color",
+          "var(--neshel-foreground)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-input[aria-invalid=\"true\"], .neshel-select-trigger[aria-invalid=\"true\"], .neshel-combobox[data-invalid]",
+      "declarations": [
+        [
+          "border-color",
+          "var(--neshel-destructive)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-input[aria-invalid=\"true\"]:focus-visible, .neshel-select-trigger[aria-invalid=\"true\"]:focus-visible, .neshel-combobox[data-invalid]:focus-within",
+      "declarations": [
+        [
+          "outline-color",
+          "var(--neshel-destructive)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-input:disabled",
+      "declarations": [
+        [
+          "background-color",
+          "var(--neshel-disabled)"
+        ],
+        [
+          "color",
+          "var(--neshel-disabled-foreground)"
+        ],
+        [
+          "border-color",
+          "var(--neshel-border)"
+        ],
+        [
+          "cursor",
+          "not-allowed"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-label",
+      "declarations": [
+        [
+          "display",
+          "inline-flex"
+        ],
+        [
+          "align-items",
+          "center"
+        ],
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 1)"
+        ],
+        [
+          "font-family",
+          "inherit"
+        ],
+        [
+          "font-size",
+          "0.875rem"
+        ],
+        [
+          "font-weight",
+          "500"
+        ],
+        [
+          "line-height",
+          "1.25"
+        ],
+        [
+          "color",
+          "inherit"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-label-required",
+      "declarations": [
+        [
+          "color",
+          "var(--neshel-destructive)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-rule",
+      "declarations": [
+        [
+          "flex",
+          "none"
+        ],
+        [
+          "align-self",
+          "stretch"
+        ],
+        [
+          "margin",
+          "0"
+        ],
+        [
+          "padding",
+          "0"
+        ],
+        [
+          "border",
+          "0 solid var(--neshel-border)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-rule-horizontal",
+      "declarations": [
+        [
+          "border-block-start-width",
+          "1px"
+        ],
+        [
+          "block-size",
+          "0"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-rule-vertical",
+      "declarations": [
+        [
+          "border-inline-start-width",
+          "1px"
+        ],
+        [
+          "inline-size",
+          "0"
+        ],
+        [
+          "min-block-size",
+          "1em"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-skeleton",
+      "declarations": [
+        [
+          "display",
+          "block"
+        ],
+        [
+          "box-sizing",
+          "border-box"
+        ],
+        [
+          "inline-size",
+          "100%"
+        ],
+        [
+          "block-size",
+          "1rem"
+        ],
+        [
+          "border-radius",
+          "var(--neshel-radius-md)"
+        ],
+        [
+          "background-color",
+          "var(--neshel-muted)"
+        ],
+        [
+          "animation",
+          "neshel-pulse 2s ease-in-out infinite"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-skeleton-shape-circle",
+      "declarations": [
+        [
+          "inline-size",
+          "2.5rem"
+        ],
+        [
+          "block-size",
+          "auto"
+        ],
+        [
+          "aspect-ratio",
+          "1"
+        ],
+        [
+          "border-radius",
+          "var(--neshel-radius-full)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-skeleton-shape-text",
+      "declarations": [
+        [
+          "block-size",
+          "1em"
+        ],
+        [
+          "border-radius",
+          "var(--neshel-radius-sm)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-skeleton",
+      "declarations": [
+        [
+          "animation",
+          "none"
+        ]
+      ],
+      "media": "(prefers-reduced-motion: reduce)"
+    },
+    {
+      "selector": ".neshel-tooltip",
+      "declarations": [
+        [
+          "z-index",
+          "var(--neshel-z-popover, 60)"
+        ],
+        [
+          "box-sizing",
+          "border-box"
+        ],
+        [
+          "max-inline-size",
+          "20rem"
+        ],
+        [
+          "padding",
+          "calc(var(--neshel-spacing) * 1.5) calc(var(--neshel-spacing) * 2.5)"
+        ],
+        [
+          "border-radius",
+          "var(--neshel-radius-sm)"
+        ],
+        [
+          "background-color",
+          "var(--neshel-foreground)"
+        ],
+        [
+          "color",
+          "var(--neshel-background)"
+        ],
+        [
+          "font-family",
+          "var(--neshel-font-body)"
+        ],
+        [
+          "font-size",
+          "0.75rem"
+        ],
+        [
+          "line-height",
+          "1.4"
+        ],
+        [
+          "animation",
+          "neshel-fade-in 150ms ease-out"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-portal",
+      "declarations": [
+        [
+          "display",
+          "contents"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-overlay",
+      "declarations": [
+        [
+          "position",
+          "fixed"
+        ],
+        [
+          "inset",
+          "0"
+        ],
+        [
+          "z-index",
+          "var(--neshel-z-overlay, 50)"
+        ],
+        [
+          "background-color",
+          "var(--neshel-overlay-backdrop, light-dark(color-mix(in srgb, var(--neshel-foreground) 45%, transparent), color-mix(in srgb, var(--neshel-background) 75%, transparent)))"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-overlay[data-state=\"open\"]",
+      "declarations": [
+        [
+          "animation",
+          "neshel-fade-in 180ms ease-out"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-overlay[data-state=\"closed\"]",
+      "declarations": [
+        [
+          "animation",
+          "neshel-fade-out 120ms ease-in"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-dialog-content",
+      "declarations": [
+        [
+          "position",
+          "fixed"
+        ],
+        [
+          "z-index",
+          "var(--neshel-z-overlay, 50)"
+        ],
+        [
+          "display",
+          "flex"
+        ],
+        [
+          "flex-direction",
+          "column"
+        ],
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 4)"
+        ],
+        [
+          "box-sizing",
+          "border-box"
+        ],
+        [
+          "padding",
+          "calc(var(--neshel-spacing) * 6)"
+        ],
+        [
+          "overflow-y",
+          "auto"
+        ],
+        [
+          "background-color",
+          "var(--neshel-surface)"
+        ],
+        [
+          "color",
+          "var(--neshel-surface-foreground)"
+        ],
+        [
+          "box-shadow",
+          "0 16px 48px color-mix(in srgb, var(--neshel-foreground) 20%, transparent)"
+        ],
+        [
+          "font-family",
+          "var(--neshel-font-body)"
+        ],
+        [
+          "font-size",
+          "0.875rem"
+        ],
+        [
+          "line-height",
+          "1.5"
+        ],
+        [
+          "inset",
+          "0"
+        ],
+        [
+          "margin",
+          "auto"
+        ],
+        [
+          "inline-size",
+          "min(calc(100% - calc(var(--neshel-spacing) * 8)), var(--neshel-dialog-width, 32rem))"
+        ],
+        [
+          "block-size",
+          "fit-content"
+        ],
+        [
+          "max-block-size",
+          "calc(100dvh - calc(var(--neshel-spacing) * 8))"
+        ],
+        [
+          "border",
+          "1px solid var(--neshel-border)"
+        ],
+        [
+          "border-radius",
+          "var(--neshel-radius-lg)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-dialog-size-sm",
+      "declarations": [
+        [
+          "--neshel-dialog-width",
+          "24rem"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-dialog-size-md",
+      "declarations": [
+        [
+          "--neshel-dialog-width",
+          "32rem"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-dialog-size-lg",
+      "declarations": [
+        [
+          "--neshel-dialog-width",
+          "42rem"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-dialog-size-xl",
+      "declarations": [
+        [
+          "--neshel-dialog-width",
+          "56rem"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-dialog-size-full",
+      "declarations": [
+        [
+          "--neshel-dialog-width",
+          "100%"
+        ],
+        [
+          "block-size",
+          "calc(100dvh - calc(var(--neshel-spacing) * 8))"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-dialog-content:focus, .neshel-sheet-content:focus",
+      "declarations": [
+        [
+          "outline",
+          "none"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-dialog-content[data-state=\"open\"]",
+      "declarations": [
+        [
+          "animation",
+          "neshel-zoom-in 180ms ease-out"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-dialog-content[data-state=\"closed\"]",
+      "declarations": [
+        [
+          "animation",
+          "neshel-zoom-out 120ms ease-in"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-dialog-close",
+      "declarations": [
+        [
+          "position",
+          "absolute"
+        ],
+        [
+          "inset-block-start",
+          "calc(var(--neshel-spacing) * 3)"
+        ],
+        [
+          "inset-inline-end",
+          "calc(var(--neshel-spacing) * 3)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-dialog-header",
+      "declarations": [
+        [
+          "display",
+          "flex"
+        ],
+        [
+          "flex-direction",
+          "column"
+        ],
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 1.5)"
+        ],
+        [
+          "padding-inline-end",
+          "calc(var(--neshel-spacing) * 8)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-dialog-title",
+      "declarations": [
+        [
+          "margin",
+          "0"
+        ],
+        [
+          "font-size",
+          "1.125rem"
+        ],
+        [
+          "font-weight",
+          "600"
+        ],
+        [
+          "line-height",
+          "1.3"
+        ],
+        [
+          "color",
+          "inherit"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-dialog-description",
+      "declarations": [
+        [
+          "margin",
+          "0"
+        ],
+        [
+          "font-size",
+          "0.875rem"
+        ],
+        [
+          "color",
+          "var(--neshel-muted-foreground)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-dialog-body",
+      "declarations": [
+        [
+          "min-block-size",
+          "0"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-dialog-footer",
+      "declarations": [
+        [
+          "display",
+          "flex"
+        ],
+        [
+          "flex-wrap",
+          "wrap"
+        ],
+        [
+          "justify-content",
+          "flex-end"
+        ],
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 2)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-sheet-content",
+      "declarations": [
+        [
+          "position",
+          "fixed"
+        ],
+        [
+          "z-index",
+          "var(--neshel-z-overlay, 50)"
+        ],
+        [
+          "display",
+          "flex"
+        ],
+        [
+          "flex-direction",
+          "column"
+        ],
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 4)"
+        ],
+        [
+          "box-sizing",
+          "border-box"
+        ],
+        [
+          "padding",
+          "calc(var(--neshel-spacing) * 6)"
+        ],
+        [
+          "overflow-y",
+          "auto"
+        ],
+        [
+          "background-color",
+          "var(--neshel-surface)"
+        ],
+        [
+          "color",
+          "var(--neshel-surface-foreground)"
+        ],
+        [
+          "box-shadow",
+          "0 16px 48px color-mix(in srgb, var(--neshel-foreground) 20%, transparent)"
+        ],
+        [
+          "font-family",
+          "var(--neshel-font-body)"
+        ],
+        [
+          "font-size",
+          "0.875rem"
+        ],
+        [
+          "line-height",
+          "1.5"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-sheet-size-sm",
+      "declarations": [
+        [
+          "--neshel-sheet-size",
+          "20rem"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-sheet-size-md",
+      "declarations": [
+        [
+          "--neshel-sheet-size",
+          "24rem"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-sheet-size-lg",
+      "declarations": [
+        [
+          "--neshel-sheet-size",
+          "32rem"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-sheet-side-left",
+      "declarations": [
+        [
+          "top",
+          "0"
+        ],
+        [
+          "bottom",
+          "0"
+        ],
+        [
+          "left",
+          "0"
+        ],
+        [
+          "inline-size",
+          "min(var(--neshel-sheet-size, 24rem), calc(100% - calc(var(--neshel-spacing) * 10)))"
+        ],
+        [
+          "border-right",
+          "1px solid var(--neshel-border)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-sheet-side-left[data-state=\"open\"]",
+      "declarations": [
+        [
+          "animation",
+          "neshel-slide-in-left 220ms ease-out"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-sheet-side-left[data-state=\"closed\"]",
+      "declarations": [
+        [
+          "animation",
+          "neshel-slide-out-left 160ms ease-in"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-sheet-side-right",
+      "declarations": [
+        [
+          "top",
+          "0"
+        ],
+        [
+          "bottom",
+          "0"
+        ],
+        [
+          "right",
+          "0"
+        ],
+        [
+          "inline-size",
+          "min(var(--neshel-sheet-size, 24rem), calc(100% - calc(var(--neshel-spacing) * 10)))"
+        ],
+        [
+          "border-left",
+          "1px solid var(--neshel-border)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-sheet-side-right[data-state=\"open\"]",
+      "declarations": [
+        [
+          "animation",
+          "neshel-slide-in-right 220ms ease-out"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-sheet-side-right[data-state=\"closed\"]",
+      "declarations": [
+        [
+          "animation",
+          "neshel-slide-out-right 160ms ease-in"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-sheet-side-top",
+      "declarations": [
+        [
+          "top",
+          "0"
+        ],
+        [
+          "left",
+          "0"
+        ],
+        [
+          "right",
+          "0"
+        ],
+        [
+          "max-block-size",
+          "85dvh"
+        ],
+        [
+          "border-bottom",
+          "1px solid var(--neshel-border)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-sheet-side-top[data-state=\"open\"]",
+      "declarations": [
+        [
+          "animation",
+          "neshel-slide-in-top 220ms ease-out"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-sheet-side-top[data-state=\"closed\"]",
+      "declarations": [
+        [
+          "animation",
+          "neshel-slide-out-top 160ms ease-in"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-sheet-side-bottom",
+      "declarations": [
+        [
+          "bottom",
+          "0"
+        ],
+        [
+          "left",
+          "0"
+        ],
+        [
+          "right",
+          "0"
+        ],
+        [
+          "max-block-size",
+          "85dvh"
+        ],
+        [
+          "border-top",
+          "1px solid var(--neshel-border)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-sheet-side-bottom[data-state=\"open\"]",
+      "declarations": [
+        [
+          "animation",
+          "neshel-slide-in-bottom 220ms ease-out"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-sheet-side-bottom[data-state=\"closed\"]",
+      "declarations": [
+        [
+          "animation",
+          "neshel-slide-out-bottom 160ms ease-in"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-popover-content",
+      "declarations": [
+        [
+          "box-sizing",
+          "border-box"
+        ],
+        [
+          "border",
+          "1px solid var(--neshel-border)"
+        ],
+        [
+          "border-radius",
+          "var(--neshel-radius-md)"
+        ],
+        [
+          "background-color",
+          "var(--neshel-surface)"
+        ],
+        [
+          "color",
+          "var(--neshel-surface-foreground)"
+        ],
+        [
+          "box-shadow",
+          "0 8px 24px color-mix(in srgb, var(--neshel-foreground) 14%, transparent)"
+        ],
+        [
+          "font-family",
+          "var(--neshel-font-body)"
+        ],
+        [
+          "font-size",
+          "0.875rem"
+        ],
+        [
+          "line-height",
+          "1.4"
+        ],
+        [
+          "outline",
+          "none"
+        ],
+        [
+          "z-index",
+          "var(--neshel-z-popover, 60)"
+        ],
+        [
+          "inline-size",
+          "max-content"
+        ],
+        [
+          "max-inline-size",
+          "min(22rem, calc(100vw - calc(var(--neshel-spacing) * 4)))"
+        ],
+        [
+          "padding",
+          "calc(var(--neshel-spacing) * 4)"
+        ],
+        [
+          "transform-origin",
+          "var(--radix-popover-content-transform-origin)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-popover-content[data-state=\"open\"], .neshel-menu-content[data-state=\"open\"]",
+      "declarations": [
+        [
+          "animation",
+          "neshel-zoom-in 140ms ease-out"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-popover-content[data-state=\"closed\"], .neshel-menu-content[data-state=\"closed\"]",
+      "declarations": [
+        [
+          "animation",
+          "neshel-zoom-out 100ms ease-in"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-menu-content",
+      "declarations": [
+        [
+          "box-sizing",
+          "border-box"
+        ],
+        [
+          "border",
+          "1px solid var(--neshel-border)"
+        ],
+        [
+          "border-radius",
+          "var(--neshel-radius-md)"
+        ],
+        [
+          "background-color",
+          "var(--neshel-surface)"
+        ],
+        [
+          "color",
+          "var(--neshel-surface-foreground)"
+        ],
+        [
+          "box-shadow",
+          "0 8px 24px color-mix(in srgb, var(--neshel-foreground) 14%, transparent)"
+        ],
+        [
+          "font-family",
+          "var(--neshel-font-body)"
+        ],
+        [
+          "font-size",
+          "0.875rem"
+        ],
+        [
+          "line-height",
+          "1.4"
+        ],
+        [
+          "outline",
+          "none"
+        ],
+        [
+          "z-index",
+          "var(--neshel-z-popover, 60)"
+        ],
+        [
+          "min-inline-size",
+          "10rem"
+        ],
+        [
+          "max-block-size",
+          "var(--radix-dropdown-menu-content-available-height, 24rem)"
+        ],
+        [
+          "overflow-y",
+          "auto"
+        ],
+        [
+          "padding",
+          "calc(var(--neshel-spacing) * 1)"
+        ],
+        [
+          "transform-origin",
+          "var(--radix-dropdown-menu-content-transform-origin)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-menu-item",
+      "declarations": [
+        [
+          "position",
+          "relative"
+        ],
+        [
+          "display",
+          "flex"
+        ],
+        [
+          "align-items",
+          "center"
+        ],
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 2)"
+        ],
+        [
+          "box-sizing",
+          "border-box"
+        ],
+        [
+          "min-block-size",
+          "2rem"
+        ],
+        [
+          "padding",
+          "calc(var(--neshel-spacing) * 1.5) calc(var(--neshel-spacing) * 2)"
+        ],
+        [
+          "border-radius",
+          "var(--neshel-radius-sm)"
+        ],
+        [
+          "color",
+          "inherit"
+        ],
+        [
+          "text-decoration",
+          "none"
+        ],
+        [
+          "cursor",
+          "default"
+        ],
+        [
+          "user-select",
+          "none"
+        ],
+        [
+          "outline",
+          "none"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-menu-item > svg",
+      "declarations": [
+        [
+          "flex",
+          "none"
+        ],
+        [
+          "inline-size",
+          "1rem"
+        ],
+        [
+          "block-size",
+          "1rem"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-menu-item[data-highlighted], .neshel-menu-item[data-state=\"open\"]",
+      "declarations": [
+        [
+          "background-color",
+          "var(--neshel-selected)"
+        ],
+        [
+          "color",
+          "var(--neshel-selected-foreground)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-menu-item:focus-visible, .neshel-select-item:focus-visible",
+      "declarations": [
+        [
+          "outline",
+          "var(--neshel-focus-width) solid var(--neshel-focus)"
+        ],
+        [
+          "outline-offset",
+          "calc(var(--neshel-focus-width) * -1)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-menu-item[data-disabled]",
+      "declarations": [
+        [
+          "color",
+          "var(--neshel-disabled-foreground)"
+        ],
+        [
+          "pointer-events",
+          "none"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-menu-item-destructive",
+      "declarations": [
+        [
+          "color",
+          "var(--neshel-destructive)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-menu-item-destructive[data-highlighted]",
+      "declarations": [
+        [
+          "background-color",
+          "var(--neshel-destructive)"
+        ],
+        [
+          "color",
+          "var(--neshel-destructive-foreground)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-menu-item-inset, .neshel-menu-item-indicated",
+      "declarations": [
+        [
+          "padding-inline-start",
+          "calc(var(--neshel-spacing) * 8)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-menu-indicator",
+      "declarations": [
+        [
+          "position",
+          "absolute"
+        ],
+        [
+          "inset-inline-start",
+          "calc(var(--neshel-spacing) * 2)"
+        ],
+        [
+          "display",
+          "inline-flex"
+        ],
+        [
+          "justify-content",
+          "center"
+        ],
+        [
+          "inline-size",
+          "1rem"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-menu-label",
+      "declarations": [
+        [
+          "padding",
+          "calc(var(--neshel-spacing) * 1.5) calc(var(--neshel-spacing) * 2)"
+        ],
+        [
+          "font-size",
+          "0.75rem"
+        ],
+        [
+          "font-weight",
+          "600"
+        ],
+        [
+          "color",
+          "var(--neshel-muted-foreground)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-menu-separator",
+      "declarations": [
+        [
+          "block-size",
+          "1px"
+        ],
+        [
+          "margin",
+          "calc(var(--neshel-spacing) * 1) calc(calc(var(--neshel-spacing) * 1) * -1)"
+        ],
+        [
+          "background-color",
+          "var(--neshel-border)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-menu-shortcut",
+      "declarations": [
+        [
+          "margin-inline-start",
+          "auto"
+        ],
+        [
+          "padding-inline-start",
+          "calc(var(--neshel-spacing) * 4)"
+        ],
+        [
+          "font-size",
+          "0.75rem"
+        ],
+        [
+          "letter-spacing",
+          "0.05em"
+        ],
+        [
+          "color",
+          "var(--neshel-muted-foreground)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-menu-item[data-highlighted] .neshel-menu-shortcut",
+      "declarations": [
+        [
+          "color",
+          "inherit"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-menu-chevron",
+      "declarations": [
+        [
+          "margin-inline-start",
+          "auto"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-select-trigger",
+      "declarations": [
+        [
+          "box-sizing",
+          "border-box"
+        ],
+        [
+          "inline-size",
+          "100%"
+        ],
+        [
+          "min-inline-size",
+          "0"
+        ],
+        [
+          "margin",
+          "0"
+        ],
+        [
+          "border",
+          "1px solid var(--neshel-input)"
+        ],
+        [
+          "border-radius",
+          "var(--neshel-radius-md)"
+        ],
+        [
+          "background-color",
+          "var(--neshel-surface)"
+        ],
+        [
+          "color",
+          "var(--neshel-surface-foreground)"
+        ],
+        [
+          "font-family",
+          "inherit"
+        ],
+        [
+          "font-size",
+          "var(--neshel-field-font-size, 0.875rem)"
+        ],
+        [
+          "line-height",
+          "1.25"
+        ],
+        [
+          "display",
+          "inline-flex"
+        ],
+        [
+          "align-items",
+          "center"
+        ],
+        [
+          "justify-content",
+          "space-between"
+        ],
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 2)"
+        ],
+        [
+          "min-block-size",
+          "var(--neshel-field-height, 2.5rem)"
+        ],
+        [
+          "padding-block",
+          "calc(var(--neshel-spacing) * 1)"
+        ],
+        [
+          "padding-inline",
+          "var(--neshel-field-px, calc(var(--neshel-spacing) * 3))"
+        ],
+        [
+          "text-align",
+          "start"
+        ],
+        [
+          "cursor",
+          "pointer"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-select-trigger:focus-visible, .neshel-combobox:focus-within",
+      "declarations": [
+        [
+          "outline",
+          "var(--neshel-focus-width) solid var(--neshel-focus)"
+        ],
+        [
+          "outline-offset",
+          "var(--neshel-focus-offset)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-select-trigger[data-disabled], .neshel-combobox[data-disabled]",
+      "declarations": [
+        [
+          "background-color",
+          "var(--neshel-disabled)"
+        ],
+        [
+          "color",
+          "var(--neshel-disabled-foreground)"
+        ],
+        [
+          "border-color",
+          "var(--neshel-border)"
+        ],
+        [
+          "cursor",
+          "not-allowed"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-select-trigger[data-readonly], .neshel-combobox[data-readonly]",
+      "declarations": [
+        [
+          "background-color",
+          "var(--neshel-muted)"
+        ],
+        [
+          "color",
+          "var(--neshel-foreground)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-select-value",
+      "declarations": [
+        [
+          "flex",
+          "1 1 auto"
+        ],
+        [
+          "min-inline-size",
+          "0"
+        ],
+        [
+          "overflow",
+          "hidden"
+        ],
+        [
+          "text-overflow",
+          "ellipsis"
+        ],
+        [
+          "white-space",
+          "nowrap"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-select-placeholder",
+      "declarations": [
+        [
+          "color",
+          "var(--neshel-muted-foreground)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-select-trigger[data-disabled] .neshel-select-placeholder",
+      "declarations": [
+        [
+          "color",
+          "inherit"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-select-icon",
+      "declarations": [
+        [
+          "display",
+          "inline-flex"
+        ],
+        [
+          "flex",
+          "none"
+        ],
+        [
+          "color",
+          "var(--neshel-muted-foreground)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-select-positioner",
+      "declarations": [
+        [
+          "z-index",
+          "var(--neshel-z-popover, 60)"
+        ],
+        [
+          "outline",
+          "0"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-select-popup",
+      "declarations": [
+        [
+          "box-sizing",
+          "border-box"
+        ],
+        [
+          "border",
+          "1px solid var(--neshel-border)"
+        ],
+        [
+          "border-radius",
+          "var(--neshel-radius-md)"
+        ],
+        [
+          "background-color",
+          "var(--neshel-surface)"
+        ],
+        [
+          "color",
+          "var(--neshel-surface-foreground)"
+        ],
+        [
+          "box-shadow",
+          "0 8px 24px color-mix(in srgb, var(--neshel-foreground) 14%, transparent)"
+        ],
+        [
+          "font-family",
+          "var(--neshel-font-body)"
+        ],
+        [
+          "font-size",
+          "0.875rem"
+        ],
+        [
+          "line-height",
+          "1.4"
+        ],
+        [
+          "outline",
+          "none"
+        ],
+        [
+          "min-inline-size",
+          "var(--anchor-width)"
+        ],
+        [
+          "max-inline-size",
+          "var(--available-width)"
+        ],
+        [
+          "max-block-size",
+          "min(var(--available-height), 20rem)"
+        ],
+        [
+          "overflow-y",
+          "auto"
+        ],
+        [
+          "padding",
+          "calc(var(--neshel-spacing) * 1)"
+        ],
+        [
+          "transform-origin",
+          "var(--transform-origin)"
+        ],
+        [
+          "transition",
+          "opacity 120ms ease, transform 120ms ease"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-select-popup[data-starting-style], .neshel-select-popup[data-ending-style]",
+      "declarations": [
+        [
+          "opacity",
+          "0"
+        ],
+        [
+          "transform",
+          "scale(0.98)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-select-item",
+      "declarations": [
+        [
+          "position",
+          "relative"
+        ],
+        [
+          "display",
+          "flex"
+        ],
+        [
+          "align-items",
+          "center"
+        ],
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 2)"
+        ],
+        [
+          "box-sizing",
+          "border-box"
+        ],
+        [
+          "min-block-size",
+          "2rem"
+        ],
+        [
+          "padding",
+          "calc(var(--neshel-spacing) * 1.5) calc(var(--neshel-spacing) * 2)"
+        ],
+        [
+          "border-radius",
+          "var(--neshel-radius-sm)"
+        ],
+        [
+          "color",
+          "inherit"
+        ],
+        [
+          "text-decoration",
+          "none"
+        ],
+        [
+          "cursor",
+          "default"
+        ],
+        [
+          "user-select",
+          "none"
+        ],
+        [
+          "outline",
+          "none"
+        ],
+        [
+          "padding-inline-start",
+          "calc(var(--neshel-spacing) * 8)"
+        ],
+        [
+          "scroll-margin-block",
+          "calc(var(--neshel-spacing) * 1)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-select-item[data-highlighted]",
+      "declarations": [
+        [
+          "background-color",
+          "var(--neshel-selected)"
+        ],
+        [
+          "color",
+          "var(--neshel-selected-foreground)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-select-item[data-selected]",
+      "declarations": [
+        [
+          "font-weight",
+          "600"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-select-item[data-disabled]",
+      "declarations": [
+        [
+          "color",
+          "var(--neshel-disabled-foreground)"
+        ],
+        [
+          "cursor",
+          "not-allowed"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-select-item-indicator",
+      "declarations": [
+        [
+          "position",
+          "absolute"
+        ],
+        [
+          "inset-inline-start",
+          "calc(var(--neshel-spacing) * 2)"
+        ],
+        [
+          "display",
+          "inline-flex"
+        ],
+        [
+          "justify-content",
+          "center"
+        ],
+        [
+          "inline-size",
+          "1rem"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-select-group-label",
+      "declarations": [
+        [
+          "padding",
+          "calc(var(--neshel-spacing) * 1.5) calc(var(--neshel-spacing) * 2)"
+        ],
+        [
+          "font-size",
+          "0.75rem"
+        ],
+        [
+          "font-weight",
+          "600"
+        ],
+        [
+          "color",
+          "var(--neshel-muted-foreground)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-select-group + .neshel-select-group",
+      "declarations": [
+        [
+          "margin-block-start",
+          "calc(var(--neshel-spacing) * 1)"
+        ],
+        [
+          "padding-block-start",
+          "calc(var(--neshel-spacing) * 1)"
+        ],
+        [
+          "border-block-start",
+          "1px solid var(--neshel-border)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-select-empty:empty",
+      "declarations": [
+        [
+          "display",
+          "none"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-select-empty",
+      "declarations": [
+        [
+          "padding",
+          "calc(var(--neshel-spacing) * 2) calc(var(--neshel-spacing) * 3)"
+        ],
+        [
+          "color",
+          "var(--neshel-muted-foreground)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-multi-select",
+      "declarations": [
+        [
+          "display",
+          "flex"
+        ],
+        [
+          "flex-direction",
+          "column"
+        ],
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 2)"
+        ],
+        [
+          "min-inline-size",
+          "0"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-chip-list",
+      "declarations": [
+        [
+          "display",
+          "flex"
+        ],
+        [
+          "flex-wrap",
+          "wrap"
+        ],
+        [
+          "align-items",
+          "center"
+        ],
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 1.5)"
+        ],
+        [
+          "margin",
+          "0"
+        ],
+        [
+          "padding",
+          "0"
+        ],
+        [
+          "list-style",
+          "none"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-chip",
+      "declarations": [
+        [
+          "display",
+          "inline-flex"
+        ],
+        [
+          "align-items",
+          "center"
+        ],
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 1)"
+        ],
+        [
+          "max-inline-size",
+          "100%"
+        ],
+        [
+          "box-sizing",
+          "border-box"
+        ],
+        [
+          "padding",
+          "calc(var(--neshel-spacing) * 0.5) calc(var(--neshel-spacing) * 1) calc(var(--neshel-spacing) * 0.5) calc(var(--neshel-spacing) * 2.5)"
+        ],
+        [
+          "border-radius",
+          "var(--neshel-radius-full)"
+        ],
+        [
+          "background-color",
+          "var(--neshel-secondary)"
+        ],
+        [
+          "color",
+          "var(--neshel-secondary-foreground)"
+        ],
+        [
+          "font-size",
+          "0.8125rem"
+        ],
+        [
+          "line-height",
+          "1.25"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-chip-label",
+      "declarations": [
+        [
+          "overflow",
+          "hidden"
+        ],
+        [
+          "text-overflow",
+          "ellipsis"
+        ],
+        [
+          "white-space",
+          "nowrap"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-chip-remove, .neshel-field-icon-button",
+      "declarations": [
+        [
+          "display",
+          "inline-flex"
+        ],
+        [
+          "align-items",
+          "center"
+        ],
+        [
+          "justify-content",
+          "center"
+        ],
+        [
+          "flex",
+          "none"
+        ],
+        [
+          "inline-size",
+          "1.5rem"
+        ],
+        [
+          "block-size",
+          "1.5rem"
+        ],
+        [
+          "margin",
+          "0"
+        ],
+        [
+          "padding",
+          "0"
+        ],
+        [
+          "border",
+          "0"
+        ],
+        [
+          "border-radius",
+          "var(--neshel-radius-full)"
+        ],
+        [
+          "background-color",
+          "transparent"
+        ],
+        [
+          "color",
+          "inherit"
+        ],
+        [
+          "font",
+          "inherit"
+        ],
+        [
+          "cursor",
+          "pointer"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-chip-remove:hover, .neshel-field-icon-button:hover",
+      "declarations": [
+        [
+          "background-color",
+          "color-mix(in srgb, var(--neshel-foreground) 12%, transparent)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-chip-remove:focus-visible, .neshel-field-icon-button:focus-visible",
+      "declarations": [
+        [
+          "outline",
+          "var(--neshel-focus-width) solid var(--neshel-focus)"
+        ],
+        [
+          "outline-offset",
+          "var(--neshel-focus-offset)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-field-icon-button",
+      "declarations": [
+        [
+          "color",
+          "var(--neshel-muted-foreground)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-multi-select-clear",
+      "declarations": [
+        [
+          "align-self",
+          "flex-start"
+        ],
+        [
+          "margin",
+          "0"
+        ],
+        [
+          "padding",
+          "0"
+        ],
+        [
+          "border",
+          "0"
+        ],
+        [
+          "background-color",
+          "transparent"
+        ],
+        [
+          "color",
+          "var(--neshel-primary)"
+        ],
+        [
+          "font",
+          "inherit"
+        ],
+        [
+          "font-size",
+          "0.8125rem"
+        ],
+        [
+          "text-decoration",
+          "underline"
+        ],
+        [
+          "text-underline-offset",
+          "0.2em"
+        ],
+        [
+          "cursor",
+          "pointer"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-multi-select-clear:focus-visible",
+      "declarations": [
+        [
+          "outline",
+          "var(--neshel-focus-width) solid var(--neshel-focus)"
+        ],
+        [
+          "outline-offset",
+          "var(--neshel-focus-offset)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-combobox",
+      "declarations": [
+        [
+          "box-sizing",
+          "border-box"
+        ],
+        [
+          "inline-size",
+          "100%"
+        ],
+        [
+          "min-inline-size",
+          "0"
+        ],
+        [
+          "margin",
+          "0"
+        ],
+        [
+          "border",
+          "1px solid var(--neshel-input)"
+        ],
+        [
+          "border-radius",
+          "var(--neshel-radius-md)"
+        ],
+        [
+          "background-color",
+          "var(--neshel-surface)"
+        ],
+        [
+          "color",
+          "var(--neshel-surface-foreground)"
+        ],
+        [
+          "font-family",
+          "inherit"
+        ],
+        [
+          "font-size",
+          "var(--neshel-field-font-size, 0.875rem)"
+        ],
+        [
+          "line-height",
+          "1.25"
+        ],
+        [
+          "position",
+          "relative"
+        ],
+        [
+          "display",
+          "flex"
+        ],
+        [
+          "flex-wrap",
+          "wrap"
+        ],
+        [
+          "align-items",
+          "center"
+        ],
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 1)"
+        ],
+        [
+          "min-block-size",
+          "var(--neshel-field-height, 2.5rem)"
+        ],
+        [
+          "padding",
+          "calc(var(--neshel-spacing) * 1) calc(var(--neshel-spacing) * 1) calc(var(--neshel-spacing) * 1) calc(var(--neshel-field-px, calc(var(--neshel-spacing) * 3)) - calc(var(--neshel-spacing) * 1))"
+        ],
+        [
+          "cursor",
+          "text"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-combobox-input",
+      "declarations": [
+        [
+          "flex",
+          "1 1 6rem"
+        ],
+        [
+          "min-inline-size",
+          "4rem"
+        ],
+        [
+          "block-size",
+          "1.75rem"
+        ],
+        [
+          "margin",
+          "0"
+        ],
+        [
+          "padding",
+          "0 calc(var(--neshel-spacing) * 1)"
+        ],
+        [
+          "border",
+          "0"
+        ],
+        [
+          "outline",
+          "none"
+        ],
+        [
+          "background-color",
+          "transparent"
+        ],
+        [
+          "color",
+          "inherit"
+        ],
+        [
+          "font",
+          "inherit"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-combobox-input::placeholder",
+      "declarations": [
+        [
+          "color",
+          "var(--neshel-muted-foreground)"
+        ],
+        [
+          "opacity",
+          "1"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-combobox-input:disabled",
+      "declarations": [
+        [
+          "cursor",
+          "not-allowed"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-combobox-actions",
+      "declarations": [
+        [
+          "display",
+          "inline-flex"
+        ],
+        [
+          "align-items",
+          "center"
+        ],
+        [
+          "margin-inline-start",
+          "auto"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-combobox .neshel-chip",
+      "declarations": [
+        [
+          "background-color",
+          "var(--neshel-secondary)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-navbar",
+      "declarations": [
+        [
+          "display",
+          "flex"
+        ],
+        [
+          "align-items",
+          "center"
+        ],
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 4)"
+        ],
+        [
+          "box-sizing",
+          "border-box"
+        ],
+        [
+          "min-block-size",
+          "var(--neshel-navbar-height, 3.5rem)"
+        ],
+        [
+          "padding",
+          "0 calc(var(--neshel-spacing) * 4)"
+        ],
+        [
+          "border-block-end",
+          "1px solid var(--neshel-border)"
+        ],
+        [
+          "background-color",
+          "var(--neshel-background)"
+        ],
+        [
+          "color",
+          "var(--neshel-foreground)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-navbar-sticky",
+      "declarations": [
+        [
+          "position",
+          "sticky"
+        ],
+        [
+          "inset-block-start",
+          "0"
+        ],
+        [
+          "z-index",
+          "var(--neshel-z-navbar, 40)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-navbar-brand",
+      "declarations": [
+        [
+          "display",
+          "inline-flex"
+        ],
+        [
+          "align-items",
+          "center"
+        ],
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 2)"
+        ],
+        [
+          "flex",
+          "none"
+        ],
+        [
+          "font-size",
+          "1rem"
+        ],
+        [
+          "font-weight",
+          "600"
+        ],
+        [
+          "color",
+          "inherit"
+        ],
+        [
+          "text-decoration",
+          "none"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-navbar-brand:focus-visible",
+      "declarations": [
+        [
+          "outline",
+          "var(--neshel-focus-width) solid var(--neshel-focus)"
+        ],
+        [
+          "outline-offset",
+          "var(--neshel-focus-offset)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-navbar-nav",
+      "declarations": [
+        [
+          "display",
+          "flex"
+        ],
+        [
+          "min-inline-size",
+          "0"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-navbar-nav-responsive",
+      "declarations": [
+        [
+          "display",
+          "none"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-navbar-list, .neshel-navigation-menu-list",
+      "declarations": [
+        [
+          "display",
+          "flex"
+        ],
+        [
+          "align-items",
+          "center"
+        ],
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 1)"
+        ],
+        [
+          "margin",
+          "0"
+        ],
+        [
+          "padding",
+          "0"
+        ],
+        [
+          "list-style",
+          "none"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-navbar-link, .neshel-navigation-menu-trigger, .neshel-navigation-menu-link",
+      "declarations": [
+        [
+          "display",
+          "inline-flex"
+        ],
+        [
+          "align-items",
+          "center"
+        ],
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 1.5)"
+        ],
+        [
+          "box-sizing",
+          "border-box"
+        ],
+        [
+          "min-block-size",
+          "2.25rem"
+        ],
+        [
+          "margin",
+          "0"
+        ],
+        [
+          "padding",
+          "0 calc(var(--neshel-spacing) * 3)"
+        ],
+        [
+          "border",
+          "0"
+        ],
+        [
+          "border-radius",
+          "var(--neshel-radius-md)"
+        ],
+        [
+          "background-color",
+          "transparent"
+        ],
+        [
+          "color",
+          "var(--neshel-foreground)"
+        ],
+        [
+          "font",
+          "inherit"
+        ],
+        [
+          "font-size",
+          "0.875rem"
+        ],
+        [
+          "font-weight",
+          "500"
+        ],
+        [
+          "text-decoration",
+          "none"
+        ],
+        [
+          "white-space",
+          "nowrap"
+        ],
+        [
+          "cursor",
+          "pointer"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-navbar-link:hover, .neshel-navigation-menu-trigger:hover, .neshel-navigation-menu-trigger[data-state=\"open\"], .neshel-navigation-menu-link:hover",
+      "declarations": [
+        [
+          "background-color",
+          "var(--neshel-muted)"
+        ],
+        [
+          "color",
+          "var(--neshel-foreground)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-navbar-link:focus-visible, .neshel-navigation-menu-trigger:focus-visible, .neshel-navigation-menu-link:focus-visible, .neshel-mobile-menu-link:focus-visible",
+      "declarations": [
+        [
+          "outline",
+          "var(--neshel-focus-width) solid var(--neshel-focus)"
+        ],
+        [
+          "outline-offset",
+          "var(--neshel-focus-offset)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-navbar-link[aria-current=\"page\"], .neshel-navigation-menu-link[aria-current=\"page\"]",
+      "declarations": [
+        [
+          "color",
+          "var(--neshel-primary)"
+        ],
+        [
+          "font-weight",
+          "600"
+        ],
+        [
+          "text-decoration",
+          "underline"
+        ],
+        [
+          "text-decoration-thickness",
+          "2px"
+        ],
+        [
+          "text-underline-offset",
+          "0.4em"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-navbar-actions",
+      "declarations": [
+        [
+          "display",
+          "flex"
+        ],
+        [
+          "align-items",
+          "center"
+        ],
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 2)"
+        ],
+        [
+          "margin-inline-start",
+          "auto"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-navigation-menu",
+      "declarations": [
+        [
+          "position",
+          "relative"
+        ],
+        [
+          "display",
+          "flex"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-navigation-menu-item",
+      "declarations": [
+        [
+          "position",
+          "relative"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-chevron",
+      "declarations": [
+        [
+          "transition",
+          "transform 150ms ease"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-navigation-menu-trigger[data-state=\"open\"] .neshel-chevron, .neshel-sidebar-sub-trigger[aria-expanded=\"true\"] .neshel-chevron",
+      "declarations": [
+        [
+          "transform",
+          "rotate(180deg)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-navigation-menu-content",
+      "declarations": [
+        [
+          "box-sizing",
+          "border-box"
+        ],
+        [
+          "border",
+          "1px solid var(--neshel-border)"
+        ],
+        [
+          "border-radius",
+          "var(--neshel-radius-md)"
+        ],
+        [
+          "background-color",
+          "var(--neshel-surface)"
+        ],
+        [
+          "color",
+          "var(--neshel-surface-foreground)"
+        ],
+        [
+          "box-shadow",
+          "0 8px 24px color-mix(in srgb, var(--neshel-foreground) 14%, transparent)"
+        ],
+        [
+          "font-family",
+          "var(--neshel-font-body)"
+        ],
+        [
+          "font-size",
+          "0.875rem"
+        ],
+        [
+          "line-height",
+          "1.4"
+        ],
+        [
+          "outline",
+          "none"
+        ],
+        [
+          "position",
+          "absolute"
+        ],
+        [
+          "inset-block-start",
+          "calc(100% + calc(var(--neshel-spacing) * 2))"
+        ],
+        [
+          "inset-inline-start",
+          "0"
+        ],
+        [
+          "z-index",
+          "var(--neshel-z-popover, 60)"
+        ],
+        [
+          "min-inline-size",
+          "14rem"
+        ],
+        [
+          "padding",
+          "calc(var(--neshel-spacing) * 2)"
+        ],
+        [
+          "animation",
+          "neshel-fade-in 140ms ease-out"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-navigation-menu-content .neshel-navigation-menu-link",
+      "declarations": [
+        [
+          "display",
+          "flex"
+        ],
+        [
+          "flex-direction",
+          "column"
+        ],
+        [
+          "align-items",
+          "flex-start"
+        ],
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 0.5)"
+        ],
+        [
+          "min-block-size",
+          "auto"
+        ],
+        [
+          "padding",
+          "calc(var(--neshel-spacing) * 2) calc(var(--neshel-spacing) * 3)"
+        ],
+        [
+          "white-space",
+          "normal"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-mobile-menu-trigger",
+      "declarations": [
+        [
+          "--neshel-menu-mode",
+          "mobile"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-mobile-menu-list",
+      "declarations": [
+        [
+          "display",
+          "flex"
+        ],
+        [
+          "flex-direction",
+          "column"
+        ],
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 1)"
+        ],
+        [
+          "margin",
+          "0"
+        ],
+        [
+          "padding",
+          "0"
+        ],
+        [
+          "list-style",
+          "none"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-mobile-menu-link",
+      "declarations": [
+        [
+          "display",
+          "flex"
+        ],
+        [
+          "align-items",
+          "center"
+        ],
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 1.5)"
+        ],
+        [
+          "box-sizing",
+          "border-box"
+        ],
+        [
+          "min-block-size",
+          "2.75rem"
+        ],
+        [
+          "margin",
+          "0"
+        ],
+        [
+          "padding",
+          "0 calc(var(--neshel-spacing) * 3)"
+        ],
+        [
+          "border",
+          "0"
+        ],
+        [
+          "border-radius",
+          "var(--neshel-radius-md)"
+        ],
+        [
+          "background-color",
+          "transparent"
+        ],
+        [
+          "color",
+          "var(--neshel-foreground)"
+        ],
+        [
+          "font",
+          "inherit"
+        ],
+        [
+          "font-size",
+          "1rem"
+        ],
+        [
+          "font-weight",
+          "500"
+        ],
+        [
+          "text-decoration",
+          "none"
+        ],
+        [
+          "white-space",
+          "nowrap"
+        ],
+        [
+          "cursor",
+          "pointer"
+        ],
+        [
+          "inline-size",
+          "100%"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-mobile-menu-link:hover",
+      "declarations": [
+        [
+          "background-color",
+          "var(--neshel-muted)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-mobile-menu-link[aria-current=\"page\"], .neshel-sidebar-item[aria-current=\"page\"], .neshel-sidebar-item[data-active]",
+      "declarations": [
+        [
+          "background-color",
+          "var(--neshel-selected)"
+        ],
+        [
+          "color",
+          "var(--neshel-selected-foreground)"
+        ],
+        [
+          "font-weight",
+          "600"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-app-shell",
+      "declarations": [
+        [
+          "--neshel-shell-mode",
+          "mobile"
+        ],
+        [
+          "--neshel-shell-sidebar-display",
+          "none"
+        ],
+        [
+          "display",
+          "grid"
+        ],
+        [
+          "grid-template-columns",
+          "minmax(0, 1fr)"
+        ],
+        [
+          "min-block-size",
+          "100dvh"
+        ],
+        [
+          "background-color",
+          "var(--neshel-background)"
+        ],
+        [
+          "color",
+          "var(--neshel-foreground)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-app-shell-main",
+      "declarations": [
+        [
+          "display",
+          "flex"
+        ],
+        [
+          "flex-direction",
+          "column"
+        ],
+        [
+          "min-inline-size",
+          "0"
+        ],
+        [
+          "min-block-size",
+          "100dvh"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-app-shell-content",
+      "declarations": [
+        [
+          "flex",
+          "1 1 auto"
+        ],
+        [
+          "min-inline-size",
+          "0"
+        ],
+        [
+          "box-sizing",
+          "border-box"
+        ],
+        [
+          "padding",
+          "var(--neshel-shell-content-padding, calc(var(--neshel-spacing) * 6))"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-app-shell-content:focus",
+      "declarations": [
+        [
+          "outline",
+          "none"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-sidebar-trigger, .neshel-mobile-menu-trigger",
+      "declarations": [
+        [
+          "flex",
+          "none"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-sidebar",
+      "declarations": [
+        [
+          "--neshel-sidebar-current-width",
+          "var(--neshel-sidebar-width, 16rem)"
+        ],
+        [
+          "display",
+          "flex"
+        ],
+        [
+          "flex-direction",
+          "column"
+        ],
+        [
+          "box-sizing",
+          "border-box"
+        ],
+        [
+          "inline-size",
+          "var(--neshel-sidebar-current-width)"
+        ],
+        [
+          "block-size",
+          "100dvh"
+        ],
+        [
+          "position",
+          "sticky"
+        ],
+        [
+          "inset-block-start",
+          "0"
+        ],
+        [
+          "overflow",
+          "hidden"
+        ],
+        [
+          "border-inline-end",
+          "1px solid var(--neshel-border)"
+        ],
+        [
+          "background-color",
+          "var(--neshel-surface)"
+        ],
+        [
+          "color",
+          "var(--neshel-surface-foreground)"
+        ],
+        [
+          "transition",
+          "inline-size 200ms ease"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-app-shell > .neshel-sidebar",
+      "declarations": [
+        [
+          "display",
+          "var(--neshel-shell-sidebar-display)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-sidebar[data-collapsed][data-collapsible=\"icon\"]",
+      "declarations": [
+        [
+          "--neshel-sidebar-current-width",
+          "var(--neshel-sidebar-rail-width, 3.5rem)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-sidebar[data-collapsed][data-collapsible=\"offcanvas\"]",
+      "declarations": [
+        [
+          "display",
+          "none"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-sidebar-sheet",
+      "declarations": [
+        [
+          "--neshel-sheet-size",
+          "var(--neshel-sidebar-width, 16rem)"
+        ],
+        [
+          "padding",
+          "0"
+        ],
+        [
+          "gap",
+          "0"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-sidebar-header",
+      "declarations": [
+        [
+          "display",
+          "flex"
+        ],
+        [
+          "align-items",
+          "center"
+        ],
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 2)"
+        ],
+        [
+          "box-sizing",
+          "border-box"
+        ],
+        [
+          "min-block-size",
+          "var(--neshel-navbar-height, 3.5rem)"
+        ],
+        [
+          "padding",
+          "calc(var(--neshel-spacing) * 3)"
+        ],
+        [
+          "overflow",
+          "hidden"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-sidebar-content",
+      "declarations": [
+        [
+          "display",
+          "flex"
+        ],
+        [
+          "flex-direction",
+          "column"
+        ],
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 4)"
+        ],
+        [
+          "flex",
+          "1 1 auto"
+        ],
+        [
+          "min-block-size",
+          "0"
+        ],
+        [
+          "padding",
+          "calc(var(--neshel-spacing) * 2)"
+        ],
+        [
+          "overflow-x",
+          "hidden"
+        ],
+        [
+          "overflow-y",
+          "auto"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-sidebar-footer",
+      "declarations": [
+        [
+          "display",
+          "flex"
+        ],
+        [
+          "flex-direction",
+          "column"
+        ],
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 2)"
+        ],
+        [
+          "padding",
+          "calc(var(--neshel-spacing) * 3)"
+        ],
+        [
+          "border-block-start",
+          "1px solid var(--neshel-border)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-sidebar-group",
+      "declarations": [
+        [
+          "display",
+          "flex"
+        ],
+        [
+          "flex-direction",
+          "column"
+        ],
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 1)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-sidebar-group-label",
+      "declarations": [
+        [
+          "padding",
+          "calc(var(--neshel-spacing) * 1) calc(var(--neshel-spacing) * 2)"
+        ],
+        [
+          "font-size",
+          "0.75rem"
+        ],
+        [
+          "font-weight",
+          "600"
+        ],
+        [
+          "letter-spacing",
+          "0.02em"
+        ],
+        [
+          "color",
+          "var(--neshel-muted-foreground)"
+        ],
+        [
+          "white-space",
+          "nowrap"
+        ],
+        [
+          "overflow",
+          "hidden"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-sidebar-list",
+      "declarations": [
+        [
+          "display",
+          "flex"
+        ],
+        [
+          "flex-direction",
+          "column"
+        ],
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 0.5)"
+        ],
+        [
+          "margin",
+          "0"
+        ],
+        [
+          "padding",
+          "0"
+        ],
+        [
+          "list-style",
+          "none"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-sidebar-item",
+      "declarations": [
+        [
+          "position",
+          "relative"
+        ],
+        [
+          "display",
+          "flex"
+        ],
+        [
+          "align-items",
+          "center"
+        ],
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 3)"
+        ],
+        [
+          "box-sizing",
+          "border-box"
+        ],
+        [
+          "inline-size",
+          "100%"
+        ],
+        [
+          "min-block-size",
+          "2.25rem"
+        ],
+        [
+          "margin",
+          "0"
+        ],
+        [
+          "padding",
+          "calc(var(--neshel-spacing) * 2) calc(var(--neshel-spacing) * 2.5)"
+        ],
+        [
+          "border",
+          "0"
+        ],
+        [
+          "border-radius",
+          "var(--neshel-radius-md)"
+        ],
+        [
+          "background-color",
+          "transparent"
+        ],
+        [
+          "color",
+          "inherit"
+        ],
+        [
+          "font",
+          "inherit"
+        ],
+        [
+          "font-size",
+          "0.875rem"
+        ],
+        [
+          "text-align",
+          "start"
+        ],
+        [
+          "text-decoration",
+          "none"
+        ],
+        [
+          "white-space",
+          "nowrap"
+        ],
+        [
+          "cursor",
+          "pointer"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-sidebar-item:hover",
+      "declarations": [
+        [
+          "background-color",
+          "var(--neshel-muted)"
+        ],
+        [
+          "color",
+          "var(--neshel-foreground)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-sidebar-item:focus-visible",
+      "declarations": [
+        [
+          "outline",
+          "var(--neshel-focus-width) solid var(--neshel-focus)"
+        ],
+        [
+          "outline-offset",
+          "calc(var(--neshel-focus-width) * -1)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-sidebar-item > svg, .neshel-sidebar-item-icon",
+      "declarations": [
+        [
+          "display",
+          "inline-flex"
+        ],
+        [
+          "flex",
+          "none"
+        ],
+        [
+          "inline-size",
+          "1.125rem"
+        ],
+        [
+          "block-size",
+          "1.125rem"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-sidebar-item-icon > svg",
+      "declarations": [
+        [
+          "inline-size",
+          "100%"
+        ],
+        [
+          "block-size",
+          "100%"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-sidebar-item-label",
+      "declarations": [
+        [
+          "flex",
+          "1 1 auto"
+        ],
+        [
+          "min-inline-size",
+          "0"
+        ],
+        [
+          "overflow",
+          "hidden"
+        ],
+        [
+          "text-overflow",
+          "ellipsis"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-sidebar-sub-list",
+      "declarations": [
+        [
+          "margin-inline-start",
+          "calc(var(--neshel-spacing) * 4.5)"
+        ],
+        [
+          "padding-inline-start",
+          "calc(var(--neshel-spacing) * 2)"
+        ],
+        [
+          "border-inline-start",
+          "1px solid var(--neshel-border)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-sidebar-separator",
+      "declarations": [
+        [
+          "block-size",
+          "1px"
+        ],
+        [
+          "margin",
+          "calc(var(--neshel-spacing) * 1) calc(var(--neshel-spacing) * 2)"
+        ],
+        [
+          "border",
+          "0"
+        ],
+        [
+          "background-color",
+          "var(--neshel-border)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-sidebar[data-collapsed][data-collapsible=\"icon\"] .neshel-sidebar-item-label, .neshel-sidebar[data-collapsed][data-collapsible=\"icon\"] .neshel-sidebar-group-label",
+      "declarations": [
+        [
+          "position",
+          "absolute"
+        ],
+        [
+          "inline-size",
+          "1px"
+        ],
+        [
+          "block-size",
+          "1px"
+        ],
+        [
+          "padding",
+          "0"
+        ],
+        [
+          "margin",
+          "-1px"
+        ],
+        [
+          "overflow",
+          "hidden"
+        ],
+        [
+          "clip",
+          "rect(0, 0, 0, 0)"
+        ],
+        [
+          "clip-path",
+          "inset(50%)"
+        ],
+        [
+          "white-space",
+          "nowrap"
+        ],
+        [
+          "border",
+          "0"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-sidebar[data-collapsed][data-collapsible=\"icon\"] .neshel-sidebar-item",
+      "declarations": [
+        [
+          "justify-content",
+          "center"
+        ],
+        [
+          "padding-inline",
+          "0"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-sidebar[data-collapsed][data-collapsible=\"icon\"] .neshel-sidebar-sub-list, .neshel-sidebar[data-collapsed][data-collapsible=\"icon\"] .neshel-chevron",
+      "declarations": [
+        [
+          "display",
+          "none"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-sidebar",
+      "declarations": [
+        [
+          "transition",
+          "none"
+        ]
+      ],
+      "media": "(prefers-reduced-motion: reduce)"
+    },
+    {
+      "selector": ".neshel-overlay, .neshel-dialog-content, .neshel-sheet-content, .neshel-popover-content, .neshel-menu-content, .neshel-tooltip, .neshel-navigation-menu-content, .neshel-sidebar-sheet",
+      "declarations": [
+        [
+          "animation",
+          "none"
+        ]
+      ],
+      "media": "(prefers-reduced-motion: reduce)"
+    },
+    {
+      "selector": ".neshel-select-popup, .neshel-chevron",
+      "declarations": [
+        [
+          "transition",
+          "none"
+        ]
+      ],
+      "media": "(prefers-reduced-motion: reduce)"
+    }
+  ],
+  "responsive": [
+    {
+      "class": "button-size-sm",
+      "declarations": [
+        [
+          "--neshel-button-height",
+          "2rem"
+        ],
+        [
+          "--neshel-button-px",
+          "calc(var(--neshel-spacing) * 3)"
+        ],
+        [
+          "--neshel-button-font-size",
+          "0.8125rem"
+        ]
+      ]
+    },
+    {
+      "class": "button-size-md",
+      "declarations": [
+        [
+          "--neshel-button-height",
+          "2.5rem"
+        ],
+        [
+          "--neshel-button-px",
+          "calc(var(--neshel-spacing) * 4)"
+        ],
+        [
+          "--neshel-button-font-size",
+          "0.875rem"
+        ]
+      ]
+    },
+    {
+      "class": "button-size-lg",
+      "declarations": [
+        [
+          "--neshel-button-height",
+          "3rem"
+        ],
+        [
+          "--neshel-button-px",
+          "calc(var(--neshel-spacing) * 6)"
+        ],
+        [
+          "--neshel-button-font-size",
+          "1rem"
+        ]
+      ]
+    },
+    {
+      "class": "shell-desktop",
+      "declarations": [
+        [
+          "--neshel-shell-mode",
+          "desktop"
+        ],
+        [
+          "--neshel-shell-sidebar-display",
+          "flex"
+        ],
+        [
+          "grid-template-columns",
+          "auto minmax(0, 1fr)"
+        ]
+      ]
+    },
+    {
+      "class": "navbar-nav-visible",
+      "declarations": [
+        [
+          "display",
+          "flex"
+        ]
+      ]
+    },
+    {
+      "class": "menu-desktop",
+      "declarations": [
+        [
+          "--neshel-menu-mode",
+          "desktop"
+        ],
+        [
+          "display",
+          "none"
+        ]
+      ]
+    }
+  ]
+}

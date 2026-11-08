@@ -2,6 +2,7 @@
 // Every function takes the packed manifest and/or a Map of package-relative POSIX paths to
 // file contents and returns a list of actionable error strings. No I/O happens here.
 import { posix } from "node:path";
+import { checkComponentsStylesheet } from "./components-css.mjs";
 import { checkLayoutStylesheet } from "./layout-css.mjs";
 
 const RUNTIME_FIELDS = ["dependencies", "optionalDependencies", "peerDependencies"];
@@ -230,7 +231,54 @@ export const LAYOUT_ALLOWED_IMPORTS = [
   "@radix-ui/react-slot",
   "tailwind-variants/lite",
 ];
-export const COMPONENT_PACKAGES = ["@neshel-ui/layout", "@neshel-ui/typography"];
+/** Bare specifiers the components runtime may import (feature 005, ADR 0012, research R2). */
+export const COMPONENTS_ALLOWED_IMPORTS = [
+  ...LAYOUT_ALLOWED_IMPORTS,
+  "@radix-ui/react-dialog",
+  "@radix-ui/react-alert-dialog",
+  "@radix-ui/react-popover",
+  "@radix-ui/react-dropdown-menu",
+  "@radix-ui/react-navigation-menu",
+  "@radix-ui/react-tooltip",
+  "@base-ui/react/select",
+  "@base-ui/react/combobox",
+];
+const COMPONENTS_DEPENDENCIES = [
+  "@base-ui/react",
+  "@radix-ui/react-alert-dialog",
+  "@radix-ui/react-dialog",
+  "@radix-ui/react-dropdown-menu",
+  "@radix-ui/react-navigation-menu",
+  "@radix-ui/react-popover",
+  "@radix-ui/react-slot",
+  "@radix-ui/react-tooltip",
+  "tailwind-variants",
+];
+export const COMPONENT_PACKAGES = [
+  "@neshel-ui/layout",
+  "@neshel-ui/typography",
+  "@neshel-ui/components",
+];
+
+/** Per-package expectations of the React component packages. */
+function componentSpec(name) {
+  if (name === "@neshel-ui/components") {
+    return {
+      dependencies: COMPONENTS_DEPENDENCIES,
+      peers: ["@neshel-ui/config", "react", "react-dom"],
+      imports: COMPONENTS_ALLOWED_IMPORTS,
+      schema: 2,
+      stylesheet: checkComponentsStylesheet,
+    };
+  }
+  return {
+    dependencies: ["@radix-ui/react-slot", "tailwind-variants"],
+    peers: ["@neshel-ui/config", "react"],
+    imports: LAYOUT_ALLOWED_IMPORTS,
+    schema: 1,
+    stylesheet: checkLayoutStylesheet,
+  };
+}
 const FONT_FILE = /\.(?:woff2?|ttf|otf|eot)$/i;
 
 /**
@@ -241,25 +289,24 @@ const FONT_FILE = /\.(?:woff2?|ttf|otf|eot)$/i;
  */
 export function checkComponentContract(manifest, files, { sourceCss, sourceManifest } = {}) {
   const errors = [];
+  const spec = componentSpec(manifest.name);
   if (!sameKeys(manifest.exports, [".", "./styles.css", "./style-manifest.json"])) {
     errors.push("exports must be exactly ., ./styles.css, ./style-manifest.json");
   }
-  if (!sameKeys(manifest.dependencies, ["@radix-ui/react-slot", "tailwind-variants"])) {
+  if (!sameKeys(manifest.dependencies, spec.dependencies)) {
     errors.push(
-      `dependencies must be exactly @radix-ui/react-slot and tailwind-variants; found ${Object.keys(manifest.dependencies ?? {}).join(", ") || "none"}`,
+      `dependencies must be exactly ${spec.dependencies.join(", ")}; found ${Object.keys(manifest.dependencies ?? {}).join(", ") || "none"}`,
     );
   }
-  if (!sameKeys(manifest.peerDependencies, ["@neshel-ui/config", "react"])) {
-    errors.push("peerDependencies must be exactly @neshel-ui/config and react");
+  if (!sameKeys(manifest.peerDependencies, spec.peers)) {
+    errors.push(`peerDependencies must be exactly ${spec.peers.join(", ")}`);
   }
   for (const [path, contents] of files) {
     if (FONT_FILE.test(path)) errors.push(`${path}: font files must not be published (FR-046)`);
     if (!/^dist\/.*\.js$/.test(path)) continue;
     for (const specifier of bareImports(contents.toString("utf8"))) {
-      if (!LAYOUT_ALLOWED_IMPORTS.includes(specifier)) {
-        errors.push(
-          `${path} imports "${specifier}"; allowed: ${LAYOUT_ALLOWED_IMPORTS.join(", ")}`,
-        );
+      if (!spec.imports.includes(specifier)) {
+        errors.push(`${path} imports "${specifier}"; allowed: ${spec.imports.join(", ")}`);
       }
     }
   }
@@ -267,7 +314,7 @@ export function checkComponentContract(manifest, files, { sourceCss, sourceManif
   if (!stylesheet) {
     errors.push("dist/styles.css is missing");
   } else {
-    errors.push(...checkLayoutStylesheet(stylesheet).map((error) => `dist/styles.css: ${error}`));
+    errors.push(...spec.stylesheet(stylesheet).map((error) => `dist/styles.css: ${error}`));
     if (sourceCss !== undefined && stylesheet !== sourceCss) {
       errors.push("dist/styles.css differs from src/styles.css (stale build?)");
     }
@@ -283,7 +330,9 @@ export function checkComponentContract(manifest, files, { sourceCss, sourceManif
       errors.push("dist/style-manifest.json is not valid JSON");
     }
     if (parsed) {
-      if (parsed.schema !== 1) errors.push("dist/style-manifest.json: schema must be 1");
+      if (parsed.schema !== spec.schema) {
+        errors.push(`dist/style-manifest.json: schema must be ${spec.schema}`);
+      }
       if (parsed.package !== manifest.name || parsed.version !== manifest.version) {
         errors.push(
           `dist/style-manifest.json describes ${parsed.package}@${parsed.version}, not ${manifest.name}@${manifest.version}`,
@@ -306,8 +355,15 @@ export function checkLayoutContract(manifest, files, context = {}) {
 }
 
 export function bareImports(source) {
-  const specifiers = [...source.matchAll(/(?:\bfrom\s*|\bimport\s*\(?\s*)["']([^"']+)["']/g)].map(
-    (match) => match[1],
+  // Statement-anchored so that string literals containing "from" (e.g. keyframe selectors) are
+  // not mistaken for imports.
+  const patterns = [
+    /^\s*(?:import|export)\s[^'"`;]*?\bfrom\s*["']([^"']+)["']/gm,
+    /^\s*import\s*["']([^"']+)["']/gm,
+    /\bimport\(\s*["']([^"']+)["']\s*\)/g,
+  ];
+  const specifiers = patterns.flatMap((pattern) =>
+    [...source.matchAll(pattern)].map((match) => match[1]),
   );
   return specifiers.filter((specifier) => !/^\.\.?\//.test(specifier));
 }

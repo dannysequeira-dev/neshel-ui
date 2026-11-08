@@ -1,7 +1,7 @@
 {
   "name": "@neshel-ui/components",
   "version": "0.0.0",
-  "description": "Accessible React UI components",
+  "description": "Accessible React components, navigation and application shell",
   "type": "module",
   "private": true,
   "license": "MIT",
@@ -23,21 +23,38 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
-    "./styles.css": "./dist/styles.css"
+    "./styles.css": "./dist/styles.css",
+    "./style-manifest.json": "./dist/style-manifest.json"
   },
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.build.json && node ../../scripts/copy-css.mjs src/styles.css dist/styles.css",
+    "build": "tsc -p tsconfig.build.json && node ../../scripts/copy-css.mjs src/styles.css dist/styles.css src/style-manifest.json dist/style-manifest.json",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "devDependencies": {
+    "@neshel-ui/config": "workspace:^",
     "typescript": "catalog:",
     "@types/react": "catalog:",
-    "react": "catalog:"
+    "@types/react-dom": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:"
   },
   "peerDependencies": {
-    "react": "^19.0.0"
+    "@neshel-ui/config": "workspace:^",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "dependencies": {
+    "@base-ui/react": "catalog:",
+    "@radix-ui/react-alert-dialog": "catalog:",
+    "@radix-ui/react-dialog": "catalog:",
+    "@radix-ui/react-dropdown-menu": "catalog:",
+    "@radix-ui/react-navigation-menu": "catalog:",
+    "@radix-ui/react-popover": "catalog:",
+    "@radix-ui/react-slot": "catalog:",
+    "@radix-ui/react-tooltip": "catalog:",
+    "tailwind-variants": "catalog:"
   }
 }

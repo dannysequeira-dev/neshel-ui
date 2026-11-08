@@ -1,5 +1,5 @@
 // pnpm generate:component-css [--check]
-// Writes src/style-manifest.json and src/styles.css of @neshel-ui/layout and @neshel-ui/typography
+// Writes src/style-manifest.json and src/styles.css of @neshel-ui/layout, typography and components
 // from their built style tables, rendering the stylesheet with the CLI's shared renderer and the
 // default breakpoints (ADR 0010 §3, contracts/generation.md). Requires `pnpm build:packages` first.
 // --check compares without writing and exits 1 on drift.
@@ -9,7 +9,7 @@ import { join } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 const repoRoot = fileURLToPath(new URL("..", import.meta.url));
-export const COMPONENT_PACKAGES = ["layout", "typography"];
+export const COMPONENT_PACKAGES = ["layout", "typography", "components"];
 const load = (path) => import(pathToFileURL(path).href);
 
 function requireBuilt(path) {
@@ -29,7 +29,7 @@ export async function renderPackage(dirName) {
     requireBuilt(join(repoRoot, "packages", "config", "dist", "index.js")),
   );
   const manifest = {
-    schema: 1,
+    schema: tables.manifestSchema ?? 1,
     package: manifestJson.name,
     version: manifestJson.version,
     layer: "components.neshel",

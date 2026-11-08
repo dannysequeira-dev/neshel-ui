@@ -14,6 +14,8 @@
       "!packages/layout/src/style-manifest.json",
       "!packages/typography/src/styles.css",
       "!packages/typography/src/style-manifest.json",
+      "!packages/components/src/styles.css",
+      "!packages/components/src/style-manifest.json",
       "!**/neshel.generated.d.ts",
       "!packages/cli/test/fixtures",
       "!**/neshel.generated.css",

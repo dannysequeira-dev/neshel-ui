@@ -45,6 +45,7 @@
     "@types/node": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
+    "axe-core": "catalog:",
     "jsdom": "catalog:",
     "publint": "catalog:",
     "react": "catalog:",
