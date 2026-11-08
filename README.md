@@ -46,14 +46,14 @@ consumers should not be forced to use Tailwind just to load the core theme token
 
 Neshel-UI is organized as independent packages with one shared design vocabulary.
 
-| Package | Planned responsibility | Status |
-| --- | --- | --- |
-| `@neshel-ui/config` | Semantic tokens, themes, CSS exports, typed configuration | Foundation |
-| `@neshel-ui/layout` | Box, Stack, Inline, Grid, Center, Container | Planned |
-| `@neshel-ui/typography` | Heading, Text, Paragraph, Caption, Capsize integration | Planned |
-| `@neshel-ui/components` | Accessible Button, Card, Badge, Input, Separator, Skeleton | Planned |
-| `@neshel-ui/cli` | Read/validate user configuration and generate deterministic CSS | Planned |
-| `@neshel-ui/core` | Internal shared utilities, if needed; not publicly published | Internal |
+| Package                 | Planned responsibility                                          | Status     |
+| ----------------------- | --------------------------------------------------------------- | ---------- |
+| `@neshel-ui/config`     | Semantic tokens, themes, CSS exports, typed configuration       | Foundation |
+| `@neshel-ui/layout`     | Box, Stack, Inline, Grid, Center, Container                     | Planned    |
+| `@neshel-ui/typography` | Heading, Text, Paragraph, Caption, Capsize integration          | Planned    |
+| `@neshel-ui/components` | Accessible Button, Card, Badge, Input, Separator, Skeleton      | Planned    |
+| `@neshel-ui/cli`        | Read/validate user configuration and generate deterministic CSS | Planned    |
+| `@neshel-ui/core`       | Internal shared utilities, if needed; not publicly published    | Internal   |
 
 The `@neshel-ui` npm scope must be verified before publication. A package install
 must not depend on unpublished private workspace packages.
@@ -122,14 +122,14 @@ an npm package is ready for independent consumption.
 
 ## Roadmap
 
-| Phase | Focus |
-| --- | --- |
+| Phase   | Focus                                                          |
+| ------- | -------------------------------------------------------------- |
 | **001** | Foundation, quality gates, portable tooling, package contracts |
-| **002** | Semantic design tokens, themes, CSS generation, configuration |
-| **003** | Composable layout primitives |
-| **004** | Metrics-aware typography |
-| **005** | Accessible UI components and Storybook |
-| **006** | External consumers, documentation, npm publishing |
+| **002** | Semantic design tokens, themes, CSS generation, configuration  |
+| **003** | Composable layout primitives                                   |
+| **004** | Metrics-aware typography                                       |
+| **005** | Accessible UI components and Storybook                         |
+| **006** | External consumers, documentation, npm publishing              |
 
 See [the development roadmap](docs/roadmap.md) for specifications, milestones,
 and acceptance gates. Version **0.1.0** is the initial release target, not a

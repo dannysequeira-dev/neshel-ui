@@ -10,13 +10,13 @@ project; it has **not been redrawn or regenerated** for this asset pack.
 
 ## Files
 
-| File | Use | Notes |
-| --- | --- | --- |
-| `assets/brand/neshel-ui-logo.png` | README, site, documentation | **Original 1254 × 1254 PNG, byte-identical to the approved artwork.** Includes wordmark and tagline. |
-| `assets/brand/neshel-ui-mark.png` | Avatar, social profile, app icon source | Cropped directly from the original image, rose only, no text. |
-| `assets/brand/neshel-ui-mark-512.png` | Large square app/profile image | Resized from the original crop. |
-| `assets/brand/neshel-ui-mark-256.png` | Small square app/profile image | Resized from the original crop. |
-| `assets/brand/neshel-ui-mark-64.png` | Small icon/prototype favicon | Resized from the original crop; check legibility at tiny sizes. |
+| File                                  | Use                                     | Notes                                                                                                |
+| ------------------------------------- | --------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `assets/brand/neshel-ui-logo.png`     | README, site, documentation             | **Original 1254 × 1254 PNG, byte-identical to the approved artwork.** Includes wordmark and tagline. |
+| `assets/brand/neshel-ui-mark.png`     | Avatar, social profile, app icon source | Cropped directly from the original image, rose only, no text.                                        |
+| `assets/brand/neshel-ui-mark-512.png` | Large square app/profile image          | Resized from the original crop.                                                                      |
+| `assets/brand/neshel-ui-mark-256.png` | Small square app/profile image          | Resized from the original crop.                                                                      |
+| `assets/brand/neshel-ui-mark-64.png`  | Small icon/prototype favicon            | Resized from the original crop; check legibility at tiny sizes.                                      |
 
 ### Important
 
