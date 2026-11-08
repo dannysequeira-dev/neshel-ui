@@ -69,3 +69,26 @@ test("clean only deletes output within its own repository, regardless of cwd", (
   assert.equal(existsSync(localDist), false);
   assert.equal(existsSync(join(unrelatedDist, "keep.txt")), true);
 });
+
+test("clean --packages removes package dist only, keeping app outputs", (t) => {
+  const dir = temporary(t);
+  const fakeRepo = join(dir, "repo ñ");
+  const scriptsDir = join(fakeRepo, "scripts");
+  const staleDist = join(fakeRepo, "packages", "layout", "dist");
+  const appDist = join(fakeRepo, "apps", "playground-vite", "dist");
+  mkdirSync(join(scriptsDir, "lib"), { recursive: true });
+  mkdirSync(staleDist, { recursive: true });
+  mkdirSync(appDist, { recursive: true });
+  copyFileSync(script("clean.mjs"), join(scriptsDir, "clean.mjs"));
+  copyFileSync(script("lib/workspace.mjs"), join(scriptsDir, "lib", "workspace.mjs"));
+  writeFileSync(join(fakeRepo, "package.json"), '{"type":"module"}', "utf8");
+  writeFileSync(join(staleDist, "renamed-away.js"), "stale", "utf8");
+  writeFileSync(join(appDist, "index.html"), "keep", "utf8");
+  const result = spawnSync(process.execPath, [join(scriptsDir, "clean.mjs"), "--packages"], {
+    cwd: dir,
+    encoding: "utf8",
+  });
+  assert.equal(result.status, 0, result.stderr || result.stdout);
+  assert.equal(existsSync(staleDist), false);
+  assert.equal(existsSync(join(appDist, "index.html")), true);
+});

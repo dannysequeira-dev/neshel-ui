@@ -14,7 +14,7 @@
     "dev:storybook": "pnpm build:packages && pnpm --filter @neshel-ui/storybook dev",
     "dev:playground": "pnpm build:packages && pnpm --filter @neshel-ui/playground-vite dev",
     "build": "pnpm build:packages",
-    "build:packages": "pnpm --filter \"./packages/**\" -r build",
+    "build:packages": "node scripts/clean.mjs --packages && pnpm --filter \"./packages/**\" -r build",
     "build:playground": "pnpm build:packages && pnpm --filter @neshel-ui/playground-vite build",
     "build:storybook": "pnpm build:packages && pnpm --filter @neshel-ui/storybook build",
     "typecheck": "pnpm -r --if-present typecheck",
