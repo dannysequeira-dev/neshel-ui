@@ -1,4 +1,5 @@
-// pnpm check:consumer [--no-build] [--keep] [--variant <tailwind|plain|configured>]... [--artifacts <dir>]
+// pnpm check:consumer [--no-build] [--keep] [--variant <name>]... [--artifacts <dir>]
+// Variants: tailwind, plain, configured, configured-extend, configured-replace.
 // External consumer smoke tests (feature 001 R13–R16; feature 002 FR-029): packs the Neshel
 // packages, installs the tarballs into freshly generated React 19 + TypeScript + Vite apps
 // outside the repository (path with spaces and Unicode), builds them and asserts the CSS.
@@ -17,6 +18,8 @@ import {
   writeFileSync,
 } from "node:fs";
 import { basename, dirname, join, relative, resolve, sep } from "node:path";
+import { BREAKPOINT_CASES, breakpointCasesTsx } from "./lib/breakpoint-cases.mjs";
+import { breakpointVariants, TYPOGRAPHY } from "./lib/consumer-breakpoints.mjs";
 import { checkConsumerCss, checkLayerStatement, checkPlainCss } from "./lib/consumer-checks.mjs";
 import { configuredVariant } from "./lib/consumer-configured.mjs";
 import {
@@ -194,6 +197,11 @@ export default defineConfig({ base: "./", plugins: [${plugins.list}] });
 function layoutFiles({ tailwind }) {
   return {
     "src/layout-cases.tsx": layoutCasesTsx({ tailwind }),
+    // Feature 004: typography from the tarball with the default breakpoints.
+    "src/breakpoint-cases.tsx": breakpointCasesTsx(BREAKPOINT_CASES.zero, {
+      layout: LAYOUT,
+      typography: TYPOGRAPHY,
+    }),
     "src/type-contract.tsx": typeContractTsx,
     "src/entry-server.tsx": entryServerTsx,
     "prerender.mjs": prerenderMjs,
@@ -207,11 +215,24 @@ function layoutCssErrors(outputCss, appDir) {
   return checkLayoutConsumerCss(outputCss, packageCss);
 }
 
+/** Feature 004: the typography stylesheet's selectors reach the consumer's built CSS. */
+function typographyCssErrors(outputCss, appDir) {
+  const installed = realpathSync(join(appDir, "node_modules", ...TYPOGRAPHY.split("/")));
+  const packageCss = readFileSync(join(installed, "dist", "styles.css"), "utf8");
+  return checkLayoutConsumerCss(outputCss, packageCss).map((error) =>
+    error.replace(
+      "layout selector(s) from @neshel-ui/layout",
+      "typography selector(s) from @neshel-ui/typography",
+    ),
+  );
+}
+
 const allVariants = {
   tailwind: {
     title: "Neshel-UI consumer — Tailwind",
     devDependencies: [...BASE_DEV, ...TAILWIND_DEV],
-    packages: [CONFIG, LAYOUT],
+    packages: [CONFIG, LAYOUT, TYPOGRAPHY],
+    breakpointCases: BREAKPOINT_CASES.zero,
     files: () => ({
       ...layoutFiles({ tailwind: true }),
       "vite.config.ts": viteConfig({
@@ -219,8 +240,9 @@ const allVariants = {
           'import tailwindcss from "@tailwindcss/vite";\nimport react from "@vitejs/plugin-react";',
         list: "react(), tailwindcss()",
       }),
-      "src/styles.css": `@import "tailwindcss";\n@import "${CONFIG}/tailwind.css";\n@import "${LAYOUT}/styles.css";\n`,
-      "src/App.tsx": `import { LayoutCases } from "./layout-cases";
+      "src/styles.css": `@import "tailwindcss";\n@import "${CONFIG}/tailwind.css";\n@import "${LAYOUT}/styles.css";\n@import "${TYPOGRAPHY}/styles.css";\n`,
+      "src/App.tsx": `import { BreakpointCases } from "./breakpoint-cases";
+import { LayoutCases } from "./layout-cases";
 
 export function App() {
   return (
@@ -240,6 +262,7 @@ export function App() {
       </section>
     </main>
     <LayoutCases />
+    <BreakpointCases />
     </>
   );
 }
@@ -248,6 +271,7 @@ export function App() {
     postBuild: prerenderLayout,
     check: ({ outputCss, installed, appDir }) => [
       ...layoutCssErrors(outputCss, appDir),
+      ...typographyCssErrors(outputCss, appDir),
       ...checkConsumerCss(
         outputCss,
         readFileSync(join(installed, "dist", "tailwind.css"), "utf8"),
@@ -262,7 +286,8 @@ export function App() {
   plain: {
     title: "Neshel-UI consumer — plain CSS",
     devDependencies: BASE_DEV,
-    packages: [CONFIG, LAYOUT],
+    packages: [CONFIG, LAYOUT, TYPOGRAPHY],
+    breakpointCases: BREAKPOINT_CASES.zero,
     files: () => ({
       ...layoutFiles({ tailwind: false }),
       "vite.config.ts": viteConfig({
@@ -271,6 +296,7 @@ export function App() {
       }),
       "src/styles.css": `@import "${CONFIG}/tokens.css";
 @import "${LAYOUT}/styles.css";
+@import "${TYPOGRAPHY}/styles.css";
 
 body {
   margin: 0;
@@ -283,13 +309,15 @@ body {
   border-radius: var(--neshel-radius-lg);
 }
 `,
-      "src/App.tsx": `import { LayoutCases } from "./layout-cases";
+      "src/App.tsx": `import { BreakpointCases } from "./breakpoint-cases";
+import { LayoutCases } from "./layout-cases";
 
 export function App() {
   return (
     <main>
       <section className="card">Neshel-UI plain CSS consumer</section>
       <LayoutCases />
+      <BreakpointCases />
     </main>
   );
 }
@@ -319,6 +347,7 @@ console.log(JSON.stringify({ bytes: Buffer.byteLength(code), code }));
     check: ({ outputCss, installed, buildLog, appDir }) => {
       const errors = [
         ...layoutCssErrors(outputCss, appDir),
+        ...typographyCssErrors(outputCss, appDir),
         ...checkPlainCss(outputCss, readFileSync(join(installed, "dist", "tokens.css"), "utf8")),
       ];
       if (/unknown at[- ]rule/i.test(buildLog)) {
@@ -340,6 +369,7 @@ console.log(JSON.stringify({ bytes: Buffer.byteLength(code), code }));
     },
   },
   configured: configuredVariant({ CONFIG, CLI, BASE_DEV, TAILWIND_DEV, viteConfig }),
+  ...breakpointVariants({ CONFIG, CLI, LAYOUT, BASE_DEV, TAILWIND_DEV, viteConfig }),
 };
 /** Variants available in this checkout (a variant module may return undefined). */
 export const variants = Object.fromEntries(

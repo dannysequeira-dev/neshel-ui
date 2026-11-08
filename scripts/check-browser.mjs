@@ -6,6 +6,7 @@
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
+import { BREAKPOINT_CASES, probeBreakpointCases } from "./lib/breakpoint-cases.mjs";
 import {
   compareResults,
   expectationsFrom,
@@ -27,11 +28,18 @@ import {
   TAILWIND_STAND_IN,
 } from "./lib/layout-browser.mjs";
 import { createTempDir } from "./lib/temp.mjs";
+import {
+  geometryFailures,
+  installMetrics,
+  probeCase,
+  typographyCases,
+} from "./lib/typography-browser.mjs";
 import { repoRoot } from "./lib/workspace.mjs";
 
 const configDist = join(repoRoot, "packages", "config", "dist");
 const cliDist = join(repoRoot, "packages", "cli", "dist");
 const layoutDist = join(repoRoot, "packages", "layout", "dist");
+const typographyDist = join(repoRoot, "packages", "typography", "dist");
 // Test-harness CSS only (not a library style): removes the UA body margin for geometry checks.
 const HARNESS_CSS = "body { margin: 0; }";
 const load = (path) => import(pathToFileURL(path).href);
@@ -58,6 +66,7 @@ async function main() {
     join(configDist, "tokens.css"),
     join(cliDist, "resolve.js"),
     join(layoutDist, "styles.css"),
+    join(typographyDist, "styles.css"),
   ]) {
     if (!existsSync(required)) throw new Error(`${required} is missing; run pnpm build:packages`);
   }
@@ -156,7 +165,19 @@ async function main() {
   const consumersDir = argValue("--consumers");
   const consumerPages = [];
   if (consumersDir) {
-    for (const name of ["tailwind", "plain", "configured"]) {
+    const breakpointCases = {
+      tailwind: BREAKPOINT_CASES.zero,
+      plain: BREAKPOINT_CASES.zero,
+      "configured-extend": BREAKPOINT_CASES.extend,
+      "configured-replace": BREAKPOINT_CASES.replace,
+    };
+    for (const name of [
+      "tailwind",
+      "plain",
+      "configured",
+      "configured-extend",
+      "configured-replace",
+    ]) {
       const page = join(consumersDir, name, "index.html");
       if (!existsSync(page)) continue;
       consumerPages.push({
@@ -164,9 +185,13 @@ async function main() {
         url: pathToFileURL(page).href,
         expected: name === "configured" ? configuredExpected : defaultsExpected,
         themes: name === "configured" ? configuredThemes : builtIn,
-        tailwind: name !== "plain",
+        // C8/C9 utilities exist only in the feature 002/003 apps (extend checks Tailwind via its cases).
+        tailwind: name === "tailwind" || name === "configured",
         // Feature 003: the Tailwind and plain consumers render LayoutCases and hydrate SSR markup.
-        layout: name !== "configured",
+        layout: name === "tailwind" || name === "plain",
+        // Feature 004: boundary sweeps (1px below / at each threshold) and hydration.
+        breakpointCases: breakpointCases[name],
+        hydrates: name !== "configured",
       });
     }
     if (consumerPages.length === 0) throw new Error(`no consumer builds found in ${consumersDir}`);
@@ -261,6 +286,16 @@ async function main() {
         const result = await probeConsumerLayout(page, fixture);
         fixtureFailures.push(...result.failures);
         assertions += result.assertions;
+      } else if (fixture.hydrates) {
+        const result = await probeHydration(page, fixture);
+        fixtureFailures.push(...result.failures);
+        assertions += result.assertions;
+      }
+      if (fixture.breakpointCases) {
+        await page.evaluate(`document.documentElement.removeAttribute("data-neshel-theme")`);
+        const result = await probeBreakpointCases(page, fixture.breakpointCases, fixture.name);
+        fixtureFailures.push(...result.failures);
+        assertions += result.assertions;
       }
       failures.push(...fixtureFailures);
       report.fixtures.push({
@@ -277,6 +312,11 @@ async function main() {
     failures.push(...layoutResult.failures);
     assertions += layoutResult.assertions;
     report.layout = layoutResult.report;
+    // Feature 004: Capsize geometry with in-page font metrics (SC-004).
+    const typographyResult = await runTypographySection(browser, { dir, tokens });
+    failures.push(...typographyResult.failures);
+    assertions += typographyResult.assertions;
+    report.typography = typographyResult.report;
   } finally {
     await browser.close();
     dispose();
@@ -297,6 +337,24 @@ async function main() {
   } else {
     console.info(`check:browser passed: ${assertions} computed-style assertions.`);
   }
+}
+
+/** Hydration of prerendered markup in a packed consumer page (feature 004 FR-051). */
+async function probeHydration(page, fixture) {
+  let state;
+  for (let attempt = 0; attempt < 50; attempt++) {
+    state = await page.evaluate(`({ ...document.documentElement.dataset })`);
+    if (state.mounted === "true") break;
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  }
+  const failures = [];
+  if (state.hydrated !== "true")
+    failures.push(`${fixture.name}: page was not hydrated from SSR markup`);
+  if (state.mounted !== "true") failures.push(`${fixture.name}: React did not mount`);
+  if (state.hydrationErrors)
+    failures.push(`${fixture.name}: hydration errors: ${state.hydrationErrors}`);
+  for (const error of page.errors) failures.push(`${fixture.name}: page error ${error}`);
+  return { failures, assertions: 3 };
 }
 
 /** Layout cases and hydration in a packed consumer page (SC-004). */
@@ -393,6 +451,60 @@ ${layoutBody(entry.cases, render)}
     report.push({ name: entry.name, cases: entry.cases.map((c) => c.id), failures: pageFailures });
     console.info(
       `${pageFailures.length ? "FAIL" : "ok  "} ${entry.name} — ${result.assertions} assertions`,
+    );
+  }
+  return { failures, assertions, report };
+}
+
+async function runTypographySection(browser, { dir, tokens }) {
+  const React = await import("react");
+  const { renderToStaticMarkup } = await import("react-dom/server");
+  const T = await load(join(typographyDist, "index.js"));
+  const css = readFileSync(join(typographyDist, "styles.css"), "utf8");
+  const cases = typographyCases(React.createElement, T);
+  const body = cases
+    .map(
+      (testCase) =>
+        `<div data-type-case="${testCase.id}" style="width: ${testCase.width ?? 600}px; margin: 40px 0">${renderToStaticMarkup(testCase.element)}</div>`,
+    )
+    .join("\n");
+  const failures = [];
+  const report = [];
+  let assertions = 0;
+  for (const [index, entry] of [
+    { name: "typography: Capsize trims with measured metrics", skew: 0 },
+    // Negative control: metrics that do not match the rendered font must be detectable.
+    { name: "typography negative control: mismatched metrics", skew: 0.1, expectFailure: true },
+  ].entries()) {
+    const file = join(dir, `typography ${index} ñ.html`);
+    writeFileSync(
+      file,
+      fixturePage(entry.name, [HARNESS_CSS, tokens, css]).replace(
+        "<body></body>",
+        `<body>
+${body}
+</body>`,
+      ),
+    );
+    const page = await browser.newPage();
+    await page.goto(pathToFileURL(file).href);
+    await page.setViewport(1280, 900);
+    const metrics = await page.evaluate(installMetrics(entry.skew));
+    let pageFailures = [];
+    for (const testCase of cases) {
+      const probe = await page.evaluate(probeCase(testCase.id));
+      pageFailures.push(...geometryFailures(entry.name, testCase, metrics, probe));
+      assertions += testCase.untrimmed ? 2 : 3;
+    }
+    if (entry.expectFailure) {
+      pageFailures =
+        pageFailures.length > 0 ? [] : [`${entry.name}: wrong metrics were not detected`];
+    }
+    pageFailures.push(...page.errors.map((error) => `${entry.name}: page error ${error}`));
+    failures.push(...pageFailures);
+    report.push({ name: entry.name, metrics, failures: pageFailures });
+    console.info(
+      `${pageFailures.length ? "FAIL" : "ok  "} ${entry.name} — cap ${metrics.cap.toFixed(4)}, ascent ${metrics.ascent.toFixed(4)}, descent ${metrics.descent.toFixed(4)}`,
     );
   }
   return { failures, assertions, report };
