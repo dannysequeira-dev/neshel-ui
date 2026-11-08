@@ -65,3 +65,71 @@ Findings verified locally on 2026-11-07 (Windows 11, Node 26.13.0, Biome 2.6.6) 
   deprecation warnings on current runners; evaluate upgrades in 001.4.
 - Biome patch upgrades within `^2.6.5` may change formatter output; the lockfile pins the
   version used in CI.
+
+## R7 — How pnpm 12 rewrites manifests when packing (observed, 2026-11-07)
+
+Packed with `pnpm pack` (pnpm 12.16.1) before any 001.2 change:
+
+- `workspace:*` → exact version (`"@neshel-ui/config": "0.0.0"` in `cli`).
+- `catalog:` → the catalog range (`"typescript": "^5.9.3"`).
+- `private: true` is preserved, and pnpm packs private packages without complaint, so
+  packing works as a validation tool while the publish guard stays on.
+- `layout` packed with `"@neshel-ui/core": "0.0.0"`: a dependency on an unpublished package,
+  confirming the ADR 0002 trap.
+- `pnpm pack --json` reports `filename` with mixed separators on Windows; `check:pack`
+  locates the tarball by listing its own empty destination directory instead.
+- **Decision**: validate the packed manifest, never the source manifest.
+
+## R8 — Marking intended public packages
+
+- **Decision**: An intended public package declares `"publishConfig": { "access": "public" }`;
+  `core` does not. `private: true` stays on all six as the publish guard.
+- **Rationale**: Discovery needs a signal that does not depend on `private` (which is the
+  guard). `publishConfig.access` is standard npm metadata, is ignored while `private: true`
+  is set, and Changesets already assumes public access.
+- **Alternatives**: hardcoded list (rejected by FR-025); custom `neshel` field (non-standard).
+
+## R9 — Unused workspace dependencies
+
+- **Decision**: Remove every workspace runtime dependency that no source file imports:
+  `core` from layout/typography/components (ADR 0002) and `config` from components and cli.
+  A dependency is added back in the slice that first imports it.
+- **Rationale**: Unused edges are untestable, inflate install graphs and hide boundary
+  violations. The CSS relationship between components and config is a consumer-level
+  stylesheet import, not a JS dependency, today.
+
+## R10 — Library compilation
+
+- **Decision**: A root `tsconfig.library.json` (extends `tsconfig.base.json`) sets
+  `module`/`moduleResolution` `NodeNext`; every `packages/*/tsconfig.json` extends it.
+  Apps keep `Bundler` via the base. Exports keep the `types` + `import` conditions
+  (ESM-only; no `require` condition).
+- **Rationale**: One place for library resolution, no option repeated in six files; NodeNext
+  makes the compiler require explicit `.js` extensions on relative imports.
+
+## R11 — `check:pack` design
+
+- Discovery via the workspace helper and `publishConfig.access` (R8).
+- Build with `pnpm build:packages` unless `--no-build` (used by `pnpm check` and CI right
+  after their own build step).
+- Spawn pnpm through `process.execPath` + `npm_execpath` when available (no shell, no
+  `.cmd` resolution issues on Windows), else `pnpm` with `shell` on Windows.
+- Extract `.tgz` with Node `zlib` + a small ustar/pax reader (no `tar` binary assumption).
+- Validate in memory: packed manifest dependency specs (`workspace:`, `file:`, `link:`,
+  `portal:`, private workspace packages), export/`types`/`bin` targets, declaration file per
+  JS export, `sourceMappingURL` comments, every map `sources` entry, CSS exports declared as
+  side effects.
+- Runtime check from a temporary consumer outside the repository (path with spaces and
+  Unicode): extract tarballs into `node_modules`, link declared peers from the workspace,
+  `import()` every JS export, and type-check every typed export with `tsc` under both
+  `NodeNext` and `Bundler`.
+- `publint` (API, `pack: { tarball }`) and `attw <tgz> --profile esm-only
+  --no-definitely-typed --format json` on the same tarball.
+- Temporary directories are removed in `finally`.
+
+## R12 — publint / attw configuration
+
+- **Decision**: `attw --profile esm-only` (ignores node10 and node16-CJS resolution, which an
+  ESM-only package intentionally does not support) and `--no-definitely-typed` (no network,
+  deterministic). publint runs with default level; any `error` fails the gate, `warning`
+  and `suggestion` are printed and recorded for review.
