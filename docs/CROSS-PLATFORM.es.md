@@ -52,8 +52,9 @@ Volta, etc.); no imponemos uno. `.nvmrc` y `.node-version` apuntan a Node 22.
 ## Desarrollo (los mismos comandos en los tres sistemas)
 
 ```text
-pnpm install
+pnpm install --frozen-lockfile
 pnpm run doctor
+pnpm lint
 pnpm test
 pnpm typecheck
 pnpm build:packages
@@ -62,15 +63,20 @@ pnpm build:playground
 pnpm build:storybook
 ```
 
-También: `pnpm lint`, `pnpm dev:playground`, `pnpm dev:storybook`.
+También: `pnpm format` (aplica las correcciones de Biome), `pnpm check` (doctor, lint,
+tipos, tests, build y exports en un solo paso), `pnpm dev:playground`, `pnpm dev:storybook`.
 
 `pnpm run doctor` comprueba la versión de Node y audita manifestos, scripts y
 colisiones de nombres en rutas que pueden fallar en sistemas de archivos
 case-insensitive. **No sustituye las pruebas de los runners nativos.**
 
-El primer `pnpm install` genera `pnpm-lock.yaml` si no existe: **commitealo**.
-Una vez exista en Git, CI exige `--frozen-lockfile` para proteger la
-reproducibilidad en Windows, macOS y Linux.
+`pnpm-lock.yaml` está commiteado. CI instala siempre con `--frozen-lockfile` para
+proteger la reproducibilidad en Windows, macOS y Linux; si cambiás dependencias,
+commiteá el lockfile actualizado en el mismo cambio.
+
+Biome no procesa los archivos que administra Spec Kit (`.claude/skills/speckit-*` y
+`.specify/{templates,scripts,workflows,integrations}`, más sus JSON de metadatos):
+están registrados por hash en sus manifiestos y no se reformatean a mano.
 
 ## Spec Kit + Claude, sin scripts ligados a Windows
 
@@ -86,23 +92,25 @@ de contexto existentes (`CLAUDE.md`, `AGENTS.md`, constitution y settings).
 El inicializador modifica el repositorio: revisá `git diff` después.
 
 > El wrapper `scripts/bootstrap-spec-kit.ps1` sigue disponible para Windows,
-> pero redirige al mismo script Node. Algunos *extensions* opcionales de Spec
+> pero redirige al mismo script Node. Algunos _extensions_ opcionales de Spec
 > Kit pueden seguir requiriendo Bash o PowerShell; verificarlos al habilitarlos.
 
 ## CI — pruebas reales, no solo promesas
 
 `.github/workflows/ci.yml` ejecuta en GitHub Actions:
 
-| Host | Runtime | Checks |
-| --- | --- | --- |
-| `ubuntu-latest` | Node 22 | doctor, tests, tipos, packages, Vite, Storybook |
-| `windows-latest` | Node 22 | los mismos |
-| `macos-latest` | Node 22 | los mismos |
-| `ubuntu-latest` | Node 24 | compatibilidad futura básica |
+| Host             | Runtime | Checks                                                |
+| ---------------- | ------- | ----------------------------------------------------- |
+| `ubuntu-latest`  | Node 22 | doctor, lint, tests, tipos, packages, Vite, Storybook |
+| `windows-latest` | Node 22 | los mismos                                            |
+| `macos-latest`   | Node 22 | los mismos                                            |
+| `ubuntu-latest`  | Node 24 | los mismos                                            |
 
 Matriz con `fail-fast: false`: un fallo de Windows no oculta uno de macOS.
-No hay workflow de publicación npm ni secretos de publishing. El lint sigue
-siendo un gate manual hasta normalizar todos los archivos del scaffold.
+Instalación con `--frozen-lockfile` y caché del store de pnpm (`actions/setup-node`,
+clave derivada de `pnpm-lock.yaml`). El lint es un gate bloqueante. No hay workflow de
+publicación npm ni secretos de publishing. La matriz Node 26 (decisión D1) llega en el
+hito 001.4.
 
 ## Reglas para futuras contribuciones
 

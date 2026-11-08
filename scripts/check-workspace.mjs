@@ -27,7 +27,7 @@ for (const name of packages) {
     problems.push(`Missing type or ESM exports in ${pkg.name}`);
 }
 if (problems.length > 0) {
-  problems.forEach((problem) => console.error(`ERROR ${problem}`));
+  for (const problem of problems) console.error(`ERROR ${problem}`);
   process.exitCode = 1;
 } else {
   console.info(`Workspace scaffold verified (${packages.length} guarded packages).`);

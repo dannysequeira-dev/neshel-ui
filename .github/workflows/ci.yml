@@ -23,41 +23,40 @@ jobs:
       matrix:
         include:
           - os: ubuntu-latest
-            node: '22'
+            node: "22"
           - os: windows-latest
-            node: '22'
+            node: "22"
           - os: macos-latest
-            node: '22'
+            node: "22"
           - os: ubuntu-latest
-            node: '24'
+            node: "24"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: ${{ matrix.node }}
-
       # Reads the exact version from packageManager in the root package.json.
-      # Avoid a shell-specific global npm install for pnpm.
+      # Runs before setup-node so its pnpm store cache can locate the pnpm binary.
       - name: Set up pnpm
         uses: pnpm/action-setup@v4
         with:
           run_install: false
 
-      # This is a bootstrap repository. Once generated, pnpm-lock.yaml MUST
-      # be committed and the frozen install is the only path taken.
-      - name: Install dependencies (frozen)
-        if: hashFiles('pnpm-lock.yaml') != ''
-        run: pnpm install --frozen-lockfile
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
 
-      - name: Install dependencies (initial bootstrap only)
-        if: hashFiles('pnpm-lock.yaml') == ''
-        run: pnpm install --no-frozen-lockfile
+      # pnpm-lock.yaml is committed; CI never resolves dependencies itself.
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
 
       - name: OS and repository health
         run: pnpm run doctor
+
+      - name: Lint
+        run: pnpm lint
 
       - name: Tests
         run: pnpm test
@@ -76,6 +75,3 @@ jobs:
 
       - name: Build Storybook
         run: pnpm --filter @neshel-ui/storybook build
-
-      # Lint is still a manual gate in the original foundation scaffold.
-      # Promote it to blocking CI once the first complete Biome pass is clean.

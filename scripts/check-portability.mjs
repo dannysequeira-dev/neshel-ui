@@ -4,8 +4,15 @@ import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const skipped = new Set([
-  ".git", "node_modules", "dist", "coverage", "storybook-static",
-  ".next", ".pnpm-store", ".turbo", ".vite",
+  ".git",
+  "node_modules",
+  "dist",
+  "coverage",
+  "storybook-static",
+  ".next",
+  ".pnpm-store",
+  ".turbo",
+  ".vite",
 ]);
 const manifests = ["package.json"];
 const issues = [];
@@ -21,7 +28,9 @@ function visit(directory) {
     const key = entry.name.normalize("NFC").toLowerCase();
     const previous = seen.get(key);
     if (previous && previous !== entry.name) {
-      issues.push(`Case collision in ${relative(root, directory) || "."}: ${previous} / ${entry.name}`);
+      issues.push(
+        `Case collision in ${relative(root, directory) || "."}: ${previous} / ${entry.name}`,
+      );
     }
     seen.set(key, entry.name);
   }
@@ -64,9 +73,11 @@ for (const filename of new Set(manifests)) {
 }
 
 if (issues.length) {
-  issues.forEach((issue) => console.error(`ERROR ${issue}`));
+  for (const issue of issues) console.error(`ERROR ${issue}`);
   process.exitCode = 1;
 } else {
-  console.info(`Portability static audit OK (${manifests.length} manifests; ${inspected} scripts).`);
+  console.info(
+    `Portability static audit OK (${manifests.length} manifests; ${inspected} scripts).`,
+  );
   console.info("Actual OS parity requires green CI on Windows, Linux and macOS.");
 }
