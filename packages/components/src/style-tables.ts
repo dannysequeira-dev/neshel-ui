@@ -29,6 +29,16 @@ const toDeclarations = (block: Block): Declaration[] =>
     ? [...(block as readonly Declaration[])]
     : Object.entries(block as Record<string, string>);
 
+import {
+  type badgeColorVariants,
+  type buttonSizeNames,
+  buttonVariantNames,
+  responsiveClassName,
+  type TableKey,
+} from "./style-constants.js";
+
+export { buttonVariantNames, responsiveClassName, type TableKey };
+
 const REDUCED_MOTION = "(prefers-reduced-motion: reduce)";
 
 /** `n` spacing units (`--neshel-spacing`, 0.25rem by default). */
@@ -157,15 +167,6 @@ rule(".neshel-icon", {
 // Button
 // ---------------------------------------------------------------------------------------------
 
-export const buttonVariantNames = [
-  "primary",
-  "secondary",
-  "outline",
-  "ghost",
-  "destructive",
-  "link",
-] as const;
-
 rule(".neshel-button", {
   position: "relative",
   display: "inline-flex",
@@ -278,7 +279,10 @@ rule(".neshel-button-spinner", { "animation-duration": "1500ms" }, REDUCED_MOTIO
 rule(".neshel-button", { transition: "none" }, REDUCED_MOTION);
 
 /** Responsive Button sizes (`neshel-[<bp>-]button-size-<size>`). */
-export const buttonSizes = {
+const buttonSizes: Record<
+  (typeof buttonSizeNames)[number],
+  { height: string; px: string; font: string }
+> = {
   sm: { height: "2rem", px: sp(3), font: "0.8125rem" },
   md: { height: "2.5rem", px: sp(4), font: "0.875rem" },
   lg: { height: "3rem", px: sp(6), font: "1rem" },
@@ -371,7 +375,7 @@ rule(".neshel-badge", {
 rule(".neshel-badge > svg", { flex: "none", "inline-size": "0.875em", "block-size": "0.875em" });
 rule(".neshel-badge-size-sm", { padding: `${sp(0.5)} ${sp(2)}`, "font-size": "0.75rem" });
 rule(".neshel-badge-size-md", { padding: `${sp(1)} ${sp(2.5)}`, "font-size": "0.8125rem" });
-export const badgeVariants = {
+const badgeVariants: Record<(typeof badgeColorVariants)[number], readonly [string, string]> = {
   default: ["primary", "primary-foreground"],
   secondary: ["secondary", "secondary-foreground"],
   success: ["success", "success-foreground"],
@@ -1246,11 +1250,11 @@ rule(".neshel-sidebar", { transition: "none" }, REDUCED_MOTION);
 
 rule(
   [
-    ".neshel-overlay",
-    ".neshel-dialog-content",
-    ".neshel-sheet-content",
-    ".neshel-popover-content",
-    ".neshel-menu-content",
+    ".neshel-overlay[data-state]",
+    ".neshel-dialog-content[data-state]",
+    ".neshel-sheet-content[data-state]",
+    ".neshel-popover-content[data-state]",
+    ".neshel-menu-content[data-state]",
     ".neshel-tooltip",
     ".neshel-navigation-menu-content",
     ".neshel-sidebar-sheet",
@@ -1291,15 +1295,9 @@ export const responsiveTables = {
       ["display", "none"],
     ] as Declaration[],
   },
-} as const satisfies Record<string, Record<string, readonly Declaration[]>>;
+} as const satisfies Record<TableKey, Record<string, readonly Declaration[]>>;
 
-export type TableKey = keyof typeof responsiveTables;
 export const tableKeys = Object.keys(responsiveTables) as TableKey[];
-
-/** Class name for a table token at a breakpoint (the key is validated by the runtime grammar). */
-export function responsiveClassName(breakpoint: string, key: TableKey, token: string): string {
-  return breakpoint === "base" ? `neshel-${key}-${token}` : `neshel-${breakpoint}-${key}-${token}`;
-}
 
 /** Style manifest data (schema 2), without package metadata. */
 export function manifestRules() {

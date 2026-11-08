@@ -4907,7 +4907,7 @@
       "media": "(prefers-reduced-motion: reduce)"
     },
     {
-      "selector": ".neshel-overlay, .neshel-dialog-content, .neshel-sheet-content, .neshel-popover-content, .neshel-menu-content, .neshel-tooltip, .neshel-navigation-menu-content, .neshel-sidebar-sheet",
+      "selector": ".neshel-overlay[data-state], .neshel-dialog-content[data-state], .neshel-sheet-content[data-state], .neshel-popover-content[data-state], .neshel-menu-content[data-state], .neshel-tooltip, .neshel-navigation-menu-content, .neshel-sidebar-sheet",
       "declarations": [
         [
           "animation",

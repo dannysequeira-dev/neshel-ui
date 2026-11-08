@@ -16,13 +16,13 @@ traceability; section numbers (§) match the brief. The brief is authoritative.
 
 ## Mandatory scope (§2)
 
-| Family        | Components                                                                        |
-| ------------- | --------------------------------------------------------------------------------- |
-| Foundation    | Button, Card, Badge, Input, Separator, Skeleton                                   |
-| Navigation    | Navbar, NavigationMenu, DropdownMenu, Sidebar, ResponsiveMenu/MobileMenu, AppShell, SidebarTrigger |
-| Overlays      | Dialog/Modal, AlertDialog, Sheet/Drawer, Popover                                  |
-| Selection     | Select (single), MultiSelect, Combobox (single), Combobox (multiple)              |
-| Supporting    | Tooltip, Label, VisuallyHidden, ScrollArea — when justified                       |
+| Family     | Components                                                                                         |
+| ---------- | -------------------------------------------------------------------------------------------------- |
+| Foundation | Button, Card, Badge, Input, Separator, Skeleton                                                    |
+| Navigation | Navbar, NavigationMenu, DropdownMenu, Sidebar, ResponsiveMenu/MobileMenu, AppShell, SidebarTrigger |
+| Overlays   | Dialog/Modal, AlertDialog, Sheet/Drawer, Popover                                                   |
+| Selection  | Select (single), MultiSelect, Combobox (single), Combobox (multiple)                               |
+| Supporting | Tooltip, Label, VisuallyHidden, ScrollArea — when justified                                        |
 
 Out of scope: DatePicker, DataTable, Toast, rich text, charts, virtualisation without
 justification, drag gestures, fetch libraries.

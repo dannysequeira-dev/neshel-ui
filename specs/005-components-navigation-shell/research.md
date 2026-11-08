@@ -22,14 +22,14 @@ selection, `items`/`filteredItems`, `filter` (or `null` for external filtering),
 
 ### R1 — Headless engines (ADR 0012)
 
-| Criterion                   | Radix only                     | Base UI only                   | Radix overlays + Base UI selection (chosen) |
-| --------------------------- | ------------------------------ | ------------------------------ | ------------------------------------------- |
-| Multiple Select / Combobox  | missing (custom engine needed) | yes                            | yes (Base UI)                               |
+| Criterion                    | Radix only                     | Base UI only                   | Radix overlays + Base UI selection (chosen) |
+| ---------------------------- | ------------------------------ | ------------------------------ | ------------------------------------------- |
+| Multiple Select / Combobox   | missing (custom engine needed) | yes                            | yes (Base UI)                               |
 | Dialog / menu / nav maturity | high, owner-authorised         | high                           | high (Radix)                                |
-| One selection engine        | n/a                            | yes                            | yes                                         |
-| Cross-engine layering risk  | none                           | none                           | Escape, outside press, focus trap (R12)     |
-| Owner preference (§4, §5)   | partial                        | deviates from §4               | matches the preferred candidate             |
-| `asChild` continuity        | native                         | `render` prop (adapter needed) | native for overlays; adapter not exposed    |
+| One selection engine         | n/a                            | yes                            | yes                                         |
+| Cross-engine layering risk   | none                           | none                           | Escape, outside press, focus trap (R12)     |
+| Owner preference (§4, §5)    | partial                        | deviates from §4               | matches the preferred candidate             |
+| `asChild` continuity         | native                         | `render` prop (adapter needed) | native for overlays; adapter not exposed    |
 
 Decision: Radix for Dialog, AlertDialog, Sheet (dialog), Popover, DropdownMenu, NavigationMenu
 and Tooltip; Base UI for Select, MultiSelect and Combobox. Rationale: it is the owner's preferred

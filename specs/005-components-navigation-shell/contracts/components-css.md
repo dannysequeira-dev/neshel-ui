@@ -50,8 +50,19 @@ Schema 1 (feature 004) plus two optional fields:
   "package": "@neshel-ui/components",
   "version": "0.0.0",
   "layer": "components.neshel",
-  "keyframes": [{ "name": "neshel-fade-in", "frames": [{ "selector": "from", "declarations": [["opacity", "0"]] }] }],
-  "rules": [{ "selector": ".neshel-skeleton", "declarations": [["animation", "…"]], "media": "(prefers-reduced-motion: reduce)" }],
+  "keyframes": [
+    {
+      "name": "neshel-fade-in",
+      "frames": [{ "selector": "from", "declarations": [["opacity", "0"]] }]
+    }
+  ],
+  "rules": [
+    {
+      "selector": ".neshel-skeleton",
+      "declarations": [["animation", "…"]],
+      "media": "(prefers-reduced-motion: reduce)"
+    }
+  ],
   "responsive": [{ "class": "button-size-sm", "declarations": [["min-block-size", "2rem"]] }]
 }
 ```

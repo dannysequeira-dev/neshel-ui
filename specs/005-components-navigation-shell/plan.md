@@ -22,16 +22,16 @@ CDP browser interaction tests with axe, and packed external consumers.
 
 ## Constitution check
 
-| Principle                | Plan                                                                                         |
-| ------------------------ | -------------------------------------------------------------------------------------------- |
-| II Modular packages      | components depends on no Neshel runtime package; layout/typography untouched by components   |
-| III CSS-first            | precompiled CSS, tokens only, no Provider, config at build time                              |
-| IV Accessibility         | Radix/Base UI primitives, native semantics, axe + keyboard browser tests                     |
-| V Typography/layout      | components do not redefine typography; compatible inside Stack/Inline                        |
-| VI Evidence              | unit, browser, axe, packed consumers, negative controls, CI 3 OSes                           |
-| VII Spec-driven, minimal | ADRs 0012–0014; mandatory scope only; no aliases                                             |
-| VIII Safe releases       | private packages; changeset only; no publish/tag                                             |
-| IX Cross-platform        | Node scripts only; CDP harness on three OSes                                                 |
+| Principle                | Plan                                                                                       |
+| ------------------------ | ------------------------------------------------------------------------------------------ |
+| II Modular packages      | components depends on no Neshel runtime package; layout/typography untouched by components |
+| III CSS-first            | precompiled CSS, tokens only, no Provider, config at build time                            |
+| IV Accessibility         | Radix/Base UI primitives, native semantics, axe + keyboard browser tests                   |
+| V Typography/layout      | components do not redefine typography; compatible inside Stack/Inline                      |
+| VI Evidence              | unit, browser, axe, packed consumers, negative controls, CI 3 OSes                         |
+| VII Spec-driven, minimal | ADRs 0012–0014; mandatory scope only; no aliases                                           |
+| VIII Safe releases       | private packages; changeset only; no publish/tag                                           |
+| IX Cross-platform        | Node scripts only; CDP harness on three OSes                                               |
 
 ## Architecture
 
@@ -65,9 +65,9 @@ Commit; pushes after milestones with green local gates.
 
 ## Risks
 
-| Risk                                         | Mitigation                                                   |
-| -------------------------------------------- | ------------------------------------------------------------ |
-| Base UI ↔ Radix layering                     | R12 rules + browser tests (Select in Dialog, Escape order)   |
-| jsdom gaps (pointer events, layout)          | interaction coverage in Chrome; jsdom for markup/state       |
-| CSS size growth in generated stylesheets     | budget in contract; measured                                 |
-| CI time (more consumers)                     | reuse consumer variants; one lab app per variant             |
+| Risk                                     | Mitigation                                                 |
+| ---------------------------------------- | ---------------------------------------------------------- |
+| Base UI ↔ Radix layering                 | R12 rules + browser tests (Select in Dialog, Escape order) |
+| jsdom gaps (pointer events, layout)      | interaction coverage in Chrome; jsdom for markup/state     |
+| CSS size growth in generated stylesheets | budget in contract; measured                               |
+| CI time (more consumers)                 | reuse consumer variants; one lab app per variant           |

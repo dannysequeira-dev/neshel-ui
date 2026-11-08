@@ -13,6 +13,7 @@ import {
   LayerContainerContext,
   PortalTheme,
   TriggerContext,
+  useFocusReturn,
   useLayerContainer,
   useTriggerRef,
   useTriggerRegistry,
@@ -103,10 +104,13 @@ function PanelPart({
   className,
   children,
   onEscapeKeyDown,
+  onOpenAutoFocus,
+  onCloseAutoFocus,
   ref,
   ...rest
 }: ContentBase & PanelOptions) {
   const [node, setNode] = useLayerContainer();
+  const focus = useFocusReturn(onOpenAutoFocus, onCloseAutoFocus);
   return (
     <RadixDialog.Portal container={container ?? undefined}>
       <PortalTheme>
@@ -115,6 +119,8 @@ function PanelPart({
           {...rest}
           ref={composeRefs(ref, setNode)}
           onEscapeKeyDown={guardEscape(onEscapeKeyDown)}
+          onOpenAutoFocus={focus.onOpenAutoFocus}
+          onCloseAutoFocus={focus.onCloseAutoFocus}
           className={cx(classes, className)}
         >
           <LayerContainerContext.Provider value={node}>

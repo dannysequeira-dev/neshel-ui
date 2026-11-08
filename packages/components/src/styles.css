@@ -238,7 +238,7 @@
   .neshel-sidebar[data-collapsed][data-collapsible="icon"] .neshel-sidebar-sub-list, .neshel-sidebar[data-collapsed][data-collapsible="icon"] .neshel-chevron { display: none; }
   @media (prefers-reduced-motion: reduce) {
     .neshel-sidebar { transition: none; }
-    .neshel-overlay, .neshel-dialog-content, .neshel-sheet-content, .neshel-popover-content, .neshel-menu-content, .neshel-tooltip, .neshel-navigation-menu-content, .neshel-sidebar-sheet { animation: none; }
+    .neshel-overlay[data-state], .neshel-dialog-content[data-state], .neshel-sheet-content[data-state], .neshel-popover-content[data-state], .neshel-menu-content[data-state], .neshel-tooltip, .neshel-navigation-menu-content, .neshel-sidebar-sheet { animation: none; }
     .neshel-select-popup, .neshel-chevron { transition: none; }
   }
 

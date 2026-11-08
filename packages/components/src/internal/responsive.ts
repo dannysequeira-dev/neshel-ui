@@ -2,7 +2,7 @@
  * Responsive props (ADR 0010): one class per written key, `base` first; the default fills a
  * missing `base`. Keys follow the shared grammar; unknown well-formed keys warn in the browser.
  */
-import { responsiveClassName, type TableKey } from "../style-tables.js";
+import { responsiveClassName, type TableKey } from "../style-constants.js";
 import { isBreakpointKey, warnUnknownBreakpoint } from "./breakpoint-check.js";
 import { componentsError } from "./errors.js";
 import { describe, present } from "./validate.js";

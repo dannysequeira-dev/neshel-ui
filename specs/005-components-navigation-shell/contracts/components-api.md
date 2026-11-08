@@ -8,14 +8,14 @@ means the corresponding Radix primitive's documented props are forwarded unchang
 
 ## Conventions
 
-| Topic          | Rule                                                                                                   |
-| -------------- | ------------------------------------------------------------------------------------------------------ |
-| Exports        | Flat names only (R3). `NeshelComponentsError` for invalid usage (thrown during render).                |
-| `asChild`      | Exactly one non-Fragment element child; class joined, style merged (child wins), handlers composed (child first), refs composed. |
-| `as`           | Closed element lists; `as` + `asChild` throws.                                                         |
-| Responsive     | `Responsive<T> = T \| { base?: T; [breakpoint]?: T }` with configured names (ADR 0010).                |
-| Portals        | Overlay contents accept `container?: HTMLElement \| null`; default `document.body` with theme wrapper. |
-| State          | Every stateful component offers `x` / `defaultX` / `onXChange`.                                        |
+| Topic      | Rule                                                                                                                             |
+| ---------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| Exports    | Flat names only (R3). `NeshelComponentsError` for invalid usage (thrown during render).                                          |
+| `asChild`  | Exactly one non-Fragment element child; class joined, style merged (child wins), handlers composed (child first), refs composed. |
+| `as`       | Closed element lists; `as` + `asChild` throws.                                                                                   |
+| Responsive | `Responsive<T> = T \| { base?: T; [breakpoint]?: T }` with configured names (ADR 0010).                                          |
+| Portals    | Overlay contents accept `container?: HTMLElement \| null`; default `document.body` with theme wrapper.                           |
+| State      | Every stateful component offers `x` / `defaultX` / `onXChange`.                                                                  |
 
 ## Foundation
 
@@ -23,12 +23,12 @@ means the corresponding Radix primitive's documented props are forwarded unchang
 type ButtonVariant = "primary" | "secondary" | "outline" | "ghost" | "destructive" | "link";
 type ButtonSize = "sm" | "md" | "lg";
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: ButtonVariant;            // "primary"
-  size?: Responsive<ButtonSize>;      // "md"
-  iconOnly?: boolean;                 // square; needs aria-label / aria-labelledby (dev warning)
+  variant?: ButtonVariant; // "primary"
+  size?: Responsive<ButtonSize>; // "md"
+  iconOnly?: boolean; // square; needs aria-label / aria-labelledby (dev warning)
   fullWidth?: boolean;
-  loading?: boolean;                  // aria-disabled + data-loading; no activation/submission
-  asChild?: boolean;                  // disabled/loading + asChild throws
+  loading?: boolean; // aria-disabled + data-loading; no activation/submission
+  asChild?: boolean; // disabled/loading + asChild throws
 }
 ```
 
@@ -57,12 +57,12 @@ Tooltip: `Tooltip` (Radix root props + `delayDuration`), `TooltipTrigger` (`asCh
 
 ## Overlays
 
-| Family      | Parts                                                                                                                          |
-| ----------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| Dialog      | `Dialog`, `DialogTrigger`, `DialogContent`, `DialogHeader`, `DialogBody`, `DialogFooter`, `DialogTitle`, `DialogDescription`, `DialogClose` |
+| Family      | Parts                                                                                                                                                                                       |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Dialog      | `Dialog`, `DialogTrigger`, `DialogContent`, `DialogHeader`, `DialogBody`, `DialogFooter`, `DialogTitle`, `DialogDescription`, `DialogClose`                                                 |
 | AlertDialog | `AlertDialog`, `AlertDialogTrigger`, `AlertDialogContent`, `AlertDialogHeader`, `AlertDialogFooter`, `AlertDialogTitle`, `AlertDialogDescription`, `AlertDialogCancel`, `AlertDialogAction` |
-| Sheet       | `Sheet`, `SheetTrigger`, `SheetContent`, `SheetHeader`, `SheetBody`, `SheetFooter`, `SheetTitle`, `SheetDescription`, `SheetClose` |
-| Popover     | `Popover`, `PopoverTrigger`, `PopoverAnchor`, `PopoverContent`, `PopoverClose`                                                 |
+| Sheet       | `Sheet`, `SheetTrigger`, `SheetContent`, `SheetHeader`, `SheetBody`, `SheetFooter`, `SheetTitle`, `SheetDescription`, `SheetClose`                                                          |
+| Popover     | `Popover`, `PopoverTrigger`, `PopoverAnchor`, `PopoverContent`, `PopoverClose`                                                                                                              |
 
 - `DialogContent`: Radix content props + `size?: "sm" | "md" | "lg" | "xl" | "full"` (md),
   `showClose?: boolean` (true), `closeLabel?: string` ("Close"), `container`.
@@ -76,49 +76,85 @@ Tooltip: `Tooltip` (Radix root props + `delayDuration`), `TooltipTrigger` (`asCh
 ## Selection
 
 ```ts
-interface SelectOption { value: string; label: string; disabled?: boolean }
-interface SelectOptionGroup { label: string; options: readonly SelectOption[] }
+interface SelectOption {
+  value: string;
+  label: string;
+  disabled?: boolean;
+}
+interface SelectOptionGroup {
+  label: string;
+  options: readonly SelectOption[];
+}
 type SelectOptions = readonly (SelectOption | SelectOptionGroup)[];
 
-interface SelectFieldProps {             // shared by Select, MultiSelect, Combobox
-  id?: string; name?: string; form?: string;
-  required?: boolean; disabled?: boolean; readOnly?: boolean; invalid?: boolean;
-  placeholder?: string; uiSize?: "sm" | "md" | "lg";
-  open?: boolean; defaultOpen?: boolean; onOpenChange?(open: boolean): void;
+interface SelectFieldProps {
+  // shared by Select, MultiSelect, Combobox
+  id?: string;
+  name?: string;
+  form?: string;
+  required?: boolean;
+  disabled?: boolean;
+  readOnly?: boolean;
+  invalid?: boolean;
+  placeholder?: string;
+  uiSize?: "sm" | "md" | "lg";
+  open?: boolean;
+  defaultOpen?: boolean;
+  onOpenChange?(open: boolean): void;
   container?: HTMLElement | null;
-  "aria-label"?: string; "aria-labelledby"?: string; "aria-describedby"?: string;
+  "aria-label"?: string;
+  "aria-labelledby"?: string;
+  "aria-describedby"?: string;
   className?: string;
 }
 interface SelectProps extends SelectFieldProps {
   options: SelectOptions;
-  value?: string | null; defaultValue?: string | null; onValueChange?(value: string | null): void;
+  value?: string | null;
+  defaultValue?: string | null;
+  onValueChange?(value: string | null): void;
   ref?: Ref<HTMLButtonElement>;
 }
 interface MultiSelectProps extends SelectFieldProps {
   options: SelectOptions;
-  value?: readonly string[]; defaultValue?: readonly string[]; onValueChange?(value: string[]): void;
-  chips?: boolean;                       // true
-  clearable?: boolean;                   // true
-  clearLabel?: string;                   // "Clear selection"
-  removeLabel?(label: string): string;   // label => `Remove ${label}`
-  removedMessage?(label: string): string;// label => `${label} removed`
-  summary?(count: number): string;       // n => `${n} selected`
+  value?: readonly string[];
+  defaultValue?: readonly string[];
+  onValueChange?(value: string[]): void;
+  chips?: boolean; // true
+  clearable?: boolean; // true
+  clearLabel?: string; // "Clear selection"
+  removeLabel?(label: string): string; // label => `Remove ${label}`
+  removedMessage?(label: string): string; // label => `${label} removed`
+  summary?(count: number): string; // n => `${n} selected`
   ref?: Ref<HTMLButtonElement>;
 }
 type ComboboxItem = SelectOption;
 type ComboboxProps = SelectFieldProps & {
   items: readonly (ComboboxItem | { label: string; items: readonly ComboboxItem[] })[];
-  inputValue?: string; defaultInputValue?: string; onInputValueChange?(value: string): void;
-  filter?: ((item: ComboboxItem, query: string) => boolean) | null;  // null = external filtering
-  emptyMessage?: ReactNode;              // "No results"
-  loading?: boolean; loadingMessage?: ReactNode;  // "Loading…"
-  clearable?: boolean; clearLabel?: string;
+  inputValue?: string;
+  defaultInputValue?: string;
+  onInputValueChange?(value: string): void;
+  filter?: ((item: ComboboxItem, query: string) => boolean) | null; // null = external filtering
+  emptyMessage?: ReactNode; // "No results"
+  loading?: boolean;
+  loadingMessage?: ReactNode; // "Loading…"
+  clearable?: boolean;
+  clearLabel?: string;
   ref?: Ref<HTMLInputElement>;
 } & (
-  | { multiple?: false; value?: string | null; defaultValue?: string | null; onValueChange?(v: string | null): void }
-  | { multiple: true; value?: readonly string[]; defaultValue?: readonly string[]; onValueChange?(v: string[]): void;
-      removeLabel?(label: string): string }
-);
+    | {
+        multiple?: false;
+        value?: string | null;
+        defaultValue?: string | null;
+        onValueChange?(v: string | null): void;
+      }
+    | {
+        multiple: true;
+        value?: readonly string[];
+        defaultValue?: readonly string[];
+        onValueChange?(v: string[]): void;
+        removeLabel?(label: string): string;
+      }
+  );
 ```
 
 Labelling: pass `id` and render `<Label htmlFor={id}>`, or `aria-label`/`aria-labelledby`.

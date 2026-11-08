@@ -12,6 +12,7 @@ import {
   LayerContainerContext,
   PortalTheme,
   TriggerContext,
+  useFocusReturn,
   useLayerContainer,
   useTriggerRef,
   useTriggerRegistry,
@@ -67,9 +68,12 @@ export function AlertDialogContent({
   className,
   children,
   onEscapeKeyDown,
+  onOpenAutoFocus,
+  onCloseAutoFocus,
   ref,
   ...rest
 }: AlertDialogContentProps) {
+  const focus = useFocusReturn(onOpenAutoFocus, onCloseAutoFocus);
   const value = oneOf("AlertDialogContent", "size", size, ["sm", "md", "lg"] as const, "sm");
   const [node, setNode] = useLayerContainer();
   return (
@@ -80,6 +84,8 @@ export function AlertDialogContent({
           {...rest}
           ref={composeRefs(ref, setNode)}
           onEscapeKeyDown={guardEscape(onEscapeKeyDown)}
+          onOpenAutoFocus={focus.onOpenAutoFocus}
+          onCloseAutoFocus={focus.onCloseAutoFocus}
           className={cx("neshel-dialog-content", `neshel-dialog-size-${value}`, className)}
         >
           <LayerContainerContext.Provider value={node}>{children}</LayerContainerContext.Provider>

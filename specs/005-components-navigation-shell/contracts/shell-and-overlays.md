@@ -18,11 +18,11 @@
 
 ## Shell state
 
-| State        | Owner    | Values                         | Default | Source of change                                    |
-| ------------ | -------- | ------------------------------ | ------- | --------------------------------------------------- |
-| `mode`       | AppShell | `undefined` (SSR, before mount), `"desktop"`, `"mobile"` | — | computed `--neshel-shell-mode`, re-read on `resize` |
-| `collapsed`  | AppShell | boolean, controlled/uncontrolled | false | SidebarTrigger (desktop), `useAppShell().setCollapsed` |
-| `mobileOpen` | AppShell | boolean, controlled/uncontrolled | false | SidebarTrigger (mobile), Escape, overlay press, link activation, mode → desktop |
+| State        | Owner    | Values                                                   | Default | Source of change                                                                |
+| ------------ | -------- | -------------------------------------------------------- | ------- | ------------------------------------------------------------------------------- |
+| `mode`       | AppShell | `undefined` (SSR, before mount), `"desktop"`, `"mobile"` | —       | computed `--neshel-shell-mode`, re-read on `resize`                             |
+| `collapsed`  | AppShell | boolean, controlled/uncontrolled                         | false   | SidebarTrigger (desktop), `useAppShell().setCollapsed`                          |
+| `mobileOpen` | AppShell | boolean, controlled/uncontrolled                         | false   | SidebarTrigger (mobile), Escape, overlay press, link activation, mode → desktop |
 
 - Markup on the server and on the first client render does not depend on `mode`; the trigger's
   `aria-expanded` uses `!collapsed` until the mode is known.
@@ -33,12 +33,12 @@
 
 ## Sidebar rendering
 
-| Context                    | Inline `<aside>`                         | Sheet (Radix dialog, side left)           |
-| -------------------------- | ---------------------------------------- | ----------------------------------------- |
-| No AppShell                | children, expanded unless `collapsed`    | —                                         |
-| `mode` undefined / desktop | children; `data-collapsed` per state     | —                                         |
-| `mode` mobile, closed      | empty, hidden by CSS                     | —                                         |
-| `mode` mobile, open        | empty, hidden by CSS                     | children; title = `mobileTitle` (hidden)  |
+| Context                    | Inline `<aside>`                      | Sheet (Radix dialog, side left)          |
+| -------------------------- | ------------------------------------- | ---------------------------------------- |
+| No AppShell                | children, expanded unless `collapsed` | —                                        |
+| `mode` undefined / desktop | children; `data-collapsed` per state  | —                                        |
+| `mode` mobile, closed      | empty, hidden by CSS                  | —                                        |
+| `mode` mobile, open        | empty, hidden by CSS                  | children; title = `mobileTitle` (hidden) |
 
 Activating a link (`a[href]`, primary button, no modifier keys, not prevented) inside the sheet
 closes it. Focus moves into the sheet on open and returns to the trigger on close.

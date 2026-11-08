@@ -108,3 +108,33 @@ export function guardEscape(
     handler?.(event);
   };
 }
+
+type AutoFocusHandler = ((event: Event) => void) | undefined;
+
+/**
+ * Focus restoration for modal layers opened without a Radix trigger (controlled dialogs, the
+ * mobile sidebar drawer): records the focused element when the layer opens and focuses the
+ * registered trigger, else that element, when it closes (brief §17, §15).
+ */
+export function useFocusReturn(
+  onOpenAutoFocus: AutoFocusHandler,
+  onCloseAutoFocus: AutoFocusHandler,
+) {
+  const registry = useContext(TriggerContext);
+  const opener = useRef<HTMLElement | null>(null);
+  return {
+    onOpenAutoFocus(event: Event) {
+      const active = typeof document === "undefined" ? null : document.activeElement;
+      opener.current = active instanceof HTMLElement && active !== document.body ? active : null;
+      onOpenAutoFocus?.(event);
+    },
+    onCloseAutoFocus(event: Event) {
+      onCloseAutoFocus?.(event);
+      if (event.defaultPrevented) return;
+      event.preventDefault();
+      const trigger = registry?.current;
+      const target = trigger?.isConnected ? trigger : opener.current;
+      if (target?.isConnected) target.focus();
+    },
+  };
+}

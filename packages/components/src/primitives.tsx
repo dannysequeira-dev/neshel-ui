@@ -14,14 +14,14 @@ import { tv } from "tailwind-variants/lite";
 import { componentsError } from "./internal/errors.js";
 import { asChildElement } from "./internal/slot.js";
 import { cx, flag, oneOf } from "./internal/validate.js";
-import { badgeVariants } from "./style-tables.js";
+import { badgeColorVariants } from "./style-constants.js";
 import type { FieldSize } from "./types.js";
 
 // ---------------------------------------------------------------------------------------------
 // Badge
 // ---------------------------------------------------------------------------------------------
 
-export type BadgeVariant = keyof typeof badgeVariants | "outline";
+export type BadgeVariant = (typeof badgeColorVariants)[number] | "outline";
 export type BadgeSize = "sm" | "md";
 
 export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
@@ -30,7 +30,7 @@ export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
   ref?: Ref<HTMLSpanElement>;
 }
 
-const BADGE_VARIANTS = [...Object.keys(badgeVariants), "outline"] as BadgeVariant[];
+const BADGE_VARIANTS: readonly BadgeVariant[] = [...badgeColorVariants, "outline"];
 
 const badge = tv({
   base: "neshel-badge",

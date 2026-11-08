@@ -4,7 +4,7 @@
  * the items (research R16). Local filtering by default; `filter={null}` for external filtering.
  */
 import { Combobox as BaseCombobox } from "@base-ui/react/combobox";
-import { type ReactNode, type Ref, useRef } from "react";
+import { type KeyboardEvent, type ReactNode, type Ref, useRef } from "react";
 import { componentsError } from "./internal/errors.js";
 import { CheckIcon, ChevronDownIcon, CloseIcon } from "./internal/icons.js";
 import {
@@ -180,6 +180,18 @@ export function Combobox(props: ComboboxProps) {
       aria-labelledby={props["aria-labelledby"]}
       aria-describedby={props["aria-describedby"]}
       aria-invalid={isInvalid ? true : undefined}
+      onKeyDown={(
+        event: KeyboardEvent<HTMLInputElement> & { preventBaseUIHandler?: () => void },
+      ) => {
+        // Escape only closes the popup: Base UI would clear the whole selection when the popup is
+        // already closed, which silently discards form values (research R16).
+        if (
+          event.key === "Escape" &&
+          event.currentTarget.getAttribute("aria-expanded") !== "true"
+        ) {
+          event.preventBaseUIHandler?.();
+        }
+      }}
     />
   );
   const actions = (

@@ -10,11 +10,11 @@ import { componentsError } from "./internal/errors.js";
 import { responsiveClasses } from "./internal/responsive.js";
 import { asChildElement } from "./internal/slot.js";
 import { flag, oneOf } from "./internal/validate.js";
-import { buttonSizes, buttonVariantNames } from "./style-tables.js";
+import { buttonSizeNames, buttonVariantNames } from "./style-constants.js";
 import type { Responsive } from "./types.js";
 
 export type ButtonVariant = (typeof buttonVariantNames)[number];
-export type ButtonSize = keyof typeof buttonSizes;
+export type ButtonSize = (typeof buttonSizeNames)[number];
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   /** Visual style (default `"primary"`). */
@@ -35,7 +35,7 @@ export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   ref?: Ref<HTMLButtonElement>;
 }
 
-const SIZES = Object.keys(buttonSizes);
+const SIZES: readonly string[] = buttonSizeNames;
 
 export const buttonVariants = tv({
   base: "neshel-button",
