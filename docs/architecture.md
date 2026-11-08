@@ -26,9 +26,12 @@ import any React component package. React packages declare React 19 as a peer.
 Since milestone 001.2, workspace dependencies are declared only when a source file
 imports them (research R9). The only inter-package dependency today is `cli` → `config`
 (peer, feature 002); the other arrows become real in the slices that introduce those imports.
-`layout` (feature 003) imports no workspace package: it consumes the `config` tokens only through
-CSS custom properties (`--neshel-spacing`, `--neshel-border`) and depends at runtime on
-`@radix-ui/react-slot` and `tailwind-variants` (ADR 0008/0009).
+`layout` (feature 003) and `typography` (feature 004) consume the `config` tokens through CSS custom
+properties and depend at runtime on `@radix-ui/react-slot` and `tailwind-variants` (ADR
+0008/0009/0011). Since feature 004 both declare `@neshel-ui/config` as a peer for one type-only
+import (`BreakpointName`, the augmentable breakpoint registry, ADR 0010); neither imports the other.
+The CLI reads their `style-manifest.json` (data) to generate component CSS for custom breakpoints;
+it never imports React packages.
 The workspace apps use Vite 8 with `@vitejs/plugin-react` 5 since milestone 001.4
 ([ADR 0005](decisions/0005-vite-8.md)); published packages do not depend on Vite.
 
@@ -130,9 +133,20 @@ Status of each decision (implemented / locally verified / CI-verified) is tracke
   validation ([ADR 0009](decisions/0009-layout-composition-aschild-separators.md)); typography
   may adopt it in feature 004.
 
+## Feature 004 decisions (2026-11-08)
+
+- Custom breakpoints: order-free runtime (one class per written key; CSS source order and custom
+  properties resolve cascade and precedence), style manifests rendered by one CLI renderer into the
+  package stylesheets and the generated stylesheet, type registry augmentation, optional Tailwind
+  `@theme` sync ([ADR 0010](decisions/0010-custom-breakpoints.md)). With configured breakpoints the
+  generated stylesheet is imported after the package stylesheets.
+- Typography reuses the layout pipeline; Capsize trimming through per-font metric tokens and the
+  active leading; cap-height-normalised sizes; Capsize fallback fonts
+  ([ADR 0011](decisions/0011-typography-capsize.md)).
+
 ## Open decisions
 
-- Whether typography and components reuse the layout styling pipeline (feature 004/005).
-- Configurable breakpoints (would need a generated layout stylesheet).
+- Whether the components package (feature 005) reuses the same pipeline.
+- `text-box-trim` as a progressive enhancement once cross-browser.
 
 See [`docs/decisions/`](decisions/0001-architecture.md).

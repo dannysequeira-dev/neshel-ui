@@ -3,9 +3,9 @@
 Composable, responsive and accessible React layout primitives: `Box`, `Flex`, `Stack`, `Inline`,
 `Grid`, `Center` and `Container`.
 
-**Status:** pre-release, **not published to npm**. Implemented in feature 003 and verified from
-the packed tarball in external React 19 + Vite apps with and without Tailwind, including SSR and
-hydration.
+**Status:** pre-release, **not published to npm**. Implemented in feature 003 (custom breakpoints
+in feature 004) and verified from the packed tarball in external React 19 + Vite apps with and
+without Tailwind, including SSR and hydration.
 
 ```css
 @import "@neshel-ui/config/tokens.css"; /* or tailwind.css after @import "tailwindcss" */
@@ -26,6 +26,8 @@ import { Grid, Inline, Stack } from "@neshel-ui/layout";
 </Stack>;
 ```
 
+- Responsive keys: `base` plus `sm md lg xl 2xl`, or your own names from `neshel.config.ts`
+  (`neshel generate`; see the layout guide's _Custom breakpoints_). Peer: `@neshel-ui/config`.
 - Spacing: `space` (`gap`) or `spaceX` / `spaceY` (`column-gap` / `row-gap`), never both kinds.
 - Alignment: `align`, `alignX`, `alignY`, `justify`, with precedence
   `justify` > `alignX`/`alignY` > `align`.

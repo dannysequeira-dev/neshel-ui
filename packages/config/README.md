@@ -4,6 +4,11 @@ CSS-first design tokens, semantic themes and typed theme configuration for Neshe
 
 **Status:** pre-release, **not published to npm**. Validated from the packed tarball.
 
+Feature 004 adds `breakpoints` (custom responsive breakpoints shared by layout and typography),
+`types`, Capsize-format `typography.metrics` and `typography.fallbacks`, and the `BreakpointName`
+type that generated declarations augment. Guides: `docs/layout.md#custom-breakpoints`,
+`docs/typography.md`.
+
 ## Zero-config usage
 
 Installing the package never injects CSS; import **one** stylesheet explicitly.

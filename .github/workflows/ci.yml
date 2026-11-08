@@ -85,13 +85,16 @@ jobs:
         run: pnpm check:pack --no-build
 
       # Installs packed tarballs into generated React 19 + Vite apps outside the workspace:
-      # Tailwind v4, plain CSS, and a configured app that runs the packed `neshel generate`
-      # (tools come from the registry). Builds feed the browser check.
-      - name: Verify external consumers (Tailwind, plain CSS, configured)
+      # Tailwind v4 and plain CSS (layout + typography), a configured theme app, and custom
+      # breakpoint apps (extend + Tailwind, replace + plain CSS) that run the packed
+      # `neshel generate`, type-check in Bundler and NodeNext resolution and prerender (SSR).
+      # Tools come from the registry. Builds feed the browser check.
+      - name: Verify external consumers (zero-config, configured, custom breakpoints)
         run: pnpm check:consumer --no-build --artifacts "${{ runner.temp }}/neshel-consumers"
 
-      # Computed-style precedence matrix in headless Chrome (preinstalled on GitHub runners).
-      - name: Browser cascade check
+      # Computed-style precedence matrix, layout cases, breakpoint boundary sweeps and Capsize
+      # geometry in headless Chrome (preinstalled on GitHub runners).
+      - name: Browser computed-style check
         run: pnpm check:browser --consumers "${{ runner.temp }}/neshel-consumers"
 
       - name: Build Vite consumer
@@ -99,3 +102,7 @@ jobs:
 
       - name: Build Storybook
         run: pnpm --filter @neshel-ui/storybook build
+
+      # The Storybook build regenerates its committed breakpoint declarations; they must not change.
+      - name: Storybook generated declarations are committed and fresh
+        run: git diff --exit-code -- apps/storybook/src/neshel.generated.d.ts

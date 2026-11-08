@@ -113,6 +113,20 @@ also overrides the **dark** theme. Override inside the config layer, per theme:
 Combining `data-neshel-theme` with a Tailwind `scheme-*` utility on the same element: the Neshel
 layer sets `color-scheme` under the canonical order.
 
+## Font metrics and breakpoints (feature 004)
+
+`neshel.config.ts` also configures:
+
+- `typography.metrics` / `typography.fallbacks`: Capsize-format font metrics per role. The
+  generated stylesheet adds `--neshel-font-<role>-scale`, `-cap-trim`, `-baseline-trim` and
+  `-trim` next to `--neshel-font-<role>` (defaults in `tokens.css`/`tailwind.css`: Inter for
+  `body`/`display`, none for `mono`), plus Capsize fallback `@font-face` rules. See the
+  [typography guide](typography.md#configure-your-fonts).
+- `breakpoints` and `types`: application breakpoint names, generated component stylesheets,
+  Tailwind `@theme` breakpoints and TypeScript declarations. See
+  [Custom breakpoints](layout.md#custom-breakpoints). With configured breakpoints the generated file
+  is imported **after** the package stylesheets (contracts/breakpoints.md §5).
+
 ## Accessibility
 
 Built-in themes meet 4.5:1 for text pairs and 3:1 for focus and input boundaries (WCAG 2.1

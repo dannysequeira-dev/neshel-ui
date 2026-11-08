@@ -1,5 +1,11 @@
 # Contract — `@neshel-ui/layout/styles.css`
 
+> **Amended by feature 004** ([ADR 0010](../../../docs/decisions/0010-custom-breakpoints.md)):
+> breakpoints are configurable, alignment classes became custom-property classes
+> (`neshel-[bp-]align-x-*` etc.; `ai`/`jc`/`ji` removed), every written key emits one class, and
+> the stylesheet declares `--neshel-breakpoints`. The current class contract is
+> [004 contracts/typography-css.md §3](../../004-typography-breakpoints/contracts/typography-css.md).
+
 Status: **implemented and CI-verified** (feature 003).
 
 ## Export and import

@@ -1,6 +1,7 @@
 # @neshel-ui/cli
 
-Validate a typed `neshel.config.ts` and generate a static Neshel-UI theme stylesheet.
+Validate a typed `neshel.config.ts` and generate a static Neshel-UI stylesheet (themes, font
+metrics, custom breakpoints) and the matching TypeScript declarations.
 
 **Status:** pre-release, **not published to npm**. Node `>=22.13`, ESM only. Requires
 `@neshel-ui/config` (peer dependency) in the same project.
@@ -9,7 +10,7 @@ Validate a typed `neshel.config.ts` and generate a static Neshel-UI theme styles
 
 ```text
 neshel validate [--config <path>] [--strict] [--debug]
-neshel generate [--config <path>] [--out <path>] [--check] [--strict] [--debug]
+neshel generate [--config <path>] [--out <path>] [--types <path>] [--check] [--strict] [--debug]
 ```
 
 - **Discovery:** `neshel.config.ts`, `.mts`, `.js` or `.mjs` in the working directory only; two
@@ -17,8 +18,15 @@ neshel generate [--config <path>] [--out <path>] [--check] [--strict] [--debug]
 - **Output:** `--out` (relative to the working directory) › `output` in the config (relative to
   the config file) › `neshel.generated.css` next to the config. The path must end in `.css`, must
   not be inside `node_modules`, the config file or a directory.
+- **Breakpoints (feature 004):** with `breakpoints` in the config, the stylesheet also contains
+  complete `@neshel-ui/layout` / `@neshel-ui/typography` styles for your breakpoints (read from
+  the installed packages' `style-manifest.json`), optional Tailwind `@theme` breakpoints, and a
+  declarations file (`--types` › `types` › `neshel.generated.d.ts`) to include in your
+  `tsconfig.json`. Removing `breakpoints` removes a previously generated declarations file.
+- **Fonts (feature 004):** Capsize metric tokens per font role and, with `typography.fallbacks`,
+  Capsize fallback `@font-face` rules (`@capsizecss/core`).
 - **Writes** are atomic (temporary sibling + rename) and skipped when the content is unchanged.
-  `--check` compares without writing (for CI).
+  `--check` compares every output without writing (for CI) and exits 4 if any is stale.
 - **Contrast:** custom themes are checked against the token contract's pairs. Failures are
   warnings by default; `contrast: "error"` in the config or `--strict` makes them errors
   (`--strict` always wins). Passing these checks does not by itself make an interface WCAG

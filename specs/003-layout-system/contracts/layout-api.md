@@ -1,5 +1,9 @@
 # Contract — `@neshel-ui/layout` React API
 
+> **Amended by feature 004** ([ADR 0010](../../../docs/decisions/0010-custom-breakpoints.md)):
+> responsive keys are `base` plus the application's breakpoint names (`BreakpointName` from
+> `@neshel-ui/config`); malformed keys throw, unknown well-formed keys warn in the browser.
+
 Status: **implemented and CI-verified** (feature 003). Package entry: `.`
 (`dist/index.js` + `dist/index.d.ts`). Peer: `react ^19.0.0`.
 

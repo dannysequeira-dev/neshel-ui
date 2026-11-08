@@ -93,26 +93,30 @@ xl 1.25/1.4, 2xl 1.5/1.3, 3xl 1.875/1.25, 4xl 2.25/1.2, 5xl 3/1.1, 6xl 3.75/1.1.
 
 Alignment props store values in component-scoped custom properties; base rules combine them
 (precedence `justify` > `alignX`/`alignY` > `align` via `var()` fallbacks). Every alignment-aware
-base resets the four properties so they never leak into nested primitives.
+base resets the four prop properties to `initial` so they never leak into nested primitives.
 
-| Responsive key | Sets                      | Tokens                                             |
-| -------------- | ------------------------- | -------------------------------------------------- |
-| `align`        | `--neshel-layout-align`   | start center end stretch                           |
-| `align-x`      | `--neshel-layout-align-x` | start center end stretch baseline                  |
-| `align-y`      | `--neshel-layout-align-y` | start center end stretch baseline                  |
-| `justify`      | `--neshel-layout-justify` | start center end between around evenly (→ space-*) |
+| Responsive key | Sets               | Tokens                                             |
+| -------------- | ------------------ | -------------------------------------------------- |
+| `align`        | `--neshel-align`   | start center end stretch                           |
+| `align-x`      | `--neshel-align-x` | start center end stretch baseline                  |
+| `align-y`      | `--neshel-align-y` | start center end stretch baseline                  |
+| `justify`      | `--neshel-justify` | start center end between around evenly (→ space-*) |
 
-| Base / class                                                           | Mapping                                                |
-| ---------------------------------------------------------------------- | ------------------------------------------------------ |
-| `neshel-stack`                                                         | `align-items: X`, `justify-content: J(Y)`              |
-| `neshel-inline`, `neshel-flex`, `neshel-[bp-]dir-row`, `…-row-reverse` | `justify-content: J(X)`, `align-items: Y`              |
-| `neshel-[bp-]dir-column`, `…-column-reverse`                           | `justify-content: J(Y)`, `align-items: X`              |
-| `neshel-center`                                                        | `justify-content: X(center)`, `align-items: Y(center)` |
-| `neshel-grid`                                                          | `justify-items: X`, `align-items: Y`                   |
+With `X = var(--neshel-align-x, var(--neshel-align))` and
+`Y = var(--neshel-align-y, var(--neshel-align))`:
 
-with `X = var(--neshel-layout-align-x, var(--neshel-layout-align, normal))`,
-`Y = var(--neshel-layout-align-y, var(--neshel-layout-align, normal))`,
-`J(v) = var(--neshel-layout-justify, v)`.
+| Base / class                                                    | Declarations                                                                                                                           |
+| --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| `neshel-flex`, `neshel-inline`, `neshel-[bp-]dir-row(-reverse)` | `--neshel-align-main: X; --neshel-align-cross: Y`                                                                                      |
+| `neshel-stack`, `neshel-[bp-]dir-column(-reverse)`              | `--neshel-align-main: Y; --neshel-align-cross: X`                                                                                      |
+| `neshel-flex`, `neshel-stack`, `neshel-inline`                  | `justify-content: var(--neshel-justify, var(--neshel-align-main)); align-items: var(--neshel-align-cross)`                             |
+| `neshel-center`                                                 | `justify-content: var(--neshel-align-x, var(--neshel-align, center)); align-items: var(--neshel-align-y, var(--neshel-align, center))` |
+| `neshel-grid`                                                   | `justify-items: X; align-items: Y`                                                                                                     |
+| `neshel-container`                                              | adds `max-width: 80rem` (the former default `neshel-mw-xl` class)                                                                      |
+
+There is no final fallback: without alignment props the declaration is invalid at computed-value
+time and the property takes its initial value, exactly as if nothing had been emitted (feature 003
+behaviour). Center no longer emits default classes.
 
 Removed property keys: `ai`, `jc`, `ji` (and their `normal` resets). Unchanged keys: `gap`,
 `gap-x`, `gap-y`, `pi`, `d`, `dir`, `fw`, `cols`, `mw`.

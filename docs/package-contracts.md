@@ -10,24 +10,32 @@ stylesheet explicitly.
   `./styles.css` (0.x alias of `tailwind.css`); import one of `tokens.css` / `tailwind.css`.
 - JS entry: `defineConfig`, types and frozen contract data `colorRoles`, `contrastPairs`,
   `defaults`. No validation code, no runtime dependencies, no other subpath.
+- Feature 004: `breakpoints` / `types` / `typography.fallbacks` schema, Capsize-format
+  `FontMetrics`, `defaults.breakpoints` and `defaults.typography.metrics` (Inter), font metric
+  tokens in the stylesheets, and the augmentable `BreakpointRegistry` / `BreakpointName` types
+  shared by layout and typography (ADR 0010).
 - 21 semantic colour roles with documented contrast pairs; light, dark, `system` and named
   themes extending light or dark (ADR 0006).
 
 ## `@neshel-ui/layout`
 
-**Implemented in feature 003** (unpublished; [contracts](../specs/003-layout-system/contracts/),
-[layout guide](layout.md), ADR 0008/0009). Peer `react ^19.0.0`; runtime dependencies
+**Implemented in feature 003**, custom breakpoints in feature 004 (unpublished;
+[contracts](../specs/003-layout-system/contracts/), [layout guide](layout.md), ADR 0008/0009/0010).
+Peers `react ^19.0.0` and `@neshel-ui/config` (types only, feature 004); runtime dependencies
 `@radix-ui/react-slot` and `tailwind-variants` (lite entry, no `tailwind-merge`).
 
 - Exports: `Box`, `Flex`, `Stack`, `Inline`, `Grid`, `Center`, `Container` and their prop types;
-  `./styles.css` (precompiled, `@layer components.neshel`, no Tailwind directives).
+  `./styles.css` (precompiled, `@layer components.neshel`, no Tailwind directives);
+  `./style-manifest.json` (feature 004; read by `neshel generate`, not for direct use).
 - Spacing `space` (`gap`) / `spaceX` (`column-gap`) / `spaceY` (`row-gap`); `space` excludes the
   other two in types and at runtime. Alignment `align`, `alignX`, `alignY`, `justify` with
   precedence `justify` > axis prop > `align`.
-- Responsive objects `{ base, sm, md, lg, xl, "2xl" }` compile to static classes; no runtime
-  class interpolation, no inline styles.
+- Responsive objects keyed by `base` and the application's breakpoint names (defaults
+  `sm md lg xl 2xl`, or configured names, feature 004) compile to one static class per key; no
+  inline styles; the cascade and alignment precedence are resolved by CSS.
 - `as` (closed element list), `asChild` (Radix Slot), React 19 refs; separators on Stack/Inline.
-- Invalid usage throws `NeshelLayoutError` on server and client.
+- Invalid usage throws `NeshelLayoutError` on server and client (unknown well-formed breakpoint
+  keys warn in the browser instead, ADR 0010).
 
 ```tsx
 <Stack space="4" alignX="start">
@@ -42,15 +50,20 @@ The earlier `gap` proposal was replaced by the owner's `space` / `spaceX` / `spa
 
 ## `@neshel-ui/typography`
 
-Intended exports: `Heading`, `Text`, `Paragraph`, `Caption`.
+**Implemented in feature 004** (unpublished; [contracts](../specs/004-typography-breakpoints/contracts/),
+[typography guide](typography.md), ADR 0011). Peers `react ^19.0.0` and `@neshel-ui/config`;
+runtime dependencies `@radix-ui/react-slot` and `tailwind-variants` (lite).
+
+- Exports: `Heading`, `Text`, `Paragraph`, `Caption`, `NeshelTypographyError` and their prop
+  types; `./styles.css`; `./style-manifest.json` (CLI contract).
+- Semantic element via a closed `as` list or `asChild`; `size`, `weight`, `align`, `leading`
+  responsive; `tone`, `family`, `tracking`, `measure`, `wrap`, `truncate`, `trim` static.
+- Capsize trimming from per-role metric tokens; cap-height-normalised sizes; no font files.
 
 ```tsx
 <Heading as="h2" size="2xl">Meaningful heading</Heading>
 <Text tone="muted" size="sm">Supporting description</Text>
 ```
-
-The `as` tag controls HTML semantics, not visual scale. Capsize uses font metrics
-at generation time and must not embed proprietary font files or run layout probes.
 
 ## `@neshel-ui/components`
 
@@ -65,7 +78,10 @@ No commitment to a proprietary copy/paste registry in v0.1.
 ADR 0007), Node `>=22.13`: `neshel validate` and `neshel generate` (`--config`, `--out`, `--check`, `--strict`),
 exit codes 0–5, TS configs loaded with `jiti`, colour parsing/contrast with `colorjs.io`,
 peer dependency on `@neshel-ui/config`. The importable entry (`.`) stays empty and side-effect free; `init` and a programmatic API are
-out of scope. Configuration files are executable, trusted project code.
+out of scope. Configuration files are executable, trusted project code. Feature 004: `--types`,
+breakpoint and font-metric validation, component stylesheets from installed packages' style
+manifests, declarations, Tailwind `@theme` breakpoints, Capsize fallback fonts; runtime dependency
+`@capsizecss/core`.
 
 ## Distribution contract (implemented in milestone 001.2)
 
@@ -73,14 +89,14 @@ Status: **implemented and CI-verified** with `pnpm check:pack` and `pnpm check:c
 (latest: run 42436591929 — Node 26 on Linux, Windows and macOS; Node 22 and 24 on Linux). **No package is
 published**; all six keep `private: true`, and the `@neshel-ui` scope remains unverified on npm.
 
-| Package                 | Intended public | Runtime deps                                | Peer deps                           | Exports                                                                        |
-| ----------------------- | --------------- | ------------------------------------------- | ----------------------------------- | ------------------------------------------------------------------------------ |
-| `@neshel-ui/config`     | Yes             | none                                        | none                                | `.` (types + import), `./tokens.css`, `./tailwind.css`, `./styles.css` (alias) |
-| `@neshel-ui/layout`     | Yes             | `@radix-ui/react-slot`, `tailwind-variants` | `react ^19.0.0`                     | `.` (types + import), `./styles.css`                                           |
-| `@neshel-ui/typography` | Yes             | none                                        | `react ^19.0.0`                     | `.` (types + import), `./styles.css`                                           |
-| `@neshel-ui/components` | Yes             | none                                        | `react ^19.0.0`                     | `.` (types + import), `./styles.css`                                           |
-| `@neshel-ui/cli`        | Yes             | `jiti`, `colorjs.io`                        | `@neshel-ui/config` (`workspace:^`) | `.` (types + import); bin `neshel`                                             |
-| `@neshel-ui/core`       | No (internal)   | none                                        | none                                | `.` (never packed for publication)                                             |
+| Package                 | Intended public | Runtime deps                                | Peer deps                            | Exports                                                                        |
+| ----------------------- | --------------- | ------------------------------------------- | ------------------------------------ | ------------------------------------------------------------------------------ |
+| `@neshel-ui/config`     | Yes             | none                                        | none                                 | `.` (types + import), `./tokens.css`, `./tailwind.css`, `./styles.css` (alias) |
+| `@neshel-ui/layout`     | Yes             | `@radix-ui/react-slot`, `tailwind-variants` | `react ^19.0.0`, `@neshel-ui/config` | `.` (types + import), `./styles.css`, `./style-manifest.json`                  |
+| `@neshel-ui/typography` | Yes             | `@radix-ui/react-slot`, `tailwind-variants` | `react ^19.0.0`, `@neshel-ui/config` | `.` (types + import), `./styles.css`, `./style-manifest.json`                  |
+| `@neshel-ui/components` | Yes             | none                                        | `react ^19.0.0`                      | `.` (types + import), `./styles.css`                                           |
+| `@neshel-ui/cli`        | Yes             | `jiti`, `colorjs.io`, `@capsizecss/core`    | `@neshel-ui/config` (`workspace:^`)  | `.` (types + import); bin `neshel`                                             |
+| `@neshel-ui/core`       | No (internal)   | none                                        | none                                 | `.` (never packed for publication)                                             |
 
 - **Intended public** = `"publishConfig": { "access": "public" }`. It is metadata only while
   `private: true` blocks publication.
@@ -127,17 +143,17 @@ run `neshel generate` and import the generated file after the Neshel stylesheet
 
 ### Tested versus intended compatibility
 
-| Aspect                      | Tested (automated)                                                                                                                                                                                                                                                       | Intended, not yet tested                        |
-| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------- |
-| Package under consumer test | `@neshel-ui/config` (Tailwind, plain CSS, `defineConfig` bundle), `@neshel-ui/cli` (`neshel generate` via the installed bin) and `@neshel-ui/layout` (Tailwind and plain apps: types, build, Node SSR from the tarball, browser hydration, computed styles; feature 003) | typography, components in real apps             |
-| Bundler / framework         | Vite 8.3.6 + `@vitejs/plugin-react` 5.2.0 (Vite 7.3.7 was CI-verified in run 42435072683, no longer re-tested)                                                                                                                                                           | Next.js (feature 006); `@vitejs/plugin-react` 6 |
-| Tailwind CSS                | 4.3.5 via `@tailwindcss/vite`                                                                                                                                                                                                                                            | other Tailwind 4.x minors; PostCSS plugin setup |
-| React                       | 19.3.1                                                                                                                                                                                                                                                                   | other React 19.x; React 18 is not supported     |
-| TypeScript                  | 5.9.3, `moduleResolution` Bundler (consumer) and NodeNext/Bundler (`check:pack`)                                                                                                                                                                                         | other 5.x versions                              |
-| Package manager             | pnpm 12.16.1                                                                                                                                                                                                                                                             | npm, Yarn, Bun                                  |
-| Node.js (build tooling)     | 26 on Linux, Windows and macOS; 22 and 24 on Linux (run 42436591929)                                                                                                                                                                                                     | —                                               |
-| OS                          | Linux, Windows and macOS for `check:pack`, `check:consumer` and `check:browser` (feature 002 CI runs, see evidence)                                                                                                                                                      | —                                               |
-| Browser (cascade)           | Chrome on GitHub-hosted Linux, Windows and macOS runners; Chrome 156 locally                                                                                                                                                                                             | Firefox, Safari                                 |
+| Aspect                      | Tested (automated)                                                                                                                                                                                                                                                                                                                                                                                                | Intended, not yet tested                        |
+| --------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| Package under consumer test | `@neshel-ui/config` (Tailwind, plain CSS, `defineConfig` bundle), `@neshel-ui/cli` (`neshel generate` via the installed bin) `@neshel-ui/layout` (Tailwind and plain apps: types, build, Node SSR from the tarball, browser hydration, computed styles; feature 003) and `@neshel-ui/typography` plus custom breakpoints (extend + Tailwind, replace + plain CSS, Bundler and NodeNext declarations; feature 004) | components in real apps                         |
+| Bundler / framework         | Vite 8.3.6 + `@vitejs/plugin-react` 5.2.0 (Vite 7.3.7 was CI-verified in run 42435072683, no longer re-tested)                                                                                                                                                                                                                                                                                                    | Next.js (feature 006); `@vitejs/plugin-react` 6 |
+| Tailwind CSS                | 4.3.5 via `@tailwindcss/vite`                                                                                                                                                                                                                                                                                                                                                                                     | other Tailwind 4.x minors; PostCSS plugin setup |
+| React                       | 19.3.1                                                                                                                                                                                                                                                                                                                                                                                                            | other React 19.x; React 18 is not supported     |
+| TypeScript                  | 5.9.3, `moduleResolution` Bundler (consumer) and NodeNext/Bundler (`check:pack`)                                                                                                                                                                                                                                                                                                                                  | other 5.x versions                              |
+| Package manager             | pnpm 12.16.1                                                                                                                                                                                                                                                                                                                                                                                                      | npm, Yarn, Bun                                  |
+| Node.js (build tooling)     | 26 on Linux, Windows and macOS; 22 and 24 on Linux (run 42436591929)                                                                                                                                                                                                                                                                                                                                              | —                                               |
+| OS                          | Linux, Windows and macOS for `check:pack`, `check:consumer` and `check:browser` (feature 002 CI runs, see evidence)                                                                                                                                                                                                                                                                                               | —                                               |
+| Browser (cascade)           | Chrome on GitHub-hosted Linux, Windows and macOS runners; Chrome 156 locally                                                                                                                                                                                                                                                                                                                                      | Firefox, Safari                                 |
 
 ## Build conventions
 
@@ -149,6 +165,7 @@ run `neshel generate` and import the generated file after the Neshel stylesheet
 - `pnpm check:pack` validates real tarballs (001.2); `pnpm check:consumer` builds an external
   Vite + Tailwind app from the `config` tarball (001.3); Next.js consumers follow in feature 006.
 
-**Typography and component APIs above are proposed, not implemented.** The `config` and `cli`
-contracts are implemented and verified (feature 002); the `layout` contract is implemented and
+**The component API above is proposed, not implemented.** The `config` and `cli`
+contracts are implemented and verified (feature 002, extended in 004); the `typography` contract
+and custom breakpoints are implemented and verified (feature 004); the `layout` contract is implemented and
 verified (feature 003).
