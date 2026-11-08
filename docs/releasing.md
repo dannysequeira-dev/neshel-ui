@@ -22,7 +22,10 @@ and package name availability are unverified.
    install size and correct type declarations from packed artifacts.
 8. Review npm provenance/trusted publishing requirements and GitHub Actions OIDC
    configuration. Avoid persistent npm tokens when supported.
-9. Generate and review Changesets, package changelogs and semver versions.
+9. Generate and review Changesets, package changelogs and semver versions. Note:
+   `.changeset/config.json` sets `privatePackages.version: false`, so Changesets ignores the
+   packages while they are `private: true`; the release slice must decide the order of
+   lifting the guard and versioning (found in the 001.5 audit).
 10. Obtain explicit maintainer approval before `npm publish`, `pnpm publish`,
     `changeset publish`, release tags or remote pushes.
 
