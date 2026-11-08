@@ -1,7 +1,10 @@
 {
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
-    "types": ["vite/client"]
+    "types": ["vite/client"],
+    "paths": {
+      "@neshel-ui/config": ["../../packages/config/src/index.ts"]
+    }
   },
   "include": ["src", ".storybook"]
 }

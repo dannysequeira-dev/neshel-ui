@@ -1,0 +1,44 @@
+{
+  "browser": "Chrome/156.0.8078.81",
+  "shots": [
+    {
+      "consoleErrors": [],
+      "name": "storybook-light-contrast-pairs",
+      "url": "http://127.0.0.1:<port>/iframe.html?id=foundations-tokens--light-contrast-pairs&viewMode=story",
+      "result": 24
+    },
+    {
+      "consoleErrors": [],
+      "name": "storybook-dark-palette",
+      "url": "http://127.0.0.1:<port>/iframe.html?id=foundations-tokens--dark-palette&viewMode=story",
+      "result": 26
+    },
+    {
+      "consoleErrors": [],
+      "name": "storybook-theme-precedence",
+      "url": "http://127.0.0.1:<port>/iframe.html?id=foundations-tokens--theme-precedence&viewMode=story",
+      "result": {
+        "dark": "rgb(13, 35, 71)",
+        "lightInDark": "rgb(255, 255, 255)"
+      }
+    },
+    {
+      "consoleErrors": [],
+      "name": "playground-no-attribute",
+      "url": "http://127.0.0.1:<port>/",
+      "result": {
+        "attr": null,
+        "bg": "rgb(251, 249, 246)"
+      }
+    },
+    {
+      "consoleErrors": [],
+      "name": "playground-dark",
+      "url": "http://127.0.0.1:<port>/",
+      "result": {
+        "attr": "dark",
+        "bg": "rgb(4, 13, 29)"
+      }
+    }
+  ]
+}

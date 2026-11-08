@@ -39,3 +39,26 @@ Findings during implementation:
   the engine's values (e.g. light `foreground`/`background` 16.35, previously 16.36 rounded).
 - Color.js parses `rgb(a b c)` into NaN coordinates instead of throwing; the colour module
   rejects non-finite sRGB coordinates as `invalid-color`.
+
+**Verified in GitHub Actions:** commit `b67af86`, run 42447036221 — 5/5 jobs success (Ubuntu
+Node 22/24/26, Windows Node 26, macOS Node 26).
+
+## 002.2 — Cascade proof for shipped CSS
+
+Implemented: T027–T034 (T025–T026 in 002.1).
+
+- `scripts/lib/cdp.mjs`: dependency-free DevTools client (global `WebSocket`), browser discovery
+  (`NESHEL_CHROME`, per-OS paths), `--no-sandbox` on Linux only.
+- `scripts/check-browser.mjs` (`pnpm check:browser`): matrix rows 1–12 and cases C1–C9 from
+  `contracts/css.md` against static fixtures (shipped `tokens.css`/`tailwind.css`, generated CSS
+  in three import orders, consumer overrides) and the built `tailwind`/`plain` consumers; every
+  row checks root, nested element and descendant for all 21 roles plus `color-scheme`. A negative
+  control (partial `neshel.config` block) must be detected as leaking into dark.
+- Generated-CSS fixtures use the CLI's private generator directly, so rows 11–12 and C1–C4 are
+  already verified here; 002.5 adds the configured consumer built through `neshel generate`.
+- Storybook "Foundations/Tokens" stories; playground root-theme selector and nested scope.
+
+Verified locally (2026-11-07, Chrome 156.0.8078.81): `pnpm check:browser --consumers <dir>` —
+8251 computed-style assertions, 0 failures, negative control detected; supported import orders
+C1 (tokens → generated), C2 (generated → tokens, generated → tailwind) and C3 (generated only)
+behave identically. Visual capture: [visual-verification/](visual-verification/README.md).

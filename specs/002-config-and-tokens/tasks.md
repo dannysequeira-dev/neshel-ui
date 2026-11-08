@@ -57,7 +57,7 @@ US5 validate/generate. **Nothing below is started; 002.1 requires owner authoriz
 - [x] T021 [US1] Migrate `apps/playground-vite/src/styles.css` and `apps/storybook/src/styles.css` to `@neshel-ui/config/tailwind.css`
 - [x] T022 [P] [US1] Update `packages/config/README.md` with the zero-config imports, the alias and the canonical order (final docs in T064)
 - [x] T023 Run `pnpm check`, `pnpm check:consumer`, `pnpm build:playground`, `pnpm build:storybook`; record results in `evidence.md`
-- [ ] T024 Stop for owner review; push only with explicit approval and record the CI run (5 jobs) in `evidence.md`
+- [x] T024 Stop for owner review; push only with explicit approval and record the CI run (5 jobs) in `evidence.md`
 
 ---
 
@@ -74,14 +74,14 @@ US5 validate/generate. **Nothing below is started; 002.1 requires owner authoriz
 
 **Goal**: precedence matrix verified by computed styles. **Independent test**: `pnpm check:browser`.
 
-- [ ] T027 [US3] Write `scripts/lib/cdp.mjs`: browser discovery (`NESHEL_CHROME`, per-OS paths), headless launch with temp profile, DevTools client on global `WebSocket`, `Emulation.setEmulatedMedia`, `Runtime.evaluate`, cleanup; pure discovery logic tested in `tests/cdp.test.mjs`
-- [ ] T028 [US3] Write `scripts/lib/browser-matrix.mjs`: fixture builder (stylesheets in a given order, root/nested elements) and expectations from resolved values, in a temp path with spaces and Unicode
-- [ ] T029 [US3] Write `scripts/check-browser.mjs` and root script `check:browser`: matrix rows 1–10 and cases C5–C9 against `tokens.css` fixtures and the built `tailwind`/`plain` consumers; fail when `CI=true` and no browser
-- [ ] T030 [P] [US3] Test in `tests/browser-matrix.test.mjs` that expectations cover every row × 21 roles × `color-scheme` and that fixtures emit the requested orders
-- [ ] T031 [US3] Add CI steps for both consumer variants and `check:browser` in `.github/workflows/ci.yml`; confirm a browser is found on Windows, Linux and macOS runners
-- [ ] T032 [P] [US3] Add `apps/storybook/src/Tokens.stories.tsx`: every role and pair with ratios in light and dark, a precedence story (system + nested scope); run the a11y addon
-- [ ] T033 [P] [US3] Add a light/dark/system selector and a nested scope demo to `apps/playground-vite/src/App.tsx`
-- [ ] T034 Record local results and a browser inspection of Storybook/playground in `evidence.md`; stop for owner review and approved push (SC-001, SC-005 for shipped CSS)
+- [x] T027 [US3] Write `scripts/lib/cdp.mjs`: browser discovery (`NESHEL_CHROME`, per-OS paths), headless launch with temp profile, DevTools client on global `WebSocket`, `Emulation.setEmulatedMedia`, `Runtime.evaluate`, cleanup; pure discovery logic tested in `tests/cdp.test.mjs`
+- [x] T028 [US3] Write `scripts/lib/browser-matrix.mjs`: fixture builder (stylesheets in a given order, root/nested elements) and expectations from resolved values, in a temp path with spaces and Unicode
+- [x] T029 [US3] Write `scripts/check-browser.mjs` and root script `check:browser`: matrix rows 1–10 and cases C5–C9 against `tokens.css` fixtures and the built `tailwind`/`plain` consumers; fail when `CI=true` and no browser
+- [x] T030 [P] [US3] Test in `tests/browser-matrix.test.mjs` that expectations cover every row × 21 roles × `color-scheme` and that fixtures emit the requested orders
+- [x] T031 [US3] Add CI steps for both consumer variants and `check:browser` in `.github/workflows/ci.yml`; confirm a browser is found on Windows, Linux and macOS runners
+- [x] T032 [P] [US3] Add `apps/storybook/src/Tokens.stories.tsx`: every role and pair with ratios in light and dark, a precedence story (system + nested scope); run the a11y addon
+- [x] T033 [P] [US3] Add a light/dark/system selector and a nested scope demo to `apps/playground-vite/src/App.tsx`
+- [x] T034 Record local results and a browser inspection of Storybook/playground in `evidence.md`; stop for owner review and approved push (SC-001, SC-005 for shipped CSS)
 
 ---
 
