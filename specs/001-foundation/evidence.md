@@ -290,3 +290,33 @@ Vite 8 builds have not run on GitHub Actions yet.
 | Spec Kit integration (Claude, Python scripts)                 | yes                  | yes                                                    | n/a                                                              | —                            |
 | Independent npm publication                                   | no (`private: true`) | —                                                      | —                                                                | release slice (007)          |
 | Next.js consumer, real components                             | no                   | —                                                      | —                                                                | features 003–006             |
+
+### 001.4 — native CI result (run 42436591929, commit `9af7a8f`, 2026-11-08)
+
+**CI pass** — all **5** required jobs `success`; each job has 19 steps, all `success` (none
+skipped, cancelled or re-run; `run_attempt` 1).
+
+| Job                      | Duration | Install (frozen) | Doctor | Lint | Tests | Typecheck | Build | Exports | check:pack | check:consumer | Vite build | Storybook |
+| ------------------------ | -------- | ---------------- | ------ | ---- | ----- | --------- | ----- | ------- | ---------- | -------------- | ---------- | --------- |
+| ubuntu-latest / Node 22  | 29 s     | pass             | pass   | pass | pass  | pass      | pass  | pass    | pass       | pass           | pass       | pass      |
+| ubuntu-latest / Node 24  | 34 s     | pass             | pass   | pass | pass  | pass      | pass  | pass    | pass       | pass           | pass       | pass      |
+| ubuntu-latest / Node 26  | 29 s     | pass             | pass   | pass | pass  | pass      | pass  | pass    | pass       | pass           | pass       | pass      |
+| windows-latest / Node 26 | 87 s     | pass             | pass   | pass | pass  | pass      | pass  | pass    | pass       | pass           | pass       | pass      |
+| macos-latest / Node 26   | 67 s     | pass             | pass   | pass | pass  | pass      | pass  | pass    | pass       | pass           | pass       | pass      |
+
+Observed:
+
+- The "Node.js 20 is deprecated" warning of earlier runs is gone: `actions/checkout@v7`,
+  `actions/setup-node@v7` and the pinned `pnpm/action-setup` v6.1.1 run without runtime
+  warnings. Remaining annotations are informational (ubuntu-latest → Ubuntu 26 migration
+  notice; macOS arm64 queue notice).
+- `pnpm/action-setup` v6 + `packageManager: pnpm@12.16.1`: the frozen install succeeded on
+  all five jobs.
+- Vite 8.3.6 builds (playground, Storybook, external consumer) pass on Linux, Windows, macOS.
+
+Inferred from step status and code, not from logs (job logs require authentication, and no
+GitHub CLI/token is available on the maintainer machine):
+
+- The SIGTERM temp-dir test runs on Linux and macOS (skipped only on `win32`) and passed as
+  part of `Tests`.
+- The re-pack determinism check is part of `check:pack` and passed on all five jobs.

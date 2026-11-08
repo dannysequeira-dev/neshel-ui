@@ -114,11 +114,17 @@ Milestones 001.2–001.5 are intentionally coarse and will be refined before imp
 
 ## Phase 6: User Story 5 — milestone 001.5, native CI verification (P1)
 
-- [ ] T048 [US5] With maintainer approval, push and record per-job CI results (run ID, OS, Node) in `specs/001-foundation/evidence.md` (SC-006)
+- [x] T048 [US5] Push 001.4 with maintainer approval and record per-job CI results (run 42436591929) in `specs/001-foundation/evidence.md` (SC-006)
+- [ ] T049 [US5] Requirement traceability matrix (FR-001–FR-025, SC-001–SC-007, US-01–US-06) in `specs/001-foundation/traceability.md`
+- [ ] T050 [US5] Architecture audit: workspace boundaries, public/private packages, ESM/NodeNext, React peers, exports/declarations, maps/sources, CSS side effects, CLI import safety, determinism, scripts, consumer isolation; ADRs vs implementation
+- [ ] T051 [US5] Distribution re-verification of the five tarballs (check:pack, publint, attw, no private leak, `private: true`, nothing published on npm)
+- [ ] T052 [US5] Full local gate run with toolchain inventory
+- [ ] T053 [US5] Documentation audit (setup per OS, requirements, Spec Kit onboarding, contracts, ADR references, roadmap, safeguards, links, branding, no Phase 002 claims)
+- [ ] T054 [US5] Phase 001 closure summary and recommendation in `evidence.md`; Phase 002 readiness review of `specs/002-config-and-tokens/brief.md`
 
 ## Phase 7: Polish & cross-cutting
 
-- [ ] T049 Run `/speckit-analyze` after each milestone's tasks are refined; update `roadmap.md` status (implemented / local / CI)
+- [ ] T055 Run `/speckit-analyze` after each milestone's tasks are refined; update `roadmap.md` status (implemented / local / CI)
 
 ---
 
@@ -138,5 +144,5 @@ Milestones 001.2–001.5 are intentionally coarse and will be refined before imp
 ## Implementation strategy
 
 Deliver one milestone at a time; each ends with local gates, an evidence entry, local
-commits and a maintainer review. 001.0–001.3 are complete and CI-verified; 001.4 is the current authorized
-scope; nothing from 001.5 is implemented until approved.
+commits and a maintainer review. 001.0–001.4 are complete and CI-verified; 001.5 (verification and closure) is the
+current authorized scope.
