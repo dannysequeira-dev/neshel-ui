@@ -320,3 +320,112 @@ GitHub CLI/token is available on the maintainer machine):
 - The SIGTERM temp-dir test runs on Linux and macOS (skipped only on `win32`) and passed as
   part of `Tests`.
 - The re-pack determinism check is part of `check:pack` and passed on all five jobs.
+
+## Milestone 001.5 — final verification and Phase 001 closure (2026-11-08)
+
+Traceability: [traceability.md](traceability.md) (25 FR, 7 SC, 6 US, release gate).
+
+### Toolchain used for the final local verification
+
+Windows NT 10.0.26300 x64 · Node v26.13.0 · pnpm 12.16.1 · Git 2.43.0.windows.1 ·
+Python 3.12.10 · Specify CLI 1.2.6 · TypeScript 5.9.3 · Biome 2.6.6 · publint 0.3.25 ·
+@arethetypeswrong/cli 0.18.5 · Vite 8.3.6 · @vitejs/plugin-react 5.2.0 · Tailwind CSS 4.3.5 ·
+@tailwindcss/vite 4.3.5 · React/react-dom 19.3.1 · Storybook 10.6.6. Commit `3931b2c`.
+
+### Final local gates (after `pnpm clean`)
+
+| Gate                                             | Result                                                        |
+| ------------------------------------------------ | ------------------------------------------------------------- |
+| `pnpm install --frozen-lockfile`                 | pass                                                          |
+| `pnpm run doctor`                                | pass (10 manifests, 40 scripts)                               |
+| `pnpm lint`                                      | pass (124 files)                                              |
+| `pnpm typecheck`                                 | pass                                                          |
+| `pnpm test`                                      | pass — 33 tests: 32 pass, 1 skipped (POSIX-only SIGTERM test) |
+| `pnpm build:packages` / `pnpm check:exports`     | pass                                                          |
+| `pnpm check:pack`                                | pass — 5/5, re-pack determinism included                      |
+| `pnpm check:consumer`                            | pass (Vite 8.3.6)                                             |
+| `pnpm check`                                     | pass                                                          |
+| `pnpm build:playground` / `pnpm build:storybook` | pass                                                          |
+
+No temporary directories left behind.
+
+### Distribution audit
+
+| Package                      | Tarball           | Runtime deps | Peers         | publint    | attw (`node16-esm`, `bundler`) | `private`                | npm registry         |
+| ---------------------------- | ----------------- | ------------ | ------------- | ---------- | ------------------------------ | ------------------------ | -------------------- |
+| `@neshel-ui/config`          | 9 files, 2.1 KiB  | none         | —             | 0 messages | 0 problems                     | true                     | E404 (not published) |
+| `@neshel-ui/layout`          | 9 files, 1.7 KiB  | none         | react ^19.0.0 | 0 messages | 0 problems                     | true                     | E404                 |
+| `@neshel-ui/typography`      | 9 files, 1.8 KiB  | none         | react ^19.0.0 | 0 messages | 0 problems                     | true                     | E404                 |
+| `@neshel-ui/components`      | 9 files, 1.7 KiB  | none         | react ^19.0.0 | 0 messages | 0 problems                     | true                     | E404                 |
+| `@neshel-ui/cli`             | 13 files, 2.1 KiB | none         | —             | 0 messages | 0 problems                     | true                     | E404                 |
+| `@neshel-ui/core` (internal) | not packed        | none         | —             | —          | —                              | true, no `publishConfig` | E404                 |
+
+- No packed manifest contains `workspace:`, `catalog:`, `file:` or `@neshel-ui/core`.
+- attw reports 2 CommonJS-only findings per package (`node10`, `node16-cjs`), intentionally
+  ignored by the `esm-only` profile (ADR 0004).
+- No publish workflow, no npm token or `secrets.*` reference in `.github/`. E404 shows nothing
+  is published; it does **not** prove the `@neshel-ui` scope is available.
+- Fixed in the audit: package READMEs (shipped in tarballs) used a repository-relative link
+  that breaks on npm; now absolute.
+
+### Architecture audit
+
+| Area                          | Finding                                                                                                  |
+| ----------------------------- | -------------------------------------------------------------------------------------------------------- |
+| Workspace boundaries          | No package depends on another (0 workspace edges); no cycles; layout/typography do not import components |
+| Public vs private             | 5 intended public (`publishConfig.access: public`, still `private: true`); `core` internal (ADR 0002)    |
+| ESM / NodeNext                | Libraries extend `tsconfig.library.json`; exports `types` first then `import`; apps use Bundler          |
+| React peers                   | `^19.0.0` on layout/typography/components only                                                           |
+| Exports / declarations / maps | Verified per tarball; `src` packed for maps; tests/stories excluded                                      |
+| CSS and side effects          | CSS-exporting packages declare `["**/*.css"]`; `cli`/`core` declare `false`                              |
+| CLI import safety             | Importable entry is side-effect free; executable in `dist/bin.js`, exit 1 placeholder                    |
+| Determinism                   | Clean builds and re-packs produce identical tarballs (`check:pack`)                                      |
+| Cross-platform scripts        | Node stdlib only; shell-free pnpm launcher; signal-safe temp dirs; LF guard                              |
+| Consumer isolation            | Consumers live outside the repo; tarball install verified by realpath and lockfile integrity             |
+| ADRs vs implementation        | 0001–0005 consistent; ADR 0003 original matrix point now marked superseded                               |
+
+Documented exceptions (accepted): static package names in `.changeset/config.json`
+(FR-025 exception); `cli` ships an unused `dist/bin.d.ts`; Biome `tailwindDirectives`
+enabled for the `@theme` block; `@types/node` kept at the 22 line; Changesets
+`privatePackages.version: false` (release-slice decision, noted in `docs/releasing.md`).
+
+### Documentation audit
+
+63 relative links (with anchors) across 48 first-party Markdown files resolve. Setup for
+Windows/Linux/macOS, Node/pnpm requirements, Spec Kit onboarding, package contracts, ADR
+references, roadmap and publication safeguards match the repository. No ZIP-era instructions
+remain outside the historical `docs/CLAUDE-FIRST-PROMPT.md`. Brand identity (navy rose, gold
+accents, "Rooted in faith. Built with hope.") unchanged. No Phase 002+ functionality is
+claimed as implemented.
+
+### Known limitations and accepted risks
+
+1. **US-03 / release gate item 2**: playground and Storybook previews were built but not
+   visually inspected in a browser, and the light/dark toggle was not exercised.
+2. CI log contents (SIGTERM test execution, determinism output, cache save details) are
+   inferred from step status; job logs require authentication not available here.
+3. The Spec Kit bootstrap script ran on Windows only.
+4. `check:consumer` depends on the npm registry for tools.
+5. Only `@neshel-ui/config` is exercised by an external consumer; the React packages are
+   empty, so JSX/peer resolution at runtime is untested until components exist.
+6. attw analyses with its bundled TypeScript (5.6.1-rc), not the repository's 5.9.3.
+7. Vite 7 consumer compatibility is no longer re-tested continuously (ADR 0005).
+8. Storybook prints `DEP0205` on Node 26 (upstream); `ubuntu-latest` is migrating to Ubuntu 26.
+9. `@neshel-ui` scope ownership is unverified.
+
+### Remaining work owned by later phases
+
+Token vocabulary, theming model and CSS split (002); TypeScript config loading and CLI
+commands (002); layout (003), typography and Capsize (004), components (005); Next.js
+consumer and docs site (006); scope verification, Changesets versioning, provenance and the
+publish workflow (007). Phase 002 prerequisites:
+[`specs/002-config-and-tokens/brief.md`](../002-config-and-tokens/brief.md#readiness-review-phase-001-closure-2026-11-08).
+
+### Recommendation: **CONDITIONAL PASS**
+
+All 25 functional requirements and 7 success criteria have evidence; 5 of 6 user stories
+pass. Conditions before declaring Phase 001 fully closed:
+
+1. CI on the final 001.5 commits (documentation-only changes after `9af7a8f`).
+2. Maintainer visual inspection of `pnpm dev:playground` (including the theme toggle) and
+   `pnpm dev:storybook`, or an explicit waiver of release-gate item 2.
