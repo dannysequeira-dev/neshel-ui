@@ -1,6 +1,6 @@
 # ADR 0002 — Internal `core` package and shared utilities
 
-- Status: Accepted (2026-11-07); implementation scheduled for milestone 001.2
+- Status: Accepted (2026-11-07); implemented in milestone 001.2 (locally verified; CI pending)
 - Date: 2026-11-07
 - Resolves: the open decision in [ADR 0001](0001-architecture.md)
 
@@ -39,4 +39,10 @@ producing uninstallable public packages.
 
 ## Verification
 
-`pnpm check:pack` (milestone 001.2) and SC-003 in `specs/001-foundation/spec.md`.
+- Implemented: no package declares a dependency on `@neshel-ui/core`; `check-workspace`
+  rejects `publishConfig.access: "public"` on `core`; `check:pack` rejects any packed runtime
+  dependency on an internal workspace package.
+- Locally verified (2026-11-07, Windows, Node 26): `pnpm check:pack` passes for the five
+  intended public packages; a deliberate `layout -> core` dependency makes it fail with
+  `dependencies.@neshel-ui/core: @neshel-ui/core is internal and unpublished`.
+- CI: pending push. Evidence: `specs/001-foundation/evidence.md` §001.2. Covers SC-003.

@@ -72,3 +72,73 @@ Local results (Windows 11, Node v26.13.0, pnpm 12.16.1, Biome 2.6.6):
 
 CI: **pending push.** Not yet verified: workflow acceptance by GitHub, pnpm cache
 save/restore, the `Lint` step on Windows/Linux/macOS runners.
+
+### 001.1 — native CI result (run 42431792113, commit `97e45cb`, 2026-11-08)
+
+- **CI partial pass** on Node 22 × {ubuntu, windows, macos} and Node 24 × ubuntu: GitHub
+  accepted the workflow; pnpm setup, `setup-node` with `cache: pnpm`, `pnpm install
+  --frozen-lockfile` and `pnpm run doctor` passed on all four jobs.
+- **CI fail**: `Lint` failed on all four jobs because `README.md` and `docs/BRANDING.md`
+  (added in `97e45cb`) had unformatted Markdown tables. The lint gate worked as intended.
+  Later steps were skipped, and the pnpm cache save (post step) did not run.
+- Fix: `a55a706 style(docs): format brand documentation tables` (whitespace only; local
+  `pnpm lint` passes). CI for the fix: pending push.
+
+## Milestone 001.2 — package distribution and integrity (2026-11-08, same machine)
+
+Implemented (local commits `de4e94f`..`8e4aa72`):
+
+- Intended public packages marked with `publishConfig.access: "public"`; `core` internal.
+- Unused workspace dependencies removed (`core` from layout/typography/components,
+  `config` from components/cli); React peer `^19.0.0`; `src/**/*.ts(x)` packed for maps.
+- Libraries compile with `tsconfig.library.json` (NodeNext); apps keep Bundler.
+- cli: importable entry has no side effects; `dist/bin.js` placeholder exits 1;
+  `engines.node >=22.13.0`.
+- `scripts/lib/workspace.mjs` replaces four hardcoded package lists (FR-025).
+- `pnpm build:packages` deletes `packages/*/dist` first (stale outputs were packed before).
+- `pnpm check:pack [--no-build]`, wired into `pnpm check` and every CI job.
+
+Observed pnpm 12.16.1 manifest rewriting: research R7.
+
+Local results (Windows 11, Node v26.13.0, pnpm 12.16.1), after `pnpm clean`:
+
+| Gate                                             | Result                                |
+| ------------------------------------------------ | ------------------------------------- |
+| `pnpm run doctor`                                | Local pass (10 manifests, 39 scripts) |
+| `pnpm lint`                                      | Local pass (117 files)                |
+| `pnpm typecheck`                                 | Local pass                            |
+| `pnpm test`                                      | Local pass (20/20)                    |
+| `pnpm build:packages` / `pnpm check:exports`     | Local pass                            |
+| `pnpm check:pack`                                | Local pass — 5/5 packages             |
+| `pnpm check`                                     | Local pass                            |
+| `pnpm build:playground` / `pnpm build:storybook` | Local pass                            |
+| `pnpm install --frozen-lockfile`                 | Local pass                            |
+
+`check:pack` per package (packed manifests: no runtime dependencies; devDependencies
+rewritten from `catalog:` to ranges; `private: true` preserved):
+
+| Package                 | Files | Peer deps     | publint    | attw (esm-only)               |
+| ----------------------- | ----- | ------------- | ---------- | ----------------------------- |
+| `@neshel-ui/config`     | 9     | —             | 0 messages | 0 problems (2 CJS-only notes) |
+| `@neshel-ui/layout`     | 9     | react ^19.0.0 | 0 messages | 0 problems (2 CJS-only notes) |
+| `@neshel-ui/typography` | 9     | react ^19.0.0 | 0 messages | 0 problems (2 CJS-only notes) |
+| `@neshel-ui/components` | 9     | react ^19.0.0 | 0 messages | 0 problems (2 CJS-only notes) |
+| `@neshel-ui/cli`        | 13    | —             | 0 messages | 0 problems (2 CJS-only notes) |
+
+External consumer (temp dir outside the repo, path with spaces and `ñ`): 5 runtime
+`import()` calls and 5 typed entrypoints under NodeNext and Bundler, all passing.
+
+Mutation tests (each reverted afterwards), all detected:
+
+1. `layout` depends on `core` → `dependencies.@neshel-ui/core ... internal and unpublished`.
+2. `config` without `src` in `files` → both maps report `src/index.ts ... not packaged`.
+3. Wrong export target → check:pack, publint and the runtime import all fail.
+4. Extensionless relative import → `tsc` TS2835 under NodeNext.
+5. Unplanned: a stale `dist/a.js` from mutation 4 was packed and caught by the map check,
+   which led to cleaning `dist` before builds.
+
+Launch paths verified: `pnpm check:pack` (Git Bash), PowerShell 7, and direct
+`node scripts/check-pack.mjs` (no `npm_execpath`). No temporary directory left behind.
+
+CI: **pending push.** Not yet verified: `check:pack` on Linux/macOS runners, Node 22/24,
+and the pnpm cache save.

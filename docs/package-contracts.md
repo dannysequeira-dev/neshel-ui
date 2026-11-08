@@ -57,9 +57,43 @@ neshel generate   (reads neshel.config.ts and writes CSS)
 neshel validate   (validates settings, with actionable diagnostics)
 ```
 
-The actual CLI is a **deliberate placeholder** in this foundation ZIP. File
-loading, runtime evaluation safety, deterministic output, export shape and naming
-must be specified and tested before making these commands available.
+The CLI is a **deliberate placeholder**. Its importable entry (`.`) is empty and
+side-effect free; the `neshel` executable (`dist/bin.js`) prints a "not implemented"
+message and exits with code 1. File loading, runtime evaluation safety, deterministic
+output, export shape and naming must be specified and tested before making these
+commands available. Requires Node `>=22.13` (`engines`).
+
+## Distribution contract (implemented in milestone 001.2)
+
+Status: **implemented and locally verified** with `pnpm check:pack` (Windows, Node 26).
+Native CI verification is pending. **No package is published**; all six keep
+`private: true`, and the `@neshel-ui` scope remains unverified on npm.
+
+| Package                 | Intended public | Runtime deps | Peer deps       | Exports                              |
+| ----------------------- | --------------- | ------------ | --------------- | ------------------------------------ |
+| `@neshel-ui/config`     | Yes             | none         | none            | `.` (types + import), `./styles.css` |
+| `@neshel-ui/layout`     | Yes             | none         | `react ^19.0.0` | `.` (types + import), `./styles.css` |
+| `@neshel-ui/typography` | Yes             | none         | `react ^19.0.0` | `.` (types + import), `./styles.css` |
+| `@neshel-ui/components` | Yes             | none         | `react ^19.0.0` | `.` (types + import), `./styles.css` |
+| `@neshel-ui/cli`        | Yes             | none         | none            | `.` (types + import); bin `neshel`   |
+| `@neshel-ui/core`       | No (internal)   | none         | none            | `.` (never packed for publication)   |
+
+- **Intended public** = `"publishConfig": { "access": "public" }`. It is metadata only while
+  `private: true` blocks publication.
+- **ESM only**: `types` is always the first export condition, then `import`. No CommonJS build.
+- **NodeNext**: libraries compile through `tsconfig.library.json`; relative imports need
+  explicit `.js` extensions. Apps keep `Bundler` resolution.
+- **Tarball contents**: `dist/` (JS, `.d.ts`, JS and declaration maps, CSS), `src/**/*.ts(x)`
+  (so maps resolve; tests and stories excluded), `README.md`, `LICENSE`, `package.json`.
+- **Side effects**: packages exporting CSS declare `"sideEffects": ["**/*.css"]`; `cli` and
+  `core` declare `false`.
+- **Dependencies are declared when first imported** (research R9). A workspace runtime
+  dependency on an internal package fails `check:pack` (ADR 0002).
+- **Builds are clean**: `pnpm build:packages` deletes `packages/*/dist` first, so removed
+  sources never leave stale files in a tarball.
+
+How pnpm rewrites manifests when packing (observed, research R7): `workspace:*` becomes the
+exact version, `catalog:` becomes the catalog range, `private` is preserved.
 
 ## Build conventions
 
@@ -67,6 +101,8 @@ must be specified and tested before making these commands available.
 - Browser-safe code in visual packages; Node-specific code only in CLI.
 - `./styles.css` export published per visual package.
 - Tree-shakeable, no hidden global resets or network fonts.
-- Tests against `pnpm pack` tarballs and independent Vite/Next consumers.
+- `pnpm check:pack` validates real tarballs (milestone 001.2); independent Vite/Next
+  consumer builds follow in 001.3 and feature 006.
 
-**All code examples above are proposed APIs, not implemented features.**
+**All component, layout, typography and configuration APIs above are proposed, not
+implemented.**

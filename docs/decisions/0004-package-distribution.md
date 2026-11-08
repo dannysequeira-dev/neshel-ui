@@ -1,6 +1,6 @@
 # ADR 0004 — Package distribution: ESM, NodeNext, source maps and validation
 
-- Status: Accepted (2026-11-07); implementation scheduled for milestone 001.2
+- Status: Accepted (2026-11-07); implemented in milestone 001.2 (locally verified; CI pending)
 - Date: 2026-11-07
 
 ## Context
@@ -43,6 +43,25 @@ claimed React 18 and 20 support that had not been tested.
 - Dual CJS/ESM: complexity without demonstrated demand.
 - Keep `Bundler` everywhere: hides extensionless imports that fail under Node ESM.
 
+## Implementation notes (001.2)
+
+- Libraries extend `tsconfig.library.json` (NodeNext); exports keep `types` first, then
+  `import`.
+- React peer: `^19.0.0`. `files` packs `src/**/*.ts(x)` without tests and stories.
+- `pnpm check:pack` (`scripts/check-pack.mjs`) implements §5; pure validators live in
+  `scripts/lib/pack-checks.mjs`, the tarball reader in `scripts/lib/tar.mjs`.
+- attw runs with `--profile esm-only --no-definitely-typed` and excludes CSS entrypoints,
+  which are assets rather than TypeScript modules. Its CommonJS-only findings (`node10`,
+  `node16-cjs`) are reported as notes, not failures.
+- `pnpm build:packages` cleans `packages/*/dist` first: `tsc` never deletes outputs of
+  removed sources, and check:pack caught such stale files being packed.
+- §6 (external Vite + Tailwind consumer) is milestone 001.3.
+
 ## Verification
 
-SC-001 to SC-005 in `specs/001-foundation/spec.md`.
+- Locally verified (2026-11-07, Windows, Node 26): `pnpm check:pack` passes for all five
+  packages; runtime `import()` of every JS export and `tsc` resolution under NodeNext and
+  Bundler from a consumer outside the repository; publint reports no messages; attw reports
+  no problems in `node16-esm` or `bundler`. Mutation tests (internal dependency, missing
+  sources, broken export target, extensionless import) all fail as expected.
+- CI: pending push. Covers SC-002 to SC-004; SC-001 and SC-005 complete in 001.3–001.5.

@@ -1,20 +1,23 @@
 # Release safety and npm publishing
 
-**There is no functional v0.1.0 and no publication automation in this ZIP.**
+**There is no functional v0.1.0 and no publication automation.**
 All packages are deliberately `private: true`; `@neshel-ui` scope ownership
 and package name availability are unverified.
 
 ## Before lifting publishing guards
 
 1. Verify scope ownership and name availability on npm; check brand conflicts.
-2. Settle ADR 0001's private-core dependency trap: bundle core or publish it.
-3. Finalize public exports, `files`, dependency/peer ranges, license and
-   `publishConfig: { "access": "public" }` on each _approved_ public package.
-4. Execute `pnpm install` and commit the real `pnpm-lock.yaml`.
+2. Keep ADR 0002 satisfied: no public package may depend on the internal `core`
+   package (`pnpm check:pack` enforces this; resolved for the current code in 001.2).
+3. Finalize public exports, `files`, dependency/peer ranges and license. Intended public
+   packages already declare `publishConfig: { "access": "public" }` (001.2); removing
+   `private: true` is a separate, explicitly approved step.
+4. Keep `pnpm-lock.yaml` committed; CI installs with `--frozen-lockfile`.
 5. Run `pnpm doctor` and lint/typecheck/tests and all package/app builds. Require native
    Windows, Linux and macOS GitHub Actions checks to pass before release.
-6. For every publishable package, use `pnpm pack --pack-destination ...`, inspect
-   the archive and install it into isolated Vite and Next applications.
+6. Run `pnpm check:pack` (packs and validates every intended public package: manifest,
+   targets, declarations, source maps, publint, attw, external import/type checks), then
+   install the tarballs into isolated Vite and Next applications (001.3, feature 006).
 7. Verify CSS/theme, Capsize typography, React peer resolution, SSR, tree shaking,
    install size and correct type declarations from packed artifacts.
 8. Review npm provenance/trusted publishing requirements and GitHub Actions OIDC

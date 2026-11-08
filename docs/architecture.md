@@ -22,7 +22,10 @@ core   (private implementation details; never an external dependency)
 
 The diagram expresses the **planned** API and dependency direction; actual
 imports and feature code are not implemented yet. CLI uses config and should not
-import any React component package. React packages declare React as a peer.
+import any React component package. React packages declare React 19 as a peer.
+Since milestone 001.2, workspace dependencies are declared only when a source file
+imports them, so today no package has a runtime dependency on another (research R9);
+the arrows above become real dependencies in the slices that introduce those imports.
 The foundation pins Vite 7 (plus React plugin 5) until Vite 8 compatibility
 with the Tailwind and Storybook plugin matrix is installation-tested.
 
@@ -30,19 +33,20 @@ with the Tailwind and Storybook plugin matrix is installation-tested.
 
 - Each public package exposes only intentional `exports` plus `./styles.css`.
 - `files` allowlists protect tarballs from leaking tests, source maps with secrets,
-  private documentation and internal scripts. Source maps are optional; re-evaluate
-  before the public release.
+  private documentation and internal scripts. JS and declaration source maps are
+  published together with the `src` files they reference (ADR 0004, D5).
 - `sideEffects: ["**/*.css"]` preserves stylesheet imports under tree-shaking.
 - Generate `.d.ts` and ESM JS. Do not ship TypeScript source as the only entrypoint.
 - CSS must work without consumers scanning our internal source in `node_modules`.
   If implementation includes Tailwind utility classes, precompile appropriate styles
   or document an explicit `@source` tradeoff with an integration test.
-- On release, `workspace:*` dependencies resolve to real versions in packed packages;
-  verify `pnpm pack` archives from external consumers.
+- `pnpm pack` rewrites `workspace:*` to exact versions and `catalog:` to ranges (research
+  R7); `pnpm check:pack` validates the packed manifests and contents of every intended
+  public package. External Vite consumer builds follow in milestone 001.3.
 - `@neshel-ui/core` is private, so **no public npm package may depend on it at
   publishing time** unless its reusable runtime content is inlined/bundled or the
-  shared package is intentionally made public. This is an open release decision
-  tracked in [ADR 0001](decisions/0001-architecture.md).
+  shared package is intentionally made public. Resolved by
+  [ADR 0002](decisions/0002-internal-core-package.md) and enforced by `check:pack`.
 
 ## Theme evaluation model
 

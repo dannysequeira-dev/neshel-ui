@@ -82,16 +82,16 @@ Milestones 001.2–001.5 are intentionally coarse and will be refined before imp
 **Independent test**: `pnpm build:packages && pnpm check:pack` → 0 errors (SC-002–SC-004).
 
 - [x] T024 [US2] Record pnpm pack manifest rewriting and the check:pack design in `specs/001-foundation/research.md` R7–R12
-- [ ] T025 [US2] Add `scripts/lib/workspace.mjs` (package discovery from `packages/*`) and use it in `scripts/check-workspace.mjs`, `scripts/check-exports.mjs`, `scripts/clean.mjs`, `tests/workspace.test.mjs` (FR-025)
-- [ ] T026 [US2] Add `"publishConfig": { "access": "public" }` to the five intended public manifests; `scripts/check-workspace.mjs` asserts `core` has none and all six keep `private: true` (R8)
-- [ ] T027 [US2] Remove unused workspace dependencies (`core` from layout/typography/components, `config` from components/cli) and refresh `pnpm-lock.yaml` (FR-003, R9)
-- [ ] T028 [US2] Add root `tsconfig.library.json` (NodeNext) and make `packages/*/tsconfig.json` extend it; apps keep `Bundler` (FR-018, R10)
-- [ ] T029 [US2] React peer `^19.0.0` in layout/typography/components; `files` include `src` minus tests/stories (FR-019); cli: separate `src/bin.ts` (bin) from importable `src/index.ts`, `sideEffects: false`, `engines.node >=22.13` (FR-017)
+- [x] T025 [US2] Add `scripts/lib/workspace.mjs` (package discovery from `packages/*`) and use it in `scripts/check-workspace.mjs`, `scripts/check-exports.mjs`, `scripts/clean.mjs`, `tests/workspace.test.mjs` (FR-025)
+- [x] T026 [US2] Add `"publishConfig": { "access": "public" }` to the five intended public manifests; `scripts/check-workspace.mjs` asserts `core` has none and all six keep `private: true` (R8)
+- [x] T027 [US2] Remove unused workspace dependencies (`core` from layout/typography/components, `config` from components/cli) and refresh `pnpm-lock.yaml` (FR-003, R9)
+- [x] T028 [US2] Add root `tsconfig.library.json` (NodeNext) and make `packages/*/tsconfig.json` extend it; apps keep `Bundler` (FR-018, R10)
+- [x] T029 [US2] React peer `^19.0.0` in layout/typography/components; `files` include `src` minus tests/stories (FR-019); cli: separate `src/bin.ts` (bin) from importable `src/index.ts`, `sideEffects: false`, `engines.node >=22.13` (FR-017)
 - [x] T030 [US6] Add `publint` and `@arethetypeswrong/cli` to the catalog and root devDependencies
-- [ ] T031 [US6] Add `scripts/lib/tar.mjs` (ustar/pax reader) and `scripts/lib/pack-checks.mjs` (pure validators) with `node:test` suites in `tests/`
-- [ ] T032 [US6] Implement `scripts/check-pack.mjs` (`pnpm check:pack`, `--no-build`) per R11/R12: build, pack, validate, runtime import + tsc NodeNext/Bundler from an external temp consumer, publint, attw, cleanup (FR-020)
-- [ ] T033 [US6] Wire `check:pack --no-build` into `pnpm check` and `.github/workflows/ci.yml`; update `specs/001-foundation/contracts/quality-gates.md`
-- [ ] T034 [US6] Update `docs/package-contracts.md`, ADR 0002/0004, `docs/architecture.md`, `specs/001-foundation/evidence.md`; run all gates plus Vite and Storybook builds
+- [x] T031 [US6] Add `scripts/lib/tar.mjs` (ustar/pax reader) and `scripts/lib/pack-checks.mjs` (pure validators) with `node:test` suites in `tests/`
+- [x] T032 [US6] Implement `scripts/check-pack.mjs` (`pnpm check:pack`, `--no-build`) per R11/R12: build, pack, validate, runtime import + tsc NodeNext/Bundler from an external temp consumer, publint, attw, cleanup (FR-020)
+- [x] T033 [US6] Wire `check:pack --no-build` into `pnpm check` and `.github/workflows/ci.yml`; update `specs/001-foundation/contracts/quality-gates.md`
+- [x] T034 [US6] Update `docs/package-contracts.md`, ADR 0002/0004, `docs/architecture.md`, `specs/001-foundation/evidence.md`; run all gates plus Vite and Storybook builds
 
 ## Phase 4: User Story 6 — milestone 001.3, external consumer smoke (P0)
 
