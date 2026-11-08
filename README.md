@@ -18,9 +18,9 @@
 </p>
 
 > [!IMPORTANT]
-> **Pre-release / foundation in progress.** Neshel-UI is not published to npm yet.
-> The workspace and tooling are being established before the first usable UI release.
-> Package names and APIs below are design targets, not claims of existing functionality.
+> **Pre-release.** Neshel-UI is not published to npm yet. The design tokens, themes and
+> configuration CLI (phase 002) are implemented and verified from packed tarballs; layout,
+> typography and components are still planned.
 
 ## Vision
 
@@ -46,14 +46,14 @@ consumers should not be forced to use Tailwind just to load the core theme token
 
 Neshel-UI is organized as independent packages with one shared design vocabulary.
 
-| Package                 | Planned responsibility                                          | Status     |
-| ----------------------- | --------------------------------------------------------------- | ---------- |
-| `@neshel-ui/config`     | Semantic tokens, themes, CSS exports, typed configuration       | Foundation |
-| `@neshel-ui/layout`     | Box, Stack, Inline, Grid, Center, Container                     | Planned    |
-| `@neshel-ui/typography` | Heading, Text, Paragraph, Caption, Capsize integration          | Planned    |
-| `@neshel-ui/components` | Accessible Button, Card, Badge, Input, Separator, Skeleton      | Planned    |
-| `@neshel-ui/cli`        | Read/validate user configuration and generate deterministic CSS | Planned    |
-| `@neshel-ui/core`       | Internal shared utilities, if needed; not publicly published    | Internal   |
+| Package                 | Planned responsibility                                          | Status                    |
+| ----------------------- | --------------------------------------------------------------- | ------------------------- |
+| `@neshel-ui/config`     | Semantic tokens, themes, CSS exports, typed configuration       | Implemented (unpublished) |
+| `@neshel-ui/layout`     | Box, Stack, Inline, Grid, Center, Container                     | Planned                   |
+| `@neshel-ui/typography` | Heading, Text, Paragraph, Caption, Capsize integration          | Planned                   |
+| `@neshel-ui/components` | Accessible Button, Card, Badge, Input, Separator, Skeleton      | Planned                   |
+| `@neshel-ui/cli`        | Read/validate user configuration and generate deterministic CSS | Implemented (unpublished) |
+| `@neshel-ui/core`       | Internal shared utilities, if needed; not publicly published    | Internal                  |
 
 The `@neshel-ui` npm scope must be verified before publication. A package install
 must not depend on unpublished private workspace packages.
@@ -68,18 +68,23 @@ pnpm add @neshel-ui/config @neshel-ui/layout @neshel-ui/typography
 ```
 
 ```css
-/* Planned stylesheet entry points */
+/* Zero-config theme with Tailwind CSS v4 */
 @import "tailwindcss";
-@import "@neshel-ui/config/styles.css";
-@import "@neshel-ui/layout/styles.css";
-@import "@neshel-ui/typography/styles.css";
+@import "@neshel-ui/config/tailwind.css";
+
+/* …or without Tailwind: plain CSS custom properties */
+@import "@neshel-ui/config/tokens.css";
 ```
 
-Installation alone does **not** inject CSS. Today the `@neshel-ui/config` stylesheet is
-verified from its packed tarball in an external React 19 + Vite + Tailwind v4 app
-(`pnpm check:consumer`); the remaining packages are still empty and their stylesheets are
-placeholders. See [package contracts](docs/package-contracts.md) for tested versus intended
-compatibility.
+```html
+<html data-neshel-theme="system"><!-- light (default) | dark | system | a named theme --></html>
+```
+
+For a custom theme, write a typed `neshel.config.ts` with `defineConfig()` and run
+`neshel generate` from `@neshel-ui/cli`; it validates the configuration (including contrast
+diagnostics) and writes a static stylesheet you import after the Neshel one. Installation alone
+does **not** inject CSS. See the [theme guide](docs/theming.md) and
+[package contracts](docs/package-contracts.md) for tested versus intended compatibility.
 
 ## Development
 
@@ -97,7 +102,8 @@ git clone https://github.com/dannysequeira-dev/neshel-ui.git
 cd neshel-ui
 pnpm install --frozen-lockfile
 pnpm check            # doctor, lint, typecheck, tests, package build, exports, packed artifacts
-pnpm check:consumer   # external Vite + Tailwind app built from the packed tarball (needs network)
+pnpm check:consumer   # external Vite apps (Tailwind, plain CSS, configured) from packed tarballs (network)
+pnpm check:browser    # computed-style theme precedence in headless Chrome (needs a local Chrome/Edge)
 ```
 
 Local previews:
@@ -111,14 +117,17 @@ pnpm dev:storybook    # Storybook on port 6006
 | ---------------------------------------- | ------------------------------------------------------------------------------------------------- |
 | `pnpm run doctor`                        | Node version, workspace layout, script portability, case collisions                               |
 | `pnpm lint` / `pnpm format`              | Biome check / apply fixes                                                                         |
-| `pnpm typecheck` · `pnpm test`           | TypeScript projects · `node:test` suites                                                          |
+| `pnpm typecheck` · `pnpm test`           | TypeScript projects (incl. type fixtures) · repository `node:test` suites                         |
+| `pnpm test:packages`                     | Package tests against built output (contract, contrast, generator, CLI)                           |
 | `pnpm build:packages`                    | Clean build of every package (ESM, `.d.ts`, maps, CSS)                                            |
 | `pnpm check:exports` · `pnpm check:pack` | Export targets in `dist` · real `pnpm pack` tarballs (publint, attw, external import/type checks) |
-| `pnpm check:consumer`                    | Packed `@neshel-ui/config` in a generated external React 19 + Vite + Tailwind v4 app              |
+| `pnpm check:consumer`                    | Packed tarballs in generated React 19 + Vite apps: Tailwind, plain CSS, configured via the CLI    |
+| `pnpm check:browser`                     | Theme precedence, nesting and import orders by computed styles in headless Chrome                 |
 
 Platform guides (Spanish): [Windows setup](docs/SETUP-WINDOWS.es.md) and
 [cross-platform policy](docs/CROSS-PLATFORM.es.md). Current verification status, separated
-into implemented, locally verified and CI-verified: [Phase 001 evidence](specs/001-foundation/evidence.md).
+into implemented, locally verified and CI-verified: [Phase 001 evidence](specs/001-foundation/evidence.md),
+[Phase 002 evidence](specs/002-config-and-tokens/evidence.md).
 
 ### Architecture and working agreements
 

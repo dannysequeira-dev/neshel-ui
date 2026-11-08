@@ -20,12 +20,12 @@ config (independently usable CSS/tokens)
 core   (private implementation details; never an external dependency)
 ```
 
-The diagram expresses the **planned** API and dependency direction; actual
-imports and feature code are not implemented yet. CLI uses config and should not
+The diagram expresses the API and dependency direction. Since feature 002, `cli` imports
+`config` at runtime (peer dependency); the React packages are not implemented yet. CLI uses config and should not
 import any React component package. React packages declare React 19 as a peer.
 Since milestone 001.2, workspace dependencies are declared only when a source file
-imports them, so today no package has a runtime dependency on another (research R9);
-the arrows above become real dependencies in the slices that introduce those imports.
+imports them (research R9). The only inter-package dependency today is `cli` → `config`
+(peer, feature 002); the other arrows become real in the slices that introduce those imports.
 The workspace apps use Vite 8 with `@vitejs/plugin-react` 5 since milestone 001.4
 ([ADR 0005](decisions/0005-vite-8.md)); published packages do not depend on Vite.
 
@@ -66,19 +66,18 @@ The default path requires **no CLI**. The advanced config path generates a
 static stylesheet. Never run user TS config in the browser, or rely on a global
 React provider for primitive CSS theme switching.
 
-Planned in feature 002 (ADR 0006/0007, Accepted, not implemented): `styles.css` stays as a 0.x
-alias of `tailwind.css`; the CLI generator is private to `@neshel-ui/cli`, which peer-depends
+Implemented in feature 002 (ADR 0006/0007): `styles.css` stays as a 0.x alias of
+`tailwind.css`; the CLI generator is private to `@neshel-ui/cli`, which peer-depends
 on `@neshel-ui/config` for the token contract (`colorRoles`, `contrastPairs`, `defaults`).
 
 ## Theme selector / layering
 
-Implemented (Phase 001): `:root` light, overridden by `[data-neshel-theme="light|dark"]`.
-
-Planned (feature 002, [contracts/css.md](../specs/002-config-and-tokens/contracts/css.md)):
+Implemented and browser-verified (feature 002, [contracts/css.md](../specs/002-config-and-tokens/contracts/css.md)):
 layers `neshel.defaults < neshel.config` under one `neshel` layer; complete theme blocks;
 `data-neshel-theme` = absent/`light` → light, `dark`, `system` (OS preference), named themes;
-canonical import order Tailwind → Neshel stylesheet → generated file → app CSS. Import-order
-independence is claimed only for orders verified by the browser check.
+canonical import order Tailwind → Neshel stylesheet → generated file → app CSS. Verified by
+`pnpm check:browser` on three OSes for the canonical order, "generated before the Neshel
+stylesheet" and "generated file alone"; other orders are not claimed.
 Applications load their fonts; no remote fetch required by the library.
 
 ## Cross-platform development and delivery
@@ -120,8 +119,6 @@ Status of each decision (implemented / locally verified / CI-verified) is tracke
 
 ## Open decisions
 
-- Exact semantic token vocabulary and accessibility policy — decided in feature 002
-  ([spec](../specs/002-config-and-tokens/spec.md), ADRs 0006/0007 Accepted); implementation pending.
 - Component-level CSS distribution strategy and choice of class variance tooling.
 - Stable polymorphism / `asChild` / refs contract for layouts and typography.
 

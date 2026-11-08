@@ -1,6 +1,6 @@
 # Contract — `neshel` CLI
 
-Status: **approved for implementation** (ADR 0007 Accepted, 2026-11-07); not implemented.
+Status: **implemented** in feature 002 (ADR 0007 Accepted).
 
 - Package `@neshel-ui/cli`, ESM, Node `>=22.13`, executable `neshel`, `.` entry empty and
   side-effect free (no programmatic API in 0.x).
@@ -135,13 +135,15 @@ set or the stream is not a TTY.
 
 ```jsonc
 "scripts": {
-  "predev": "neshel generate",
-  "prebuild": "neshel generate",
+  "dev": "neshel generate && vite",
+  "build": "neshel generate && vite build",
   "check:theme": "neshel generate --check --strict"
 }
 ```
 
-No `postinstall`/`prepare` hooks are used or recommended (FR-023).
+Chain the command explicitly: pnpm does not run `pre*` scripts unless `enable-pre-post-scripts`
+is set, so `predev`/`prebuild` hooks would be skipped silently. No `postinstall`/`prepare` hooks
+are used or recommended (FR-023).
 
 ## Negative test matrix (minimum, SC-004)
 

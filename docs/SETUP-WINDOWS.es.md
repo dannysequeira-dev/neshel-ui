@@ -36,8 +36,9 @@ cambiás dependencias, commiteá el lockfile actualizado en el mismo cambio.
 ## 2. Verificar
 
 ```powershell
-pnpm check            # doctor, lint, tipos, tests, build, exports y tarballs (check:pack)
-pnpm check:consumer   # app externa React 19 + Vite + Tailwind v4 desde el tarball (requiere red)
+pnpm check            # doctor, lint, tipos, tests, build, tests de paquetes, exports y tarballs
+pnpm check:consumer   # apps externas (Tailwind, CSS plano, configurada) desde tarballs (requiere red)
+pnpm check:browser    # precedencia de temas en Chrome/Edge headless
 pnpm build:playground
 pnpm build:storybook
 ```

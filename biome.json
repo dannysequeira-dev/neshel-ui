@@ -11,6 +11,7 @@
       "!packages/config/src/tokens.css",
       "!packages/config/src/tailwind.css",
       "!packages/cli/test/fixtures",
+      "!**/neshel.generated.css",
       "!.claude/skills/speckit-*",
       "!.specify/templates",
       "!.specify/scripts",

@@ -64,8 +64,8 @@ export default defineConfig({
 ```jsonc
 // package.json
 "scripts": {
-  "predev": "neshel generate",
-  "prebuild": "neshel generate",
+  "dev": "neshel generate && vite",
+  "build": "neshel generate && vite build",
   "check:theme": "neshel generate --check --strict"
 }
 ```

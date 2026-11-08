@@ -32,12 +32,14 @@ instalá Node 26 con el gestor que prefieras (`fnm`, `nvm`, `mise`, Volta) y pnp
 | ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
 | `pnpm run doctor`              | Versión de Node, layout del workspace, scripts portables, colisiones de mayúsculas                                               |
 | `pnpm lint` / `pnpm format`    | Biome (los archivos administrados por Spec Kit están excluidos: sus hashes están en los manifiestos)                             |
-| `pnpm typecheck` · `pnpm test` | Proyectos TypeScript · suites `node:test`                                                                                        |
+| `pnpm typecheck` · `pnpm test` | Proyectos TypeScript (con fixtures de tipos) · suites `node:test` del repositorio                                                |
+| `pnpm test:packages`           | Tests de paquetes contra `dist` (contrato, contraste, generador, CLI); requiere build                                            |
 | `pnpm build:packages`          | Build limpio de todos los paquetes (borra `dist` antes)                                                                          |
 | `pnpm check:exports`           | Que los targets de `exports` existan en `dist`                                                                                   |
 | `pnpm check:pack`              | Tarballs reales de `pnpm pack`: manifiesto, targets, source maps, publint, attw, import/tipos desde fuera del repo, determinismo |
-| `pnpm check:consumer`          | El tarball de `@neshel-ui/config` en una app externa React 19 + Vite + Tailwind v4 (requiere red)                                |
-| `pnpm check`                   | doctor → lint → typecheck → test → build → check:exports → check:pack (sin red)                                                  |
+| `pnpm check:consumer`          | Tarballs en apps externas React 19 + Vite: Tailwind v4, CSS plano y configurada con `neshel generate` (requiere red)             |
+| `pnpm check:browser`           | Precedencia de temas por estilos computados en Chrome headless (requiere Chrome/Edge local; en CI falla si no hay navegador)     |
+| `pnpm check`                   | doctor → lint → typecheck → test → build → test:packages → check:exports → check:pack (sin red)                                  |
 
 ## CI — resultados reales, no promesas
 
@@ -54,8 +56,8 @@ instalá Node 26 con el gestor que prefieras (`fnm`, `nvm`, `mise`, Volta) y pnp
 No es un producto cartesiano completo: el comportamiento propio de cada sistema operativo se
 cubre en la línea principal, y las versiones de Node en Linux. Cada job ejecuta: instalación
 `--frozen-lockfile` con caché del store de pnpm (clave `pnpm-lock.yaml`), doctor, lint,
-tests, typecheck, build, check:exports, check:pack, check:consumer, build del playground y de
-Storybook. `fail-fast: false` evita que un fallo oculte otro. Los runs de pull requests
+tests, typecheck, build, tests de paquetes, check:exports, check:pack, check:consumer,
+check:browser, build del playground y de Storybook. `fail-fast: false` evita que un fallo oculte otro. Los runs de pull requests
 obsoletos se cancelan; los pushes a `main` siempre conservan su resultado completo.
 
 Estado de cada verificación: [`specs/001-foundation/evidence.md`](../specs/001-foundation/evidence.md).

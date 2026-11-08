@@ -187,7 +187,7 @@ entry imports nothing and has no runtime dependencies.
 
 ### User Story 5 — Validate and generate CSS from configuration (Priority: P2)
 
-A developer runs `neshel validate` and `neshel generate` (e.g. in `predev`/`prebuild`) to check
+A developer runs `neshel validate` and `neshel generate` (chained before `dev`/`build`) to check
 the configuration and write a static stylesheet that overrides the defaults.
 
 **Why this priority**: delivers the configured mode on the same token contract.

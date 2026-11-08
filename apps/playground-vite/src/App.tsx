@@ -1,7 +1,7 @@
 import { useState } from "react";
 
-type Choice = "none" | "light" | "dark" | "system";
-const choices: readonly Choice[] = ["none", "light", "dark", "system"];
+type Choice = "none" | "light" | "dark" | "system" | "sepia";
+const choices: readonly Choice[] = ["none", "light", "dark", "system", "sepia"];
 
 function applyTheme(choice: Choice) {
   const root = document.documentElement;
@@ -18,6 +18,7 @@ export function App() {
         <h1 className="mt-3 font-neshel-display text-3xl font-semibold">Token playground</h1>
         <p className="mt-3 text-sm text-neshel-muted-foreground">
           Themes switch with one attribute; no provider. Without an attribute the page is light.
+          “sepia” is a named theme from neshel.config.ts.
         </p>
 
         <fieldset className="mt-6">

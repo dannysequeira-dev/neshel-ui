@@ -135,7 +135,7 @@ US5 validate/generate. **Nothing below is started; 002.1 requires owner authoriz
 - [ ] T059 [US5] Extend `scripts/check-browser.mjs` with generated CSS: rows 11–12 and cases C1–C4 (import orders, leakage) on static fixtures and the configured consumer
 - [ ] T060 [P] [US5] Cover configured expectations in `tests/consumer-checks.test.mjs` and `tests/browser-matrix.test.mjs`
 - [ ] T061 [US5] Add CI steps for the configured consumer and generated-CSS browser cases
-- [ ] T062 [P] [US3] Add a named-theme demo to `apps/playground-vite` using a workspace `neshel.config.ts` and an explicit `predev`/`prebuild` script (FR-031)
+- [ ] T062 [P] [US3] Add a named-theme demo to `apps/playground-vite` using a workspace `neshel.config.ts` and explicit `neshel generate &&` in its `dev`/`build` scripts (FR-031; pnpm skips `pre*` scripts by default)
 - [ ] T063 Execute [quickstart.md](quickstart.md) against packed tarballs and record it in `evidence.md` (SC-007)
 - [ ] T064 [P] Finalize `packages/config/README.md`
 - [ ] T065 [P] Update root `README.md` (theming section, links)

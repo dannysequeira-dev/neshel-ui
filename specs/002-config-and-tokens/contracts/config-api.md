@@ -1,6 +1,6 @@
 # Contract — `@neshel-ui/config` JavaScript API
 
-Status: **approved for implementation** (ADR 0007 Accepted, 2026-11-07); not implemented.
+Status: **implemented** in feature 002 (ADR 0007 Accepted).
 
 ## Entry point
 
@@ -112,11 +112,10 @@ export interface NeshelConfig {
 export function defineConfig<const T extends NeshelConfig>(config: T & ExactConfig<T>): T;
 ```
 
-`ExactConfig<T>` is an internal helper type that turns unknown keys (e.g. `primay`) into type
-errors and requires named themes to declare `extends` while forbidding it on `light`/`dark`.
+`ExactConfig<T>` (exported as a type) turns unknown keys (e.g. `primay`) into type errors,
+requires `extends` on named themes and forbids it on `light`/`dark` and a `system` theme.
 TypeScript cannot check string contents (colours, lengths, theme-name pattern); the CLI does.
-The precise helper is finalised with type fixtures in 002.3 (T035–T038); the public signature
-above does not change.
+Fixtures: `packages/config/type-tests/`.
 
 ```ts
 export interface ContrastPair {

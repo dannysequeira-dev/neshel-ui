@@ -23,13 +23,14 @@ neshel generate [--config <path>] [--out <path>] [--check] [--strict] [--debug]
   warnings by default; `contrast: "error"` in the config or `--strict` makes them errors
   (`--strict` always wins). Passing these checks does not by itself make an interface WCAG
   conformant.
-- Generation runs only when you invoke it. No install hooks.
+- Generation runs only when you invoke it. No install hooks. Chain it explicitly as below: pnpm
+  skips `pre*` scripts unless `enable-pre-post-scripts` is set.
 
 ```jsonc
 // package.json
 "scripts": {
-  "predev": "neshel generate",
-  "prebuild": "neshel generate",
+  "dev": "neshel generate && vite",
+  "build": "neshel generate && vite build",
   "check:theme": "neshel generate --check --strict"
 }
 ```

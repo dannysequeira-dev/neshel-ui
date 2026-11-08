@@ -1,7 +1,7 @@
 # Contract — Stylesheets, cascade and theme selection
 
-Status: **approved for implementation** (ADR 0006 Accepted, 2026-11-07); not implemented.
-Claims marked _verified by SC-005_ are design intent until the 002.2/002.5 browser checks pass.
+Status: **implemented** in feature 002 (ADR 0006 Accepted). Browser-verified claims are listed in
+[evidence.md](../evidence.md).
 
 ## Package exports of `@neshel-ui/config`
 
