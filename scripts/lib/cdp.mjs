@@ -172,6 +172,14 @@ export async function launchBrowser(executable = findBrowser()) {
         if (errorText) throw new Error(`navigation to ${url} failed: ${errorText}`);
         await loaded;
       },
+      /** Emulate a viewport (CSS pixels); media queries follow it. */
+      setViewport(width, height = 900) {
+        return connection.send(
+          "Emulation.setDeviceMetricsOverride",
+          { width, height, deviceScaleFactor: 1, mobile: false },
+          sessionId,
+        );
+      },
       emulateColorScheme(value) {
         return connection.send(
           "Emulation.setEmulatedMedia",
@@ -206,7 +214,12 @@ export async function launchBrowser(executable = findBrowser()) {
       setTimeout(resolve, 5000);
     });
     child.kill();
-    rmSync(profile, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 });
+    try {
+      rmSync(profile, { recursive: true, force: true, maxRetries: 10, retryDelay: 300 });
+    } catch (error) {
+      // Windows can keep the profile locked briefly after exit; a leftover temp dir is harmless.
+      console.warn(`warning: could not remove browser profile ${profile}: ${error.code}`);
+    }
   }
 
   return { executable, version: product, newPage, close };

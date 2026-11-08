@@ -17,11 +17,23 @@ import {
 } from "./lib/browser-matrix.mjs";
 import { findBrowser, launchBrowser } from "./lib/cdp.mjs";
 import { CONFIGURED_FIXTURE } from "./lib/consumer-configured.mjs";
+import { CONSUMER_CASE_IDS } from "./lib/consumer-layout.mjs";
+import {
+  LAYOUT_CASES,
+  layoutBody,
+  orderChecks,
+  probeLayout,
+  TAILWIND_OVERRIDE_CASE,
+  TAILWIND_STAND_IN,
+} from "./lib/layout-browser.mjs";
 import { createTempDir } from "./lib/temp.mjs";
 import { repoRoot } from "./lib/workspace.mjs";
 
 const configDist = join(repoRoot, "packages", "config", "dist");
 const cliDist = join(repoRoot, "packages", "cli", "dist");
+const layoutDist = join(repoRoot, "packages", "layout", "dist");
+// Test-harness CSS only (not a library style): removes the UA body margin for geometry checks.
+const HARNESS_CSS = "body { margin: 0; }";
 const load = (path) => import(pathToFileURL(path).href);
 
 // Same configuration as the "configured" consumer, so its computed values can be compared too.
@@ -42,7 +54,11 @@ function withPrimary(expected, value) {
 }
 
 async function main() {
-  for (const required of [join(configDist, "tokens.css"), join(cliDist, "resolve.js")]) {
+  for (const required of [
+    join(configDist, "tokens.css"),
+    join(cliDist, "resolve.js"),
+    join(layoutDist, "styles.css"),
+  ]) {
     if (!existsSync(required)) throw new Error(`${required} is missing; run pnpm build:packages`);
   }
   const executable = findBrowser();
@@ -149,6 +165,8 @@ async function main() {
         expected: name === "configured" ? configuredExpected : defaultsExpected,
         themes: name === "configured" ? configuredThemes : builtIn,
         tailwind: name !== "plain",
+        // Feature 003: the Tailwind and plain consumers render LayoutCases and hydrate SSR markup.
+        layout: name !== "configured",
       });
     }
     if (consumerPages.length === 0) throw new Error(`no consumer builds found in ${consumersDir}`);
@@ -239,6 +257,11 @@ async function main() {
         }
         assertions += 2;
       }
+      if (fixture.layout) {
+        const result = await probeConsumerLayout(page, fixture);
+        fixtureFailures.push(...result.failures);
+        assertions += result.assertions;
+      }
       failures.push(...fixtureFailures);
       report.fixtures.push({
         name: fixture.name,
@@ -249,6 +272,11 @@ async function main() {
         `${fixtureFailures.length ? "FAIL" : "ok  "} ${fixture.name} — rows ${rows.map((r) => r.id).join(", ")}`,
       );
     }
+    // Feature 003: layout computed styles on shipped CSS (SC-001) and import-order fixtures.
+    const layoutResult = await runLayoutSection(browser, { dir, tokens });
+    failures.push(...layoutResult.failures);
+    assertions += layoutResult.assertions;
+    report.layout = layoutResult.report;
   } finally {
     await browser.close();
     dispose();
@@ -269,6 +297,105 @@ async function main() {
   } else {
     console.info(`check:browser passed: ${assertions} computed-style assertions.`);
   }
+}
+
+/** Layout cases and hydration in a packed consumer page (SC-004). */
+async function probeConsumerLayout(page, fixture) {
+  const { defaults } = await load(join(configDist, "index.js"));
+  const ctx = {
+    border: {
+      light: hexToRgb(defaults.themes.light.border),
+      dark: hexToRgb(defaults.themes.dark.border),
+    },
+  };
+  await page.emulateColorScheme("light");
+  // The theme matrix above leaves attributes on <html>; layout cases expect the default theme.
+  await page.evaluate(`document.documentElement.removeAttribute("data-neshel-theme")`);
+  let state;
+  for (let attempt = 0; attempt < 50; attempt++) {
+    state = await page.evaluate(`({ ...document.documentElement.dataset })`);
+    if (state.mounted === "true") break;
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  }
+  const failures = [];
+  if (state.hydrated !== "true")
+    failures.push(`${fixture.name}: page was not hydrated from SSR markup`);
+  if (state.mounted !== "true") failures.push(`${fixture.name}: React did not mount`);
+  if (state.hydrationErrors)
+    failures.push(`${fixture.name}: hydration errors: ${state.hydrationErrors}`);
+  for (const error of page.errors) failures.push(`${fixture.name}: page error ${error}`);
+  const cases = LAYOUT_CASES.filter((testCase) => CONSUMER_CASE_IDS.includes(testCase.id));
+  if (fixture.tailwind) cases.push(TAILWIND_OVERRIDE_CASE);
+  const result = await probeLayout(page, cases, ctx, fixture.name);
+  await page.setViewport(1280, 900);
+  return { failures: [...failures, ...result.failures], assertions: result.assertions + 4 };
+}
+
+async function runLayoutSection(browser, { dir, tokens }) {
+  const React = await import("react");
+  const { renderToStaticMarkup } = await import("react-dom/server");
+  const L = await load(join(layoutDist, "index.js"));
+  const { defaults } = await load(join(configDist, "index.js"));
+  const layoutCss = readFileSync(join(layoutDist, "styles.css"), "utf8");
+  const ctx = {
+    border: {
+      light: hexToRgb(defaults.themes.light.border),
+      dark: hexToRgb(defaults.themes.dark.border),
+    },
+  };
+  const render = { h: React.createElement, L, render: renderToStaticMarkup };
+  const pages = [
+    { name: "layout: shipped CSS", css: [HARNESS_CSS, tokens, layoutCss], cases: LAYOUT_CASES },
+    {
+      name: "layout: canonical order (Tailwind stand-in first)",
+      css: [HARNESS_CSS, TAILWIND_STAND_IN, tokens, layoutCss],
+      cases: orderChecks(true),
+    },
+    {
+      name: "layout: layout before Tailwind (documented limitation)",
+      css: [HARNESS_CSS, layoutCss, TAILWIND_STAND_IN, tokens],
+      cases: orderChecks(false),
+    },
+    {
+      // Negative control: without the layout stylesheet the cases must fail.
+      name: "layout negative control: no layout stylesheet",
+      css: [HARNESS_CSS, tokens],
+      cases: LAYOUT_CASES,
+      expectFailure: true,
+    },
+  ];
+  const failures = [];
+  const report = [];
+  let assertions = 0;
+  for (const [index, entry] of pages.entries()) {
+    const file = join(dir, `layout ${index} ñ.html`);
+    const html = fixturePage(entry.name, entry.css).replace(
+      "<body></body>",
+      `<body>
+${layoutBody(entry.cases, render)}
+</body>`,
+    );
+    writeFileSync(file, html);
+    const page = await browser.newPage();
+    await page.goto(pathToFileURL(file).href);
+    await page.emulateColorScheme("light");
+    const result = await probeLayout(page, entry.cases, ctx, entry.name);
+    let pageFailures = result.failures;
+    if (entry.expectFailure) {
+      pageFailures =
+        result.failures.length > 0
+          ? []
+          : [`${entry.name}: expected failures without the layout stylesheet, got none`];
+    }
+    pageFailures.push(...page.errors.map((error) => `${entry.name}: page error ${error}`));
+    assertions += result.assertions;
+    failures.push(...pageFailures);
+    report.push({ name: entry.name, cases: entry.cases.map((c) => c.id), failures: pageFailures });
+    console.info(
+      `${pageFailures.length ? "FAIL" : "ok  "} ${entry.name} — ${result.assertions} assertions`,
+    );
+  }
+  return { failures, assertions, report };
 }
 
 main().catch((error) => {
