@@ -23,21 +23,30 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
-    "./styles.css": "./dist/styles.css"
+    "./styles.css": "./dist/styles.css",
+    "./style-manifest.json": "./dist/style-manifest.json"
   },
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.build.json && node ../../scripts/copy-css.mjs src/styles.css dist/styles.css",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "build": "tsc -p tsconfig.build.json && node ../../scripts/copy-css.mjs src/styles.css dist/styles.css src/style-manifest.json dist/style-manifest.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit && tsc -p type-tests/replace/tsconfig.json --noEmit"
   },
   "devDependencies": {
+    "@neshel-ui/config": "workspace:^",
     "typescript": "catalog:",
     "@types/react": "catalog:",
-    "react": "catalog:"
+    "@types/react-dom": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:"
   },
   "peerDependencies": {
+    "@neshel-ui/config": "workspace:^",
     "react": "^19.0.0"
+  },
+  "dependencies": {
+    "@radix-ui/react-slot": "catalog:",
+    "tailwind-variants": "catalog:"
   }
 }

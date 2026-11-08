@@ -1,0 +1,557 @@
+{
+  "schema": 1,
+  "package": "@neshel-ui/typography",
+  "version": "0.0.0",
+  "layer": "components.neshel",
+  "rules": [
+    {
+      "selector": ".neshel-typography",
+      "declarations": [
+        [
+          "margin",
+          "0"
+        ],
+        [
+          "--neshel-type-leading",
+          "initial"
+        ],
+        [
+          "--neshel-type-size-leading",
+          "initial"
+        ],
+        [
+          "line-height",
+          "var(--neshel-type-leading, var(--neshel-type-size-leading))"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-text-family-body",
+      "declarations": [
+        [
+          "font-family",
+          "var(--neshel-font-body)"
+        ],
+        [
+          "--neshel-type-scale",
+          "var(--neshel-font-body-scale, 1)"
+        ],
+        [
+          "--neshel-type-cap-trim",
+          "var(--neshel-font-body-cap-trim, 0)"
+        ],
+        [
+          "--neshel-type-baseline-trim",
+          "var(--neshel-font-body-baseline-trim, 0)"
+        ],
+        [
+          "--neshel-type-trim",
+          "var(--neshel-font-body-trim, 0)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-text-family-display",
+      "declarations": [
+        [
+          "font-family",
+          "var(--neshel-font-display)"
+        ],
+        [
+          "--neshel-type-scale",
+          "var(--neshel-font-display-scale, 1)"
+        ],
+        [
+          "--neshel-type-cap-trim",
+          "var(--neshel-font-display-cap-trim, 0)"
+        ],
+        [
+          "--neshel-type-baseline-trim",
+          "var(--neshel-font-display-baseline-trim, 0)"
+        ],
+        [
+          "--neshel-type-trim",
+          "var(--neshel-font-display-trim, 0)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-text-family-mono",
+      "declarations": [
+        [
+          "font-family",
+          "var(--neshel-font-mono)"
+        ],
+        [
+          "--neshel-type-scale",
+          "var(--neshel-font-mono-scale, 1)"
+        ],
+        [
+          "--neshel-type-cap-trim",
+          "var(--neshel-font-mono-cap-trim, 0)"
+        ],
+        [
+          "--neshel-type-baseline-trim",
+          "var(--neshel-font-mono-baseline-trim, 0)"
+        ],
+        [
+          "--neshel-type-trim",
+          "var(--neshel-font-mono-trim, 0)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-text-tone-default",
+      "declarations": [
+        [
+          "color",
+          "var(--neshel-foreground)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-text-tone-muted",
+      "declarations": [
+        [
+          "color",
+          "var(--neshel-muted-foreground)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-text-tone-primary",
+      "declarations": [
+        [
+          "color",
+          "var(--neshel-primary)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-text-tone-destructive",
+      "declarations": [
+        [
+          "color",
+          "var(--neshel-destructive)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-text-tracking-tight",
+      "declarations": [
+        [
+          "letter-spacing",
+          "-0.025em"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-text-tracking-normal",
+      "declarations": [
+        [
+          "letter-spacing",
+          "0"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-text-tracking-wide",
+      "declarations": [
+        [
+          "letter-spacing",
+          "0.025em"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-text-measure-narrow",
+      "declarations": [
+        [
+          "max-inline-size",
+          "45ch"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-text-measure-comfortable",
+      "declarations": [
+        [
+          "max-inline-size",
+          "65ch"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-text-measure-wide",
+      "declarations": [
+        [
+          "max-inline-size",
+          "80ch"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-text-measure-none",
+      "declarations": [
+        [
+          "max-inline-size",
+          "none"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-text-wrap-wrap",
+      "declarations": [
+        [
+          "text-wrap",
+          "wrap"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-text-wrap-nowrap",
+      "declarations": [
+        [
+          "white-space",
+          "nowrap"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-text-wrap-balance",
+      "declarations": [
+        [
+          "text-wrap",
+          "balance"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-text-wrap-pretty",
+      "declarations": [
+        [
+          "text-wrap",
+          "pretty"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-text-truncate",
+      "declarations": [
+        [
+          "overflow",
+          "hidden"
+        ],
+        [
+          "text-overflow",
+          "ellipsis"
+        ],
+        [
+          "white-space",
+          "nowrap"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-text-trim::before",
+      "declarations": [
+        [
+          "content",
+          "\"\""
+        ],
+        [
+          "display",
+          "table"
+        ],
+        [
+          "margin-block-end",
+          "calc((var(--neshel-type-cap-trim) + var(--neshel-type-leading, var(--neshel-type-size-leading)) / 2) * -1em * var(--neshel-type-trim))"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-text-trim::after",
+      "declarations": [
+        [
+          "content",
+          "\"\""
+        ],
+        [
+          "display",
+          "table"
+        ],
+        [
+          "margin-block-start",
+          "calc((var(--neshel-type-baseline-trim) + var(--neshel-type-leading, var(--neshel-type-size-leading)) / 2) * -1em * var(--neshel-type-trim))"
+        ]
+      ]
+    }
+  ],
+  "responsive": [
+    {
+      "class": "text-size-xs",
+      "declarations": [
+        [
+          "font-size",
+          "calc(0.75rem * var(--neshel-type-scale, 1))"
+        ],
+        [
+          "--neshel-type-size-leading",
+          "1.5"
+        ]
+      ]
+    },
+    {
+      "class": "text-size-sm",
+      "declarations": [
+        [
+          "font-size",
+          "calc(0.875rem * var(--neshel-type-scale, 1))"
+        ],
+        [
+          "--neshel-type-size-leading",
+          "1.5"
+        ]
+      ]
+    },
+    {
+      "class": "text-size-base",
+      "declarations": [
+        [
+          "font-size",
+          "calc(1rem * var(--neshel-type-scale, 1))"
+        ],
+        [
+          "--neshel-type-size-leading",
+          "1.5"
+        ]
+      ]
+    },
+    {
+      "class": "text-size-lg",
+      "declarations": [
+        [
+          "font-size",
+          "calc(1.125rem * var(--neshel-type-scale, 1))"
+        ],
+        [
+          "--neshel-type-size-leading",
+          "1.5"
+        ]
+      ]
+    },
+    {
+      "class": "text-size-xl",
+      "declarations": [
+        [
+          "font-size",
+          "calc(1.25rem * var(--neshel-type-scale, 1))"
+        ],
+        [
+          "--neshel-type-size-leading",
+          "1.4"
+        ]
+      ]
+    },
+    {
+      "class": "text-size-2xl",
+      "declarations": [
+        [
+          "font-size",
+          "calc(1.5rem * var(--neshel-type-scale, 1))"
+        ],
+        [
+          "--neshel-type-size-leading",
+          "1.3"
+        ]
+      ]
+    },
+    {
+      "class": "text-size-3xl",
+      "declarations": [
+        [
+          "font-size",
+          "calc(1.875rem * var(--neshel-type-scale, 1))"
+        ],
+        [
+          "--neshel-type-size-leading",
+          "1.25"
+        ]
+      ]
+    },
+    {
+      "class": "text-size-4xl",
+      "declarations": [
+        [
+          "font-size",
+          "calc(2.25rem * var(--neshel-type-scale, 1))"
+        ],
+        [
+          "--neshel-type-size-leading",
+          "1.2"
+        ]
+      ]
+    },
+    {
+      "class": "text-size-5xl",
+      "declarations": [
+        [
+          "font-size",
+          "calc(3rem * var(--neshel-type-scale, 1))"
+        ],
+        [
+          "--neshel-type-size-leading",
+          "1.1"
+        ]
+      ]
+    },
+    {
+      "class": "text-size-6xl",
+      "declarations": [
+        [
+          "font-size",
+          "calc(3.75rem * var(--neshel-type-scale, 1))"
+        ],
+        [
+          "--neshel-type-size-leading",
+          "1.1"
+        ]
+      ]
+    },
+    {
+      "class": "text-weight-light",
+      "declarations": [
+        [
+          "font-weight",
+          "300"
+        ]
+      ]
+    },
+    {
+      "class": "text-weight-regular",
+      "declarations": [
+        [
+          "font-weight",
+          "400"
+        ]
+      ]
+    },
+    {
+      "class": "text-weight-medium",
+      "declarations": [
+        [
+          "font-weight",
+          "500"
+        ]
+      ]
+    },
+    {
+      "class": "text-weight-semibold",
+      "declarations": [
+        [
+          "font-weight",
+          "600"
+        ]
+      ]
+    },
+    {
+      "class": "text-weight-bold",
+      "declarations": [
+        [
+          "font-weight",
+          "700"
+        ]
+      ]
+    },
+    {
+      "class": "text-align-start",
+      "declarations": [
+        [
+          "text-align",
+          "start"
+        ]
+      ]
+    },
+    {
+      "class": "text-align-center",
+      "declarations": [
+        [
+          "text-align",
+          "center"
+        ]
+      ]
+    },
+    {
+      "class": "text-align-end",
+      "declarations": [
+        [
+          "text-align",
+          "end"
+        ]
+      ]
+    },
+    {
+      "class": "text-align-justify",
+      "declarations": [
+        [
+          "text-align",
+          "justify"
+        ]
+      ]
+    },
+    {
+      "class": "text-leading-none",
+      "declarations": [
+        [
+          "--neshel-type-leading",
+          "1"
+        ]
+      ]
+    },
+    {
+      "class": "text-leading-tight",
+      "declarations": [
+        [
+          "--neshel-type-leading",
+          "1.25"
+        ]
+      ]
+    },
+    {
+      "class": "text-leading-snug",
+      "declarations": [
+        [
+          "--neshel-type-leading",
+          "1.375"
+        ]
+      ]
+    },
+    {
+      "class": "text-leading-normal",
+      "declarations": [
+        [
+          "--neshel-type-leading",
+          "1.5"
+        ]
+      ]
+    },
+    {
+      "class": "text-leading-relaxed",
+      "declarations": [
+        [
+          "--neshel-type-leading",
+          "1.625"
+        ]
+      ]
+    },
+    {
+      "class": "text-leading-loose",
+      "declarations": [
+        [
+          "--neshel-type-leading",
+          "2"
+        ]
+      ]
+    }
+  ]
+}

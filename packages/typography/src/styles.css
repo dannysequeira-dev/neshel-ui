@@ -1,1 +1,193 @@
-/* @neshel-ui/typography styles: intentionally empty until the package implementation slice. */
+/* @neshel-ui/typography styles. Generated from style tables; do not edit. */
+
+@layer components.neshel {
+  :root { --neshel-breakpoints: "sm md lg xl 2xl"; }
+  .neshel-typography { margin: 0; --neshel-type-leading: initial; --neshel-type-size-leading: initial; line-height: var(--neshel-type-leading, var(--neshel-type-size-leading)); }
+  .neshel-text-family-body { font-family: var(--neshel-font-body); --neshel-type-scale: var(--neshel-font-body-scale, 1); --neshel-type-cap-trim: var(--neshel-font-body-cap-trim, 0); --neshel-type-baseline-trim: var(--neshel-font-body-baseline-trim, 0); --neshel-type-trim: var(--neshel-font-body-trim, 0); }
+  .neshel-text-family-display { font-family: var(--neshel-font-display); --neshel-type-scale: var(--neshel-font-display-scale, 1); --neshel-type-cap-trim: var(--neshel-font-display-cap-trim, 0); --neshel-type-baseline-trim: var(--neshel-font-display-baseline-trim, 0); --neshel-type-trim: var(--neshel-font-display-trim, 0); }
+  .neshel-text-family-mono { font-family: var(--neshel-font-mono); --neshel-type-scale: var(--neshel-font-mono-scale, 1); --neshel-type-cap-trim: var(--neshel-font-mono-cap-trim, 0); --neshel-type-baseline-trim: var(--neshel-font-mono-baseline-trim, 0); --neshel-type-trim: var(--neshel-font-mono-trim, 0); }
+  .neshel-text-tone-default { color: var(--neshel-foreground); }
+  .neshel-text-tone-muted { color: var(--neshel-muted-foreground); }
+  .neshel-text-tone-primary { color: var(--neshel-primary); }
+  .neshel-text-tone-destructive { color: var(--neshel-destructive); }
+  .neshel-text-tracking-tight { letter-spacing: -0.025em; }
+  .neshel-text-tracking-normal { letter-spacing: 0; }
+  .neshel-text-tracking-wide { letter-spacing: 0.025em; }
+  .neshel-text-measure-narrow { max-inline-size: 45ch; }
+  .neshel-text-measure-comfortable { max-inline-size: 65ch; }
+  .neshel-text-measure-wide { max-inline-size: 80ch; }
+  .neshel-text-measure-none { max-inline-size: none; }
+  .neshel-text-wrap-wrap { text-wrap: wrap; }
+  .neshel-text-wrap-nowrap { white-space: nowrap; }
+  .neshel-text-wrap-balance { text-wrap: balance; }
+  .neshel-text-wrap-pretty { text-wrap: pretty; }
+  .neshel-text-truncate { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .neshel-text-trim::before { content: ""; display: table; margin-block-end: calc((var(--neshel-type-cap-trim) + var(--neshel-type-leading, var(--neshel-type-size-leading)) / 2) * -1em * var(--neshel-type-trim)); }
+  .neshel-text-trim::after { content: ""; display: table; margin-block-start: calc((var(--neshel-type-baseline-trim) + var(--neshel-type-leading, var(--neshel-type-size-leading)) / 2) * -1em * var(--neshel-type-trim)); }
+
+  .neshel-text-size-xs { font-size: calc(0.75rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.5; }
+  .neshel-text-size-sm { font-size: calc(0.875rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.5; }
+  .neshel-text-size-base { font-size: calc(1rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.5; }
+  .neshel-text-size-lg { font-size: calc(1.125rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.5; }
+  .neshel-text-size-xl { font-size: calc(1.25rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.4; }
+  .neshel-text-size-2xl { font-size: calc(1.5rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.3; }
+  .neshel-text-size-3xl { font-size: calc(1.875rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.25; }
+  .neshel-text-size-4xl { font-size: calc(2.25rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.2; }
+  .neshel-text-size-5xl { font-size: calc(3rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.1; }
+  .neshel-text-size-6xl { font-size: calc(3.75rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.1; }
+  .neshel-text-weight-light { font-weight: 300; }
+  .neshel-text-weight-regular { font-weight: 400; }
+  .neshel-text-weight-medium { font-weight: 500; }
+  .neshel-text-weight-semibold { font-weight: 600; }
+  .neshel-text-weight-bold { font-weight: 700; }
+  .neshel-text-align-start { text-align: start; }
+  .neshel-text-align-center { text-align: center; }
+  .neshel-text-align-end { text-align: end; }
+  .neshel-text-align-justify { text-align: justify; }
+  .neshel-text-leading-none { --neshel-type-leading: 1; }
+  .neshel-text-leading-tight { --neshel-type-leading: 1.25; }
+  .neshel-text-leading-snug { --neshel-type-leading: 1.375; }
+  .neshel-text-leading-normal { --neshel-type-leading: 1.5; }
+  .neshel-text-leading-relaxed { --neshel-type-leading: 1.625; }
+  .neshel-text-leading-loose { --neshel-type-leading: 2; }
+
+  @media (min-width: 40rem) {
+    .neshel-sm-text-size-xs { font-size: calc(0.75rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.5; }
+    .neshel-sm-text-size-sm { font-size: calc(0.875rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.5; }
+    .neshel-sm-text-size-base { font-size: calc(1rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.5; }
+    .neshel-sm-text-size-lg { font-size: calc(1.125rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.5; }
+    .neshel-sm-text-size-xl { font-size: calc(1.25rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.4; }
+    .neshel-sm-text-size-2xl { font-size: calc(1.5rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.3; }
+    .neshel-sm-text-size-3xl { font-size: calc(1.875rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.25; }
+    .neshel-sm-text-size-4xl { font-size: calc(2.25rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.2; }
+    .neshel-sm-text-size-5xl { font-size: calc(3rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.1; }
+    .neshel-sm-text-size-6xl { font-size: calc(3.75rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.1; }
+    .neshel-sm-text-weight-light { font-weight: 300; }
+    .neshel-sm-text-weight-regular { font-weight: 400; }
+    .neshel-sm-text-weight-medium { font-weight: 500; }
+    .neshel-sm-text-weight-semibold { font-weight: 600; }
+    .neshel-sm-text-weight-bold { font-weight: 700; }
+    .neshel-sm-text-align-start { text-align: start; }
+    .neshel-sm-text-align-center { text-align: center; }
+    .neshel-sm-text-align-end { text-align: end; }
+    .neshel-sm-text-align-justify { text-align: justify; }
+    .neshel-sm-text-leading-none { --neshel-type-leading: 1; }
+    .neshel-sm-text-leading-tight { --neshel-type-leading: 1.25; }
+    .neshel-sm-text-leading-snug { --neshel-type-leading: 1.375; }
+    .neshel-sm-text-leading-normal { --neshel-type-leading: 1.5; }
+    .neshel-sm-text-leading-relaxed { --neshel-type-leading: 1.625; }
+    .neshel-sm-text-leading-loose { --neshel-type-leading: 2; }
+  }
+
+  @media (min-width: 48rem) {
+    .neshel-md-text-size-xs { font-size: calc(0.75rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.5; }
+    .neshel-md-text-size-sm { font-size: calc(0.875rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.5; }
+    .neshel-md-text-size-base { font-size: calc(1rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.5; }
+    .neshel-md-text-size-lg { font-size: calc(1.125rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.5; }
+    .neshel-md-text-size-xl { font-size: calc(1.25rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.4; }
+    .neshel-md-text-size-2xl { font-size: calc(1.5rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.3; }
+    .neshel-md-text-size-3xl { font-size: calc(1.875rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.25; }
+    .neshel-md-text-size-4xl { font-size: calc(2.25rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.2; }
+    .neshel-md-text-size-5xl { font-size: calc(3rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.1; }
+    .neshel-md-text-size-6xl { font-size: calc(3.75rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.1; }
+    .neshel-md-text-weight-light { font-weight: 300; }
+    .neshel-md-text-weight-regular { font-weight: 400; }
+    .neshel-md-text-weight-medium { font-weight: 500; }
+    .neshel-md-text-weight-semibold { font-weight: 600; }
+    .neshel-md-text-weight-bold { font-weight: 700; }
+    .neshel-md-text-align-start { text-align: start; }
+    .neshel-md-text-align-center { text-align: center; }
+    .neshel-md-text-align-end { text-align: end; }
+    .neshel-md-text-align-justify { text-align: justify; }
+    .neshel-md-text-leading-none { --neshel-type-leading: 1; }
+    .neshel-md-text-leading-tight { --neshel-type-leading: 1.25; }
+    .neshel-md-text-leading-snug { --neshel-type-leading: 1.375; }
+    .neshel-md-text-leading-normal { --neshel-type-leading: 1.5; }
+    .neshel-md-text-leading-relaxed { --neshel-type-leading: 1.625; }
+    .neshel-md-text-leading-loose { --neshel-type-leading: 2; }
+  }
+
+  @media (min-width: 64rem) {
+    .neshel-lg-text-size-xs { font-size: calc(0.75rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.5; }
+    .neshel-lg-text-size-sm { font-size: calc(0.875rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.5; }
+    .neshel-lg-text-size-base { font-size: calc(1rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.5; }
+    .neshel-lg-text-size-lg { font-size: calc(1.125rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.5; }
+    .neshel-lg-text-size-xl { font-size: calc(1.25rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.4; }
+    .neshel-lg-text-size-2xl { font-size: calc(1.5rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.3; }
+    .neshel-lg-text-size-3xl { font-size: calc(1.875rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.25; }
+    .neshel-lg-text-size-4xl { font-size: calc(2.25rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.2; }
+    .neshel-lg-text-size-5xl { font-size: calc(3rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.1; }
+    .neshel-lg-text-size-6xl { font-size: calc(3.75rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.1; }
+    .neshel-lg-text-weight-light { font-weight: 300; }
+    .neshel-lg-text-weight-regular { font-weight: 400; }
+    .neshel-lg-text-weight-medium { font-weight: 500; }
+    .neshel-lg-text-weight-semibold { font-weight: 600; }
+    .neshel-lg-text-weight-bold { font-weight: 700; }
+    .neshel-lg-text-align-start { text-align: start; }
+    .neshel-lg-text-align-center { text-align: center; }
+    .neshel-lg-text-align-end { text-align: end; }
+    .neshel-lg-text-align-justify { text-align: justify; }
+    .neshel-lg-text-leading-none { --neshel-type-leading: 1; }
+    .neshel-lg-text-leading-tight { --neshel-type-leading: 1.25; }
+    .neshel-lg-text-leading-snug { --neshel-type-leading: 1.375; }
+    .neshel-lg-text-leading-normal { --neshel-type-leading: 1.5; }
+    .neshel-lg-text-leading-relaxed { --neshel-type-leading: 1.625; }
+    .neshel-lg-text-leading-loose { --neshel-type-leading: 2; }
+  }
+
+  @media (min-width: 80rem) {
+    .neshel-xl-text-size-xs { font-size: calc(0.75rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.5; }
+    .neshel-xl-text-size-sm { font-size: calc(0.875rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.5; }
+    .neshel-xl-text-size-base { font-size: calc(1rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.5; }
+    .neshel-xl-text-size-lg { font-size: calc(1.125rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.5; }
+    .neshel-xl-text-size-xl { font-size: calc(1.25rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.4; }
+    .neshel-xl-text-size-2xl { font-size: calc(1.5rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.3; }
+    .neshel-xl-text-size-3xl { font-size: calc(1.875rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.25; }
+    .neshel-xl-text-size-4xl { font-size: calc(2.25rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.2; }
+    .neshel-xl-text-size-5xl { font-size: calc(3rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.1; }
+    .neshel-xl-text-size-6xl { font-size: calc(3.75rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.1; }
+    .neshel-xl-text-weight-light { font-weight: 300; }
+    .neshel-xl-text-weight-regular { font-weight: 400; }
+    .neshel-xl-text-weight-medium { font-weight: 500; }
+    .neshel-xl-text-weight-semibold { font-weight: 600; }
+    .neshel-xl-text-weight-bold { font-weight: 700; }
+    .neshel-xl-text-align-start { text-align: start; }
+    .neshel-xl-text-align-center { text-align: center; }
+    .neshel-xl-text-align-end { text-align: end; }
+    .neshel-xl-text-align-justify { text-align: justify; }
+    .neshel-xl-text-leading-none { --neshel-type-leading: 1; }
+    .neshel-xl-text-leading-tight { --neshel-type-leading: 1.25; }
+    .neshel-xl-text-leading-snug { --neshel-type-leading: 1.375; }
+    .neshel-xl-text-leading-normal { --neshel-type-leading: 1.5; }
+    .neshel-xl-text-leading-relaxed { --neshel-type-leading: 1.625; }
+    .neshel-xl-text-leading-loose { --neshel-type-leading: 2; }
+  }
+
+  @media (min-width: 96rem) {
+    .neshel-2xl-text-size-xs { font-size: calc(0.75rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.5; }
+    .neshel-2xl-text-size-sm { font-size: calc(0.875rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.5; }
+    .neshel-2xl-text-size-base { font-size: calc(1rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.5; }
+    .neshel-2xl-text-size-lg { font-size: calc(1.125rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.5; }
+    .neshel-2xl-text-size-xl { font-size: calc(1.25rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.4; }
+    .neshel-2xl-text-size-2xl { font-size: calc(1.5rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.3; }
+    .neshel-2xl-text-size-3xl { font-size: calc(1.875rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.25; }
+    .neshel-2xl-text-size-4xl { font-size: calc(2.25rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.2; }
+    .neshel-2xl-text-size-5xl { font-size: calc(3rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.1; }
+    .neshel-2xl-text-size-6xl { font-size: calc(3.75rem * var(--neshel-type-scale, 1)); --neshel-type-size-leading: 1.1; }
+    .neshel-2xl-text-weight-light { font-weight: 300; }
+    .neshel-2xl-text-weight-regular { font-weight: 400; }
+    .neshel-2xl-text-weight-medium { font-weight: 500; }
+    .neshel-2xl-text-weight-semibold { font-weight: 600; }
+    .neshel-2xl-text-weight-bold { font-weight: 700; }
+    .neshel-2xl-text-align-start { text-align: start; }
+    .neshel-2xl-text-align-center { text-align: center; }
+    .neshel-2xl-text-align-end { text-align: end; }
+    .neshel-2xl-text-align-justify { text-align: justify; }
+    .neshel-2xl-text-leading-none { --neshel-type-leading: 1; }
+    .neshel-2xl-text-leading-tight { --neshel-type-leading: 1.25; }
+    .neshel-2xl-text-leading-snug { --neshel-type-leading: 1.375; }
+    .neshel-2xl-text-leading-normal { --neshel-type-leading: 1.5; }
+    .neshel-2xl-text-leading-relaxed { --neshel-type-leading: 1.625; }
+    .neshel-2xl-text-leading-loose { --neshel-type-leading: 2; }
+  }
+}
