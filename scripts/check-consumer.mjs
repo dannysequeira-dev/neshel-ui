@@ -19,6 +19,15 @@ import {
 import { basename, dirname, join, relative, resolve, sep } from "node:path";
 import { checkConsumerCss, checkLayerStatement, checkPlainCss } from "./lib/consumer-checks.mjs";
 import { configuredVariant } from "./lib/consumer-configured.mjs";
+import {
+  checkLayoutConsumerCss,
+  entryServerTsx,
+  LAYOUT,
+  layoutCasesTsx,
+  prerenderLayout,
+  prerenderMjs,
+  typeContractTsx,
+} from "./lib/consumer-layout.mjs";
 import { packPackage, pnpm } from "./lib/pnpm.mjs";
 import { createTempDir } from "./lib/temp.mjs";
 import { listWorkspacePackages, repoRoot } from "./lib/workspace.mjs";
@@ -99,20 +108,41 @@ const tsconfig = `${JSON.stringify(
   2,
 )}\n`;
 
-const mainTsx = `import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
+// Hydrates prerendered markup (layout variants, R16) or renders on the client. Results are
+// exposed on <html> for check:browser: data-mounted, data-hydrated, data-hydration-errors.
+const mainTsx = `import { StrictMode, useEffect } from "react";
+import { createRoot, hydrateRoot } from "react-dom/client";
 import { App } from "./App";
 import { neshelConfigModule } from "./neshel";
 import "./styles.css";
 
 void neshelConfigModule;
+const html = document.documentElement;
+function Root() {
+  useEffect(() => {
+    html.dataset.mounted = "true";
+  }, []);
+  return <App />;
+}
 const root = document.getElementById("root");
 if (!root) throw new Error("Missing #root element");
-createRoot(root).render(
+const tree = (
   <StrictMode>
-    <App />
-  </StrictMode>,
+    <Root />
+  </StrictMode>
 );
+if (root.hasChildNodes()) {
+  const errors: string[] = [];
+  hydrateRoot(root, tree, {
+    onRecoverableError(error) {
+      errors.push(String(error));
+      html.dataset.hydrationErrors = errors.join(" | ");
+    },
+  });
+  html.dataset.hydrated = "true";
+} else {
+  createRoot(root).render(tree);
+}
 `;
 
 /** Files shared by every variant; `vite.config.ts` and CSS/App differ per variant. */
@@ -160,20 +190,41 @@ import { defineConfig } from "vite";
 export default defineConfig({ base: "./", plugins: [${plugins.list}] });
 `;
 
+/** Files shared by the layout consumers (Tailwind and plain variants). */
+function layoutFiles({ tailwind }) {
+  return {
+    "src/layout-cases.tsx": layoutCasesTsx({ tailwind }),
+    "src/type-contract.tsx": typeContractTsx,
+    "src/entry-server.tsx": entryServerTsx,
+    "prerender.mjs": prerenderMjs,
+  };
+}
+
+/** C5: the consumer's built CSS contains the installed layout stylesheet's selectors. */
+function layoutCssErrors(outputCss, appDir) {
+  const installed = realpathSync(join(appDir, "node_modules", ...LAYOUT.split("/")));
+  const packageCss = readFileSync(join(installed, "dist", "styles.css"), "utf8");
+  return checkLayoutConsumerCss(outputCss, packageCss);
+}
+
 const allVariants = {
   tailwind: {
     title: "Neshel-UI consumer — Tailwind",
     devDependencies: [...BASE_DEV, ...TAILWIND_DEV],
-    packages: [CONFIG],
+    packages: [CONFIG, LAYOUT],
     files: () => ({
+      ...layoutFiles({ tailwind: true }),
       "vite.config.ts": viteConfig({
         imports:
           'import tailwindcss from "@tailwindcss/vite";\nimport react from "@vitejs/plugin-react";',
         list: "react(), tailwindcss()",
       }),
-      "src/styles.css": `@import "tailwindcss";\n@import "${CONFIG}/tailwind.css";\n`,
-      "src/App.tsx": `export function App() {
+      "src/styles.css": `@import "tailwindcss";\n@import "${CONFIG}/tailwind.css";\n@import "${LAYOUT}/styles.css";\n`,
+      "src/App.tsx": `import { LayoutCases } from "./layout-cases";
+
+export function App() {
   return (
+    <>
     <main className="min-h-screen bg-neshel-background p-10 font-neshel-body text-neshel-foreground">
       <section className="rounded-2xl border border-neshel-border bg-neshel-surface p-10 text-neshel-surface-foreground">
         <h1 className="font-semibold">Neshel-UI consumer smoke test</h1>
@@ -188,11 +239,15 @@ const allVariants = {
         <div data-neshel-theme="dark" className="scheme-light">Scheme interaction (C9)</div>
       </section>
     </main>
+    <LayoutCases />
+    </>
   );
 }
 `,
     }),
-    check: ({ outputCss, installed }) => [
+    postBuild: prerenderLayout,
+    check: ({ outputCss, installed, appDir }) => [
+      ...layoutCssErrors(outputCss, appDir),
       ...checkConsumerCss(
         outputCss,
         readFileSync(join(installed, "dist", "tailwind.css"), "utf8"),
@@ -207,13 +262,19 @@ const allVariants = {
   plain: {
     title: "Neshel-UI consumer — plain CSS",
     devDependencies: BASE_DEV,
-    packages: [CONFIG],
+    packages: [CONFIG, LAYOUT],
     files: () => ({
+      ...layoutFiles({ tailwind: false }),
       "vite.config.ts": viteConfig({
         imports: 'import react from "@vitejs/plugin-react";',
         list: "react()",
       }),
       "src/styles.css": `@import "${CONFIG}/tokens.css";
+@import "${LAYOUT}/styles.css";
+
+body {
+  margin: 0;
+}
 
 .card {
   background: var(--neshel-surface);
@@ -222,8 +283,15 @@ const allVariants = {
   border-radius: var(--neshel-radius-lg);
 }
 `,
-      "src/App.tsx": `export function App() {
-  return <section className="card">Neshel-UI plain CSS consumer</section>;
+      "src/App.tsx": `import { LayoutCases } from "./layout-cases";
+
+export function App() {
+  return (
+    <main>
+      <section className="card">Neshel-UI plain CSS consumer</section>
+      <LayoutCases />
+    </main>
+  );
 }
 `,
       // SC-006: a bundle importing only defineConfig must stay tiny and carry no contract data.
@@ -247,11 +315,12 @@ const code = result.output.filter((chunk) => chunk.type === "chunk").map((chunk)
 console.log(JSON.stringify({ bytes: Buffer.byteLength(code), code }));
 `,
     }),
+    postBuild: prerenderLayout,
     check: ({ outputCss, installed, buildLog, appDir }) => {
-      const errors = checkPlainCss(
-        outputCss,
-        readFileSync(join(installed, "dist", "tokens.css"), "utf8"),
-      );
+      const errors = [
+        ...layoutCssErrors(outputCss, appDir),
+        ...checkPlainCss(outputCss, readFileSync(join(installed, "dist", "tokens.css"), "utf8")),
+      ];
       if (/unknown at[- ]rule/i.test(buildLog)) {
         errors.push(`the build reported an unknown at-rule:\n${buildLog}`);
       }
@@ -348,6 +417,7 @@ function runVariant(name, { workDir, tarballs, artifacts }) {
     const cssFiles = readdirSync(assets).filter((file) => file.endsWith(".css"));
     if (cssFiles.length === 0) errors.push("Vite emitted no CSS asset");
     const outputCss = cssFiles.map((file) => readFileSync(join(assets, file), "utf8")).join("\n");
+    if (variant.postBuild) errors.push(...variant.postBuild({ appDir, node, step }));
     errors.push(
       ...variant.check({
         outputCss,
