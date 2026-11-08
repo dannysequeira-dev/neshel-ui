@@ -1,108 +1,162 @@
-# Neshel-UI
+<p align="center">
+  <img src="assets/brand/neshel-ui-logo.png" alt="Neshel-UI — a midnight navy rose with delicate gold accents and a light at its center" width="390" />
+</p>
 
-**Rooted in faith. Built with hope.**
+<h1 align="center">Neshel-UI</h1>
 
-Neshel-UI is an upcoming **modular, accessible, themeable React design system**.
-It is built around a CSS-first foundation (Tailwind CSS v4), semantic design tokens,
-precise typography (Capsize), composable layouts, and independently consumable npm packages.
+<p align="center">
+  <strong>Rooted in faith. Built with hope.</strong><br />
+  A modular React design system built for composition, accessibility, and thoughtful theming.
+</p>
 
-> **Project status: foundation scaffold / not yet published.** The ZIP contains a working
-> repository layout and development configuration, not a complete component library.
-> Every package is currently marked `private: true` as a release safety measure.
+<p align="center">
+  <a href="#vision">Vision</a> ·
+  <a href="#packages">Packages</a> ·
+  <a href="#development">Development</a> ·
+  <a href="#roadmap">Roadmap</a> ·
+  <a href="#contributing">Contributing</a>
+</p>
 
-## Philosophy
+> [!IMPORTANT]
+> **Pre-release / foundation in progress.** Neshel-UI is not published to npm yet.
+> The workspace and tooling are being established before the first usable UI release.
+> Package names and APIs below are design targets, not claims of existing functionality.
 
-- **God first, people first:** Work with care, integrity, stewardship, and hope.
-- **Composable:** Small focused primitives; accessible interactions rather than large wrappers.
-- **Configurable:** Consumers own themes; components rely on semantic tokens.
-- **Modular:** Install only the package you need, without hidden package coupling.
-- **Typography matters:** Use real font metrics and accurate visual alignment.
-- **Public by design:** Stable exports, clear documentation, MIT licensing, and reproducible builds.
+## Vision
 
-## Planned npm packages
+Neshel-UI aims to make consistent interfaces easier to build without forcing every
+application into one visual identity. Install focused packages, configure semantic
+tokens, and compose the primitives you actually need.
 
-| Package                 | Purpose                                          | Current status        |
-| ----------------------- | ------------------------------------------------ | --------------------- |
-| `@neshel-ui/config`     | Semantic tokens, CSS themes, typed configuration | Baseline CSS only     |
-| `@neshel-ui/layout`     | Box, Stack, Inline, Grid, Center, Container      | Empty module          |
-| `@neshel-ui/typography` | Heading, Text, Paragraph, Caption + Capsize      | Empty module          |
-| `@neshel-ui/components` | Button, Card, Badge, Input, Separator, Skeleton  | Empty module          |
-| `@neshel-ui/cli`        | Validate config; generate static CSS             | Placeholder CLI       |
-| `@neshel-ui/core`       | Private utilities, types and shared contracts    | Empty internal module |
+Its design principles are:
 
-The `@neshel-ui` npm scope is **proposed, not verified or reserved**.
+- **Faith, care, and stewardship.** Build with integrity, generosity, and hope.
+- **Composition over complexity.** Small primitives with predictable contracts.
+- **Application-owned identity.** Semantic colors, themes, typography, and design tokens.
+- **Accessibility by default.** Native semantics, clear focus states, and keyboard support.
+- **Precise typography.** Real font metrics with Capsize where they add value.
+- **Independent adoption.** Published packages must work outside this monorepo.
+- **Open-source collaboration.** Reproducible tooling, clear documentation, and transparent decisions.
 
-## Developer quick start (Windows, Linux and macOS)
+The project is built around **React**, **TypeScript**, **Tailwind CSS v4**, **Capsize**,
+**pnpm workspaces**, and **Storybook**. Tailwind CSS integration is CSS-first, but
+consumers should not be forced to use Tailwind just to load the core theme tokens.
 
-Requirements: Node.js 22.13+; pnpm **12.16.1**; Git; optional Claude Code and Spec Kit CLI.
+## Packages
+
+Neshel-UI is organized as independent packages with one shared design vocabulary.
+
+| Package | Planned responsibility | Status |
+| --- | --- | --- |
+| `@neshel-ui/config` | Semantic tokens, themes, CSS exports, typed configuration | Foundation |
+| `@neshel-ui/layout` | Box, Stack, Inline, Grid, Center, Container | Planned |
+| `@neshel-ui/typography` | Heading, Text, Paragraph, Caption, Capsize integration | Planned |
+| `@neshel-ui/components` | Accessible Button, Card, Badge, Input, Separator, Skeleton | Planned |
+| `@neshel-ui/cli` | Read/validate user configuration and generate deterministic CSS | Planned |
+| `@neshel-ui/core` | Internal shared utilities, if needed; not publicly published | Internal |
+
+The `@neshel-ui` npm scope must be verified before publication. A package install
+must not depend on unpublished private workspace packages.
+
+### Intended consumer experience
+
+Once published, consumers should be able to install only the features they need:
 
 ```bash
-# From the repository root, in PowerShell, Bash or Zsh
-pnpm install
-pnpm run doctor
-pnpm build:packages
-pnpm test
-pnpm dev:playground
-# or in a second terminal:
-pnpm dev:storybook
-```
-
-On the first install, commit the generated `pnpm-lock.yaml`. CI will thereafter
-use a frozen lockfile. For setup and native CI on all three systems, see
-[`docs/CROSS-PLATFORM.es.md`](docs/CROSS-PLATFORM.es.md).
-For Windows-specific initial extraction, see
-[`docs/SETUP-WINDOWS.es.md`](docs/SETUP-WINDOWS.es.md).
-
-## Planned consumer experience (not yet released)
-
-```powershell
-pnpm add @neshel-ui/config @neshel-ui/layout
+# Example for a future release — not available on npm yet
+pnpm add @neshel-ui/config @neshel-ui/layout @neshel-ui/typography
 ```
 
 ```css
-/* Consumer app/global.css */
+/* Planned stylesheet entry points */
 @import "tailwindcss";
 @import "@neshel-ui/config/styles.css";
 @import "@neshel-ui/layout/styles.css";
+@import "@neshel-ui/typography/styles.css";
 ```
 
-A future `neshel.config.ts` will be supported by `@neshel-ui/cli` for
-advanced custom colors, font metrics, and static CSS generation. The default
-CSS-only mode will not require the CLI. **npm installation by itself does not inject CSS.**
+Installation alone does **not** inject CSS. The final import contract will be
+verified using external, packed-package consumers before release.
 
-## For Claude Code
+## Development
 
-Start by reading [`CLAUDE.md`](CLAUDE.md),
-[`docs/CLAUDE-FIRST-PROMPT.md`](docs/CLAUDE-FIRST-PROMPT.md),
-[`docs/architecture.md`](docs/architecture.md), and
-[`.specify/memory/constitution.md`](.specify/memory/constitution.md).
+This is a **pnpm monorepo** intended for contributors using **Windows, Linux,
+or macOS**. Check the repository's `.nvmrc` and `package.json` for the pinned
+Node.js and pnpm versions instead of assuming your globally installed versions.
 
-Spec Kit's official scripts / Claude commands are installed separately with
-`pnpm run spec-kit:init` on Windows, Linux and macOS after installing the official `specify` CLI.
-The ZIP already includes the constitution and first feature specification, but
-**does not claim to include the official Spec Kit command distribution**.
+```bash
+# Run from the repository root
+pnpm install
+pnpm run doctor
+pnpm typecheck
+pnpm test
+pnpm build:packages
+pnpm check:exports
+```
 
-## Documentation
+For local previews (as the scaffold supports them):
 
-- [Vision and non-goals](docs/vision.md)
-- [Architecture and dependencies](docs/architecture.md)
-- [Public package contracts](docs/package-contracts.md)
-- [Theme and token design](docs/theming.md)
-- [Capsize / typography design](docs/typography.md)
-- [Roadmap and acceptance gates](docs/roadmap.md)
-- [Windows, Linux and macOS setup + CI (Spanish)](docs/CROSS-PLATFORM.es.md)
-- [Windows setup and GitHub instructions (Spanish)](docs/SETUP-WINDOWS.es.md)
-- [Working with Claude and Spec Kit](docs/CLAUDE-FIRST-PROMPT.md)
-- [Release and npm publication checklist](docs/releasing.md)
-- [Decision records](docs/decisions/0001-architecture.md)
+```bash
+pnpm dev:playground
+# Or, in another terminal:
+pnpm dev:storybook
+```
+
+Read the [cross-platform setup guide](docs/CROSS-PLATFORM.es.md) before changing
+portable scripts, CI workflows, or development requirements.
+
+### Architecture and working agreements
+
+- [Claude Code context](CLAUDE.md)
+- [Architecture](docs/architecture.md)
+- [Package contracts](docs/package-contracts.md)
+- [Theme strategy](docs/theming.md)
+- [Typography strategy](docs/typography.md)
+- [Spec Kit constitution](.specify/memory/constitution.md)
+- [First Claude prompt](docs/CLAUDE-FIRST-PROMPT.md)
+- [Release policy](docs/releasing.md)
+
+Use specification-driven development and keep architecture decisions documented.
+A working Storybook or a green workspace build is **not**, by itself, proof that
+an npm package is ready for independent consumption.
+
+## Roadmap
+
+| Phase | Focus |
+| --- | --- |
+| **001** | Foundation, quality gates, portable tooling, package contracts |
+| **002** | Semantic design tokens, themes, CSS generation, configuration |
+| **003** | Composable layout primitives |
+| **004** | Metrics-aware typography |
+| **005** | Accessible UI components and Storybook |
+| **006** | External consumers, documentation, npm publishing |
+
+See [the development roadmap](docs/roadmap.md) for specifications, milestones,
+and acceptance gates. Version **0.1.0** is the initial release target, not a
+release already available.
+
+## Brand identity
+
+The Neshel-UI emblem is a **navy-blue rose** with restrained golden reflections
+and a quiet light at its heart. It represents faith as the foundation and hope
+as the reason to keep building.
+
+The original artwork is preserved unchanged in
+[`assets/brand/neshel-ui-logo.png`](assets/brand/neshel-ui-logo.png).
+Cropped, resized variants for avatars and icons are in
+[`assets/brand/`](assets/brand/); see the [brand asset guide](docs/BRANDING.md).
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md), [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md),
-and [SECURITY.md](SECURITY.md).
+Neshel-UI welcomes thoughtful contributions as the library evolves. Please
+start with the [contribution guide](CONTRIBUTING.md),
+[code of conduct](CODE_OF_CONDUCT.md), and [security policy](SECURITY.md).
 
 ## License
 
-MIT, see [LICENSE](LICENSE).
+The software project uses the [MIT license](LICENSE). Brand artwork usage
+should follow the project's published brand policy when one is established.
 
-> Romans 15:13 — the God of hope.
+---
+
+<p align="center"><em>“May the God of hope fill you with all joy and peace as you trust in him.” — Romans 15:13</em></p>
