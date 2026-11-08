@@ -58,7 +58,9 @@ export function checkLayoutStylesheet(css) {
   }
   for (const match of body.matchAll(/(?:^|[;{}])\s*([^\s@{};][^{};]*)\{/g)) {
     const selector = match[1].trim();
-    if (!/^\.neshel-(?:[\w-]|\\.)+$/.test(selector)) {
+    // The breakpoint registry (`:root`, ADR 0010) and pseudo-elements of a single class (Capsize
+    // trimming, ADR 0011) are the only other selectors allowed.
+    if (selector !== ":root" && !/^\.neshel-(?:[\w-]|\\.)+(?:::before|::after)?$/.test(selector)) {
       errors.push(`selector "${selector}" is not a single .neshel-* class`);
     }
   }

@@ -1,8 +1,10 @@
 // Deterministic CSS serializer (contracts/css.md). Output depends only on the resolved config and
 // options: ordered arrays, fixed indentation, LF line endings, trailing newline.
 import { type ColorRole, colorRoles } from "@neshel-ui/config";
+import { formatNumber } from "../fonts.js";
 import type { ResolvedConfig, ResolvedTheme } from "../resolve.js";
 import { fontRoles } from "../resolve.js";
+import { renderComponentCss, type StyleManifest } from "./components.js";
 
 export const LAYER_STATEMENT = "@layer neshel.defaults, neshel.config;";
 
@@ -13,6 +15,24 @@ export interface GenerateOptions {
   readonly tailwind?: boolean;
   /** Comment text without delimiters; must not contain timestamps or absolute paths. */
   readonly header: string;
+  /**
+   * Component manifests to render with the configured breakpoints (feature 004). Ignored when the
+   * configuration has no `breakpoints`.
+   */
+  readonly components?: readonly StyleManifest[];
+}
+
+/** Font metric custom properties of one role (contracts/typography-css.md §1). */
+export function metricDeclarations(config: ResolvedConfig): string[] {
+  return fontRoles.flatMap((role) => {
+    const { constants } = config.typography[role];
+    return [
+      `--neshel-font-${role}-scale: ${formatNumber(constants.scale)};`,
+      `--neshel-font-${role}-cap-trim: ${formatNumber(constants.capTrim)};`,
+      `--neshel-font-${role}-baseline-trim: ${formatNumber(constants.baselineTrim)};`,
+      `--neshel-font-${role}-trim: ${constants.trim};`,
+    ];
+  });
 }
 
 /** `surfaceForeground` → `surface-foreground`. */
@@ -55,6 +75,7 @@ export function generateCss(config: ResolvedConfig, options: GenerateOptions): s
     ...radiusKeys.map((key) => `--neshel-radius-${key}: ${config.radius[key]};`),
     `--neshel-spacing: ${config.spacing.unit};`,
     ...fontRoles.map((role) => `--neshel-font-${role}: ${config.fonts[role]};`),
+    ...metricDeclarations(config),
     `--neshel-focus-width: ${config.focus.width};`,
     `--neshel-focus-offset: ${config.focus.offset};`,
   ];
@@ -77,6 +98,21 @@ export function generateCss(config: ResolvedConfig, options: GenerateOptions): s
     `@layer neshel.${options.layer} {\n${inner.join("\n\n")}\n}`,
   ];
 
+  const fontFaces = fontRoles
+    .map((role) => config.typography[role].fontFaces)
+    .filter((faces) => faces !== "");
+  if (fontFaces.length > 0) sections.push(fontFaces.join("\n\n"));
+
+  const breakpoints = config.breakpoints;
+  if (breakpoints) {
+    const names = breakpoints.list.map((bp) => bp.name).join(" ");
+    for (const manifest of options.components ?? []) {
+      sections.push(
+        `/* ${manifest.package} ${manifest.version} component styles (breakpoints: ${names}) */\n${renderComponentCss(manifest, breakpoints.list).trimEnd()}`,
+      );
+    }
+  }
+
   if (options.tailwind) {
     const mapping = [
       ...colorRoles.map((role) => `--color-neshel-${kebab(role)}: var(${cssVariable(role)});`),
@@ -84,6 +120,16 @@ export function generateCss(config: ResolvedConfig, options: GenerateOptions): s
       ...fontRoles.map((role) => `--font-neshel-${role}: var(--neshel-font-${role});`),
     ];
     sections.push(block("", ["@theme inline"], mapping));
+  }
+  if (breakpoints?.tailwind) {
+    const custom = breakpoints.list.filter(
+      (bp) => breakpoints.mode === "replace" || bp.source === "config",
+    );
+    const lines = [
+      ...(breakpoints.mode === "replace" ? ["--breakpoint-*: initial;"] : []),
+      ...custom.map((bp) => `--breakpoint-${bp.name}: ${bp.width};`),
+    ];
+    if (lines.length > 0) sections.push(block("", ["@theme"], lines));
   }
   return `${sections.join("\n\n")}\n`;
 }

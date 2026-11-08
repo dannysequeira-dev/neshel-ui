@@ -1,12 +1,13 @@
 /* @neshel-ui/layout styles. Generated from style tables; do not edit. */
 
 @layer components.neshel {
-  .neshel-flex { display: flex; }
-  .neshel-stack { display: flex; flex-direction: column; }
-  .neshel-inline { display: flex; flex-direction: row; }
-  .neshel-center { display: flex; }
-  .neshel-grid { display: grid; }
-  .neshel-container { box-sizing: border-box; width: 100%; margin-inline: auto; }
+  :root { --neshel-breakpoints: "sm md lg xl 2xl"; }
+  .neshel-flex { display: flex; --neshel-align: initial; --neshel-align-x: initial; --neshel-align-y: initial; --neshel-justify: initial; --neshel-align-main: var(--neshel-align-x, var(--neshel-align)); --neshel-align-cross: var(--neshel-align-y, var(--neshel-align)); justify-content: var(--neshel-justify, var(--neshel-align-main)); align-items: var(--neshel-align-cross); }
+  .neshel-stack { display: flex; flex-direction: column; --neshel-align: initial; --neshel-align-x: initial; --neshel-align-y: initial; --neshel-justify: initial; --neshel-align-main: var(--neshel-align-y, var(--neshel-align)); --neshel-align-cross: var(--neshel-align-x, var(--neshel-align)); justify-content: var(--neshel-justify, var(--neshel-align-main)); align-items: var(--neshel-align-cross); }
+  .neshel-inline { display: flex; flex-direction: row; --neshel-align: initial; --neshel-align-x: initial; --neshel-align-y: initial; --neshel-justify: initial; --neshel-align-main: var(--neshel-align-x, var(--neshel-align)); --neshel-align-cross: var(--neshel-align-y, var(--neshel-align)); justify-content: var(--neshel-justify, var(--neshel-align-main)); align-items: var(--neshel-align-cross); }
+  .neshel-center { display: flex; --neshel-align: initial; --neshel-align-x: initial; --neshel-align-y: initial; --neshel-justify: initial; justify-content: var(--neshel-align-x, var(--neshel-align, center)); align-items: var(--neshel-align-y, var(--neshel-align, center)); }
+  .neshel-grid { display: grid; --neshel-align: initial; --neshel-align-x: initial; --neshel-align-y: initial; --neshel-justify: initial; justify-items: var(--neshel-align-x, var(--neshel-align)); align-items: var(--neshel-align-y, var(--neshel-align)); }
+  .neshel-container { box-sizing: border-box; width: 100%; margin-inline: auto; max-width: 80rem; }
   .neshel-separator { flex: none; align-self: stretch; margin: 0; padding: 0; list-style: none; border: 0 solid var(--neshel-border); }
   .neshel-separator-horizontal { border-block-start-width: 1px; }
   .neshel-separator-vertical { border-inline-start-width: 1px; }
@@ -79,27 +80,12 @@
   .neshel-d-block { display: block; }
   .neshel-d-inline { display: inline; }
   .neshel-d-inline-block { display: inline-block; }
-  .neshel-dir-row { flex-direction: row; }
-  .neshel-dir-column { flex-direction: column; }
-  .neshel-dir-row-reverse { flex-direction: row-reverse; }
-  .neshel-dir-column-reverse { flex-direction: column-reverse; }
+  .neshel-dir-row { flex-direction: row; --neshel-align-main: var(--neshel-align-x, var(--neshel-align)); --neshel-align-cross: var(--neshel-align-y, var(--neshel-align)); }
+  .neshel-dir-column { flex-direction: column; --neshel-align-main: var(--neshel-align-y, var(--neshel-align)); --neshel-align-cross: var(--neshel-align-x, var(--neshel-align)); }
+  .neshel-dir-row-reverse { flex-direction: row-reverse; --neshel-align-main: var(--neshel-align-x, var(--neshel-align)); --neshel-align-cross: var(--neshel-align-y, var(--neshel-align)); }
+  .neshel-dir-column-reverse { flex-direction: column-reverse; --neshel-align-main: var(--neshel-align-y, var(--neshel-align)); --neshel-align-cross: var(--neshel-align-x, var(--neshel-align)); }
   .neshel-fw-wrap { flex-wrap: wrap; }
   .neshel-fw-nowrap { flex-wrap: nowrap; }
-  .neshel-ai-start { align-items: start; }
-  .neshel-ai-center { align-items: center; }
-  .neshel-ai-end { align-items: end; }
-  .neshel-ai-stretch { align-items: stretch; }
-  .neshel-ai-baseline { align-items: baseline; }
-  .neshel-jc-start { justify-content: start; }
-  .neshel-jc-center { justify-content: center; }
-  .neshel-jc-end { justify-content: end; }
-  .neshel-jc-between { justify-content: space-between; }
-  .neshel-jc-around { justify-content: space-around; }
-  .neshel-jc-evenly { justify-content: space-evenly; }
-  .neshel-ji-start { justify-items: start; }
-  .neshel-ji-center { justify-items: center; }
-  .neshel-ji-end { justify-items: end; }
-  .neshel-ji-stretch { justify-items: stretch; }
   .neshel-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
   .neshel-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .neshel-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -118,6 +104,26 @@
   .neshel-mw-xl { max-width: 80rem; }
   .neshel-mw-2xl { max-width: 96rem; }
   .neshel-mw-full { max-width: none; }
+  .neshel-align-start { --neshel-align: start; }
+  .neshel-align-center { --neshel-align: center; }
+  .neshel-align-end { --neshel-align: end; }
+  .neshel-align-stretch { --neshel-align: stretch; }
+  .neshel-align-x-start { --neshel-align-x: start; }
+  .neshel-align-x-center { --neshel-align-x: center; }
+  .neshel-align-x-end { --neshel-align-x: end; }
+  .neshel-align-x-stretch { --neshel-align-x: stretch; }
+  .neshel-align-x-baseline { --neshel-align-x: baseline; }
+  .neshel-align-y-start { --neshel-align-y: start; }
+  .neshel-align-y-center { --neshel-align-y: center; }
+  .neshel-align-y-end { --neshel-align-y: end; }
+  .neshel-align-y-stretch { --neshel-align-y: stretch; }
+  .neshel-align-y-baseline { --neshel-align-y: baseline; }
+  .neshel-justify-start { --neshel-justify: start; }
+  .neshel-justify-center { --neshel-justify: center; }
+  .neshel-justify-end { --neshel-justify: end; }
+  .neshel-justify-between { --neshel-justify: space-between; }
+  .neshel-justify-around { --neshel-justify: space-around; }
+  .neshel-justify-evenly { --neshel-justify: space-evenly; }
 
   @media (min-width: 40rem) {
     .neshel-sm-gap-0 { gap: 0; }
@@ -188,29 +194,12 @@
     .neshel-sm-d-block { display: block; }
     .neshel-sm-d-inline { display: inline; }
     .neshel-sm-d-inline-block { display: inline-block; }
-    .neshel-sm-dir-row { flex-direction: row; }
-    .neshel-sm-dir-column { flex-direction: column; }
-    .neshel-sm-dir-row-reverse { flex-direction: row-reverse; }
-    .neshel-sm-dir-column-reverse { flex-direction: column-reverse; }
+    .neshel-sm-dir-row { flex-direction: row; --neshel-align-main: var(--neshel-align-x, var(--neshel-align)); --neshel-align-cross: var(--neshel-align-y, var(--neshel-align)); }
+    .neshel-sm-dir-column { flex-direction: column; --neshel-align-main: var(--neshel-align-y, var(--neshel-align)); --neshel-align-cross: var(--neshel-align-x, var(--neshel-align)); }
+    .neshel-sm-dir-row-reverse { flex-direction: row-reverse; --neshel-align-main: var(--neshel-align-x, var(--neshel-align)); --neshel-align-cross: var(--neshel-align-y, var(--neshel-align)); }
+    .neshel-sm-dir-column-reverse { flex-direction: column-reverse; --neshel-align-main: var(--neshel-align-y, var(--neshel-align)); --neshel-align-cross: var(--neshel-align-x, var(--neshel-align)); }
     .neshel-sm-fw-wrap { flex-wrap: wrap; }
     .neshel-sm-fw-nowrap { flex-wrap: nowrap; }
-    .neshel-sm-ai-start { align-items: start; }
-    .neshel-sm-ai-center { align-items: center; }
-    .neshel-sm-ai-end { align-items: end; }
-    .neshel-sm-ai-stretch { align-items: stretch; }
-    .neshel-sm-ai-baseline { align-items: baseline; }
-    .neshel-sm-ai-normal { align-items: normal; }
-    .neshel-sm-jc-start { justify-content: start; }
-    .neshel-sm-jc-center { justify-content: center; }
-    .neshel-sm-jc-end { justify-content: end; }
-    .neshel-sm-jc-between { justify-content: space-between; }
-    .neshel-sm-jc-around { justify-content: space-around; }
-    .neshel-sm-jc-evenly { justify-content: space-evenly; }
-    .neshel-sm-jc-normal { justify-content: normal; }
-    .neshel-sm-ji-start { justify-items: start; }
-    .neshel-sm-ji-center { justify-items: center; }
-    .neshel-sm-ji-end { justify-items: end; }
-    .neshel-sm-ji-stretch { justify-items: stretch; }
     .neshel-sm-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
     .neshel-sm-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .neshel-sm-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -229,6 +218,26 @@
     .neshel-sm-mw-xl { max-width: 80rem; }
     .neshel-sm-mw-2xl { max-width: 96rem; }
     .neshel-sm-mw-full { max-width: none; }
+    .neshel-sm-align-start { --neshel-align: start; }
+    .neshel-sm-align-center { --neshel-align: center; }
+    .neshel-sm-align-end { --neshel-align: end; }
+    .neshel-sm-align-stretch { --neshel-align: stretch; }
+    .neshel-sm-align-x-start { --neshel-align-x: start; }
+    .neshel-sm-align-x-center { --neshel-align-x: center; }
+    .neshel-sm-align-x-end { --neshel-align-x: end; }
+    .neshel-sm-align-x-stretch { --neshel-align-x: stretch; }
+    .neshel-sm-align-x-baseline { --neshel-align-x: baseline; }
+    .neshel-sm-align-y-start { --neshel-align-y: start; }
+    .neshel-sm-align-y-center { --neshel-align-y: center; }
+    .neshel-sm-align-y-end { --neshel-align-y: end; }
+    .neshel-sm-align-y-stretch { --neshel-align-y: stretch; }
+    .neshel-sm-align-y-baseline { --neshel-align-y: baseline; }
+    .neshel-sm-justify-start { --neshel-justify: start; }
+    .neshel-sm-justify-center { --neshel-justify: center; }
+    .neshel-sm-justify-end { --neshel-justify: end; }
+    .neshel-sm-justify-between { --neshel-justify: space-between; }
+    .neshel-sm-justify-around { --neshel-justify: space-around; }
+    .neshel-sm-justify-evenly { --neshel-justify: space-evenly; }
   }
 
   @media (min-width: 48rem) {
@@ -300,29 +309,12 @@
     .neshel-md-d-block { display: block; }
     .neshel-md-d-inline { display: inline; }
     .neshel-md-d-inline-block { display: inline-block; }
-    .neshel-md-dir-row { flex-direction: row; }
-    .neshel-md-dir-column { flex-direction: column; }
-    .neshel-md-dir-row-reverse { flex-direction: row-reverse; }
-    .neshel-md-dir-column-reverse { flex-direction: column-reverse; }
+    .neshel-md-dir-row { flex-direction: row; --neshel-align-main: var(--neshel-align-x, var(--neshel-align)); --neshel-align-cross: var(--neshel-align-y, var(--neshel-align)); }
+    .neshel-md-dir-column { flex-direction: column; --neshel-align-main: var(--neshel-align-y, var(--neshel-align)); --neshel-align-cross: var(--neshel-align-x, var(--neshel-align)); }
+    .neshel-md-dir-row-reverse { flex-direction: row-reverse; --neshel-align-main: var(--neshel-align-x, var(--neshel-align)); --neshel-align-cross: var(--neshel-align-y, var(--neshel-align)); }
+    .neshel-md-dir-column-reverse { flex-direction: column-reverse; --neshel-align-main: var(--neshel-align-y, var(--neshel-align)); --neshel-align-cross: var(--neshel-align-x, var(--neshel-align)); }
     .neshel-md-fw-wrap { flex-wrap: wrap; }
     .neshel-md-fw-nowrap { flex-wrap: nowrap; }
-    .neshel-md-ai-start { align-items: start; }
-    .neshel-md-ai-center { align-items: center; }
-    .neshel-md-ai-end { align-items: end; }
-    .neshel-md-ai-stretch { align-items: stretch; }
-    .neshel-md-ai-baseline { align-items: baseline; }
-    .neshel-md-ai-normal { align-items: normal; }
-    .neshel-md-jc-start { justify-content: start; }
-    .neshel-md-jc-center { justify-content: center; }
-    .neshel-md-jc-end { justify-content: end; }
-    .neshel-md-jc-between { justify-content: space-between; }
-    .neshel-md-jc-around { justify-content: space-around; }
-    .neshel-md-jc-evenly { justify-content: space-evenly; }
-    .neshel-md-jc-normal { justify-content: normal; }
-    .neshel-md-ji-start { justify-items: start; }
-    .neshel-md-ji-center { justify-items: center; }
-    .neshel-md-ji-end { justify-items: end; }
-    .neshel-md-ji-stretch { justify-items: stretch; }
     .neshel-md-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
     .neshel-md-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .neshel-md-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -341,6 +333,26 @@
     .neshel-md-mw-xl { max-width: 80rem; }
     .neshel-md-mw-2xl { max-width: 96rem; }
     .neshel-md-mw-full { max-width: none; }
+    .neshel-md-align-start { --neshel-align: start; }
+    .neshel-md-align-center { --neshel-align: center; }
+    .neshel-md-align-end { --neshel-align: end; }
+    .neshel-md-align-stretch { --neshel-align: stretch; }
+    .neshel-md-align-x-start { --neshel-align-x: start; }
+    .neshel-md-align-x-center { --neshel-align-x: center; }
+    .neshel-md-align-x-end { --neshel-align-x: end; }
+    .neshel-md-align-x-stretch { --neshel-align-x: stretch; }
+    .neshel-md-align-x-baseline { --neshel-align-x: baseline; }
+    .neshel-md-align-y-start { --neshel-align-y: start; }
+    .neshel-md-align-y-center { --neshel-align-y: center; }
+    .neshel-md-align-y-end { --neshel-align-y: end; }
+    .neshel-md-align-y-stretch { --neshel-align-y: stretch; }
+    .neshel-md-align-y-baseline { --neshel-align-y: baseline; }
+    .neshel-md-justify-start { --neshel-justify: start; }
+    .neshel-md-justify-center { --neshel-justify: center; }
+    .neshel-md-justify-end { --neshel-justify: end; }
+    .neshel-md-justify-between { --neshel-justify: space-between; }
+    .neshel-md-justify-around { --neshel-justify: space-around; }
+    .neshel-md-justify-evenly { --neshel-justify: space-evenly; }
   }
 
   @media (min-width: 64rem) {
@@ -412,29 +424,12 @@
     .neshel-lg-d-block { display: block; }
     .neshel-lg-d-inline { display: inline; }
     .neshel-lg-d-inline-block { display: inline-block; }
-    .neshel-lg-dir-row { flex-direction: row; }
-    .neshel-lg-dir-column { flex-direction: column; }
-    .neshel-lg-dir-row-reverse { flex-direction: row-reverse; }
-    .neshel-lg-dir-column-reverse { flex-direction: column-reverse; }
+    .neshel-lg-dir-row { flex-direction: row; --neshel-align-main: var(--neshel-align-x, var(--neshel-align)); --neshel-align-cross: var(--neshel-align-y, var(--neshel-align)); }
+    .neshel-lg-dir-column { flex-direction: column; --neshel-align-main: var(--neshel-align-y, var(--neshel-align)); --neshel-align-cross: var(--neshel-align-x, var(--neshel-align)); }
+    .neshel-lg-dir-row-reverse { flex-direction: row-reverse; --neshel-align-main: var(--neshel-align-x, var(--neshel-align)); --neshel-align-cross: var(--neshel-align-y, var(--neshel-align)); }
+    .neshel-lg-dir-column-reverse { flex-direction: column-reverse; --neshel-align-main: var(--neshel-align-y, var(--neshel-align)); --neshel-align-cross: var(--neshel-align-x, var(--neshel-align)); }
     .neshel-lg-fw-wrap { flex-wrap: wrap; }
     .neshel-lg-fw-nowrap { flex-wrap: nowrap; }
-    .neshel-lg-ai-start { align-items: start; }
-    .neshel-lg-ai-center { align-items: center; }
-    .neshel-lg-ai-end { align-items: end; }
-    .neshel-lg-ai-stretch { align-items: stretch; }
-    .neshel-lg-ai-baseline { align-items: baseline; }
-    .neshel-lg-ai-normal { align-items: normal; }
-    .neshel-lg-jc-start { justify-content: start; }
-    .neshel-lg-jc-center { justify-content: center; }
-    .neshel-lg-jc-end { justify-content: end; }
-    .neshel-lg-jc-between { justify-content: space-between; }
-    .neshel-lg-jc-around { justify-content: space-around; }
-    .neshel-lg-jc-evenly { justify-content: space-evenly; }
-    .neshel-lg-jc-normal { justify-content: normal; }
-    .neshel-lg-ji-start { justify-items: start; }
-    .neshel-lg-ji-center { justify-items: center; }
-    .neshel-lg-ji-end { justify-items: end; }
-    .neshel-lg-ji-stretch { justify-items: stretch; }
     .neshel-lg-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
     .neshel-lg-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .neshel-lg-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -453,6 +448,26 @@
     .neshel-lg-mw-xl { max-width: 80rem; }
     .neshel-lg-mw-2xl { max-width: 96rem; }
     .neshel-lg-mw-full { max-width: none; }
+    .neshel-lg-align-start { --neshel-align: start; }
+    .neshel-lg-align-center { --neshel-align: center; }
+    .neshel-lg-align-end { --neshel-align: end; }
+    .neshel-lg-align-stretch { --neshel-align: stretch; }
+    .neshel-lg-align-x-start { --neshel-align-x: start; }
+    .neshel-lg-align-x-center { --neshel-align-x: center; }
+    .neshel-lg-align-x-end { --neshel-align-x: end; }
+    .neshel-lg-align-x-stretch { --neshel-align-x: stretch; }
+    .neshel-lg-align-x-baseline { --neshel-align-x: baseline; }
+    .neshel-lg-align-y-start { --neshel-align-y: start; }
+    .neshel-lg-align-y-center { --neshel-align-y: center; }
+    .neshel-lg-align-y-end { --neshel-align-y: end; }
+    .neshel-lg-align-y-stretch { --neshel-align-y: stretch; }
+    .neshel-lg-align-y-baseline { --neshel-align-y: baseline; }
+    .neshel-lg-justify-start { --neshel-justify: start; }
+    .neshel-lg-justify-center { --neshel-justify: center; }
+    .neshel-lg-justify-end { --neshel-justify: end; }
+    .neshel-lg-justify-between { --neshel-justify: space-between; }
+    .neshel-lg-justify-around { --neshel-justify: space-around; }
+    .neshel-lg-justify-evenly { --neshel-justify: space-evenly; }
   }
 
   @media (min-width: 80rem) {
@@ -524,29 +539,12 @@
     .neshel-xl-d-block { display: block; }
     .neshel-xl-d-inline { display: inline; }
     .neshel-xl-d-inline-block { display: inline-block; }
-    .neshel-xl-dir-row { flex-direction: row; }
-    .neshel-xl-dir-column { flex-direction: column; }
-    .neshel-xl-dir-row-reverse { flex-direction: row-reverse; }
-    .neshel-xl-dir-column-reverse { flex-direction: column-reverse; }
+    .neshel-xl-dir-row { flex-direction: row; --neshel-align-main: var(--neshel-align-x, var(--neshel-align)); --neshel-align-cross: var(--neshel-align-y, var(--neshel-align)); }
+    .neshel-xl-dir-column { flex-direction: column; --neshel-align-main: var(--neshel-align-y, var(--neshel-align)); --neshel-align-cross: var(--neshel-align-x, var(--neshel-align)); }
+    .neshel-xl-dir-row-reverse { flex-direction: row-reverse; --neshel-align-main: var(--neshel-align-x, var(--neshel-align)); --neshel-align-cross: var(--neshel-align-y, var(--neshel-align)); }
+    .neshel-xl-dir-column-reverse { flex-direction: column-reverse; --neshel-align-main: var(--neshel-align-y, var(--neshel-align)); --neshel-align-cross: var(--neshel-align-x, var(--neshel-align)); }
     .neshel-xl-fw-wrap { flex-wrap: wrap; }
     .neshel-xl-fw-nowrap { flex-wrap: nowrap; }
-    .neshel-xl-ai-start { align-items: start; }
-    .neshel-xl-ai-center { align-items: center; }
-    .neshel-xl-ai-end { align-items: end; }
-    .neshel-xl-ai-stretch { align-items: stretch; }
-    .neshel-xl-ai-baseline { align-items: baseline; }
-    .neshel-xl-ai-normal { align-items: normal; }
-    .neshel-xl-jc-start { justify-content: start; }
-    .neshel-xl-jc-center { justify-content: center; }
-    .neshel-xl-jc-end { justify-content: end; }
-    .neshel-xl-jc-between { justify-content: space-between; }
-    .neshel-xl-jc-around { justify-content: space-around; }
-    .neshel-xl-jc-evenly { justify-content: space-evenly; }
-    .neshel-xl-jc-normal { justify-content: normal; }
-    .neshel-xl-ji-start { justify-items: start; }
-    .neshel-xl-ji-center { justify-items: center; }
-    .neshel-xl-ji-end { justify-items: end; }
-    .neshel-xl-ji-stretch { justify-items: stretch; }
     .neshel-xl-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
     .neshel-xl-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .neshel-xl-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -565,6 +563,26 @@
     .neshel-xl-mw-xl { max-width: 80rem; }
     .neshel-xl-mw-2xl { max-width: 96rem; }
     .neshel-xl-mw-full { max-width: none; }
+    .neshel-xl-align-start { --neshel-align: start; }
+    .neshel-xl-align-center { --neshel-align: center; }
+    .neshel-xl-align-end { --neshel-align: end; }
+    .neshel-xl-align-stretch { --neshel-align: stretch; }
+    .neshel-xl-align-x-start { --neshel-align-x: start; }
+    .neshel-xl-align-x-center { --neshel-align-x: center; }
+    .neshel-xl-align-x-end { --neshel-align-x: end; }
+    .neshel-xl-align-x-stretch { --neshel-align-x: stretch; }
+    .neshel-xl-align-x-baseline { --neshel-align-x: baseline; }
+    .neshel-xl-align-y-start { --neshel-align-y: start; }
+    .neshel-xl-align-y-center { --neshel-align-y: center; }
+    .neshel-xl-align-y-end { --neshel-align-y: end; }
+    .neshel-xl-align-y-stretch { --neshel-align-y: stretch; }
+    .neshel-xl-align-y-baseline { --neshel-align-y: baseline; }
+    .neshel-xl-justify-start { --neshel-justify: start; }
+    .neshel-xl-justify-center { --neshel-justify: center; }
+    .neshel-xl-justify-end { --neshel-justify: end; }
+    .neshel-xl-justify-between { --neshel-justify: space-between; }
+    .neshel-xl-justify-around { --neshel-justify: space-around; }
+    .neshel-xl-justify-evenly { --neshel-justify: space-evenly; }
   }
 
   @media (min-width: 96rem) {
@@ -636,29 +654,12 @@
     .neshel-2xl-d-block { display: block; }
     .neshel-2xl-d-inline { display: inline; }
     .neshel-2xl-d-inline-block { display: inline-block; }
-    .neshel-2xl-dir-row { flex-direction: row; }
-    .neshel-2xl-dir-column { flex-direction: column; }
-    .neshel-2xl-dir-row-reverse { flex-direction: row-reverse; }
-    .neshel-2xl-dir-column-reverse { flex-direction: column-reverse; }
+    .neshel-2xl-dir-row { flex-direction: row; --neshel-align-main: var(--neshel-align-x, var(--neshel-align)); --neshel-align-cross: var(--neshel-align-y, var(--neshel-align)); }
+    .neshel-2xl-dir-column { flex-direction: column; --neshel-align-main: var(--neshel-align-y, var(--neshel-align)); --neshel-align-cross: var(--neshel-align-x, var(--neshel-align)); }
+    .neshel-2xl-dir-row-reverse { flex-direction: row-reverse; --neshel-align-main: var(--neshel-align-x, var(--neshel-align)); --neshel-align-cross: var(--neshel-align-y, var(--neshel-align)); }
+    .neshel-2xl-dir-column-reverse { flex-direction: column-reverse; --neshel-align-main: var(--neshel-align-y, var(--neshel-align)); --neshel-align-cross: var(--neshel-align-x, var(--neshel-align)); }
     .neshel-2xl-fw-wrap { flex-wrap: wrap; }
     .neshel-2xl-fw-nowrap { flex-wrap: nowrap; }
-    .neshel-2xl-ai-start { align-items: start; }
-    .neshel-2xl-ai-center { align-items: center; }
-    .neshel-2xl-ai-end { align-items: end; }
-    .neshel-2xl-ai-stretch { align-items: stretch; }
-    .neshel-2xl-ai-baseline { align-items: baseline; }
-    .neshel-2xl-ai-normal { align-items: normal; }
-    .neshel-2xl-jc-start { justify-content: start; }
-    .neshel-2xl-jc-center { justify-content: center; }
-    .neshel-2xl-jc-end { justify-content: end; }
-    .neshel-2xl-jc-between { justify-content: space-between; }
-    .neshel-2xl-jc-around { justify-content: space-around; }
-    .neshel-2xl-jc-evenly { justify-content: space-evenly; }
-    .neshel-2xl-jc-normal { justify-content: normal; }
-    .neshel-2xl-ji-start { justify-items: start; }
-    .neshel-2xl-ji-center { justify-items: center; }
-    .neshel-2xl-ji-end { justify-items: end; }
-    .neshel-2xl-ji-stretch { justify-items: stretch; }
     .neshel-2xl-cols-1 { grid-template-columns: repeat(1, minmax(0, 1fr)); }
     .neshel-2xl-cols-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .neshel-2xl-cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -677,5 +678,25 @@
     .neshel-2xl-mw-xl { max-width: 80rem; }
     .neshel-2xl-mw-2xl { max-width: 96rem; }
     .neshel-2xl-mw-full { max-width: none; }
+    .neshel-2xl-align-start { --neshel-align: start; }
+    .neshel-2xl-align-center { --neshel-align: center; }
+    .neshel-2xl-align-end { --neshel-align: end; }
+    .neshel-2xl-align-stretch { --neshel-align: stretch; }
+    .neshel-2xl-align-x-start { --neshel-align-x: start; }
+    .neshel-2xl-align-x-center { --neshel-align-x: center; }
+    .neshel-2xl-align-x-end { --neshel-align-x: end; }
+    .neshel-2xl-align-x-stretch { --neshel-align-x: stretch; }
+    .neshel-2xl-align-x-baseline { --neshel-align-x: baseline; }
+    .neshel-2xl-align-y-start { --neshel-align-y: start; }
+    .neshel-2xl-align-y-center { --neshel-align-y: center; }
+    .neshel-2xl-align-y-end { --neshel-align-y: end; }
+    .neshel-2xl-align-y-stretch { --neshel-align-y: stretch; }
+    .neshel-2xl-align-y-baseline { --neshel-align-y: baseline; }
+    .neshel-2xl-justify-start { --neshel-justify: start; }
+    .neshel-2xl-justify-center { --neshel-justify: center; }
+    .neshel-2xl-justify-end { --neshel-justify: end; }
+    .neshel-2xl-justify-between { --neshel-justify: space-between; }
+    .neshel-2xl-justify-around { --neshel-justify: space-around; }
+    .neshel-2xl-justify-evenly { --neshel-justify: space-evenly; }
   }
 }

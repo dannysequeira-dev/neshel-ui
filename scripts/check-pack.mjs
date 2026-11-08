@@ -260,7 +260,8 @@ async function main() {
         ...checkLifecycleScripts(manifest),
         ...checkPublicPeers(manifest, publicNames),
         ...checkPackageContract(manifest, files, {
-          layoutSourceCss: readOptional(join(pkg.dir, "src", "styles.css")),
+          sourceCss: readOptional(join(pkg.dir, "src", "styles.css")),
+          sourceManifest: readOptional(join(pkg.dir, "src", "style-manifest.json")),
         }),
         ...determinismErrors,
       ];

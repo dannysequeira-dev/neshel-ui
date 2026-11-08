@@ -1,0 +1,1315 @@
+{
+  "schema": 1,
+  "package": "@neshel-ui/layout",
+  "version": "0.0.0",
+  "layer": "components.neshel",
+  "rules": [
+    {
+      "selector": ".neshel-flex",
+      "declarations": [
+        [
+          "display",
+          "flex"
+        ],
+        [
+          "--neshel-align",
+          "initial"
+        ],
+        [
+          "--neshel-align-x",
+          "initial"
+        ],
+        [
+          "--neshel-align-y",
+          "initial"
+        ],
+        [
+          "--neshel-justify",
+          "initial"
+        ],
+        [
+          "--neshel-align-main",
+          "var(--neshel-align-x, var(--neshel-align))"
+        ],
+        [
+          "--neshel-align-cross",
+          "var(--neshel-align-y, var(--neshel-align))"
+        ],
+        [
+          "justify-content",
+          "var(--neshel-justify, var(--neshel-align-main))"
+        ],
+        [
+          "align-items",
+          "var(--neshel-align-cross)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-stack",
+      "declarations": [
+        [
+          "display",
+          "flex"
+        ],
+        [
+          "flex-direction",
+          "column"
+        ],
+        [
+          "--neshel-align",
+          "initial"
+        ],
+        [
+          "--neshel-align-x",
+          "initial"
+        ],
+        [
+          "--neshel-align-y",
+          "initial"
+        ],
+        [
+          "--neshel-justify",
+          "initial"
+        ],
+        [
+          "--neshel-align-main",
+          "var(--neshel-align-y, var(--neshel-align))"
+        ],
+        [
+          "--neshel-align-cross",
+          "var(--neshel-align-x, var(--neshel-align))"
+        ],
+        [
+          "justify-content",
+          "var(--neshel-justify, var(--neshel-align-main))"
+        ],
+        [
+          "align-items",
+          "var(--neshel-align-cross)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-inline",
+      "declarations": [
+        [
+          "display",
+          "flex"
+        ],
+        [
+          "flex-direction",
+          "row"
+        ],
+        [
+          "--neshel-align",
+          "initial"
+        ],
+        [
+          "--neshel-align-x",
+          "initial"
+        ],
+        [
+          "--neshel-align-y",
+          "initial"
+        ],
+        [
+          "--neshel-justify",
+          "initial"
+        ],
+        [
+          "--neshel-align-main",
+          "var(--neshel-align-x, var(--neshel-align))"
+        ],
+        [
+          "--neshel-align-cross",
+          "var(--neshel-align-y, var(--neshel-align))"
+        ],
+        [
+          "justify-content",
+          "var(--neshel-justify, var(--neshel-align-main))"
+        ],
+        [
+          "align-items",
+          "var(--neshel-align-cross)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-center",
+      "declarations": [
+        [
+          "display",
+          "flex"
+        ],
+        [
+          "--neshel-align",
+          "initial"
+        ],
+        [
+          "--neshel-align-x",
+          "initial"
+        ],
+        [
+          "--neshel-align-y",
+          "initial"
+        ],
+        [
+          "--neshel-justify",
+          "initial"
+        ],
+        [
+          "justify-content",
+          "var(--neshel-align-x, var(--neshel-align, center))"
+        ],
+        [
+          "align-items",
+          "var(--neshel-align-y, var(--neshel-align, center))"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-grid",
+      "declarations": [
+        [
+          "display",
+          "grid"
+        ],
+        [
+          "--neshel-align",
+          "initial"
+        ],
+        [
+          "--neshel-align-x",
+          "initial"
+        ],
+        [
+          "--neshel-align-y",
+          "initial"
+        ],
+        [
+          "--neshel-justify",
+          "initial"
+        ],
+        [
+          "justify-items",
+          "var(--neshel-align-x, var(--neshel-align))"
+        ],
+        [
+          "align-items",
+          "var(--neshel-align-y, var(--neshel-align))"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-container",
+      "declarations": [
+        [
+          "box-sizing",
+          "border-box"
+        ],
+        [
+          "width",
+          "100%"
+        ],
+        [
+          "margin-inline",
+          "auto"
+        ],
+        [
+          "max-width",
+          "80rem"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-separator",
+      "declarations": [
+        [
+          "flex",
+          "none"
+        ],
+        [
+          "align-self",
+          "stretch"
+        ],
+        [
+          "margin",
+          "0"
+        ],
+        [
+          "padding",
+          "0"
+        ],
+        [
+          "list-style",
+          "none"
+        ],
+        [
+          "border",
+          "0 solid var(--neshel-border)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-separator-horizontal",
+      "declarations": [
+        [
+          "border-block-start-width",
+          "1px"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-separator-vertical",
+      "declarations": [
+        [
+          "border-inline-start-width",
+          "1px"
+        ]
+      ]
+    }
+  ],
+  "responsive": [
+    {
+      "class": "gap-0",
+      "declarations": [
+        [
+          "gap",
+          "0"
+        ]
+      ]
+    },
+    {
+      "class": "gap-1",
+      "declarations": [
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 1)"
+        ]
+      ]
+    },
+    {
+      "class": "gap-2",
+      "declarations": [
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 2)"
+        ]
+      ]
+    },
+    {
+      "class": "gap-3",
+      "declarations": [
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 3)"
+        ]
+      ]
+    },
+    {
+      "class": "gap-4",
+      "declarations": [
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 4)"
+        ]
+      ]
+    },
+    {
+      "class": "gap-5",
+      "declarations": [
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 5)"
+        ]
+      ]
+    },
+    {
+      "class": "gap-6",
+      "declarations": [
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 6)"
+        ]
+      ]
+    },
+    {
+      "class": "gap-8",
+      "declarations": [
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 8)"
+        ]
+      ]
+    },
+    {
+      "class": "gap-10",
+      "declarations": [
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 10)"
+        ]
+      ]
+    },
+    {
+      "class": "gap-12",
+      "declarations": [
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 12)"
+        ]
+      ]
+    },
+    {
+      "class": "gap-16",
+      "declarations": [
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 16)"
+        ]
+      ]
+    },
+    {
+      "class": "gap-20",
+      "declarations": [
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 20)"
+        ]
+      ]
+    },
+    {
+      "class": "gap-24",
+      "declarations": [
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 24)"
+        ]
+      ]
+    },
+    {
+      "class": "gap-0.5",
+      "declarations": [
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 0.5)"
+        ]
+      ]
+    },
+    {
+      "class": "gap-1.5",
+      "declarations": [
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 1.5)"
+        ]
+      ]
+    },
+    {
+      "class": "gap-2.5",
+      "declarations": [
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 2.5)"
+        ]
+      ]
+    },
+    {
+      "class": "gap-x-0",
+      "declarations": [
+        [
+          "column-gap",
+          "0"
+        ]
+      ]
+    },
+    {
+      "class": "gap-x-1",
+      "declarations": [
+        [
+          "column-gap",
+          "calc(var(--neshel-spacing) * 1)"
+        ]
+      ]
+    },
+    {
+      "class": "gap-x-2",
+      "declarations": [
+        [
+          "column-gap",
+          "calc(var(--neshel-spacing) * 2)"
+        ]
+      ]
+    },
+    {
+      "class": "gap-x-3",
+      "declarations": [
+        [
+          "column-gap",
+          "calc(var(--neshel-spacing) * 3)"
+        ]
+      ]
+    },
+    {
+      "class": "gap-x-4",
+      "declarations": [
+        [
+          "column-gap",
+          "calc(var(--neshel-spacing) * 4)"
+        ]
+      ]
+    },
+    {
+      "class": "gap-x-5",
+      "declarations": [
+        [
+          "column-gap",
+          "calc(var(--neshel-spacing) * 5)"
+        ]
+      ]
+    },
+    {
+      "class": "gap-x-6",
+      "declarations": [
+        [
+          "column-gap",
+          "calc(var(--neshel-spacing) * 6)"
+        ]
+      ]
+    },
+    {
+      "class": "gap-x-8",
+      "declarations": [
+        [
+          "column-gap",
+          "calc(var(--neshel-spacing) * 8)"
+        ]
+      ]
+    },
+    {
+      "class": "gap-x-10",
+      "declarations": [
+        [
+          "column-gap",
+          "calc(var(--neshel-spacing) * 10)"
+        ]
+      ]
+    },
+    {
+      "class": "gap-x-12",
+      "declarations": [
+        [
+          "column-gap",
+          "calc(var(--neshel-spacing) * 12)"
+        ]
+      ]
+    },
+    {
+      "class": "gap-x-16",
+      "declarations": [
+        [
+          "column-gap",
+          "calc(var(--neshel-spacing) * 16)"
+        ]
+      ]
+    },
+    {
+      "class": "gap-x-20",
+      "declarations": [
+        [
+          "column-gap",
+          "calc(var(--neshel-spacing) * 20)"
+        ]
+      ]
+    },
+    {
+      "class": "gap-x-24",
+      "declarations": [
+        [
+          "column-gap",
+          "calc(var(--neshel-spacing) * 24)"
+        ]
+      ]
+    },
+    {
+      "class": "gap-x-0.5",
+      "declarations": [
+        [
+          "column-gap",
+          "calc(var(--neshel-spacing) * 0.5)"
+        ]
+      ]
+    },
+    {
+      "class": "gap-x-1.5",
+      "declarations": [
+        [
+          "column-gap",
+          "calc(var(--neshel-spacing) * 1.5)"
+        ]
+      ]
+    },
+    {
+      "class": "gap-x-2.5",
+      "declarations": [
+        [
+          "column-gap",
+          "calc(var(--neshel-spacing) * 2.5)"
+        ]
+      ]
+    },
+    {
+      "class": "gap-y-0",
+      "declarations": [
+        [
+          "row-gap",
+          "0"
+        ]
+      ]
+    },
+    {
+      "class": "gap-y-1",
+      "declarations": [
+        [
+          "row-gap",
+          "calc(var(--neshel-spacing) * 1)"
+        ]
+      ]
+    },
+    {
+      "class": "gap-y-2",
+      "declarations": [
+        [
+          "row-gap",
+          "calc(var(--neshel-spacing) * 2)"
+        ]
+      ]
+    },
+    {
+      "class": "gap-y-3",
+      "declarations": [
+        [
+          "row-gap",
+          "calc(var(--neshel-spacing) * 3)"
+        ]
+      ]
+    },
+    {
+      "class": "gap-y-4",
+      "declarations": [
+        [
+          "row-gap",
+          "calc(var(--neshel-spacing) * 4)"
+        ]
+      ]
+    },
+    {
+      "class": "gap-y-5",
+      "declarations": [
+        [
+          "row-gap",
+          "calc(var(--neshel-spacing) * 5)"
+        ]
+      ]
+    },
+    {
+      "class": "gap-y-6",
+      "declarations": [
+        [
+          "row-gap",
+          "calc(var(--neshel-spacing) * 6)"
+        ]
+      ]
+    },
+    {
+      "class": "gap-y-8",
+      "declarations": [
+        [
+          "row-gap",
+          "calc(var(--neshel-spacing) * 8)"
+        ]
+      ]
+    },
+    {
+      "class": "gap-y-10",
+      "declarations": [
+        [
+          "row-gap",
+          "calc(var(--neshel-spacing) * 10)"
+        ]
+      ]
+    },
+    {
+      "class": "gap-y-12",
+      "declarations": [
+        [
+          "row-gap",
+          "calc(var(--neshel-spacing) * 12)"
+        ]
+      ]
+    },
+    {
+      "class": "gap-y-16",
+      "declarations": [
+        [
+          "row-gap",
+          "calc(var(--neshel-spacing) * 16)"
+        ]
+      ]
+    },
+    {
+      "class": "gap-y-20",
+      "declarations": [
+        [
+          "row-gap",
+          "calc(var(--neshel-spacing) * 20)"
+        ]
+      ]
+    },
+    {
+      "class": "gap-y-24",
+      "declarations": [
+        [
+          "row-gap",
+          "calc(var(--neshel-spacing) * 24)"
+        ]
+      ]
+    },
+    {
+      "class": "gap-y-0.5",
+      "declarations": [
+        [
+          "row-gap",
+          "calc(var(--neshel-spacing) * 0.5)"
+        ]
+      ]
+    },
+    {
+      "class": "gap-y-1.5",
+      "declarations": [
+        [
+          "row-gap",
+          "calc(var(--neshel-spacing) * 1.5)"
+        ]
+      ]
+    },
+    {
+      "class": "gap-y-2.5",
+      "declarations": [
+        [
+          "row-gap",
+          "calc(var(--neshel-spacing) * 2.5)"
+        ]
+      ]
+    },
+    {
+      "class": "pi-0",
+      "declarations": [
+        [
+          "padding-inline",
+          "0"
+        ]
+      ]
+    },
+    {
+      "class": "pi-1",
+      "declarations": [
+        [
+          "padding-inline",
+          "calc(var(--neshel-spacing) * 1)"
+        ]
+      ]
+    },
+    {
+      "class": "pi-2",
+      "declarations": [
+        [
+          "padding-inline",
+          "calc(var(--neshel-spacing) * 2)"
+        ]
+      ]
+    },
+    {
+      "class": "pi-3",
+      "declarations": [
+        [
+          "padding-inline",
+          "calc(var(--neshel-spacing) * 3)"
+        ]
+      ]
+    },
+    {
+      "class": "pi-4",
+      "declarations": [
+        [
+          "padding-inline",
+          "calc(var(--neshel-spacing) * 4)"
+        ]
+      ]
+    },
+    {
+      "class": "pi-5",
+      "declarations": [
+        [
+          "padding-inline",
+          "calc(var(--neshel-spacing) * 5)"
+        ]
+      ]
+    },
+    {
+      "class": "pi-6",
+      "declarations": [
+        [
+          "padding-inline",
+          "calc(var(--neshel-spacing) * 6)"
+        ]
+      ]
+    },
+    {
+      "class": "pi-8",
+      "declarations": [
+        [
+          "padding-inline",
+          "calc(var(--neshel-spacing) * 8)"
+        ]
+      ]
+    },
+    {
+      "class": "pi-10",
+      "declarations": [
+        [
+          "padding-inline",
+          "calc(var(--neshel-spacing) * 10)"
+        ]
+      ]
+    },
+    {
+      "class": "pi-12",
+      "declarations": [
+        [
+          "padding-inline",
+          "calc(var(--neshel-spacing) * 12)"
+        ]
+      ]
+    },
+    {
+      "class": "pi-16",
+      "declarations": [
+        [
+          "padding-inline",
+          "calc(var(--neshel-spacing) * 16)"
+        ]
+      ]
+    },
+    {
+      "class": "pi-20",
+      "declarations": [
+        [
+          "padding-inline",
+          "calc(var(--neshel-spacing) * 20)"
+        ]
+      ]
+    },
+    {
+      "class": "pi-24",
+      "declarations": [
+        [
+          "padding-inline",
+          "calc(var(--neshel-spacing) * 24)"
+        ]
+      ]
+    },
+    {
+      "class": "pi-0.5",
+      "declarations": [
+        [
+          "padding-inline",
+          "calc(var(--neshel-spacing) * 0.5)"
+        ]
+      ]
+    },
+    {
+      "class": "pi-1.5",
+      "declarations": [
+        [
+          "padding-inline",
+          "calc(var(--neshel-spacing) * 1.5)"
+        ]
+      ]
+    },
+    {
+      "class": "pi-2.5",
+      "declarations": [
+        [
+          "padding-inline",
+          "calc(var(--neshel-spacing) * 2.5)"
+        ]
+      ]
+    },
+    {
+      "class": "d-none",
+      "declarations": [
+        [
+          "display",
+          "none"
+        ]
+      ]
+    },
+    {
+      "class": "d-block",
+      "declarations": [
+        [
+          "display",
+          "block"
+        ]
+      ]
+    },
+    {
+      "class": "d-inline",
+      "declarations": [
+        [
+          "display",
+          "inline"
+        ]
+      ]
+    },
+    {
+      "class": "d-inline-block",
+      "declarations": [
+        [
+          "display",
+          "inline-block"
+        ]
+      ]
+    },
+    {
+      "class": "dir-row",
+      "declarations": [
+        [
+          "flex-direction",
+          "row"
+        ],
+        [
+          "--neshel-align-main",
+          "var(--neshel-align-x, var(--neshel-align))"
+        ],
+        [
+          "--neshel-align-cross",
+          "var(--neshel-align-y, var(--neshel-align))"
+        ]
+      ]
+    },
+    {
+      "class": "dir-column",
+      "declarations": [
+        [
+          "flex-direction",
+          "column"
+        ],
+        [
+          "--neshel-align-main",
+          "var(--neshel-align-y, var(--neshel-align))"
+        ],
+        [
+          "--neshel-align-cross",
+          "var(--neshel-align-x, var(--neshel-align))"
+        ]
+      ]
+    },
+    {
+      "class": "dir-row-reverse",
+      "declarations": [
+        [
+          "flex-direction",
+          "row-reverse"
+        ],
+        [
+          "--neshel-align-main",
+          "var(--neshel-align-x, var(--neshel-align))"
+        ],
+        [
+          "--neshel-align-cross",
+          "var(--neshel-align-y, var(--neshel-align))"
+        ]
+      ]
+    },
+    {
+      "class": "dir-column-reverse",
+      "declarations": [
+        [
+          "flex-direction",
+          "column-reverse"
+        ],
+        [
+          "--neshel-align-main",
+          "var(--neshel-align-y, var(--neshel-align))"
+        ],
+        [
+          "--neshel-align-cross",
+          "var(--neshel-align-x, var(--neshel-align))"
+        ]
+      ]
+    },
+    {
+      "class": "fw-wrap",
+      "declarations": [
+        [
+          "flex-wrap",
+          "wrap"
+        ]
+      ]
+    },
+    {
+      "class": "fw-nowrap",
+      "declarations": [
+        [
+          "flex-wrap",
+          "nowrap"
+        ]
+      ]
+    },
+    {
+      "class": "cols-1",
+      "declarations": [
+        [
+          "grid-template-columns",
+          "repeat(1, minmax(0, 1fr))"
+        ]
+      ]
+    },
+    {
+      "class": "cols-2",
+      "declarations": [
+        [
+          "grid-template-columns",
+          "repeat(2, minmax(0, 1fr))"
+        ]
+      ]
+    },
+    {
+      "class": "cols-3",
+      "declarations": [
+        [
+          "grid-template-columns",
+          "repeat(3, minmax(0, 1fr))"
+        ]
+      ]
+    },
+    {
+      "class": "cols-4",
+      "declarations": [
+        [
+          "grid-template-columns",
+          "repeat(4, minmax(0, 1fr))"
+        ]
+      ]
+    },
+    {
+      "class": "cols-5",
+      "declarations": [
+        [
+          "grid-template-columns",
+          "repeat(5, minmax(0, 1fr))"
+        ]
+      ]
+    },
+    {
+      "class": "cols-6",
+      "declarations": [
+        [
+          "grid-template-columns",
+          "repeat(6, minmax(0, 1fr))"
+        ]
+      ]
+    },
+    {
+      "class": "cols-7",
+      "declarations": [
+        [
+          "grid-template-columns",
+          "repeat(7, minmax(0, 1fr))"
+        ]
+      ]
+    },
+    {
+      "class": "cols-8",
+      "declarations": [
+        [
+          "grid-template-columns",
+          "repeat(8, minmax(0, 1fr))"
+        ]
+      ]
+    },
+    {
+      "class": "cols-9",
+      "declarations": [
+        [
+          "grid-template-columns",
+          "repeat(9, minmax(0, 1fr))"
+        ]
+      ]
+    },
+    {
+      "class": "cols-10",
+      "declarations": [
+        [
+          "grid-template-columns",
+          "repeat(10, minmax(0, 1fr))"
+        ]
+      ]
+    },
+    {
+      "class": "cols-11",
+      "declarations": [
+        [
+          "grid-template-columns",
+          "repeat(11, minmax(0, 1fr))"
+        ]
+      ]
+    },
+    {
+      "class": "cols-12",
+      "declarations": [
+        [
+          "grid-template-columns",
+          "repeat(12, minmax(0, 1fr))"
+        ]
+      ]
+    },
+    {
+      "class": "mw-sm",
+      "declarations": [
+        [
+          "max-width",
+          "40rem"
+        ]
+      ]
+    },
+    {
+      "class": "mw-md",
+      "declarations": [
+        [
+          "max-width",
+          "48rem"
+        ]
+      ]
+    },
+    {
+      "class": "mw-lg",
+      "declarations": [
+        [
+          "max-width",
+          "64rem"
+        ]
+      ]
+    },
+    {
+      "class": "mw-xl",
+      "declarations": [
+        [
+          "max-width",
+          "80rem"
+        ]
+      ]
+    },
+    {
+      "class": "mw-2xl",
+      "declarations": [
+        [
+          "max-width",
+          "96rem"
+        ]
+      ]
+    },
+    {
+      "class": "mw-full",
+      "declarations": [
+        [
+          "max-width",
+          "none"
+        ]
+      ]
+    },
+    {
+      "class": "align-start",
+      "declarations": [
+        [
+          "--neshel-align",
+          "start"
+        ]
+      ]
+    },
+    {
+      "class": "align-center",
+      "declarations": [
+        [
+          "--neshel-align",
+          "center"
+        ]
+      ]
+    },
+    {
+      "class": "align-end",
+      "declarations": [
+        [
+          "--neshel-align",
+          "end"
+        ]
+      ]
+    },
+    {
+      "class": "align-stretch",
+      "declarations": [
+        [
+          "--neshel-align",
+          "stretch"
+        ]
+      ]
+    },
+    {
+      "class": "align-x-start",
+      "declarations": [
+        [
+          "--neshel-align-x",
+          "start"
+        ]
+      ]
+    },
+    {
+      "class": "align-x-center",
+      "declarations": [
+        [
+          "--neshel-align-x",
+          "center"
+        ]
+      ]
+    },
+    {
+      "class": "align-x-end",
+      "declarations": [
+        [
+          "--neshel-align-x",
+          "end"
+        ]
+      ]
+    },
+    {
+      "class": "align-x-stretch",
+      "declarations": [
+        [
+          "--neshel-align-x",
+          "stretch"
+        ]
+      ]
+    },
+    {
+      "class": "align-x-baseline",
+      "declarations": [
+        [
+          "--neshel-align-x",
+          "baseline"
+        ]
+      ]
+    },
+    {
+      "class": "align-y-start",
+      "declarations": [
+        [
+          "--neshel-align-y",
+          "start"
+        ]
+      ]
+    },
+    {
+      "class": "align-y-center",
+      "declarations": [
+        [
+          "--neshel-align-y",
+          "center"
+        ]
+      ]
+    },
+    {
+      "class": "align-y-end",
+      "declarations": [
+        [
+          "--neshel-align-y",
+          "end"
+        ]
+      ]
+    },
+    {
+      "class": "align-y-stretch",
+      "declarations": [
+        [
+          "--neshel-align-y",
+          "stretch"
+        ]
+      ]
+    },
+    {
+      "class": "align-y-baseline",
+      "declarations": [
+        [
+          "--neshel-align-y",
+          "baseline"
+        ]
+      ]
+    },
+    {
+      "class": "justify-start",
+      "declarations": [
+        [
+          "--neshel-justify",
+          "start"
+        ]
+      ]
+    },
+    {
+      "class": "justify-center",
+      "declarations": [
+        [
+          "--neshel-justify",
+          "center"
+        ]
+      ]
+    },
+    {
+      "class": "justify-end",
+      "declarations": [
+        [
+          "--neshel-justify",
+          "end"
+        ]
+      ]
+    },
+    {
+      "class": "justify-between",
+      "declarations": [
+        [
+          "--neshel-justify",
+          "space-between"
+        ]
+      ]
+    },
+    {
+      "class": "justify-around",
+      "declarations": [
+        [
+          "--neshel-justify",
+          "space-around"
+        ]
+      ]
+    },
+    {
+      "class": "justify-evenly",
+      "declarations": [
+        [
+          "--neshel-justify",
+          "space-evenly"
+        ]
+      ]
+    }
+  ]
+}

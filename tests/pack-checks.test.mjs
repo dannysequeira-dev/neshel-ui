@@ -195,7 +195,7 @@ test("config package contract: exact exports, no deps, relative imports, identic
 test("cli package contract: exact runtime dependencies and config peer", () => {
   const good = {
     name: "@neshel-ui/cli",
-    dependencies: { jiti: "^2.7.0", "colorjs.io": "~0.7.1" },
+    dependencies: { jiti: "^2.7.0", "colorjs.io": "~0.7.1", "@capsizecss/core": "^4.1.3" },
     peerDependencies: { "@neshel-ui/config": "^0.0.0" },
   };
   assert.deepEqual(checkPackageContract(good, new Map()), []);
@@ -213,26 +213,60 @@ const layoutCss = `/* header */
 `;
 const layoutManifest = {
   name: "@neshel-ui/layout",
+  version: "0.0.0",
   exports: {
     ".": { types: "./dist/index.d.ts", import: "./dist/index.js" },
     "./styles.css": "./dist/styles.css",
+    "./style-manifest.json": "./dist/style-manifest.json",
   },
   dependencies: { "@radix-ui/react-slot": "^1.5.0", "tailwind-variants": "^3.3.1" },
-  peerDependencies: { react: "^19.0.0" },
+  peerDependencies: { "@neshel-ui/config": "^0.0.0", react: "^19.0.0" },
 };
+const styleManifest = `${JSON.stringify({ schema: 1, package: "@neshel-ui/layout", version: "0.0.0" })}\n`;
 const layoutFiles = (overrides = {}) =>
   files({
     "dist/index.js": 'export { Stack } from "./stack.js";',
     "dist/stack.js":
       'import { jsx } from "react/jsx-runtime";\nimport { Slot } from "@radix-ui/react-slot";\nimport { tv } from "tailwind-variants/lite";\nimport { Children } from "react";',
     "dist/styles.css": layoutCss,
+    "dist/style-manifest.json": styleManifest,
     ...overrides,
   });
 
 test("layout package contract: exports, deps, peers, imports and stylesheet (feature 003)", () => {
   assert.deepEqual(
-    checkPackageContract(layoutManifest, layoutFiles(), { layoutSourceCss: layoutCss }),
+    checkPackageContract(layoutManifest, layoutFiles(), {
+      sourceCss: layoutCss,
+      sourceManifest: styleManifest,
+    }),
     [],
+  );
+  assert.deepEqual(
+    checkPackageContract(
+      { ...layoutManifest, name: "@neshel-ui/typography" },
+      layoutFiles(),
+      {},
+    ).join(),
+    "dist/style-manifest.json describes @neshel-ui/layout@0.0.0, not @neshel-ui/typography@0.0.0",
+  );
+});
+
+test("negative: component contract detects stale manifests and font files (FR-046, FR-050)", () => {
+  const errors = checkPackageContract(
+    layoutManifest,
+    layoutFiles({
+      "dist/fonts/inter.woff2": "binary",
+      "dist/style-manifest.json": `${JSON.stringify({ schema: 2, package: "@neshel-ui/layout", version: "0.0.0" })}\n`,
+    }),
+    { sourceManifest: styleManifest },
+  ).join("\n");
+  assert.match(errors, /dist\/fonts\/inter\.woff2: font files must not be published/);
+  assert.match(errors, /schema must be 1/);
+  assert.match(errors, /differs from src\/style-manifest\.json/);
+  const missing = new Map([...layoutFiles()].filter(([path]) => !path.endsWith(".json")));
+  assert.match(
+    checkPackageContract(layoutManifest, missing).join(),
+    /style-manifest\.json is missing/,
   );
 });
 
@@ -250,12 +284,12 @@ test("negative: layout contract detects broken exports, leaked deps and Node imp
     }),
   );
   const text = errors.join("\n");
-  assert.match(text, /exports must be exactly \., \.\/styles\.css/);
+  assert.match(text, /exports must be exactly \., \.\/styles\.css, \.\/style-manifest\.json/);
   assert.match(
     text,
     /dependencies must be exactly @radix-ui\/react-slot and tailwind-variants; found .*tailwind-merge/,
   );
-  assert.match(text, /peerDependencies must be exactly react/);
+  assert.match(text, /peerDependencies must be exactly @neshel-ui\/config and react/);
   assert.match(text, /dist\/a\.js imports "node:fs"/);
   assert.match(text, /dist\/a\.js imports "tailwind-variants"; allowed/);
   assert.match(text, /dist\/a\.js imports "@neshel-ui\/components"/);
@@ -274,7 +308,7 @@ test("negative: layout contract detects a missing, unhygienic or stale styleshee
   assert.match(dirtyErrors, /@source/);
   assert.match(dirtyErrors, /selector "div"/);
   const stale = checkPackageContract(layoutManifest, layoutFiles(), {
-    layoutSourceCss: `${layoutCss}/* newer */`,
+    sourceCss: `${layoutCss}/* newer */`,
   });
-  assert.match(stale.join(), /differs from packages\/layout\/src\/styles\.css/);
+  assert.match(stale.join(), /dist\/styles\.css differs from src\/styles\.css/);
 });

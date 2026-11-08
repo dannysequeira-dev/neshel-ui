@@ -64,6 +64,16 @@ export const contrastPairs: readonly ContrastPair[] = /* @__PURE__ */ deepFreeze
 ]);
 
 const sans = ["Inter", "ui-sans-serif", "system-ui", "sans-serif"] as const;
+const inter = {
+  familyName: "Inter",
+  capHeight: 1490,
+  ascent: 1984,
+  descent: -494,
+  lineGap: 0,
+  unitsPerEm: 2048,
+  xHeight: 1118,
+  xWidthAvg: 978,
+} as const;
 
 /** Built-in defaults: the Neshel navy / ivory / gold themes and non-colour tokens. */
 export const defaults: Defaults = /* @__PURE__ */ deepFreeze({
@@ -123,6 +133,9 @@ export const defaults: Defaults = /* @__PURE__ */ deepFreeze({
       display: sans,
       mono: ["ui-monospace", "SFMono-Regular", "Menlo", "Consolas", "monospace"],
     },
+    // Inter Regular, from @capsizecss/metrics 4.4.0 (checked by the CLI test suite).
+    metrics: { body: inter, display: inter },
   },
+  breakpoints: { sm: "40rem", md: "48rem", lg: "64rem", xl: "80rem", "2xl": "96rem" },
   focus: { width: "2px", offset: "2px" },
 });

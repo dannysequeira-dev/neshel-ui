@@ -1,5 +1,5 @@
 import { renderLayout } from "./render.js";
-import { assertSpacing, gridSpec, resolve } from "./resolve.js";
+import { assertSpacing, gridSpec, joinClasses, resolve } from "./resolve.js";
 import type { GridProps } from "./types.js";
 import { gridVariants } from "./variants.js";
 
@@ -20,12 +20,12 @@ export function Grid(props: GridProps) {
     ...rest
   } = props;
   assertSpacing("Grid", { space, spaceX, spaceY });
-  const selections = resolve(gridSpec, { space, spaceX, spaceY, columns, align, alignX, alignY });
+  const classes = resolve(gridSpec, { space, spaceX, spaceY, columns, align, alignX, alignY });
   return renderLayout({
     component: "Grid",
     as,
     asChild,
-    className: gridVariants({ ...selections, class: className }),
+    className: gridVariants({ class: joinClasses(classes, className) }),
     children,
     rest,
   });

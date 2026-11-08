@@ -1,5 +1,5 @@
 import { renderLayout } from "./render.js";
-import { assertSpacing, centerSpec, resolve } from "./resolve.js";
+import { assertSpacing, centerSpec, joinClasses, resolve } from "./resolve.js";
 import type { CenterProps } from "./types.js";
 import { centerVariants } from "./variants.js";
 
@@ -19,12 +19,12 @@ export function Center(props: CenterProps) {
     ...rest
   } = props;
   assertSpacing("Center", { space, spaceX, spaceY });
-  const selections = resolve(centerSpec, { space, spaceX, spaceY, align, alignX, alignY });
+  const classes = resolve(centerSpec, { space, spaceX, spaceY, align, alignX, alignY });
   return renderLayout({
     component: "Center",
     as,
     asChild,
-    className: centerVariants({ ...selections, class: className }),
+    className: centerVariants({ class: joinClasses(classes, className) }),
     children,
     rest,
   });

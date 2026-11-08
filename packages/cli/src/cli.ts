@@ -1,16 +1,21 @@
 // Command-line orchestration (contracts/cli.md). `run` never calls process.exit; it returns the
 // exit code so bin.ts stays a thin wrapper and messages go only through the provided streams.
-import { readFileSync } from "node:fs";
-import { basename } from "node:path";
+import { existsSync, readFileSync, rmSync } from "node:fs";
+import { basename, dirname, join, resolve } from "node:path";
 import { parseArgs } from "node:util";
 import { type Diagnostic, formatDiagnostics } from "./diagnostics.js";
 import { CliError, ExitCode, type ExitCodeValue } from "./errors.js";
 import { generateCss } from "./generate/css.js";
+import { generateDeclarations, isGeneratedDeclarations } from "./generate/declarations.js";
 import { discoverConfig } from "./load/discover.js";
 import { loadConfig } from "./load/load-config.js";
+import { loadManifests } from "./load/manifests.js";
 import { compareOutput, resolveOutput, targetProblem, writeIfChanged } from "./output.js";
 import { displayPath } from "./paths.js";
 import { validateConfig } from "./validate/index.js";
+import { typesProblem } from "./validate/structure.js";
+
+export const DEFAULT_TYPES = "neshel.generated.d.ts";
 
 export interface Io {
   readonly cwd: string;
@@ -21,17 +26,19 @@ export interface Io {
 
 export const USAGE = `Usage:
   neshel validate [--config <path>] [--strict] [--debug]
-  neshel generate [--config <path>] [--out <path>] [--check] [--strict] [--debug]
+  neshel generate [--config <path>] [--out <path>] [--types <path>] [--check] [--strict] [--debug]
   neshel --help | --version
 
 Commands:
   validate   Check neshel.config.* (structure, colours, contrast); never writes.
-  generate   Validate, then write the static stylesheet (or compare with --check).
+  generate   Validate, then write the stylesheet and, with breakpoints, the TypeScript
+             declarations (or compare them with --check).
 
 Options:
   --config <path>  Configuration file (default: neshel.config.{ts,mts,js,mjs} in the cwd)
   --out <path>     Output file, relative to the cwd (overrides "output" in the config)
-  --check          Compare with the existing output without writing; exit 4 when stale
+  --types <path>   Declarations file, relative to the cwd (overrides "types" in the config)
+  --check          Compare with the existing outputs without writing; exit 4 when stale
   --strict         Treat contrast warnings as errors
   --debug          Print stack traces for load and internal errors
 
@@ -49,6 +56,7 @@ interface Parsed {
   command: "validate" | "generate";
   config?: string;
   out?: string;
+  types?: string;
   check: boolean;
   strict: boolean;
   debug: boolean;
@@ -65,6 +73,7 @@ function parse(argv: readonly string[]): Parsed | "help" | "version" {
       options: {
         config: { type: "string" },
         out: { type: "string" },
+        types: { type: "string" },
         check: { type: "boolean" },
         strict: { type: "boolean" },
         debug: { type: "boolean" },
@@ -83,16 +92,20 @@ function parse(argv: readonly string[]): Parsed | "help" | "version" {
     throw new CliError(ExitCode.usage, `Unknown command "${command}".`);
   }
   if (rest.length > 0) throw new CliError(ExitCode.usage, `Unexpected argument "${rest[0]}".`);
-  if (command === "validate" && (values.out !== undefined || values.check)) {
-    throw new CliError(ExitCode.usage, '"validate" does not accept --out or --check.');
+  if (
+    command === "validate" &&
+    (values.out !== undefined || values.types !== undefined || values.check)
+  ) {
+    throw new CliError(ExitCode.usage, '"validate" does not accept --out, --types or --check.');
   }
-  for (const key of ["config", "out"] as const) {
+  for (const key of ["config", "out", "types"] as const) {
     if (values[key] === "") throw new CliError(ExitCode.usage, `--${key} requires a value.`);
   }
   return {
     command,
     config: values.config as string | undefined,
     out: values.out as string | undefined,
+    types: values.types as string | undefined,
     check: Boolean(values.check),
     strict: Boolean(values.strict),
     debug: Boolean(values.debug),
@@ -100,6 +113,22 @@ function parse(argv: readonly string[]): Parsed | "help" | "version" {
 }
 
 const plural = (count: number, word: string) => `${count} ${word}${count === 1 ? "" : "s"}`;
+
+/** `--types` (cwd-relative) › config `types` (config-dir-relative) › default next to the config. */
+function resolveTypes(
+  cwd: string,
+  configFile: string,
+  flag: string | undefined,
+  configTypes: unknown,
+): string {
+  if (flag !== undefined) {
+    const problem = typesProblem(flag);
+    if (problem) throw new CliError(ExitCode.usage, `--types ${flag}: ${problem}.`);
+    return resolve(cwd, flag);
+  }
+  if (typeof configTypes === "string") return resolve(dirname(configFile), configTypes);
+  return join(dirname(configFile), DEFAULT_TYPES);
+}
 
 export async function run(argv: readonly string[], io: Io): Promise<ExitCodeValue> {
   const color = Boolean(io.stderr.isTTY) && io.env.NO_COLOR === undefined;
@@ -158,27 +187,72 @@ export async function run(argv: readonly string[], io: Io): Promise<ExitCodeValu
       return ExitCode.ok;
     }
 
-    const css = generateCss(result.config, {
+    const config = result.config;
+    const components = config.breakpoints ? loadManifests(dirname(configFile)) : [];
+    if (config.breakpoints && components.length === 0) {
+      report([
+        {
+          severity: "warning",
+          code: "no-component-packages",
+          path: "breakpoints",
+          message:
+            "Neither @neshel-ui/layout nor @neshel-ui/typography resolves from the config directory; only declarations (and Tailwind breakpoints) are generated.",
+        },
+      ]);
+    }
+    const css = generateCss(config, {
       layer: "config",
       header: `Generated by "neshel generate" from ${basename(configFile)} (config schema 1); do not edit.`,
+      components,
     });
+    const typesTarget = resolveTypes(io.cwd, configFile, parsed.types, input.types);
+    const declarations = config.breakpoints
+      ? generateDeclarations(config.breakpoints, basename(configFile))
+      : undefined;
     const output = displayPath(target.path, io.cwd);
-    const themes = plural(result.config.themes.length, "theme");
+    const typesLabel = displayPath(typesTarget, io.cwd);
+    const staleTypes =
+      !declarations &&
+      existsSync(typesTarget) &&
+      isGeneratedDeclarations(readFileSync(typesTarget, "utf8"));
+    const summary = [
+      plural(config.themes.length, "theme"),
+      ...(config.breakpoints ? [plural(config.breakpoints.list.length, "breakpoint")] : []),
+      ...(components.length
+        ? [components.map((m) => m.package.replace("@neshel-ui/", "")).join(" + ")]
+        : []),
+    ].join(", ");
     if (parsed.check) {
-      const state = compareOutput(target.path, css);
-      if (state === "unchanged") {
-        say(`neshel: ${output} is up to date (${themes}).`);
+      const states = [
+        { label: output, state: compareOutput(target.path, css) },
+        ...(declarations
+          ? [{ label: typesLabel, state: compareOutput(typesTarget, declarations) }]
+          : []),
+        ...(staleTypes ? [{ label: typesLabel, state: "stale" as const }] : []),
+      ];
+      const stale = states.filter((entry) => entry.state !== "unchanged");
+      if (stale.length === 0) {
+        say(`neshel: ${states.map((entry) => entry.label).join(" and ")} up to date (${summary}).`);
         return ExitCode.ok;
       }
-      say(
-        `neshel: ${output} is ${state === "missing" ? "missing" : "out of date"}; run neshel generate.`,
-      );
+      for (const entry of stale) {
+        say(
+          `neshel: ${entry.label} is ${entry.state === "missing" ? "missing" : "out of date"}; run neshel generate.`,
+        );
+      }
       return ExitCode.stale;
     }
     const state = await writeIfChanged(target.path, css);
     say(
-      `neshel: ${state === "written" ? "wrote" : "unchanged"} ${output} (${themes}, ${plural(warnings, "warning")}).`,
+      `neshel: ${state === "written" ? "wrote" : "unchanged"} ${output} (${summary}, ${plural(warnings, "warning")}).`,
     );
+    if (declarations) {
+      const typesState = await writeIfChanged(typesTarget, declarations);
+      say(`neshel: ${typesState === "written" ? "wrote" : "unchanged"} ${typesLabel}.`);
+    } else if (staleTypes) {
+      rmSync(typesTarget);
+      say(`neshel: removed ${typesLabel} (no breakpoints configured).`);
+    }
     return ExitCode.ok;
   } catch (error) {
     if (error instanceof CliError) {

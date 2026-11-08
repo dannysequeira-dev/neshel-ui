@@ -1,8 +1,9 @@
 // Hand-written structural validation of neshel.config (contracts/cli.md "Validation pipeline").
 // Reports every problem in one pass; never throws on bad input.
 import { colorRoles } from "@neshel-ui/config";
+import { validateBreakpoints } from "../breakpoints.js";
 import { type Diagnostic, type DiagnosticCode, describeValue, suggest } from "../diagnostics.js";
-import { fontRoles } from "../resolve.js";
+import { effectiveMetrics, fontRoles, validateFallbacks, validateMetrics } from "../fonts.js";
 
 const TOP_LEVEL = [
   "version",
@@ -13,10 +14,11 @@ const TOP_LEVEL = [
   "focus",
   "contrast",
   "output",
+  "breakpoints",
+  "types",
 ] as const;
 const THEME_KEYS = ["colors", "extends"] as const;
 const RADIUS_KEYS = ["base", "sm", "md", "lg", "xl"] as const;
-const METRIC_KEYS = ["capHeight", "ascent", "descent", "lineGap", "unitsPerEm", "xHeight"] as const;
 export const THEME_NAME = /^[a-z][a-z0-9-]{0,31}$/;
 const LENGTH = /^(?:0|(?:\d+(?:\.\d+)?|\.\d+)(?:rem|em|px))$/;
 
@@ -134,45 +136,53 @@ function validateFontStack(c: Collector, value: unknown, path: string) {
 }
 
 function validateTypography(c: Collector, value: unknown) {
-  const typography = c.object(value, "typography", ["families", "metrics"]);
+  const typography = c.object(value, "typography", ["families", "metrics", "fallbacks"]);
   if (!typography) return;
-  if (typography.families !== undefined) {
-    const families = c.object(typography.families, "typography.families", fontRoles);
-    for (const role of fontRoles) {
-      if (families?.[role] !== undefined)
-        validateFontStack(c, families[role], `typography.families.${role}`);
+  const families =
+    typography.families === undefined
+      ? undefined
+      : c.object(typography.families, "typography.families", fontRoles);
+  for (const role of fontRoles) {
+    if (families?.[role] !== undefined)
+      validateFontStack(c, families[role], `typography.families.${role}`);
+  }
+  const metrics =
+    typography.metrics === undefined
+      ? undefined
+      : c.object(typography.metrics, "typography.metrics", fontRoles);
+  for (const role of fontRoles) {
+    if (metrics?.[role] !== undefined)
+      c.diagnostics.push(...validateMetrics(metrics[role], `typography.metrics.${role}`));
+  }
+  const fallbacks =
+    typography.fallbacks === undefined
+      ? undefined
+      : c.object(typography.fallbacks, "typography.fallbacks", fontRoles);
+  for (const role of fontRoles) {
+    const primary = effectiveMetrics(role, families, metrics as never);
+    if (fallbacks?.[role] !== undefined) {
+      c.diagnostics.push(
+        ...validateFallbacks(fallbacks[role], `typography.fallbacks.${role}`, primary),
+      );
+    }
+    if (families?.[role] !== undefined && metrics?.[role] === undefined) {
+      c.diagnostics.push({
+        severity: "warning",
+        code: "missing-metrics",
+        path: `typography.metrics.${role}`,
+        message: `typography.families.${role} is customised without metrics: "${role}" text is not trimmed and uses scale 1. Pass Capsize metrics (for example from @capsizecss/metrics).`,
+      });
     }
   }
-  if (typography.metrics !== undefined) {
-    const metrics = c.object(typography.metrics, "typography.metrics", fontRoles);
-    for (const role of fontRoles) {
-      const entry = metrics?.[role];
-      if (entry === undefined) continue;
-      const path = `typography.metrics.${role}`;
-      const record = c.object(entry, path, METRIC_KEYS);
-      if (!record) continue;
-      for (const key of METRIC_KEYS) {
-        const number = record[key];
-        if (number === undefined && key === "xHeight") continue;
-        if (
-          typeof number !== "number" ||
-          !Number.isFinite(number) ||
-          (key === "unitsPerEm" && number <= 0)
-        ) {
-          c.error(
-            "invalid-metrics",
-            `${path}.${key}`,
-            `Expected a finite number${key === "unitsPerEm" ? " greater than 0" : ""}; received ${describeValue(number)}.`,
-          );
-        }
-      }
-    }
-    c.info(
-      "reserved",
-      "typography.metrics",
-      "Font metrics are reserved for feature 004 and produce no CSS yet.",
-    );
-  }
+}
+
+/** Declarations path rules that need no file system. */
+export function typesProblem(value: unknown): string | undefined {
+  if (typeof value !== "string" || value.trim() === "") return "Expected a file path string";
+  if (!/\.d\.ts$/i.test(value)) return "The declarations file must end in .d.ts";
+  if (value.split(/[\\/]/).includes("node_modules"))
+    return "The declarations file must not be inside node_modules";
+  return undefined;
 }
 
 /** Output path rules that need no file system (contracts/cli.md "Output"). */
@@ -217,6 +227,17 @@ export function validateStructure(input: unknown): Diagnostic[] {
       "contrast",
       `Expected "warn" or "error"; received ${describeValue(config.contrast)}.`,
     );
+  }
+  if (config.breakpoints !== undefined)
+    c.diagnostics.push(...validateBreakpoints(config.breakpoints));
+  if (config.types !== undefined) {
+    const problem = typesProblem(config.types);
+    if (problem)
+      c.error(
+        "invalid-types-output",
+        "types",
+        `${problem}; received ${describeValue(config.types)}.`,
+      );
   }
   if (config.output !== undefined) {
     const problem = outputProblem(config.output);

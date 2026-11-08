@@ -21,7 +21,20 @@ export type DiagnosticCode =
   | "alpha-not-allowed"
   | "out-of-gamut"
   | "contrast"
-  | "reserved";
+  | "reserved"
+  | "invalid-breakpoint-name"
+  | "reserved-breakpoint-name"
+  | "duplicate-breakpoint-name"
+  | "breakpoint-redefined"
+  | "invalid-breakpoint-width"
+  | "duplicate-breakpoint-width"
+  | "too-many-breakpoints"
+  | "empty-breakpoints"
+  | "breakpoint-order"
+  | "invalid-types-output"
+  | "missing-metrics"
+  | "invalid-fallbacks"
+  | "no-component-packages";
 
 export interface Diagnostic {
   readonly severity: Severity;

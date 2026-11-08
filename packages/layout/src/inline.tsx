@@ -1,6 +1,6 @@
 import { layoutError } from "./errors.js";
 import { anyTrue, renderLayout } from "./render.js";
-import { assertSpacing, inlineSpec, resolve } from "./resolve.js";
+import { assertSpacing, inlineSpec, joinClasses, resolve } from "./resolve.js";
 import type { InlineProps } from "./types.js";
 import { inlineVariants } from "./variants.js";
 
@@ -30,7 +30,7 @@ export function Inline(props: InlineProps) {
         `separator. Remove "wrap", or render separators yourself.`,
     );
   }
-  const selections = resolve(inlineSpec, {
+  const classes = resolve(inlineSpec, {
     space,
     spaceX,
     spaceY,
@@ -44,7 +44,7 @@ export function Inline(props: InlineProps) {
     component: "Inline",
     as,
     asChild,
-    className: inlineVariants({ ...selections, class: className }),
+    className: inlineVariants({ class: joinClasses(classes, className) }),
     children,
     rest,
     separator: { value: separator, orientation: "vertical" },

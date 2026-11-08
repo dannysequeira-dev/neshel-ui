@@ -1,4 +1,9 @@
 {
   "extends": "../../tsconfig.library.json",
-  "include": ["src/**/*.ts", "src/**/*.tsx", "type-tests/**/*.tsx"]
+  "compilerOptions": {
+    "paths": {
+      "@neshel-ui/config": ["../config/src/index.ts"]
+    }
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx", "type-tests/*.tsx"]
 }

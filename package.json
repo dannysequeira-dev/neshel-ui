@@ -36,7 +36,7 @@
     "doctor": "node scripts/check-platform.mjs && node scripts/check-workspace.mjs && node scripts/check-portability.mjs",
     "check:portability": "node scripts/check-portability.mjs",
     "spec-kit:init": "node scripts/bootstrap-spec-kit.mjs",
-    "generate:layout-css": "node packages/layout/scripts/generate-css.mjs"
+    "generate:component-css": "node scripts/generate-component-css.mjs"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "catalog:",

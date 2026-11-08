@@ -1,7 +1,12 @@
+import type { BreakpointName } from "@neshel-ui/config";
 import type { HTMLAttributes, ReactElement, Ref } from "react";
 
-/** Mobile-first breakpoints: base (0), sm 40rem, md 48rem, lg 64rem, xl 80rem, 2xl 96rem. */
-export type Breakpoint = "base" | "sm" | "md" | "lg" | "xl" | "2xl";
+/**
+ * Responsive keys: `base` (no media query) plus the application's breakpoint names — the defaults
+ * `sm md lg xl 2xl`, or the names configured in neshel.config.ts once the declarations generated
+ * by `neshel generate` are part of the program (ADR 0010).
+ */
+export type Breakpoint = "base" | BreakpointName;
 
 /** A value, or values per breakpoint that cascade upwards (mobile first). */
 export type Responsive<T> = T | { readonly [K in Breakpoint]?: T };

@@ -27,8 +27,8 @@ test("each primitive renders one div with its base class and no props-driven cla
     Stack: ["neshel-stack"],
     Inline: ["neshel-inline"],
     Grid: ["neshel-grid"],
-    Center: ["neshel-center", "neshel-ai-center", "neshel-jc-center"],
-    Container: ["neshel-container", "neshel-mw-xl"],
+    Center: ["neshel-center"],
+    Container: ["neshel-container"],
   };
   for (const [name, classes] of Object.entries(expected)) {
     const html = markup(h(layout[name], null, "child"));
@@ -104,30 +104,38 @@ test("space, spaceX and spaceY map to gap, column-gap and row-gap classes (FR-01
   sameClasses(classesOf(Center, { space: "0", align: "center" }), [
     "neshel-center",
     "neshel-gap-0",
-    "neshel-ai-center",
-    "neshel-jc-center",
+    "neshel-align-center",
   ]);
   sameClasses(classesOf(Flex, { space: null, spaceX: "2" }), ["neshel-flex", "neshel-gap-x-2"]);
 });
 
-test("responsive values cascade mobile first and emit only changes (FR-030, FR-032)", () => {
-  sameClasses(classesOf(Stack, { space: { base: "2", md: "4", lg: "4", xl: "6" } }), [
+test("responsive values: one class per written key, order-free (ADR 0010, FR-030)", () => {
+  assert.deepEqual(classesOf(Stack, { space: { base: "2", md: "4", lg: "4", xl: "6" } }), [
     "neshel-stack",
     "neshel-gap-2",
     "neshel-md-gap-4",
+    "neshel-lg-gap-4",
     "neshel-xl-gap-6",
   ]);
-  sameClasses(classesOf(Grid, { columns: { base: 1, md: 2, lg: 4 } }), [
+  // `base` first, then the consumer's key order; the stylesheet orders the media blocks.
+  assert.deepEqual(classesOf(Grid, { columns: { lg: 4, base: 1, md: 2 } }), [
     "neshel-grid",
     "neshel-cols-1",
-    "neshel-md-cols-2",
     "neshel-lg-cols-4",
+    "neshel-md-cols-2",
   ]);
   sameClasses(classesOf(Stack, { space: { "2xl": "24" } }), ["neshel-stack", "neshel-2xl-gap-24"]);
   sameClasses(classesOf(Stack, { space: {} }), ["neshel-stack"]);
   sameClasses(classesOf(Stack, { space: { base: null, sm: "1" } }), [
     "neshel-stack",
     "neshel-sm-gap-1",
+  ]);
+  // Custom breakpoint names (configured through neshel generate) need no runtime registry.
+  sameClasses(classesOf(Grid, { columns: { base: 1, tablet: 2, phoneXL: 3 } }), [
+    "neshel-grid",
+    "neshel-cols-1",
+    "neshel-tablet-cols-2",
+    "neshel-phoneXL-cols-3",
   ]);
 });
 
@@ -137,130 +145,66 @@ test("resolution is deterministic (same props, same classes)", () => {
   for (let i = 0; i < 5; i++) assert.equal(markup(h(Stack, { ...props })), first);
 });
 
-test("axis mapping per component (FR-020)", () => {
-  sameClasses(classesOf(Stack, { alignX: "center", alignY: "end" }), [
-    "neshel-stack",
-    "neshel-ai-center",
-    "neshel-jc-end",
-  ]);
-  sameClasses(classesOf(Inline, { alignX: "center", alignY: "end" }), [
-    "neshel-inline",
-    "neshel-jc-center",
-    "neshel-ai-end",
-  ]);
-  sameClasses(classesOf(Grid, { alignX: "center", alignY: "end" }), [
-    "neshel-grid",
-    "neshel-ai-end",
-    "neshel-ji-center",
-  ]);
-  sameClasses(classesOf(Center, { alignX: "start", alignY: "end" }), [
-    "neshel-center",
-    "neshel-ai-end",
-    "neshel-jc-start",
-  ]);
-  sameClasses(classesOf(Flex, { alignX: "center", alignY: "end" }), [
-    "neshel-flex",
-    "neshel-ai-end",
-    "neshel-jc-center",
-  ]);
+test("alignment props emit custom-property classes; CSS maps the axes (FR-020)", () => {
+  for (const Component of [Stack, Inline, Grid, Center, Flex]) {
+    const base = classesOf(Component)[0];
+    sameClasses(
+      classesOf(Component, { alignX: "center", alignY: "end" }),
+      [base, "neshel-align-x-center", "neshel-align-y-end"],
+      Component.name,
+    );
+  }
   sameClasses(classesOf(Flex, { direction: "column", alignX: "center", alignY: "end" }), [
     "neshel-flex",
     "neshel-dir-column",
-    "neshel-ai-center",
-    "neshel-jc-end",
+    "neshel-align-x-center",
+    "neshel-align-y-end",
   ]);
   sameClasses(classesOf(Flex, { direction: "row-reverse", alignX: "start" }), [
     "neshel-flex",
     "neshel-dir-row-reverse",
-    "neshel-jc-start",
+    "neshel-align-x-start",
   ]);
 });
 
-test("precedence: justify > alignX/alignY > align, per breakpoint (FR-021, FR-022)", () => {
+test("precedence props are emitted independently (CSS resolves justify > axis > align)", () => {
   sameClasses(classesOf(Inline, { align: "center", justify: "between" }), [
     "neshel-inline",
-    "neshel-jc-between",
-    "neshel-ai-center",
+    "neshel-align-center",
+    "neshel-justify-between",
   ]);
-  sameClasses(classesOf(Stack, { align: "center", alignX: "start" }), [
-    "neshel-stack",
-    "neshel-ai-start",
-    "neshel-jc-center",
-  ]);
-  sameClasses(classesOf(Stack, { alignY: "end", justify: "around" }), [
-    "neshel-stack",
-    "neshel-jc-around",
-  ]);
-  // alignX from base keeps winning over a later, more general `align`.
   sameClasses(classesOf(Stack, { alignX: "start", align: { md: "center" } }), [
     "neshel-stack",
-    "neshel-ai-start",
-    "neshel-md-jc-center",
-  ]);
-  // A later axis prop overrides an earlier `align` only on its axis.
-  sameClasses(classesOf(Inline, { align: "center", alignX: { lg: "end" } }), [
-    "neshel-inline",
-    "neshel-jc-center",
-    "neshel-ai-center",
-    "neshel-lg-jc-end",
+    "neshel-align-x-start",
+    "neshel-md-align-center",
   ]);
   sameClasses(classesOf(Inline, { alignX: "center", justify: { md: "evenly" } }), [
     "neshel-inline",
-    "neshel-jc-center",
-    "neshel-md-jc-evenly",
+    "neshel-align-x-center",
+    "neshel-md-justify-evenly",
   ]);
 });
 
-test("Flex re-maps alignment when the direction changes and resets the vacated property (FR-020)", () => {
+test("Flex direction classes carry the axis mapping (FR-020)", () => {
   sameClasses(classesOf(Flex, { direction: { base: "column", md: "row" }, alignX: "center" }), [
     "neshel-flex",
     "neshel-dir-column",
-    "neshel-ai-center",
     "neshel-md-dir-row",
-    "neshel-md-ai-normal",
-    "neshel-md-jc-center",
-  ]);
-  assert.deepEqual(
-    classesOf(Flex, { direction: { base: "row", lg: "column" }, alignX: "end", alignY: "center" }),
-    [
-      "neshel-flex",
-      "neshel-dir-row",
-      "neshel-ai-center",
-      "neshel-jc-end",
-      "neshel-lg-dir-column",
-      "neshel-lg-ai-end",
-      "neshel-lg-jc-center",
-    ],
-  );
-  sameClasses(classesOf(Flex, { direction: { base: "row", sm: "column" }, alignX: "start" }), [
-    "neshel-flex",
-    "neshel-dir-row",
-    "neshel-jc-start",
-    "neshel-sm-dir-column",
-    "neshel-sm-ai-start",
-    "neshel-sm-jc-normal",
-  ]);
-  // Same axis family: no reset needed.
-  sameClasses(classesOf(Flex, { direction: { base: "row", md: "row-reverse" }, alignX: "end" }), [
-    "neshel-flex",
-    "neshel-dir-row",
-    "neshel-jc-end",
-    "neshel-md-dir-row-reverse",
+    "neshel-align-x-center",
   ]);
 });
 
 test("cross-axis stretch/baseline are accepted where meaningful (FR-023)", () => {
-  sameClasses(classesOf(Inline, { alignY: "baseline" }), ["neshel-inline", "neshel-ai-baseline"]);
-  sameClasses(classesOf(Stack, { alignX: "stretch" }), ["neshel-stack", "neshel-ai-stretch"]);
-  sameClasses(classesOf(Grid, { align: "stretch" }), [
-    "neshel-grid",
-    "neshel-ai-stretch",
-    "neshel-ji-stretch",
+  sameClasses(classesOf(Inline, { alignY: "baseline" }), [
+    "neshel-inline",
+    "neshel-align-y-baseline",
   ]);
+  sameClasses(classesOf(Stack, { alignX: "stretch" }), ["neshel-stack", "neshel-align-x-stretch"]);
+  sameClasses(classesOf(Grid, { align: "stretch" }), ["neshel-grid", "neshel-align-stretch"]);
   sameClasses(classesOf(Flex, { direction: "column", alignX: "baseline" }), [
     "neshel-flex",
     "neshel-dir-column",
-    "neshel-ai-baseline",
+    "neshel-align-x-baseline",
   ]);
 });
 
@@ -286,23 +230,17 @@ test("Box display, Container size/gutter, Grid columns (FR-004, FR-033)", () => 
   ]);
   sameClasses(classesOf(Container, { size: { md: "xl", lg: "full" } }), [
     "neshel-container",
-    "neshel-mw-xl",
+    "neshel-md-mw-xl",
     "neshel-lg-mw-full",
   ]);
   sameClasses(classesOf(Container, { size: "xl" }), ["neshel-container", "neshel-mw-xl"]);
   sameClasses(classesOf(Grid, { columns: 12 }), ["neshel-grid", "neshel-cols-12"]);
 });
 
-test("Center keeps centring unless an axis is overridden (FR-024)", () => {
+test("Center centres through its base rule; axis props override (FR-024)", () => {
   sameClasses(classesOf(Center, { alignY: { md: "start" } }), [
     "neshel-center",
-    "neshel-ai-center",
-    "neshel-jc-center",
-    "neshel-md-ai-start",
+    "neshel-md-align-y-start",
   ]);
-  sameClasses(classesOf(Center, { align: "end" }), [
-    "neshel-center",
-    "neshel-ai-end",
-    "neshel-jc-end",
-  ]);
+  sameClasses(classesOf(Center, { align: "end" }), ["neshel-center", "neshel-align-end"]);
 });

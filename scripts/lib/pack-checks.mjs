@@ -223,32 +223,37 @@ export function checkPublicPeers(manifest, publicNames = []) {
 }
 
 /** Bare (non-relative) import specifiers of an ES module source, including `node:` built-ins. */
-/** Bare specifiers the layout runtime may import (feature 003 FR-070/FR-071). */
+/** Bare specifiers the layout and typography runtimes may import (FR-070/FR-071, feature 004). */
 export const LAYOUT_ALLOWED_IMPORTS = [
   "react",
   "react/jsx-runtime",
   "@radix-ui/react-slot",
   "tailwind-variants/lite",
 ];
+export const COMPONENT_PACKAGES = ["@neshel-ui/layout", "@neshel-ui/typography"];
+const FONT_FILE = /\.(?:woff2?|ttf|otf|eot)$/i;
 
 /**
- * Feature 003 contract (ADR 0008/0009): exact exports and dependencies, React peer, browser-safe
- * imports only, and a hygienic, layered stylesheet identical to the committed source (C4).
+ * Contract of the React component packages (ADR 0008/0009/0010/0011): exact exports
+ * (`.`, `./styles.css`, `./style-manifest.json`) and dependencies, React and config peers,
+ * browser-safe imports only, a hygienic layered stylesheet and a schema-1 style manifest identical
+ * to the committed sources, and no font files (FR-046).
  */
-export function checkLayoutContract(manifest, files, { layoutSourceCss } = {}) {
+export function checkComponentContract(manifest, files, { sourceCss, sourceManifest } = {}) {
   const errors = [];
-  if (!sameKeys(manifest.exports, [".", "./styles.css"])) {
-    errors.push("exports must be exactly ., ./styles.css");
+  if (!sameKeys(manifest.exports, [".", "./styles.css", "./style-manifest.json"])) {
+    errors.push("exports must be exactly ., ./styles.css, ./style-manifest.json");
   }
   if (!sameKeys(manifest.dependencies, ["@radix-ui/react-slot", "tailwind-variants"])) {
     errors.push(
       `dependencies must be exactly @radix-ui/react-slot and tailwind-variants; found ${Object.keys(manifest.dependencies ?? {}).join(", ") || "none"}`,
     );
   }
-  if (!sameKeys(manifest.peerDependencies, ["react"])) {
-    errors.push("peerDependencies must be exactly react");
+  if (!sameKeys(manifest.peerDependencies, ["@neshel-ui/config", "react"])) {
+    errors.push("peerDependencies must be exactly @neshel-ui/config and react");
   }
   for (const [path, contents] of files) {
+    if (FONT_FILE.test(path)) errors.push(`${path}: font files must not be published (FR-046)`);
     if (!/^dist\/.*\.js$/.test(path)) continue;
     for (const specifier of bareImports(contents.toString("utf8"))) {
       if (!LAYOUT_ALLOWED_IMPORTS.includes(specifier)) {
@@ -263,11 +268,41 @@ export function checkLayoutContract(manifest, files, { layoutSourceCss } = {}) {
     errors.push("dist/styles.css is missing");
   } else {
     errors.push(...checkLayoutStylesheet(stylesheet).map((error) => `dist/styles.css: ${error}`));
-    if (layoutSourceCss !== undefined && stylesheet !== layoutSourceCss) {
-      errors.push("dist/styles.css differs from packages/layout/src/styles.css (stale build?)");
+    if (sourceCss !== undefined && stylesheet !== sourceCss) {
+      errors.push("dist/styles.css differs from src/styles.css (stale build?)");
+    }
+  }
+  const styleManifest = files.get("dist/style-manifest.json")?.toString("utf8");
+  if (!styleManifest) {
+    errors.push("dist/style-manifest.json is missing");
+  } else {
+    let parsed;
+    try {
+      parsed = JSON.parse(styleManifest);
+    } catch {
+      errors.push("dist/style-manifest.json is not valid JSON");
+    }
+    if (parsed) {
+      if (parsed.schema !== 1) errors.push("dist/style-manifest.json: schema must be 1");
+      if (parsed.package !== manifest.name || parsed.version !== manifest.version) {
+        errors.push(
+          `dist/style-manifest.json describes ${parsed.package}@${parsed.version}, not ${manifest.name}@${manifest.version}`,
+        );
+      }
+    }
+    if (sourceManifest !== undefined && styleManifest !== sourceManifest) {
+      errors.push("dist/style-manifest.json differs from src/style-manifest.json (stale build?)");
     }
   }
   return errors;
+}
+
+/** @deprecated feature 003 name; kept for existing tests. */
+export function checkLayoutContract(manifest, files, context = {}) {
+  return checkComponentContract(manifest, files, {
+    sourceCss: context.sourceCss ?? context.layoutSourceCss,
+    sourceManifest: context.sourceManifest,
+  });
 }
 
 export function bareImports(source) {
@@ -286,8 +321,8 @@ const sameKeys = (object, expected) =>
  */
 export function checkPackageContract(manifest, files, context = {}) {
   const errors = [];
-  if (manifest.name === "@neshel-ui/layout")
-    errors.push(...checkLayoutContract(manifest, files, context));
+  if (COMPONENT_PACKAGES.includes(manifest.name))
+    errors.push(...checkComponentContract(manifest, files, context));
   if (manifest.name === "@neshel-ui/config") {
     const expected = [".", "./tokens.css", "./tailwind.css", "./styles.css"];
     if (!sameKeys(manifest.exports, expected)) {
@@ -313,9 +348,9 @@ export function checkPackageContract(manifest, files, context = {}) {
     }
   }
   if (manifest.name === "@neshel-ui/cli") {
-    if (!sameKeys(manifest.dependencies, ["colorjs.io", "jiti"])) {
+    if (!sameKeys(manifest.dependencies, ["@capsizecss/core", "colorjs.io", "jiti"])) {
       errors.push(
-        `dependencies must be exactly colorjs.io and jiti; found ${Object.keys(manifest.dependencies ?? {}).join(", ") || "none"}`,
+        `dependencies must be exactly @capsizecss/core, colorjs.io and jiti; found ${Object.keys(manifest.dependencies ?? {}).join(", ") || "none"}`,
       );
     }
     if (!manifest.peerDependencies?.["@neshel-ui/config"]) {

@@ -34,6 +34,9 @@ type TypographyCheck<T> = T extends { readonly typography: infer Ty }
             [R in keyof M]: Strict<M[R], FontMetrics>;
           }
         : unknown;
+      fallbacks?: Ty extends { readonly fallbacks: infer Fb }
+        ? Strict<Fb, Record<FontRole, unknown>>
+        : unknown;
     }
   : unknown;
 
@@ -49,6 +52,7 @@ export type ExactConfig<T> = Strict<T, NeshelConfig> & {
   spacing?: Section<T, "spacing">;
   focus?: Section<T, "focus">;
   typography?: TypographyCheck<T>;
+  breakpoints?: Section<T, "breakpoints">;
 };
 
 /**

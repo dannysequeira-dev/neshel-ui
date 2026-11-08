@@ -51,3 +51,19 @@ defineConfig({ contrast: "strict" });
 const external = { themes: { light: { colors: { primary: "#fff" } } }, extra: true };
 // @ts-expect-error unknown key "extra" on a reused object
 defineConfig(external);
+
+// Feature 004.
+// @ts-expect-error breakpoint widths are rem strings
+defineConfig({ breakpoints: { values: { tablet: "768px" } } });
+
+// @ts-expect-error unknown breakpoint mode
+defineConfig({ breakpoints: { mode: "merge", values: { tablet: "48rem" } } });
+
+// @ts-expect-error unknown key in breakpoints
+defineConfig({ breakpoints: { values: { tablet: "48rem" }, screens: {} } });
+
+// @ts-expect-error values are required
+defineConfig({ breakpoints: { mode: "replace" } });
+
+// @ts-expect-error unknown fallback role
+defineConfig({ typography: { fallbacks: { heading: [] } } });

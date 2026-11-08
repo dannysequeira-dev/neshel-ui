@@ -1,5 +1,5 @@
 import { renderLayout } from "./render.js";
-import { assertSpacing, flexSpec, resolve } from "./resolve.js";
+import { assertSpacing, flexSpec, joinClasses, resolve } from "./resolve.js";
 import type { FlexProps } from "./types.js";
 import { flexVariants } from "./variants.js";
 
@@ -22,7 +22,7 @@ export function Flex(props: FlexProps) {
     ...rest
   } = props;
   assertSpacing("Flex", { space, spaceX, spaceY });
-  const selections = resolve(flexSpec, {
+  const classes = resolve(flexSpec, {
     space,
     spaceX,
     spaceY,
@@ -37,7 +37,7 @@ export function Flex(props: FlexProps) {
     component: "Flex",
     as,
     asChild,
-    className: flexVariants({ ...selections, class: className }),
+    className: flexVariants({ class: joinClasses(classes, className) }),
     children,
     rest,
   });

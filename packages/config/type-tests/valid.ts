@@ -46,3 +46,29 @@ export const fromAnnotated = defineConfig(typed);
 
 const stack: readonly string[] = ["Inter", "sans-serif"];
 export const readonlyStack = defineConfig({ typography: { families: { mono: stack } } });
+
+// Feature 004: breakpoints, declarations path, Capsize-format metrics and fallbacks.
+const arial = {
+  familyName: "Arial",
+  fullName: "Arial",
+  postscriptName: "ArialMT",
+  category: "sans-serif",
+  capHeight: 1467,
+  ascent: 1854,
+  descent: -434,
+  lineGap: 67,
+  unitsPerEm: 2048,
+  xHeight: 1062,
+  xWidthAvg: 913,
+  subsets: { latin: { xWidthAvg: 913 }, thai: { xWidthAvg: 1536 } },
+} as const;
+export const breakpointsReplace = defineConfig({
+  breakpoints: {
+    mode: "replace",
+    values: { phone: "30rem", phoneXL: "40rem", tablet: "48rem", wide: "96rem" },
+    tailwind: true,
+  },
+  types: "./src/neshel.generated.d.ts",
+  typography: { metrics: { body: arial }, fallbacks: { body: [arial] } },
+});
+export const breakpointsExtend = defineConfig({ breakpoints: { values: { phone: "30rem" } } });

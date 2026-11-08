@@ -1,5 +1,8 @@
 import type { colorRoles } from "./contract.js";
 
+/** Default breakpoint names, ascending: sm 40rem, md 48rem, lg 64rem, xl 80rem, 2xl 96rem. */
+export type DefaultBreakpointName = "sm" | "md" | "lg" | "xl" | "2xl";
+
 /** One of the 21 semantic colour roles, in canonical order (see `colorRoles`). */
 export type ColorRole = (typeof colorRoles)[number];
 
@@ -34,7 +37,10 @@ export interface NamedThemeInput {
   readonly colors?: Partial<ThemeColors>;
 }
 
-/** Reserved for feature 004 (Capsize-compatible names). Validated for shape; produces no CSS. */
+/**
+ * Font metrics in Capsize's format (objects from `@capsizecss/metrics` can be passed directly).
+ * Used by `neshel generate` for cap-height sizing and trimming (feature 004).
+ */
 export interface FontMetrics {
   readonly capHeight: number;
   readonly ascent: number;
@@ -42,6 +48,27 @@ export interface FontMetrics {
   readonly lineGap: number;
   readonly unitsPerEm: number;
   readonly xHeight?: number;
+  /** Average character width; required for fallback font generation. */
+  readonly xWidthAvg?: number;
+  /** Family name; required for fallback fonts (the primary role uses its first family). */
+  readonly familyName?: string;
+  readonly fullName?: string;
+  readonly postscriptName?: string;
+  readonly category?: string;
+  readonly subsets?: Readonly<Record<string, { readonly xWidthAvg: number }>>;
+}
+
+/** A breakpoint threshold in `rem`, e.g. `"48rem"`. Checked by the `neshel` CLI. */
+export type BreakpointWidth = `${number}rem`;
+
+/** Consumer-defined responsive breakpoints (feature 004, contracts/breakpoints.md). */
+export interface BreakpointsInput {
+  /** `extend` keeps the defaults (sm, md, lg, xl, 2xl) and adds names; `replace` uses only `values`. */
+  readonly mode?: "extend" | "replace";
+  /** Name → `min-width` threshold. Names: lower camelCase (`phoneXL`); widths: distinct `rem`. */
+  readonly values: { readonly [name: string]: BreakpointWidth };
+  /** Also emit Tailwind CSS v4 `@theme` breakpoints in the generated stylesheet. */
+  readonly tailwind?: boolean;
 }
 
 /** How contrast failures of custom themes are reported. `neshel --strict` always means "error". */
@@ -68,14 +95,23 @@ export interface NeshelConfig {
   readonly spacing?: { readonly unit?: LengthValue };
   readonly typography?: {
     readonly families?: Partial<Record<FontRole, FontStack>>;
-    /** Reserved for feature 004. */
+    /** Metrics of each role's primary font (Capsize format). */
     readonly metrics?: Partial<Record<FontRole, FontMetrics>>;
+    /** Metrics of local fallback fonts, adjusted to the primary font with Capsize. */
+    readonly fallbacks?: Partial<Record<FontRole, readonly FontMetrics[]>>;
   };
+  /** Custom responsive breakpoints shared by layout and typography. */
+  readonly breakpoints?: BreakpointsInput;
   readonly focus?: { readonly width?: LengthValue; readonly offset?: LengthValue };
   /** Custom-theme contrast diagnostics; defaults to "warn". */
   readonly contrast?: ContrastPolicy;
   /** Output file relative to the config file's directory. Default `"./neshel.generated.css"`. */
   readonly output?: string;
+  /**
+   * Generated TypeScript declarations (written when `breakpoints` is set), relative to the config
+   * file's directory. Default `"./neshel.generated.d.ts"`.
+   */
+  readonly types?: string;
 }
 
 /** A foreground/background pair whose contrast is checked. */
@@ -92,6 +128,12 @@ export interface Defaults {
   readonly themes: { readonly light: ThemeColors; readonly dark: ThemeColors };
   readonly radius: { readonly base: LengthValue };
   readonly spacing: { readonly unit: LengthValue };
-  readonly typography: { readonly families: { readonly [F in FontRole]: readonly string[] } };
+  readonly typography: {
+    readonly families: { readonly [F in FontRole]: readonly string[] };
+    /** Default metrics (Inter for body and display; none for mono). */
+    readonly metrics: Partial<Record<FontRole, FontMetrics>>;
+  };
+  /** Default breakpoints (Tailwind CSS v4 defaults). */
+  readonly breakpoints: { readonly [B in DefaultBreakpointName]: BreakpointWidth };
   readonly focus: { readonly width: LengthValue; readonly offset: LengthValue };
 }

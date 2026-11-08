@@ -9,7 +9,11 @@ import {
   type NeshelConfig,
   type ThemeColors,
 } from "@neshel-ui/config";
+import { type ResolvedBreakpoints, resolveBreakpoints } from "./breakpoints.js";
+import { effectiveMetrics, fontRoles, type ResolvedFont, resolveFont } from "./fonts.js";
 import { normaliseColour } from "./validate/colour.js";
+
+export { fontRoles } from "./fonts.js";
 
 export type BaseThemeName = "light" | "dark";
 
@@ -27,10 +31,12 @@ export interface ResolvedConfig {
   readonly radius: Readonly<Record<"base" | "sm" | "md" | "lg" | "xl" | "full", string>>;
   readonly spacing: { readonly unit: string };
   readonly fonts: Readonly<Record<FontRole, string>>;
+  /** Font roles with Capsize constants and fallback faces (feature 004). */
+  readonly typography: Readonly<Record<FontRole, ResolvedFont>>;
   readonly focus: { readonly width: string; readonly offset: string };
+  /** Present only when the configuration declares `breakpoints`. */
+  readonly breakpoints?: ResolvedBreakpoints;
 }
-
-export const fontRoles: readonly FontRole[] = ["body", "display", "mono"];
 const IDENTIFIER = /^-?[A-Za-z_][A-Za-z0-9_-]*$/;
 
 /** Serialise a font stack: arrays are joined; names that are not identifiers are quoted. */
@@ -96,8 +102,12 @@ export function resolveConfig(config: NeshelConfig): ResolvedConfig {
   const derived = (factor: string) => `calc(var(--neshel-radius-base) * ${factor})`;
   const families = config.typography?.families ?? {};
   const fonts = {} as Record<FontRole, string>;
+  const typography = {} as Record<FontRole, ResolvedFont>;
   for (const role of fontRoles) {
-    fonts[role] = serialiseFontStack(families[role] ?? defaults.typography.families[role]);
+    const stack = serialiseFontStack(families[role] ?? defaults.typography.families[role]);
+    const metrics = effectiveMetrics(role, families, config.typography?.metrics);
+    typography[role] = resolveFont(role, stack, metrics, config.typography?.fallbacks?.[role]);
+    fonts[role] = typography[role].stack;
   }
 
   return {
@@ -112,9 +122,11 @@ export function resolveConfig(config: NeshelConfig): ResolvedConfig {
     },
     spacing: { unit: config.spacing?.unit ?? defaults.spacing.unit },
     fonts,
+    typography,
     focus: {
       width: config.focus?.width ?? defaults.focus.width,
       offset: config.focus?.offset ?? defaults.focus.offset,
     },
+    ...(config.breakpoints ? { breakpoints: resolveBreakpoints(config.breakpoints) } : {}),
   };
 }

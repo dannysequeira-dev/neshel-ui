@@ -23,9 +23,11 @@ const cases = [
   [Grid, { columns: { md: 0 } }, /invalid value 0 for "columns" at breakpoint "md"/],
   [
     Stack,
-    { space: { tablet: "4" } },
-    /unknown breakpoint "tablet" in "space"; expected one of: base, sm, md, lg, xl, 2xl/,
+    { space: { "Tablet-X": "4" } },
+    /invalid breakpoint key "Tablet-X" in "space"; use "base" or a breakpoint name/,
   ],
+  [Grid, { columns: { "": 2 } }, /invalid breakpoint key "" in "columns"/],
+  [Grid, { columns: { "3xl": 2 } }, /invalid breakpoint key "3xl" in "columns"/],
   [Stack, { alignY: "stretch" }, /invalid value "stretch" for "alignY"/],
   [Stack, { alignX: "baseline" }, /invalid value "baseline" for "alignX"/],
   [Inline, { alignX: "between" }, /invalid value "between" for "alignX"/],

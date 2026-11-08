@@ -26,7 +26,13 @@ test("a complete valid configuration produces no structural diagnostics", () => 
       focus: { width: "3px", offset: "0" },
       contrast: "error",
       output: "src/neshel.generated.css",
-    }),
+      breakpoints: {
+        mode: "replace",
+        values: { phone: "30rem", phoneXL: "40rem" },
+        tailwind: true,
+      },
+      types: "src/neshel.generated.d.ts",
+    }).filter((d) => d.severity === "error"),
     [],
   );
 });
@@ -93,7 +99,7 @@ test("reports every problem in one pass", () => {
   assert.equal(diagnostics.length, 5);
 });
 
-test("metrics are shape-checked and produce a reserved info", () => {
+test("metrics are shape-checked (no reserved info since feature 004)", () => {
   const diagnostics = validateStructure({
     typography: {
       metrics: { body: { capHeight: 700, ascent: 1000, descent: -250, lineGap: 0, unitsPerEm: 0 } },
@@ -101,7 +107,7 @@ test("metrics are shape-checked and produce a reserved info", () => {
   });
   assert.deepEqual(
     diagnostics.map((d) => `${d.severity}:${d.code}`),
-    ["error:invalid-metrics", "info:reserved"],
+    ["error:invalid-metrics"],
   );
 });
 

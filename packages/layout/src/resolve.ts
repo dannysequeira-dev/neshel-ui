@@ -1,35 +1,34 @@
 /**
- * Pure, deterministic resolution of layout props into class selections (research R5/R6).
- * 1. normalise and validate each responsive prop;
- * 2. cascade every prop mobile-first;
- * 3. derive the effective CSS token per property key at each breakpoint (precedence lives here);
- * 4. emit a selection only when a key's token changes; reset to `normal` when a derived value
- *    disappears (Flex direction changes).
+ * Pure, deterministic, order-free resolution of layout props into classes (ADR 0010, research
+ * R3/R4). Each responsive prop value becomes one class per written breakpoint key; the stylesheet's
+ * ascending media blocks resolve the mobile-first cascade and custom properties resolve the
+ * precedence between props (`justify` > `alignX`/`alignY` > `align`, Flex axes per direction).
+ * The output depends only on the props, never on configuration or environment.
  */
+import { isBreakpointKey, warnUnknownBreakpoint } from "./breakpoint-check.js";
 import { layoutError } from "./errors.js";
-import {
-  type BreakpointName,
-  breakpoints,
-  type PropertyKey,
-  propertyTables,
-  spaceScale,
-} from "./style-tables.js";
+import { responsiveClassName, spaceScale, type TableKey } from "./style-tables.js";
 
 type Scalar = string | number | boolean;
-export type Effective = Readonly<Record<string, Scalar | undefined>>;
-type Derived = Partial<Record<PropertyKey, string>>;
+
+export interface PropSpec {
+  /** Table key of the emitted classes. */
+  readonly key: TableKey;
+  /** Allowed scalar values. */
+  readonly allowed: readonly Scalar[];
+  /** Token of an allowed value (defaults to `String(value)`). */
+  readonly token?: (value: Scalar) => string;
+}
 
 export interface ComponentSpec {
   readonly name: string;
-  /** Allowed scalar values per responsive prop. */
-  readonly props: Readonly<Record<string, readonly Scalar[]>>;
-  /** Tokens already applied by the component's base class or default variants. */
-  readonly defaults?: Derived;
-  derive(effective: Effective, bp: BreakpointName): Derived;
+  readonly props: Readonly<Record<string, PropSpec>>;
+  /** Extra validation over the normalised props (Flex axes). */
+  validate?(normalized: Readonly<Record<string, Normalized>>): void;
 }
 
-/** Variant selections for tailwind-variants, e.g. `{ base_gap: "4", md_ai: "center" }`. */
-export type Selections = Record<string, string>;
+/** Written entries of one responsive prop, `base` first, then the consumer's key order. */
+export type Normalized = ReadonlyArray<readonly [breakpoint: string, value: Scalar]>;
 
 const isPlainObject = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
@@ -37,35 +36,37 @@ const isPlainObject = (value: unknown): value is Record<string, unknown> =>
 const describe = (value: unknown) =>
   typeof value === "string" ? JSON.stringify(value) : String(value);
 
+const SOURCE = "[@neshel-ui/layout]";
+
 export function normalize(
   component: string,
   prop: string,
   value: unknown,
   allowed: readonly Scalar[],
-): Partial<Record<BreakpointName, Scalar>> {
-  if (value === undefined || value === null) return {};
-  const entries: Array<[string, unknown]> = isPlainObject(value)
-    ? Object.entries(value)
-    : [["base", value]];
-  const result: Partial<Record<BreakpointName, Scalar>> = {};
+): Normalized {
+  if (value === undefined || value === null) return [];
+  const responsive = isPlainObject(value);
+  const entries: Array<[string, unknown]> = responsive ? Object.entries(value) : [["base", value]];
+  const result: Array<readonly [string, Scalar]> = [];
   for (const [key, item] of entries) {
-    if (!(breakpoints as readonly string[]).includes(key)) {
+    if (!isBreakpointKey(key)) {
       throw layoutError(
         component,
-        `unknown breakpoint "${key}" in "${prop}"; expected one of: ${breakpoints.join(", ")}.`,
+        `invalid breakpoint key ${JSON.stringify(key)} in "${prop}"; use "base" or a breakpoint name (lower camelCase, e.g. "md" or "tablet").`,
       );
     }
     if (item === undefined || item === null) continue;
     if (!allowed.includes(item as Scalar)) {
-      const where = key === "base" && !isPlainObject(value) ? "" : ` at breakpoint "${key}"`;
+      const where = responsive ? ` at breakpoint "${key}"` : "";
       throw layoutError(
         component,
         `invalid value ${describe(item)} for "${prop}"${where}; expected one of: ${allowed.map(describe).join(", ")}.`,
       );
     }
-    result[key as BreakpointName] = item as Scalar;
+    warnUnknownBreakpoint(`${SOURCE} <${component}>`, key);
+    result.push([key, item as Scalar]);
   }
-  return result;
+  return result.sort(([a], [b]) => (a === "base" ? -1 : b === "base" ? 1 : 0));
 }
 
 const present = (value: unknown) => value !== undefined && value !== null;
@@ -83,38 +84,27 @@ export function assertSpacing(component: string, props: Record<string, unknown>)
   }
 }
 
-export function resolve(spec: ComponentSpec, props: Record<string, unknown>): Selections {
-  const normalized = Object.entries(spec.props).map(
-    ([prop, allowed]) => [prop, normalize(spec.name, prop, props[prop], allowed)] as const,
-  );
-  const effective: Record<string, Scalar | undefined> = {};
-  const current: Partial<Record<PropertyKey, string>> = { ...spec.defaults };
-  const fromProps = new Set<PropertyKey>();
-  const selections: Selections = {};
-
-  for (const bp of breakpoints) {
-    for (const [prop, values] of normalized) {
-      if (values[bp] !== undefined) effective[prop] = values[bp];
-    }
-    const derived = spec.derive(effective, bp);
-    const keys = new Set<PropertyKey>([...fromProps, ...(Object.keys(derived) as PropertyKey[])]);
-    for (const key of keys) {
-      let next = derived[key];
-      if (next === undefined) {
-        // A derived value disappeared (only possible after a Flex direction change).
-        fromProps.delete(key);
-        next = spec.defaults?.[key] ?? "normal";
-        if (bp === "base" || !("resets" in propertyTables[key])) continue;
-      } else {
-        fromProps.add(key);
-      }
-      if (next !== current[key]) {
-        selections[`${bp}_${key}`] = next;
-        current[key] = next;
-      }
+/** Classes for the props of one component, in spec order (deterministic). */
+export function resolve(spec: ComponentSpec, props: Record<string, unknown>): string[] {
+  const normalized: Record<string, Normalized> = {};
+  for (const [prop, propSpec] of Object.entries(spec.props)) {
+    normalized[prop] = normalize(spec.name, prop, props[prop], propSpec.allowed);
+  }
+  spec.validate?.(normalized);
+  const classes: string[] = [];
+  for (const [prop, propSpec] of Object.entries(spec.props)) {
+    for (const [breakpoint, value] of normalized[prop] ?? []) {
+      const token = propSpec.token ? propSpec.token(value) : String(value);
+      classes.push(responsiveClassName(breakpoint, propSpec.key, token));
     }
   }
-  return selections;
+  return classes;
+}
+
+/** Join generated classes and the consumer's className. */
+export function joinClasses(classes: readonly string[], className: unknown): string | undefined {
+  const all = typeof className === "string" && className ? [...classes, className] : classes;
+  return all.length > 0 ? all.join(" ") : undefined;
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -128,117 +118,121 @@ const GRID = [...MAIN, "stretch"] as const;
 const JUSTIFY = ["start", "center", "end", "between", "around", "evenly"] as const;
 const BOOL = [true, false] as const;
 
-const spacingProps = { space: SPACE, spaceX: SPACE, spaceY: SPACE };
+const spacingProps = {
+  space: { key: "gap", allowed: SPACE },
+  spaceX: { key: "gap-x", allowed: SPACE },
+  spaceY: { key: "gap-y", allowed: SPACE },
+} as const satisfies Record<string, PropSpec>;
 
-function spacing(e: Effective): Derived {
-  const out: Derived = {};
-  if (e.space !== undefined) out.gap = String(e.space);
-  if (e.spaceX !== undefined) out["gap-x"] = String(e.spaceX);
-  if (e.spaceY !== undefined) out["gap-y"] = String(e.spaceY);
-  return out;
-}
+const alignProps = (align: readonly Scalar[], x: readonly Scalar[], y: readonly Scalar[]) =>
+  ({
+    align: { key: "align", allowed: align },
+    alignX: { key: "align-x", allowed: x },
+    alignY: { key: "align-y", allowed: y },
+  }) as const satisfies Record<string, PropSpec>;
 
-const str = (value: Scalar | undefined) => (value === undefined ? undefined : String(value));
-const axisX = (e: Effective) => str(e.alignX ?? e.align);
-const axisY = (e: Effective) => str(e.alignY ?? e.align);
-const wrapToken = (value: Scalar | undefined) =>
-  value === undefined ? undefined : value ? "wrap" : "nowrap";
-
-function compact(derived: Derived): Derived {
-  return Object.fromEntries(Object.entries(derived).filter(([, v]) => v !== undefined));
-}
+const wrapToken = (value: Scalar) => (value ? "wrap" : "nowrap");
 
 export const boxSpec: ComponentSpec = {
   name: "Box",
-  props: { display: ["none", "block", "inline", "inline-block"] },
-  derive: (e) => compact({ d: str(e.display) }),
+  props: { display: { key: "d", allowed: ["none", "block", "inline", "inline-block"] } },
 };
 
 export const stackSpec: ComponentSpec = {
   name: "Stack",
-  props: { ...spacingProps, align: MAIN, alignX: STACK_CROSS, alignY: MAIN, justify: JUSTIFY },
-  derive: (e) => compact({ ...spacing(e), ai: axisX(e), jc: str(e.justify) ?? axisY(e) }),
+  props: {
+    ...spacingProps,
+    ...alignProps(MAIN, STACK_CROSS, MAIN),
+    justify: { key: "justify", allowed: JUSTIFY },
+  },
 };
 
 export const inlineSpec: ComponentSpec = {
   name: "Inline",
   props: {
     ...spacingProps,
-    align: MAIN,
-    alignX: MAIN,
-    alignY: CROSS,
-    justify: JUSTIFY,
-    wrap: BOOL,
+    ...alignProps(MAIN, MAIN, CROSS),
+    justify: { key: "justify", allowed: JUSTIFY },
+    wrap: { key: "fw", allowed: BOOL, token: wrapToken },
   },
-  derive: (e) =>
-    compact({
-      ...spacing(e),
-      jc: str(e.justify) ?? axisX(e),
-      ai: axisY(e),
-      fw: wrapToken(e.wrap),
-    }),
 };
 
 export const centerSpec: ComponentSpec = {
   name: "Center",
-  props: { ...spacingProps, align: MAIN, alignX: MAIN, alignY: CROSS },
-  defaults: { ai: "center", jc: "center" },
-  derive: (e) => compact({ ...spacing(e), jc: axisX(e), ai: axisY(e) }),
+  props: { ...spacingProps, ...alignProps(MAIN, MAIN, CROSS) },
 };
 
 export const gridSpec: ComponentSpec = {
   name: "Grid",
   props: {
     ...spacingProps,
-    columns: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
-    align: GRID,
-    alignX: GRID,
-    alignY: GRID,
+    columns: { key: "cols", allowed: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] },
+    ...alignProps(GRID, GRID, GRID),
   },
-  derive: (e) => compact({ ...spacing(e), cols: str(e.columns), ji: axisX(e), ai: axisY(e) }),
 };
 
 export const containerSpec: ComponentSpec = {
   name: "Container",
-  props: { size: ["sm", "md", "lg", "xl", "2xl", "full"], gutter: SPACE },
-  defaults: { mw: "xl" },
-  derive: (e) => compact({ mw: str(e.size), pi: str(e.gutter) }),
+  props: {
+    size: { key: "mw", allowed: ["sm", "md", "lg", "xl", "2xl", "full"] },
+    gutter: { key: "pi", allowed: SPACE },
+  },
 };
+
+const valueAt = (entries: Normalized | undefined, breakpoint: string) =>
+  entries?.find(([key]) => key === breakpoint)?.[1];
+const onlyBase = (entries: Normalized | undefined) =>
+  !entries || entries.every(([key]) => key === "base");
+
+/**
+ * Flex main-axis check (contracts/typography-css.md §3): `stretch`/`baseline` on the axis mapped to
+ * `justify-content` throws where the effective direction is known without breakpoint order — at
+ * every key when `direction` is static, otherwise at the keys where `direction` is written (and
+ * the axis prop is written there or only at `base`). `justify` written at the same key (or static)
+ * replaces the main-axis alignment, as before.
+ */
+function validateFlex(normalized: Readonly<Record<string, Normalized>>): void {
+  const direction = normalized.direction;
+  const keys = new Set<string>();
+  for (const entries of Object.values(normalized)) for (const [key] of entries) keys.add(key);
+  if (keys.size === 0) keys.add("base");
+  const known = (prop: string, key: string) =>
+    valueAt(normalized[prop], key) ??
+    (onlyBase(normalized[prop]) ? valueAt(normalized[prop], "base") : undefined);
+  const stable = (prop: string, key: string) =>
+    valueAt(normalized[prop], key) !== undefined || onlyBase(normalized[prop]);
+  for (const key of keys) {
+    const directionKnown = onlyBase(direction) || valueAt(direction, key) !== undefined;
+    if (!directionKnown) continue;
+    const value = String(known("direction", key) ?? "row");
+    const row = value.startsWith("row");
+    const mainProp = row ? "alignX" : "alignY";
+    if (known("justify", key) !== undefined || !stable("justify", key)) continue;
+    const main =
+      stable(mainProp, key) && known(mainProp, key) !== undefined
+        ? known(mainProp, key)
+        : stable(mainProp, key) && stable("align", key)
+          ? known("align", key)
+          : undefined;
+    if (main !== undefined && !(MAIN as readonly Scalar[]).includes(main)) {
+      throw layoutError(
+        "Flex",
+        `"${mainProp}" value ${describe(main)} maps to justify-content (main axis) at breakpoint ` +
+          `"${key}" where direction is "${value}"; the main axis accepts start, center or end. ` +
+          `Use "justify" for distribution.`,
+      );
+    }
+  }
+}
 
 export const flexSpec: ComponentSpec = {
   name: "Flex",
   props: {
     ...spacingProps,
-    direction: ["row", "column", "row-reverse", "column-reverse"],
-    wrap: BOOL,
-    align: MAIN,
-    alignX: CROSS,
-    alignY: CROSS,
-    justify: JUSTIFY,
+    direction: { key: "dir", allowed: ["row", "column", "row-reverse", "column-reverse"] },
+    wrap: { key: "fw", allowed: BOOL, token: wrapToken },
+    ...alignProps(MAIN, CROSS, CROSS),
+    justify: { key: "justify", allowed: JUSTIFY },
   },
-  derive(e, bp) {
-    const direction = str(e.direction) ?? "row";
-    const row = direction.startsWith("row");
-    const [mainProp, crossProp] = row ? ["alignX", "alignY"] : ["alignY", "alignX"];
-    const main = str(e[mainProp] ?? e.align);
-    if (
-      e.justify === undefined &&
-      main !== undefined &&
-      !(MAIN as readonly string[]).includes(main)
-    ) {
-      throw layoutError(
-        "Flex",
-        `"${mainProp}" value ${describe(main)} maps to justify-content (main axis) at breakpoint ` +
-          `"${bp}" where direction is "${direction}"; the main axis accepts start, center or end. ` +
-          `Use "justify" for distribution.`,
-      );
-    }
-    return compact({
-      ...spacing(e),
-      dir: str(e.direction),
-      fw: wrapToken(e.wrap),
-      jc: str(e.justify) ?? main,
-      ai: str(e[crossProp] ?? e.align),
-    });
-  },
+  validate: validateFlex,
 };
