@@ -1,5 +1,10 @@
 # Theme and token model (proposed)
 
+> **Status (2026-11-07):** feature 002 has approved the final token, cascade and configuration
+> contracts in [specs/002-config-and-tokens](../specs/002-config-and-tokens/spec.md)
+> (ADRs 0006/0007). They supersede the illustrative example below, which describes the
+> Phase 001 baseline; this page is rewritten when feature 002 is implemented (task T067).
+
 ## Current working baseline
 
 `packages/config/src/styles.css` contains a handful of experimental namespaced

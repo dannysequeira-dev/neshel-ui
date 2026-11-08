@@ -2,15 +2,17 @@
 
 ## `@neshel-ui/config`
 
-Default import: `@neshel-ui/config/styles.css` (explicit import). Intended JS API:
-`defineConfig`, configuration typing, token validation and a future generated CSS
-contract. Do not promise that installing the package injects CSS automatically.
+Implemented today: `@neshel-ui/config/styles.css` (Phase 001 baseline) and an empty JS entry.
+Installing the package never injects CSS; consumers import a stylesheet explicitly.
 
-- Semantic tokens: primary/foreground, background/foreground, surface/foreground,
-  border, muted, destructive, focus, etc. The final list requires specification.
-- Light/dark and user-defined named modes (defer extra modes until needed).
-- Document contrast pairs and variable cascade.
-- No heavy React or Node runtime dependency for CSS-only consumers.
+Planned in feature 002 (approved, not implemented — [contracts](../specs/002-config-and-tokens/contracts/)):
+
+- Stylesheets `./tokens.css` (plain CSS), `./tailwind.css` (tokens + `@theme inline`) and
+  `./styles.css` (0.x alias of `tailwind.css`); import one of `tokens.css` / `tailwind.css`.
+- JS entry: `defineConfig`, types and frozen contract data `colorRoles`, `contrastPairs`,
+  `defaults`. No validation code, no runtime dependencies, no other subpath.
+- 21 semantic colour roles with documented contrast pairs; light, dark, `system` and named
+  themes extending light or dark (ADR 0006).
 
 ## `@neshel-ui/layout`
 
@@ -59,9 +61,12 @@ neshel validate   (validates settings, with actionable diagnostics)
 
 The CLI is a **deliberate placeholder**. Its importable entry (`.`) is empty and
 side-effect free; the `neshel` executable (`dist/bin.js`) prints a "not implemented"
-message and exits with code 1. File loading, runtime evaluation safety, deterministic
-output, export shape and naming must be specified and tested before making these
-commands available. Requires Node `>=22.13` (`engines`).
+message and exits with code 1. Requires Node `>=22.13` (`engines`).
+
+Planned in feature 002 (approved, not implemented — [contracts/cli.md](../specs/002-config-and-tokens/contracts/cli.md),
+ADR 0007): `neshel validate` and `neshel generate` (`--config`, `--out`, `--check`, `--strict`),
+exit codes 0–5, TS configs loaded with `jiti`, colour parsing/contrast with `colorjs.io`,
+peer dependency on `@neshel-ui/config`. `init` and a programmatic API are out of scope.
 
 ## Distribution contract (implemented in milestone 001.2)
 

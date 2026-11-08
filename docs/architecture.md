@@ -51,9 +51,9 @@ The workspace apps use Vite 8 with `@vitejs/plugin-react` 5 since milestone 001.
 ## Theme evaluation model
 
 ```text
-neshel.config.ts (optional) --[CLI, build time]--> neshel.generated.css
+neshel.config.ts (optional) --[CLI, build time]--> neshel.generated.css   (@layer neshel.config)
                                                            |
-@neshel-ui/config/styles.css (default CSS) -----------------+
+@neshel-ui/config/tokens.css | tailwind.css (defaults) ----+   (@layer neshel.defaults)
                                                            |
                                     consumer global CSS imports
                                                            |
@@ -66,10 +66,19 @@ The default path requires **no CLI**. The advanced config path generates a
 static stylesheet. Never run user TS config in the browser, or rely on a global
 React provider for primitive CSS theme switching.
 
+Planned in feature 002 (ADR 0006/0007, Accepted, not implemented): `styles.css` stays as a 0.x
+alias of `tailwind.css`; the CLI generator is private to `@neshel-ui/cli`, which peer-depends
+on `@neshel-ui/config` for the token contract (`colorRoles`, `contrastPairs`, `defaults`).
+
 ## Theme selector / layering
 
-Default theme: `:root`, overridden by `[data-neshel-theme="light|dark"]`.
-Future CLI must namespace safely and define cascade/precedence for custom tokens.
+Implemented (Phase 001): `:root` light, overridden by `[data-neshel-theme="light|dark"]`.
+
+Planned (feature 002, [contracts/css.md](../specs/002-config-and-tokens/contracts/css.md)):
+layers `neshel.defaults < neshel.config` under one `neshel` layer; complete theme blocks;
+`data-neshel-theme` = absent/`light` → light, `dark`, `system` (OS preference), named themes;
+canonical import order Tailwind → Neshel stylesheet → generated file → app CSS. Import-order
+independence is claimed only for orders verified by the browser check.
 Applications load their fonts; no remote fetch required by the library.
 
 ## Cross-platform development and delivery
@@ -102,15 +111,17 @@ Applications load their fonts; no remote fetch required by the library.
   [ADR 0003](decisions/0003-cross-platform-ci.md) amendment.
 - Vite 8 adopted after the 001.4 spike ([ADR 0005](decisions/0005-vite-8.md)).
 - Standard CSS tokens and the Tailwind `@theme` integration become separate
-  exports in feature 002.
+  exports in feature 002 ([ADR 0006](decisions/0006-token-stylesheets-and-theme-cascade.md)).
+- Configuration API boundary, Color.js and jiti in the CLI
+  ([ADR 0007](decisions/0007-config-engine-and-cli-loading.md)).
 
 Status of each decision (implemented / locally verified / CI-verified) is tracked in
 `specs/001-foundation/evidence.md`.
 
 ## Open decisions
 
-- Exact semantic token vocabulary and accessibility policy — proposed in feature 002
-  ([spec](../specs/002-config-and-tokens/spec.md), ADRs 0006/0007, status Proposed).
+- Exact semantic token vocabulary and accessibility policy — decided in feature 002
+  ([spec](../specs/002-config-and-tokens/spec.md), ADRs 0006/0007 Accepted); implementation pending.
 - Component-level CSS distribution strategy and choice of class variance tooling.
 - Stable polymorphism / `asChild` / refs contract for layouts and typography.
 
