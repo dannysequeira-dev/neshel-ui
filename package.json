@@ -33,11 +33,13 @@
     "spec-kit:init": "node scripts/bootstrap-spec-kit.mjs"
   },
   "devDependencies": {
+    "@arethetypeswrong/cli": "catalog:",
     "@biomejs/biome": "catalog:",
     "@changesets/cli": "catalog:",
-    "typescript": "catalog:",
     "@types/node": "catalog:",
     "@types/react": "catalog:",
-    "@types/react-dom": "catalog:"
+    "@types/react-dom": "catalog:",
+    "publint": "catalog:",
+    "typescript": "catalog:"
   }
 }
