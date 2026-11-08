@@ -48,10 +48,10 @@ US5 validate/generate. **Nothing below is started; 002.1 requires owner authoriz
 **Goal**: one import of `tailwind.css` (or the `styles.css` alias) gives tokens, utilities and dark mode.
 **Independent test**: Tailwind consumer from tarballs passes; drift test passes.
 
-- [ ] T015 [US1] Write `scripts/generate-default-css.mjs` (imports built `packages/cli/dist` generator, writes `packages/config/src/tokens.css` and `tailwind.css` with the "do not edit" header); delete the Phase 001 `packages/config/src/styles.css` source
+- [ ] T015 [US1] Write `scripts/generate-default-css.mjs` (imports built `packages/cli/dist` generator, writes `packages/config/src/tokens.css` and `tailwind.css` with the "do not edit" header); delete the Phase 001 `packages/config/src/styles.css` source; document the regenerate workflow (edit `contract.ts` → `build:packages` → `generate:tokens` → rebuild) in `CONTRIBUTING.md`
 - [ ] T016 [US1] Update `packages/config/package.json` exports (`./tokens.css`, `./tailwind.css`, `./styles.css`) and its build to copy both files and `tailwind.css` → `dist/styles.css` (extend `scripts/copy-css.mjs` if needed)
-- [ ] T017 [P] [US1] Test in `packages/config/test/default-css.test.mjs`: committed CSS equals generator output (drift), `dist/styles.css` byte-identical to `dist/tailwind.css`, `tokens.css` has no `@theme`
-- [ ] T018 [US1] Extend `scripts/check-pack.mjs` and `scripts/lib/pack-checks.mjs`: exact `config` export set, zero `config` dependencies, `node:`/import-free `dist/index.js`, alias identity, `cli` dependencies exactly `jiti` + `colorjs.io`, public workspace peer allowed only as a caret range, internal packages still rejected; negative cases in `tests/pack-checks.test.mjs`
+- [ ] T017 [P] [US1] Test in `packages/config/test/default-css.test.mjs`: committed CSS equals generator output (drift), `dist/styles.css` byte-identical to `dist/tailwind.css`, `tokens.css` has no `@theme`; plus `tests/no-hardcoded-colors.test.mjs` asserting no colour literals in `packages/{layout,typography,components}/src` (FR-002)
+- [ ] T018 [US1] Extend `scripts/check-pack.mjs` and `scripts/lib/pack-checks.mjs`: exact `config` export set, zero `config` dependencies, `node:`/import-free `dist/index.js`, alias identity, `cli` dependencies exactly `jiti` + `colorjs.io`, public workspace peer allowed only as a caret range, internal packages still rejected, no install lifecycle scripts (`preinstall`, `install`, `postinstall`, `prepare`) in any packed manifest (FR-023); negative cases in `tests/pack-checks.test.mjs`
 - [ ] T019 [US1] Switch `scripts/check-consumer.mjs` to a `tailwind` variant importing `tailwind.css`, extend utilities (new roles, radius scale, `font-neshel-mono`), add an alias build importing `styles.css`, derive expectations from shipped CSS; update `tests/consumer-checks.test.mjs`
 - [ ] T020 [P] [US1] Make `scripts/check-exports.mjs` resolve the new CSS subpaths
 - [ ] T021 [US1] Migrate `apps/playground-vite/src/styles.css` and `apps/storybook/src/styles.css` to `@neshel-ui/config/tailwind.css`
@@ -117,7 +117,7 @@ US5 validate/generate. **Nothing below is started; 002.1 requires owner authoriz
 - [ ] T048 [US5] Implement `packages/cli/src/commands/validate.ts` and `generate.ts` (`--check`, `--strict`)
 - [ ] T049 [US5] Rewrite `packages/cli/src/bin.ts`: `parseArgs`, help/version, exit codes 0–5, `--debug`, stderr diagnostics / stdout summary; `src/index.ts` stays empty
 - [ ] T050 [P] [US5] Test helpers in `packages/cli/test/helpers.mjs`: temp dirs with spaces and Unicode, spawn `dist/bin.js`, fixture writers
-- [ ] T051 [P] [US5] Test discovery and loading (all exit 3 cases) in `packages/cli/test/load.test.mjs`
+- [ ] T051 [P] [US5] Test discovery and loading (all exit 3 cases) in `packages/cli/test/load.test.mjs`, asserting that loading a TS config creates no files (FR-022)
 - [ ] T052 [P] [US5] Test `validate` (exit 1 cases with paths) in `packages/cli/test/cmd-validate.test.mjs`
 - [ ] T053 [P] [US5] Test `generate` in `packages/cli/test/cmd-generate.test.mjs`: write, unchanged keeps mtime, `--check` 0/4/4, output rejections and usage errors exit 2
 - [ ] T054 [P] [US5] Test I/O failures in `packages/cli/test/io.test.mjs`: unwritable target and injected rename failure exit 5 with the previous file intact
@@ -155,13 +155,13 @@ US5 validate/generate. **Nothing below is started; 002.1 requires owner authoriz
 002.1: T001–T005 → T006,T007 → T008 ‖ (T009 → T010) ‖ (T011 → T012 → T013) → T014
        → T015 → T016 → T017 ‖ T018 ‖ T019 ‖ T020 → T021, T022 → T023 → T024
 002.2 (needs 002.1): T025 → T026 ; T027 → T028 → T029 → T030 ; T031 after T025+T029 ; T032 ‖ T033 → T034
-002.3 (needs 002.1): T035 → T036 ‖ T037 → T038 ; T039 → T040 → T041 ; T042 (needs T014, T040) → T043 ; T044 (needs T025, T035)
+002.3 (needs 002.1; T044 also needs T025 from 002.2): T035 → T036 ‖ T037 → T038 ; T039 → T040 → T041 ; T042 (needs T014, T040) → T043 ; T044 (needs T025, T035)
 002.4 (needs 002.3): T045 ‖ T046 ‖ T047 → T048 → T049 → T050 → T051 ‖ T052 ‖ T053 ‖ T054 → T055 ; T056 ‖ ; → T057
 002.5 (needs 002.2 and 002.4): T058 → T059 → T060 → T061 ; T062 ; T063 ; T064–T068 ‖ ; T069 → T070 → T071 → T072
 ```
 
 - User-story order: US1 (002.1) → US2, US3 (002.2) → US4 (002.3) → US5 (002.4–002.5).
-- 002.2 and 002.3 depend only on 002.1 and may be reordered if the owner prefers.
+- 002.2 and 002.3 depend on 002.1; they may be reordered if the owner prefers, except that T044 needs the `plain` consumer (T025).
 
 ## Parallel examples
 

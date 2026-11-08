@@ -13,7 +13,7 @@
 
 ## Requirement Completeness
 
-- [ ] No [NEEDS CLARIFICATION] markers remain — see note 2
+- [x] No [NEEDS CLARIFICATION] markers remain — see note 2
 - [x] Requirements are testable and unambiguous
 - [x] Success criteria are measurable
 - [x] Success criteria are technology-agnostic (no implementation details) — see note 1
@@ -38,4 +38,5 @@
 2. The spec uses no inline `[NEEDS CLARIFICATION]` markers; instead five owner decisions are
    marked ⚑ (Q1 default theme without attribute, Q2 `styles.css` alias, Q3 palette, Q4 TS
    loader, Q5 named themes), each with a recommended answer. They must be answered through
-   `/speckit-clarify` before `/speckit-plan`.
+   `/speckit-clarify` before `/speckit-plan`. **Resolved 2026-11-07** by the owner's 002.0
+   approval (D1–D5) and recorded in the spec's clarification session.

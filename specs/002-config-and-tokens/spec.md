@@ -224,7 +224,8 @@ configured consumer built from packed tarballs; browser test confirms overrides.
 - Theme names: `system` reserved; `light`/`dark` cannot declare `extends`; names must match
   `^[a-z][a-z0-9-]{0,31}$`; `extends` must be `light` or `dark`.
 - Output path inside `node_modules`, equal to the config file, an existing directory, or not
-  ending in `.css` → exit 2.
+  ending in `.css` → nothing written; exit 2 when given by `--out`, exit 1 (`invalid-output`)
+  when given by the config's `output`.
 - Output unchanged → not rewritten (mtime preserved).
 - Unlayered consumer overrides beat every Neshel layer, including dark — documented, with a
   regression test showing the documented scoped pattern works.

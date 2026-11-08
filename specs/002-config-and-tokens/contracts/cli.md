@@ -26,7 +26,8 @@ neshel --version | -v
 | `--debug`         | Print stack traces for load and internal errors.                        |
 
 `validate` runs discovery, loading, structural validation, colour validation and contrast
-checks; it never resolves or touches the output path. `generate` does the same, then resolves the
+checks, and applies the output rules to the config's `output` value (never to `--out`, which it
+does not accept); it never writes. `generate` does the same, then resolves the
 output and writes (or compares).
 
 ## Discovery
@@ -83,8 +84,11 @@ Resolution:
 2. else config `output` → resolved against the **config file's directory**.
 3. else `neshel.generated.css` in the config file's directory.
 
-Rejections (exit 2, nothing written): extension not `.css` (case-insensitive); any path segment
-named `node_modules`; the resolved path equals the config file; the path is an existing directory.
+Rejections (nothing written): extension not `.css` (case-insensitive); any path segment named
+`node_modules`; the resolved path equals the config file; the path is an existing directory.
+Exit code depends on the source of the path: **2** (usage) when it came from `--out`; **1**
+(`invalid-output` diagnostic at path `output`) when it came from the config file. `validate`
+checks the config's `output` with the same rules.
 Parent directories are created (`mkdir -p` semantics).
 
 Write procedure:
@@ -102,14 +106,14 @@ Paths in messages are relative to the working directory and printed with `/`.
 
 ## Exit codes
 
-| Code | Meaning                                                                          |
-| ---- | -------------------------------------------------------------------------------- |
-| 0    | Success (warnings may be printed); also "unchanged"                              |
-| 1    | Validation failed: structural or colour errors, or contrast errors under `error` |
-| 2    | Usage: unknown command/option, missing value, rejected output path               |
-| 3    | Config not found, ambiguous, failed to load, or default export not an object     |
-| 4    | `generate --check`: output missing or out of date                                |
-| 5    | I/O or unexpected internal error (stack with `--debug`)                          |
+| Code | Meaning                                                                                                  |
+| ---- | -------------------------------------------------------------------------------------------------------- |
+| 0    | Success (warnings may be printed); also "unchanged"                                                      |
+| 1    | Validation failed: structural or colour errors (incl. config `output`), or contrast errors under `error` |
+| 2    | Usage: unknown command/option, missing value, rejected `--out` path                                      |
+| 3    | Config not found, ambiguous, failed to load, or default export not an object                             |
+| 4    | `generate --check`: output missing or out of date                                                        |
+| 5    | I/O or unexpected internal error (stack with `--debug`)                                                  |
 
 ## Diagnostics format
 
@@ -157,6 +161,7 @@ No `postinstall`/`prepare` hooks are used or recommended (FR-023).
 | Contrast failure: default / `contrast:"error"` / `--strict` / `contrast:"warn"` + `--strict` | 0 warn / 1 / 1 / 1                  |
 | `--check` fresh / stale / missing                                                            | 0 / 4 / 4                           |
 | `--out x.txt`, `--out node_modules/a.css`, `--out <dir>`, output = config                    | exit 2                              |
+| Same rejections via config `output`                                                          | exit 1 (`invalid-output`)           |
 | Unknown option / command / missing option value                                              | exit 2                              |
 | Unwritable target (read-only dir) / simulated rename failure                                 | exit 5, previous file intact        |
 | Unchanged output                                                                             | exit 0, mtime unchanged             |
