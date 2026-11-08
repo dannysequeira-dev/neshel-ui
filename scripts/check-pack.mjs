@@ -46,13 +46,17 @@ function pnpm(args, cwd) {
   } else if (launcher && /pnpm/i.test(launcher)) {
     result = spawnSync(launcher, args, { cwd, encoding: "utf8" });
   } else {
-    // Direct invocation (`node scripts/check-pack.mjs`): Windows needs the .cmd shim via a shell.
-    const quoted = args.map((arg) => (/\s/.test(arg) ? `"${arg}"` : arg));
-    result = spawnSync("pnpm", process.platform === "win32" ? quoted : args, {
-      cwd,
-      encoding: "utf8",
-      shell: process.platform === "win32",
-    });
+    // Direct invocation (`node scripts/check-pack.mjs`): Windows needs the .cmd shim via a
+    // shell. Pass one command string (args arrays with `shell` are deprecated, DEP0190).
+    // Quote arguments only: a quoted shim name breaks %~dp0 inside pnpm.cmd.
+    result =
+      process.platform === "win32"
+        ? spawnSync(`pnpm ${args.map((arg) => `"${arg}"`).join(" ")}`, {
+            cwd,
+            encoding: "utf8",
+            shell: true,
+          })
+        : spawnSync("pnpm", args, { cwd, encoding: "utf8" });
   }
   if (result.error)
     throw new Error(`Unable to run pnpm ${args.join(" ")}: ${result.error.message}`);
