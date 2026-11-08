@@ -104,13 +104,13 @@ Milestones 001.2–001.5 are intentionally coarse and will be refined before imp
 
 ## Phase 5: User Story 1 + 5 — milestone 001.4, matrix and documentation (P0/P1)
 
-- [ ] T041 [US1] Set `.nvmrc`/`.node-version` to 26; CI matrix ubuntu × {22, 24, 26}, windows × 26, macos × 26; `scripts/check-platform.mjs` keeps the 22.13 floor and reports the recommended major (D1, R17)
-- [ ] T042 [US5] Upgrade `.github/workflows/ci.yml` to `actions/checkout@v7`, `actions/setup-node@v7`, `pnpm/action-setup` pinned to v6.1.1's commit; cancel in-progress runs only for pull requests (R18)
-- [ ] T043 [US1] Cross-platform fixes: re-pack determinism check in `scripts/check-pack.mjs`; `scripts/lib/temp.mjs` (signal-safe temp dirs) used by `check-pack` and `check-consumer`; LF regression test `tests/line-endings.test.mjs` (R19)
-- [ ] T044 [US1] Time-boxed Vite 8 spike on a local branch (catalog `vite` only); run all gates; adopt or record the blocker in `research.md` R21 and an ADR (D4, SC-007)
-- [ ] T045 [P] [US1] Refresh `README.md`, `docs/SETUP-WINDOWS.es.md`, `docs/CROSS-PLATFORM.es.md`, `docs/architecture.md`, `docs/roadmap.md`, `docs/package-contracts.md`, `.specify/README.md`, `CLAUDE.md` command list; mark `docs/CLAUDE-FIRST-PROMPT.md` historical; retire `docs/VALIDATION-REPORT.md` in favour of `evidence.md`; no ZIP instructions
-- [ ] T046 [US1] Reproducibility: fresh clone into a temp path with spaces/Unicode, frozen install, `pnpm check`, `pnpm check:consumer`, Spec Kit feature selection (R22)
-- [ ] T047 [US1] Run all gates locally; add the verification matrix (implemented / local / CI / planned) to `specs/001-foundation/evidence.md`
+- [x] T041 [US1] Set `.nvmrc`/`.node-version` to 26; CI matrix ubuntu × {22, 24, 26}, windows × 26, macos × 26; `scripts/check-platform.mjs` keeps the 22.13 floor and reports the recommended major (D1, R17)
+- [x] T042 [US5] Upgrade `.github/workflows/ci.yml` to `actions/checkout@v7`, `actions/setup-node@v7`, `pnpm/action-setup` pinned to v6.1.1's commit; cancel in-progress runs only for pull requests (R18)
+- [x] T043 [US1] Cross-platform fixes: re-pack determinism check in `scripts/check-pack.mjs`; `scripts/lib/temp.mjs` (signal-safe temp dirs) used by `check-pack` and `check-consumer`; LF regression test `tests/line-endings.test.mjs` (R19)
+- [x] T044 [US1] Time-boxed Vite 8 spike on a local branch (catalog `vite` only); run all gates; adopt or record the blocker in `research.md` R21 and an ADR (D4, SC-007)
+- [x] T045 [P] [US1] Refresh `README.md`, `docs/SETUP-WINDOWS.es.md`, `docs/CROSS-PLATFORM.es.md`, `docs/architecture.md`, `docs/roadmap.md`, `docs/package-contracts.md`, `.specify/README.md`, `CLAUDE.md` command list; mark `docs/CLAUDE-FIRST-PROMPT.md` historical; retire `docs/VALIDATION-REPORT.md` in favour of `evidence.md`; no ZIP instructions
+- [x] T046 [US1] Reproducibility: fresh clone into a temp path with spaces/Unicode, frozen install, `pnpm check`, `pnpm check:consumer`, Spec Kit feature selection (R22)
+- [x] T047 [US1] Run all gates locally; add the verification matrix (implemented / local / CI / planned) to `specs/001-foundation/evidence.md`
 
 ## Phase 6: User Story 5 — milestone 001.5, native CI verification (P1)
 

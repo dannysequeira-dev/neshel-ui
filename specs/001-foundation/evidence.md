@@ -228,3 +228,65 @@ check:pack, **check:consumer**, Vite build, Storybook build.
 
 The external consumer (React 19.3.1, Vite 7.3.7, Tailwind 4.3.5, TypeScript 5.9.3, tarball
 install) is therefore CI-verified on Linux, Windows and macOS. Node 26 is still not in CI.
+
+## Milestone 001.4 — matrix, runtime alignment and documentation (2026-11-08, same machine)
+
+Implemented (local commits after `1f39917`, not pushed):
+
+- Node 26 primary: `.nvmrc`/`.node-version` = 26; `check-platform` reads the recommended
+  major from `.nvmrc`, keeps the 22.13 floor. Package/consumer floors unchanged.
+- CI matrix (5 jobs): ubuntu × {26, 22, 24}, windows × 26, macos × 26.
+- Actions: `actions/checkout@v7`, `actions/setup-node@v7`, `pnpm/action-setup` pinned to
+  `73e46992e05b19abd31f2f3c20e0e7370d762115` (v6.1.1); cancel-in-progress only for PRs.
+  Motivation: run 42435072683 warned that the v4 actions target the deprecated Node 20.
+- Cross-platform: re-pack determinism check in `check:pack`; signal-safe temp dirs
+  (`scripts/lib/temp.mjs`); LF regression test; five CRLF working-copy files restored.
+- Vite 8.3.6 adopted after an isolated spike (ADR 0005); `@vitejs/plugin-react` stays 5.2.0.
+- Documentation aligned (README, Windows/cross-platform guides, CLAUDE.md facts,
+  CONTRIBUTING, architecture, ADR 0003, package contracts, roadmap, Spec Kit onboarding);
+  `docs/VALIDATION-REPORT.md` retired; `docs/CLAUDE-FIRST-PROMPT.md` marked historical.
+
+Local results (Windows 11, Node v26.13.0, pnpm 12.16.1, Vite 8.3.6), after `pnpm clean`:
+
+| Gate                                             | Result                                                      |
+| ------------------------------------------------ | ----------------------------------------------------------- |
+| `pnpm run doctor`                                | Local pass (10 manifests, 40 scripts)                       |
+| `pnpm lint`                                      | Local pass (124 files)                                      |
+| `pnpm typecheck`                                 | Local pass                                                  |
+| `pnpm test`                                      | Local pass (32 pass, 1 skipped: SIGTERM test is POSIX-only) |
+| `pnpm build:packages` / `pnpm check:exports`     | Local pass                                                  |
+| `pnpm check:pack`                                | Local pass (5/5, including re-pack determinism)             |
+| `pnpm check:consumer`                            | Local pass (Vite 8.3.6)                                     |
+| `pnpm check`                                     | Local pass                                                  |
+| `pnpm build:playground` / `pnpm build:storybook` | Local pass                                                  |
+
+Reproducibility (research R22): fresh `git clone` of `b3e3211` into
+`%TEMP%\neshel clone ñ-*\neshel ui` with `core.autocrlf=true`: 0 CRLF files checked out;
+`pnpm install --frozen-lockfile`, `pnpm check`, `pnpm check:consumer --no-build`,
+`pnpm build:playground`, `pnpm build:storybook` all exit 0; Spec Kit feature selection
+(documented PowerShell/Bash command) writes `.specify/feature.json` and
+`check_prerequisites.py --require-tasks` resolves `specs/001-foundation`; `git status` clean.
+
+Vite 7 → 8 comparison: see ADR 0005 (same 78 CSS rules; Lightning CSS minifier differences;
+`DEP0205` from Storybook on Node 26 with both versions).
+
+CI: **pending push.** The Node 26 jobs, the new actions, the POSIX SIGTERM test and the
+Vite 8 builds have not run on GitHub Actions yet.
+
+## Phase 001 verification matrix (as of 2026-11-08, before the 001.4 push)
+
+| Capability                                                    | Implemented          | Verified locally (Windows, Node 26)                    | Verified in GitHub Actions                                       | Planned                      |
+| ------------------------------------------------------------- | -------------------- | ------------------------------------------------------ | ---------------------------------------------------------------- | ---------------------------- |
+| Frozen install, doctor, lint, typecheck, tests                | yes                  | yes                                                    | yes — Node 22 (Linux/Windows/macOS), 24 (Linux), run 42435072683 | Node 26 jobs (001.4 push)    |
+| Package build, check:exports                                  | yes                  | yes                                                    | yes — run 42435072683                                            | —                            |
+| check:pack (5 packages, publint, attw, external import/types) | yes                  | yes                                                    | yes — run 42435072683                                            | —                            |
+| check:pack re-pack determinism                                | yes                  | yes                                                    | no                                                               | 001.4 push                   |
+| check:consumer (config tarball, React 19, Vite, Tailwind v4)  | yes                  | yes (Vite 8.3.6)                                       | yes with Vite 7.3.7 — run 42435072683                            | Vite 8 in CI (001.4 push)    |
+| Signal-safe temp dirs (SIGTERM)                               | yes                  | partial (exit/error paths; SIGTERM skipped on Windows) | no                                                               | Linux/macOS run (001.4 push) |
+| LF line endings guard                                         | yes                  | yes                                                    | no                                                               | 001.4 push                   |
+| Node 26 on Linux, Windows, macOS                              | yes (matrix)         | yes (Windows)                                          | **no**                                                           | 001.4 push                   |
+| Vite 8 playground and Storybook builds                        | yes                  | yes                                                    | no                                                               | 001.4 push                   |
+| Fresh-clone reproducibility                                   | yes                  | yes                                                    | implicitly by every CI checkout                                  | —                            |
+| Spec Kit integration (Claude, Python scripts)                 | yes                  | yes                                                    | n/a                                                              | —                            |
+| Independent npm publication                                   | no (`private: true`) | —                                                      | —                                                                | release slice (007)          |
+| Next.js consumer, real components                             | no                   | —                                                      | —                                                                | features 003–006             |
