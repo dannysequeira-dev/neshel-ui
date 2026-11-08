@@ -6,7 +6,6 @@ import {
   existsSync,
   mkdirSync,
   mkdtempSync,
-  readdirSync,
   readFileSync,
   realpathSync,
   rmSync,
@@ -15,7 +14,7 @@ import {
 } from "node:fs";
 import { createRequire } from "node:module";
 import { tmpdir } from "node:os";
-import { dirname, join } from "node:path";
+import { basename, dirname, join } from "node:path";
 import { publint } from "publint";
 import { formatMessage } from "publint/utils";
 import {
@@ -27,6 +26,7 @@ import {
   checkUnexpectedFiles,
   exportEntries,
 } from "./lib/pack-checks.mjs";
+import { packPackage, pnpm } from "./lib/pnpm.mjs";
 import { readTarGz } from "./lib/tar.mjs";
 import { listWorkspacePackages, repoRoot } from "./lib/workspace.mjs";
 
@@ -36,35 +36,6 @@ const attwPackage = requireFromRoot.resolve("@arethetypeswrong/cli/package.json"
 const attwBin = join(dirname(attwPackage), JSON.parse(readFileSync(attwPackage, "utf8")).bin.attw);
 // attw's esm-only profile: CommonJS resolution modes are intentionally unsupported.
 const IGNORED_RESOLUTIONS = new Set(["node10", "node16-cjs"]);
-
-/** Run pnpm without a shell: reuse the pnpm that launched this script when possible. */
-function pnpm(args, cwd) {
-  const launcher = process.env.npm_execpath;
-  let result;
-  if (launcher && /\.[cm]?js$/.test(launcher)) {
-    result = spawnSync(process.execPath, [launcher, ...args], { cwd, encoding: "utf8" });
-  } else if (launcher && /pnpm/i.test(launcher)) {
-    result = spawnSync(launcher, args, { cwd, encoding: "utf8" });
-  } else {
-    // Direct invocation (`node scripts/check-pack.mjs`): Windows needs the .cmd shim via a
-    // shell. Pass one command string (args arrays with `shell` are deprecated, DEP0190).
-    // Quote arguments only: a quoted shim name breaks %~dp0 inside pnpm.cmd.
-    result =
-      process.platform === "win32"
-        ? spawnSync(`pnpm ${args.map((arg) => `"${arg}"`).join(" ")}`, {
-            cwd,
-            encoding: "utf8",
-            shell: true,
-          })
-        : spawnSync("pnpm", args, { cwd, encoding: "utf8" });
-  }
-  if (result.error)
-    throw new Error(`Unable to run pnpm ${args.join(" ")}: ${result.error.message}`);
-  if (result.status !== 0) {
-    throw new Error(`pnpm ${args.join(" ")} failed in ${cwd}:\n${result.stderr || result.stdout}`);
-  }
-  return result.stdout;
-}
 
 function node(args, cwd) {
   return spawnSync(process.execPath, args, { cwd, encoding: "utf8" });
@@ -260,13 +231,7 @@ async function main() {
 
     const artifacts = [];
     for (const pkg of publicPackages) {
-      const destination = join(workDir, "tarballs", pkg.dirName);
-      mkdirSync(destination, { recursive: true });
-      pnpm(["pack", "--pack-destination", destination], pkg.dir);
-      // pnpm's reported filename mixes separators on Windows (research R7); list instead.
-      const tarballs = readdirSync(destination).filter((file) => file.endsWith(".tgz"));
-      if (tarballs.length !== 1) throw new Error(`Expected one tarball for ${pkg.name}`);
-      const tarballPath = join(destination, tarballs[0]);
+      const tarballPath = packPackage(pkg.dir, join(workDir, "tarballs", pkg.dirName));
       const tarball = readFileSync(tarballPath);
       const files = new Map();
       for (const [path, contents] of readTarGz(tarball)) {
@@ -302,7 +267,7 @@ async function main() {
       artifacts.push({
         pkg,
         manifest,
-        tarball: tarballs[0],
+        tarball: basename(tarballPath),
         size: tarball.byteLength,
         fileCount: files.size,
         errors,
