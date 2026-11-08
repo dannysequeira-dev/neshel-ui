@@ -92,11 +92,21 @@ library tsconfigs; React `^19` peer; pack `src` for source maps; add `publint`, 
 portable `scripts/check-pack.mjs` (`pnpm check:pack`) driven by a workspace-derived package
 list; wire into `pnpm check` and CI.
 
-### 001.3 — External consumer smoke tests (outline)
+### 001.3 — External consumer integration
 
-FR-021, US-06, SC-005. Node script that packs packages, creates a temp project outside the
-repo (spaces + Unicode path), installs tarballs + Vite/Tailwind, builds, asserts `--neshel-*`
-tokens in output. CI job on all three OSes (needs registry access).
+FR-021, US-06, SC-005; design in [research.md](research.md) R13–R16, tasks T035–T040.
+
+1. Extract `scripts/lib/pnpm.mjs` (shell-free pnpm launcher + pack helper) from
+   `check-pack.mjs` (R15).
+2. Pure CSS assertions in `scripts/lib/consumer-checks.mjs` with unit tests (R14).
+3. `pnpm check:consumer [--no-build]`: pack `@neshel-ui/config`, generate a React 19 +
+   TypeScript + Vite + Tailwind v4 app in a temp dir outside the repo (spaces + Unicode),
+   install the tarball via `file:./vendor/*.tgz` with workspace-pinned tool versions, run
+   `tsc`, build with Vite, assert CSS tokens/utilities, package realpath and export
+   encapsulation, clean up with retries (R13, R14).
+4. CI step on every job (network required); not part of the offline `pnpm check` (R16).
+5. Scope guard: only the existing `./styles.css` and `.` exports are exercised; no Phase 002
+   token or Tailwind-split work.
 
 ### 001.4 — Cross-platform matrix and documentation (outline)
 

@@ -147,12 +147,12 @@ and the pnpm cache save.
 
 **CI pass** — all 4 configured jobs `success`; every step `success` (none skipped or cancelled):
 
-| Job | Lint | Tests | Typecheck | Build packages | check:exports | check:pack | Vite build | Storybook build |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| ubuntu-latest / Node 22 | pass | pass | pass | pass | pass | pass | pass | pass |
-| windows-latest / Node 22 | pass | pass | pass | pass | pass | pass | pass | pass |
-| macos-latest / Node 22 | pass | pass | pass | pass | pass | pass | pass | pass |
-| ubuntu-latest / Node 24 | pass | pass | pass | pass | pass | pass | pass | pass |
+| Job                      | Lint | Tests | Typecheck | Build packages | check:exports | check:pack | Vite build | Storybook build |
+| ------------------------ | ---- | ----- | --------- | -------------- | ------------- | ---------- | ---------- | --------------- |
+| ubuntu-latest / Node 22  | pass | pass  | pass      | pass           | pass          | pass       | pass       | pass            |
+| windows-latest / Node 22 | pass | pass  | pass      | pass           | pass          | pass       | pass       | pass            |
+| macos-latest / Node 22   | pass | pass  | pass      | pass           | pass          | pass       | pass       | pass            |
+| ubuntu-latest / Node 24  | pass | pass  | pass      | pass           | pass          | pass       | pass       | pass            |
 
 - Install with `--frozen-lockfile` and `pnpm run doctor` passed on all jobs; the
   `setup-node` post step (pnpm cache save) completed.

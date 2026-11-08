@@ -59,7 +59,7 @@ Milestones 001.2–001.5 are intentionally coarse and will be refined before imp
 - [x] T015 Remove the "initial bootstrap only" install step and its `hashFiles` conditions; keep a single `pnpm install --frozen-lockfile` step
 - [x] T016 Move `pnpm/action-setupv4` before `actions/setup-nodev4` and add `cache: pnpm` with `cache-dependency-path: pnpm-lock.yaml` to `setup-node` (research R3)
 - [x] T017 Add a blocking `Lint` step running `pnpm lint` after `pnpm run doctor`; delete the trailing "Lint is still a manual gate" comment
-- [x] T018 Keep the existing Node matrix unchanged (D1 matrix belongs to T037, research R6)
+- [x] T018 Keep the existing Node matrix unchanged (D1 matrix belongs to T041, research R6)
 
 ### Storybook and docs
 
@@ -87,7 +87,7 @@ Milestones 001.2–001.5 are intentionally coarse and will be refined before imp
 - [x] T027 [US2] Remove unused workspace dependencies (`core` from layout/typography/components, `config` from components/cli) and refresh `pnpm-lock.yaml` (FR-003, R9)
 - [x] T028 [US2] Add root `tsconfig.library.json` (NodeNext) and make `packages/*/tsconfig.json` extend it; apps keep `Bundler` (FR-018, R10)
 - [x] T029 [US2] React peer `^19.0.0` in layout/typography/components; `files` include `src` minus tests/stories (FR-019); cli: separate `src/bin.ts` (bin) from importable `src/index.ts`, `sideEffects: false`, `engines.node >=22.13` (FR-017)
-- [x] T030 [US6] Add `publint` and `@arethetypeswrong/cli` to the catalog and root devDependencies
+- [x] T030 [US6] Add `publint` and `arethetypeswrong/cli` to the catalog and root devDependencies
 - [x] T031 [US6] Add `scripts/lib/tar.mjs` (ustar/pax reader) and `scripts/lib/pack-checks.mjs` (pure validators) with `node:test` suites in `tests/`
 - [x] T032 [US6] Implement `scripts/check-pack.mjs` (`pnpm check:pack`, `--no-build`) per R11/R12: build, pack, validate, runtime import + tsc NodeNext/Bundler from an external temp consumer, publint, attw, cleanup (FR-020)
 - [x] T033 [US6] Wire `check:pack --no-build` into `pnpm check` and `.github/workflows/ci.yml`; update `specs/001-foundation/contracts/quality-gates.md`
@@ -95,41 +95,45 @@ Milestones 001.2–001.5 are intentionally coarse and will be refined before imp
 
 ## Phase 4: User Story 6 — milestone 001.3, external consumer smoke (P0)
 
-- [ ] T035 [US6] Implement an external-consumer smoke script under `scripts/` (temp dir with spaces + Unicode outside the repo; install tarballs + Vite/Tailwind; build; assert `--neshel-` in CSS) (FR-021, SC-005)
-- [ ] T036 [US6] Add it as a CI job on all three OSes; record results in `evidence.md`
+- [x] T035 [US6] Record the consumer fixture, assertions, shared pnpm helper and gate placement in `specs/001-foundation/research.md` R13–R16
+- [ ] T036 [US6] Extract the pnpm launcher and single-package pack helper into `scripts/lib/pnpm.mjs`; refactor `scripts/check-pack.mjs` to use it (R15)
+- [ ] T037 [US6] Add pure CSS assertions in `scripts/lib/consumer-checks.mjs` (R14 items 2–4) with `node:test` coverage in `tests/consumer-checks.test.mjs`
+- [ ] T038 [US6] Implement `scripts/check-consumer.mjs` (`pnpm check:consumer`, `--no-build`): pack config, generate the app outside the repo, install, `tsc`, Vite build, assertions R14 1–6, cleanup with retries (FR-021, SC-005)
+- [ ] T039 [US6] Add a `Verify external consumer` step to every job in `.github/workflows/ci.yml`; update `contracts/quality-gates.md`, `quickstart.md`, `docs/package-contracts.md` (tested vs intended compatibility)
+- [ ] T040 [US6] Run all gates plus the consumer test locally; record results in `specs/001-foundation/evidence.md`
 
 ## Phase 5: User Story 1 + 5 — milestone 001.4, matrix and documentation (P0/P1)
 
-- [ ] T037 [US1] Set `.nvmrc` and `.node-version` to 26; CI matrix Node 26 × {ubuntu, windows, macos} + Node 22/24 × ubuntu in `.github/workflows/ci.yml` (D1)
-- [ ] T038 [US1] Time-boxed Vite 8 spike (catalog, playground, Storybook, CI); adopt or record the blocker in `research.md` and an ADR (D4, SC-007)
-- [ ] T039 [P] [US5] Evaluate GitHub Actions major versions for runtime deprecations in `.github/workflows/ci.yml`
-- [ ] T040 [P] [US1] Refresh `docs/CROSS-PLATFORM.es.md`, `docs/roadmap.md`, `README.md`; retire `docs/VALIDATION-REPORT.md` in favour of `evidence.md`
+- [ ] T041 [US1] Set `.nvmrc` and `.node-version` to 26; CI matrix Node 26 × {ubuntu, windows, macos} + Node 22/24 × ubuntu in `.github/workflows/ci.yml` (D1)
+- [ ] T042 [US1] Time-boxed Vite 8 spike (catalog, playground, Storybook, CI); adopt or record the blocker in `research.md` and an ADR (D4, SC-007)
+- [ ] T043 [P] [US5] Evaluate GitHub Actions major versions for runtime deprecations in `.github/workflows/ci.yml`
+- [ ] T044 [P] [US1] Refresh `docs/CROSS-PLATFORM.es.md`, `docs/roadmap.md`, `README.md`; retire `docs/VALIDATION-REPORT.md` in favour of `evidence.md`
 
 ## Phase 6: User Story 5 — milestone 001.5, native CI verification (P1)
 
-- [ ] T041 [US5] With maintainer approval, push and record per-job CI results (run ID, OS, Node) in `specs/001-foundation/evidence.md` (SC-006)
+- [ ] T045 [US5] With maintainer approval, push and record per-job CI results (run ID, OS, Node) in `specs/001-foundation/evidence.md` (SC-006)
 
 ## Phase 7: Polish & cross-cutting
 
-- [ ] T042 Run `/speckit-analyze` after each milestone's tasks are refined; update `roadmap.md` status (implemented / local / CI)
+- [ ] T046 Run `/speckit-analyze` after each milestone's tasks are refined; update `roadmap.md` status (implemented / local / CI)
 
 ---
 
 ## Dependencies & execution order
 
 - Phase 1 (done) → Phase 2 (001.1, blocks everything) → Phase 3 (001.2) → Phase 4 (001.3, needs `check:pack` tarballs) → Phase 5 (001.4) → Phase 6 (001.5).
-- Phase 5's Vite spike (T038) may run in parallel with Phases 3–4 on a separate local branch; it must not block them (D4).
+- Phase 5's Vite spike (T042) may run in parallel with Phases 3–4 on a separate local branch; it must not block them (D4).
 - Within 001.1: T007–T009 before T012; T010/T011 independent; T015–T017 sequential (same file); T019/T020 parallel; T021–T023 last.
 
 ## Parallel examples
 
 ```text
 001.1: T010 (check-portability.mjs) ‖ T011 (check-workspace.mjs) ‖ T019 (storybook main.ts) ‖ T020 (CROSS-PLATFORM.es.md)
-001.4: T039 (workflow action versions review) ‖ T040 (docs refresh)
+001.4: T043 (workflow action versions review) ‖ T044 (docs refresh)
 ```
 
 ## Implementation strategy
 
 Deliver one milestone at a time; each ends with local gates, an evidence entry, local
-commits and a maintainer review. 001.0–001.1 are complete; 001.2 is the current authorized
-scope; nothing from 001.3+ is implemented until approved.
+commits and a maintainer review. 001.0–001.2 are complete and CI-verified; 001.3 is the current authorized
+scope; nothing from 001.4+ is implemented until approved.

@@ -133,3 +133,50 @@ Packed with `pnpm pack` (pnpm 12.16.1) before any 001.2 change:
   ESM-only package intentionally does not support) and `--no-definitely-typed` (no network,
   deterministic). publint runs with default level; any `error` fails the gate, `warning`
   and `suggestion` are printed and recorded for review.
+
+## R13 — External consumer fixture (001.3)
+
+- **Decision**: `pnpm check:consumer [--no-build]` (`scripts/check-consumer.mjs`) generates a
+  fresh React 19 + TypeScript + Vite + Tailwind v4 (`@tailwindcss/vite`) app in a temporary
+  directory outside the repository (path with spaces and Unicode), copies the packed
+  `@neshel-ui/config` tarball into it and depends on it as `file:./vendor/<tarball>.tgz`.
+- **Rationale**: Generating the fixture keeps one source of truth for versions and avoids a
+  second committed app with its own lockfile drifting from the workspace. A relative `file:`
+  path avoids drive-letter and space quoting issues.
+- **Versions**: tool versions are pinned to the exact versions the workspace resolved
+  (read from `apps/playground-vite/node_modules/*/package.json`), e.g. Vite 7.3.7,
+  Tailwind 4.3.5, React 19.3.1, TypeScript 5.9.3, so the consumer tests the same stack.
+- **Network**: development tools come from the npm registry; only Neshel-UI comes from the
+  local tarball. `allowBuilds: { esbuild: true }` is written to the consumer's
+  `pnpm-workspace.yaml`, mirroring the repository.
+- **Alternatives**: committed fixture app (drift, duplicate lockfile); `pnpm link` or
+  `workspace:` (does not test the artifact).
+
+## R14 — What the consumer test asserts
+
+Observed Tailwind 4.3.5 output for the current `@neshel-ui/config/styles.css`:
+`.bg-neshel-primary{background-color:var(--neshel-primary)}`, `--neshel-primary:#6d28d9`,
+`[data-neshel-theme=dark]`, no `@theme` left after compilation. The test asserts:
+
+1. The installed package is a real copy under the consumer (`realpath` outside the repo).
+2. Light and dark `--neshel-*` declarations and both theme selectors are in the built CSS.
+3. Neshel utilities generated through `@theme inline` reference the variables, e.g.
+   `.bg-neshel-primary{background-color:var(--neshel-primary)}`.
+4. Core Tailwind utilities used by the app are generated (e.g. `.p-10`, `.rounded-2xl`),
+   proving Tailwind ran; no raw `@theme`/`@import "@neshel-ui` remains.
+5. `tsc --noEmit` passes for an app that imports `@neshel-ui/config` (types resolve).
+6. Encapsulation: importing an unexported deep path (`@neshel-ui/config/dist/index.js`)
+   fails with `ERR_PACKAGE_PATH_NOT_EXPORTED`, while `@neshel-ui/config` resolves.
+
+## R15 — Shared pnpm invocation
+
+- **Decision**: Move the shell-free pnpm launcher and the "pack one package" logic from
+  `check-pack.mjs` to `scripts/lib/pnpm.mjs`, reused by both gates.
+- **Rationale**: Two real consumers now; the Windows fallback (DEP0190, `%~dp0`) must not be
+  duplicated.
+
+## R16 — Gate placement
+
+- **Decision**: `check:consumer` runs as its own CI step on every job, but is **not** part of
+  `pnpm check`, which stays offline-capable. Cleanup uses `rmSync` with retries for
+  transient Windows file locks.
