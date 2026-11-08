@@ -1,7 +1,7 @@
 # Feature 001 — Reproducible monorepo foundation
 
 - **Status:** approved specification (2026-11-07); scaffold installed and locally verified
-  on Windows for the gates listed in the evidence log; 001.1 pushed with a partial CI pass (lint fix pending push); 001.2 locally verified (CI pending); 001.3–001.5 not yet implemented; native CI parity for the new requirements not yet verified.
+  on Windows for the gates listed in the evidence log; 001.1–001.2 CI-verified (run 42434061443); 001.3 locally verified (CI pending); 001.4–001.5 not yet implemented; native CI parity for the new requirements not yet verified.
 - **Priority:** P0
 - **Owner:** project maintainer
 - **Date:** 2026-11-07

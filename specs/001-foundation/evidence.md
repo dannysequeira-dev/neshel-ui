@@ -158,3 +158,57 @@ and the pnpm cache save.
   `setup-node` post step (pnpm cache save) completed.
 - **Not covered**: Node 26 on any runner (the D1 matrix lands in 001.4); Node 22/24 are
   CI-verified on Linux, Node 22 on Windows and macOS.
+
+## Milestone 001.3 — external consumer integration (2026-11-08, same machine)
+
+Implemented (local commits after `e361192`): `scripts/lib/pnpm.mjs` (shared launcher, isolated
+env for external projects), `scripts/lib/consumer-checks.mjs` (+6 unit tests),
+`pnpm check:consumer [--no-build] [--keep]`, and a `Verify external consumer` CI step.
+
+Consumer fixture: generated in `%TEMP%\neshel consumer ñ-*\consumer app ñ` (outside the repo).
+Tools pinned to the workspace versions: React 19.3.1, react-dom 19.3.1, Vite 7.3.7,
+`@vitejs/plugin-react` 5.2.0, Tailwind CSS 4.3.5, `@tailwindcss/vite` 4.3.5, TypeScript 5.9.3,
+`@types/react`/`@types/react-dom` 19.3.0. `@neshel-ui/config` comes only from
+`file:./vendor/neshel-ui-config-0.0.0.tgz`; the consumer lockfile records
+`resolution: {integrity: sha512-…, tarball: file:vendor/neshel-ui-config-0.0.0.tgz}`.
+
+Observed in the consumer's built CSS (Tailwind 4.3.5, minified):
+
+- `--neshel-primary:#6d28d9` (light) and `--neshel-primary:#c4a6ff` (dark); all 9
+  `--neshel-*` declarations from the tarball's `styles.css`; `[data-neshel-theme=light]`
+  and `[data-neshel-theme=dark]`.
+- Utilities from `@theme inline`: `.bg-neshel-primary{background-color:var(--neshel-primary)}`,
+  `.text-neshel-primary-foreground{color:var(--neshel-primary-foreground)}`,
+  `.border-neshel-border{border-color:var(--neshel-border)}`,
+  `.rounded-neshel-base{border-radius:var(--neshel-radius-base)}`,
+  `.font-neshel-body{font-family:var(--neshel-font-body)}` (8 checked).
+- Core utilities: `.p-10{padding:calc(var(--spacing) * 10)}`, `.rounded-2xl`, `.min-h-screen`,
+  `.font-semibold`; no `@theme` or `@import "@neshel-ui` left.
+- `tsc --noEmit` (Bundler) passes; Node resolves `@neshel-ui/config` and
+  `@neshel-ui/config/styles.css` inside the installed copy; `@neshel-ui/config/dist/index.js`
+  fails with `ERR_PACKAGE_PATH_NOT_EXPORTED`.
+
+Mutation tests (each isolated and reverted), all detected:
+
+1. Consumer without `@import "@neshel-ui/config/styles.css"` → 9 missing tokens, 2 missing
+   theme selectors, missing Neshel utilities.
+2. Vite config without the Tailwind plugin → all 8 Neshel utilities missing.
+3. `@neshel-ui/config` `./styles.css` export pointing at a missing file → Vite build and Node
+   resolution fail.
+
+Local results (Windows 11, Node v26.13.0, pnpm 12.16.1), after `pnpm clean`:
+
+| Gate                                             | Result                                               |
+| ------------------------------------------------ | ---------------------------------------------------- |
+| `pnpm run doctor`                                | Local pass (10 manifests, 40 scripts)                |
+| `pnpm lint`                                      | Local pass (121 files)                               |
+| `pnpm typecheck`                                 | Local pass                                           |
+| `pnpm test`                                      | Local pass (26/26)                                   |
+| `pnpm build:packages` / `pnpm check:exports`     | Local pass                                           |
+| `pnpm check:pack`                                | Local pass (5/5)                                     |
+| `pnpm check:consumer`                            | Local pass (also via PowerShell 7 and direct `node`) |
+| `pnpm check`                                     | Local pass                                           |
+| `pnpm build:playground` / `pnpm build:storybook` | Local pass                                           |
+
+No temporary directory left behind. CI: **pending push** (consumer step not yet run on
+Linux/macOS or Node 22/24).

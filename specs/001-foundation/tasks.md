@@ -96,11 +96,11 @@ Milestones 001.2–001.5 are intentionally coarse and will be refined before imp
 ## Phase 4: User Story 6 — milestone 001.3, external consumer smoke (P0)
 
 - [x] T035 [US6] Record the consumer fixture, assertions, shared pnpm helper and gate placement in `specs/001-foundation/research.md` R13–R16
-- [ ] T036 [US6] Extract the pnpm launcher and single-package pack helper into `scripts/lib/pnpm.mjs`; refactor `scripts/check-pack.mjs` to use it (R15)
-- [ ] T037 [US6] Add pure CSS assertions in `scripts/lib/consumer-checks.mjs` (R14 items 2–4) with `node:test` coverage in `tests/consumer-checks.test.mjs`
-- [ ] T038 [US6] Implement `scripts/check-consumer.mjs` (`pnpm check:consumer`, `--no-build`): pack config, generate the app outside the repo, install, `tsc`, Vite build, assertions R14 1–6, cleanup with retries (FR-021, SC-005)
-- [ ] T039 [US6] Add a `Verify external consumer` step to every job in `.github/workflows/ci.yml`; update `contracts/quality-gates.md`, `quickstart.md`, `docs/package-contracts.md` (tested vs intended compatibility)
-- [ ] T040 [US6] Run all gates plus the consumer test locally; record results in `specs/001-foundation/evidence.md`
+- [x] T036 [US6] Extract the pnpm launcher and single-package pack helper into `scripts/lib/pnpm.mjs`; refactor `scripts/check-pack.mjs` to use it (R15)
+- [x] T037 [US6] Add pure CSS assertions in `scripts/lib/consumer-checks.mjs` (R14 items 2–4) with `node:test` coverage in `tests/consumer-checks.test.mjs`
+- [x] T038 [US6] Implement `scripts/check-consumer.mjs` (`pnpm check:consumer`, `--no-build`): pack config, generate the app outside the repo, install, `tsc`, Vite build, assertions R14 1–6, cleanup with retries (FR-021, SC-005)
+- [x] T039 [US6] Add a `Verify external consumer` step to every job in `.github/workflows/ci.yml`; update `contracts/quality-gates.md`, `quickstart.md`, `docs/package-contracts.md` (tested vs intended compatibility)
+- [x] T040 [US6] Run all gates plus the consumer test locally; record results in `specs/001-foundation/evidence.md`
 
 ## Phase 5: User Story 1 + 5 — milestone 001.4, matrix and documentation (P0/P1)
 
