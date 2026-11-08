@@ -60,7 +60,7 @@ output and writes (or compares).
    because Color.js also accepts named colours.
 3. **Parsing** with `colorjs.io/fn`, registering only `sRGB`, `HSL`, `OKLCH`; parse failure →
    `invalid-color`.
-4. **Alpha**: alpha < 1 on a contrast-checked role → `alpha-not-allowed` (error).
+4. **Alpha**: alpha < 1 on any role other than `border` → `alpha-not-allowed` (error).
 5. **Gamut**: not in sRGB gamut → `out-of-gamut` warning; mapped with Color.js CSS gamut mapping
    for contrast only (emitted CSS keeps the authored value).
 6. **Contrast**: `contrastWCAG21` for every pair in `contrastPairs`, for every resolved custom
@@ -152,7 +152,7 @@ No `postinstall`/`prepare` hooks are used or recommended (FR-023).
 | `extends` missing on named theme / unknown base / on `light`                                 | exit 1                              |
 | Named colour, `var()`, `color-mix()`, `lab()`                                                | exit 1 (`unsupported-color-syntax`) |
 | Malformed `oklch(`                                                                           | exit 1 (`invalid-color`)            |
-| Alpha on paired role / alpha on `border`                                                     | exit 1 / exit 0                     |
+| Alpha on a non-`border` role / alpha on `border`                                             | exit 1 / exit 0                     |
 | Out-of-gamut `oklch()`                                                                       | exit 0, warning                     |
 | Contrast failure: default / `contrast:"error"` / `--strict` / `contrast:"warn"` + `--strict` | 0 warn / 1 / 1 / 1                  |
 | `--check` fresh / stale / missing                                                            | 0 / 4 / 4                           |

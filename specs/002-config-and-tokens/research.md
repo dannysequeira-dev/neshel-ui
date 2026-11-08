@@ -231,7 +231,7 @@ Findings recorded in [contracts/css.md](contracts/css.md#cascade-layers):
 | ---------------------------------------------------------------- | ---------------------------------------------- | -------------------------------------------------------------------- |
 | `docs/architecture.md` "exports … plus `./styles.css`"; ADR 0004 | `config` gains `tokens.css`, `tailwind.css`    | ADR 0006 amends; architecture updated now                            |
 | `docs/package-contracts.md` `cli` runtime deps "none"            | `jiti`, `colorjs.io`, peer `@neshel-ui/config` | ADR 0007; table marked planned now, updated on implementation (T066) |
-| `docs/architecture.md` "no runtime dependency between packages"  | first real one: `cli` → `config` (peer)        | Expected by the diagram; `check:pack` change (T012)                  |
+| `docs/architecture.md` "no runtime dependency between packages"  | first real one: `cli` → `config` (peer)        | Expected by the diagram; `check:pack` change (T018)                  |
 | `docs/package-contracts.md` "defer extra modes until needed"     | named themes (D5)                              | Updated now                                                          |
 | `docs/package-contracts.md` "token validation" in config         | validation lives in `cli`                      | Updated now                                                          |
 | `docs/theming.md` illustrative config, violet; "after base CSS"  | new shape, palette, canonical order            | Status note now; rewrite in T067                                     |

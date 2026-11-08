@@ -129,7 +129,7 @@ images, non-token colours) remains the consumer's responsibility.
 
 `#rgb`, `#rgba`, `#rrggbb`, `#rrggbbaa`, `rgb()`/`rgba()`, `hsl()`/`hsla()`, `oklch()`.
 
-- Opaque only on contrast-checked roles (all except `border`).
+- Every role must be opaque except `border` (alpha allowed).
 - Rejected in 0.x: named colours, `transparent`, `currentColor`, `var()`, `color-mix()`,
   `light-dark()`, relative colour syntax, `lab()`, `lch()`, `oklab()`, `color()`, `hwb()`.
 - Out-of-sRGB-gamut values: warning; contrast computed after CSS gamut mapping.

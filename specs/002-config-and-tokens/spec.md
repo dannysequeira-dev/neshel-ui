@@ -218,7 +218,7 @@ configured consumer built from packed tarballs; browser test confirms overrides.
 - Unknown keys anywhere → error with "did you mean" when edit distance ≤ 2.
 - Named colours, `var()`, `color-mix()`, `light-dark()`, relative colour syntax, `lab()`/`lch()`
   and other spaces → error (unsupported syntax in 0.x).
-- Alpha < 1 on any contrast-checked role → error; alpha allowed on `border`.
+- Alpha < 1 on any role other than `border` → error; alpha allowed on `border` only.
 - Colours outside the sRGB gamut (e.g. wide `oklch()`) → warning; contrast is computed after CSS
   gamut mapping to sRGB.
 - Theme names: `system` reserved; `light`/`dark` cannot declare `extends`; names must match

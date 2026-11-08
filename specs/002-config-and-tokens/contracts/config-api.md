@@ -115,7 +115,7 @@ export function defineConfig<const T extends NeshelConfig>(config: T & ExactConf
 `ExactConfig<T>` is an internal helper type that turns unknown keys (e.g. `primay`) into type
 errors and requires named themes to declare `extends` while forbidding it on `light`/`dark`.
 TypeScript cannot check string contents (colours, lengths, theme-name pattern); the CLI does.
-The precise helper is finalised with type fixtures in 002.3 (T030–T032); the public signature
+The precise helper is finalised with type fixtures in 002.3 (T035–T038); the public signature
 above does not change.
 
 ```ts

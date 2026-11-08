@@ -25,7 +25,7 @@ and noted that any exported subpath is public regardless of an "experimental" la
    CSS generation are private modules of `@neshel-ui/cli`.
 3. **Colour processing** uses Color.js (`colorjs.io`, procedural `colorjs.io/fn`, only sRGB, HSL
    and OKLCH registered) behind one internal module, after a syntax allowlist (hex, `rgb[a]()`,
-   `hsl[a]()`, `oklch()`). Alpha < 1 is rejected on contrast-checked roles; out-of-gamut colours
+   `hsl[a]()`, `oklch()`). Alpha < 1 is rejected on every role except `border`; out-of-gamut colours
    warn and are gamut-mapped (CSS Color 4) for contrast only. Contrast is WCAG 2.1.
 4. **Contrast policy**: built-in themes must pass (tests). Custom themes: effective policy is
    `error` with `--strict`, else config `contrast`, else `warn`.
