@@ -2,7 +2,8 @@
 
 Accessible React UI components.
 
-**Status:** bootstrap scaffold only. Not published. Public API and tests will be
-implemented through Spec Kit slices.
+**Status:** pre-release, **not published to npm**. Packaging, exports, type declarations and
+source maps are validated from the packed tarball (feature 001); the package currently
+empty placeholder. Components arrive in feature 005.
 
-See [`docs/package-contracts.md`](../../docs/package-contracts.md) for requirements.
+Contract and compatibility: https://github.com/dannysequeira-dev/neshel-ui/blob/main/docs/package-contracts.md

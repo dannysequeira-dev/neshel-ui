@@ -65,8 +65,8 @@ commands available. Requires Node `>=22.13` (`engines`).
 
 ## Distribution contract (implemented in milestone 001.2)
 
-Status: **implemented and CI-verified** with `pnpm check:pack` (run 42434061443: Node 22 on
-Linux, Windows and macOS; Node 24 on Linux; locally on Windows with Node 26). **No package is
+Status: **implemented and CI-verified** with `pnpm check:pack` and `pnpm check:consumer`
+(latest: run 42436591929 — Node 26 on Linux, Windows and macOS; Node 22 and 24 on Linux). **No package is
 published**; all six keep `private: true`, and the `@neshel-ui` scope remains unverified on npm.
 
 | Package                 | Intended public | Runtime deps | Peer deps       | Exports                              |
@@ -122,16 +122,16 @@ separates the plain CSS tokens from the Tailwind integration.
 
 ### Tested versus intended compatibility
 
-| Aspect                      | Tested (automated)                                                                                         | Intended, not yet tested                            |
-| --------------------------- | ---------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
-| Package under consumer test | `@neshel-ui/config` (CSS + empty JS entry)                                                                 | layout, typography, components, cli in real apps    |
-| Bundler / framework         | Vite 8.3.6 + `@vitejs/plugin-react` 5.2.0 (Vite 7.3.7 CI-verified in run 42435072683, no longer re-tested) | Vite 8 (001.4 spike), Next.js (feature 006)         |
-| Tailwind CSS                | 4.3.5 via `@tailwindcss/vite`                                                                              | other Tailwind 4.x minors; PostCSS plugin setup     |
-| React                       | 19.3.1                                                                                                     | other React 19.x; React 18 is not supported         |
-| TypeScript                  | 5.9.3, `moduleResolution` Bundler (consumer) and NodeNext/Bundler (`check:pack`)                           | other 5.x versions                                  |
-| Package manager             | pnpm 12.16.1                                                                                               | npm, Yarn, Bun                                      |
-| Node.js (build tooling)     | 26 locally; 22 and 24 in CI (run 42435072683)                                                              | Node 26 in CI (matrix added in 001.4, pending push) |
-| OS                          | CI on Linux, Windows and macOS for `check:pack` and `check:consumer` (run 42435072683)                     | —                                                   |
+| Aspect                      | Tested (automated)                                                                                             | Intended, not yet tested                         |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ |
+| Package under consumer test | `@neshel-ui/config` (CSS + empty JS entry)                                                                     | layout, typography, components, cli in real apps |
+| Bundler / framework         | Vite 8.3.6 + `@vitejs/plugin-react` 5.2.0 (Vite 7.3.7 was CI-verified in run 42435072683, no longer re-tested) | Next.js (feature 006); `@vitejs/plugin-react` 6  |
+| Tailwind CSS                | 4.3.5 via `@tailwindcss/vite`                                                                                  | other Tailwind 4.x minors; PostCSS plugin setup  |
+| React                       | 19.3.1                                                                                                         | other React 19.x; React 18 is not supported      |
+| TypeScript                  | 5.9.3, `moduleResolution` Bundler (consumer) and NodeNext/Bundler (`check:pack`)                               | other 5.x versions                               |
+| Package manager             | pnpm 12.16.1                                                                                                   | npm, Yarn, Bun                                   |
+| Node.js (build tooling)     | 26 on Linux, Windows and macOS; 22 and 24 on Linux (run 42436591929)                                           | —                                                |
+| OS                          | Linux, Windows and macOS for `check:pack` and `check:consumer` (run 42436591929)                               | —                                                |
 
 ## Build conventions
 

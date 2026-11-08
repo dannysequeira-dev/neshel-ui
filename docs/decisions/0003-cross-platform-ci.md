@@ -16,6 +16,8 @@ output and build pipeline must not depend on that fact.
    scripts and Node standard-library file/path operations.
 2. GitHub Actions executes a native Linux, Windows and macOS matrix on Node 22,
    plus a Node 24 Linux compatibility job. Failing platforms remain visible.
+   _(Matrix superseded by the 2026-11-07 amendment below: Node 26 on all three OSes plus
+   Node 22/24 on Linux; CI-verified in run 42436591929.)_
 3. Spec Kit initialization uses its official Python script mode via a Node
    wrapper. Official scripts are never copied manually into this repository.
 4. Text files use LF; add automated smoke tests using spaces/unicode in paths.
