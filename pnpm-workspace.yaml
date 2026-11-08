@@ -1,24 +1,24 @@
 packages:
-  - 'packages/*'
-  - 'apps/*'
+  - "packages/*"
+  - "apps/*"
 
 catalog:
-  '@biomejs/biome': '^2.6.5'
-  '@changesets/cli': '^3.0.3'
-  '@types/node': '^22.15.0'
-  '@types/react': '^19.2.0'
-  '@types/react-dom': '^19.2.0'
-  '@storybook/addon-a11y': '10.6.6'
-  '@storybook/addon-docs': '10.6.6'
-  '@storybook/react-vite': '10.6.6'
-  '@tailwindcss/vite': '^4.1.0'
-  '@vitejs/plugin-react': '^5.2.0'
-  'react': '^19.2.0'
-  'react-dom': '^19.2.0'
-  'storybook': '10.6.6'
-  'tailwindcss': '^4.1.0'
-  'typescript': '^5.9.3'
-  'vite': '^7.3.7'
+  "@biomejs/biome": "^2.6.5"
+  "@changesets/cli": "^3.0.3"
+  "@types/node": "^22.15.0"
+  "@types/react": "^19.2.0"
+  "@types/react-dom": "^19.2.0"
+  "@storybook/addon-a11y": "10.6.6"
+  "@storybook/addon-docs": "10.6.6"
+  "@storybook/react-vite": "10.6.6"
+  "@tailwindcss/vite": "^4.1.0"
+  "@vitejs/plugin-react": "^5.2.0"
+  "react": "^19.2.0"
+  "react-dom": "^19.2.0"
+  "storybook": "10.6.6"
+  "tailwindcss": "^4.1.0"
+  "typescript": "^5.9.3"
+  "vite": "^7.3.7"
 
 # Vite 7 is kept for the bootstrap until the full Tailwind/Storybook Vite 8
 # peer-dependency matrix is verified on a real install.

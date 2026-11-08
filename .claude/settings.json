@@ -1,9 +1,6 @@
 {
   "permissions": {
-    "ask": [
-      "Bash(git push *)",
-      "Bash(gh repo create *)"
-    ],
+    "ask": ["Bash(git push *)", "Bash(gh repo create *)"],
     "deny": [
       "Bash(npm publish *)",
       "Bash(npm publish)",

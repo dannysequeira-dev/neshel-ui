@@ -22,7 +22,7 @@ API shape proposal:
   <Grid columns={{ base: 1, md: 3 }} gap="6">
     <Box>Item</Box>
   </Grid>
-</Stack>
+</Stack>;
 ```
 
 Responsive props must translate to CSS variables/static variants, not runtime

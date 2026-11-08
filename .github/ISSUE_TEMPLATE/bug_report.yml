@@ -1,7 +1,7 @@
 name: Bug report
 description: Report a reproducible issue in Neshel-UI
-title: '[Bug]: '
-labels: ['bug']
+title: "[Bug]: "
+labels: ["bug"]
 body:
   - type: textarea
     id: reproduction
@@ -20,6 +20,6 @@ body:
     id: version
     attributes:
       label: Package and version
-      placeholder: '@neshel-ui/components@0.1.0'
+      placeholder: "@neshel-ui/components@0.1.0"
     validations:
       required: true

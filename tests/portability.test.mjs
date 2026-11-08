@@ -1,13 +1,18 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
 import {
-  copyFileSync, existsSync, mkdirSync, mkdtempSync, readFileSync,
-  rmSync, writeFileSync,
+  copyFileSync,
+  existsSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { fileURLToPath } from "node:url";
 import test from "node:test";
+import { fileURLToPath } from "node:url";
 
 const root = fileURLToPath(new URL("../", import.meta.url));
 const script = (name) => fileURLToPath(new URL(`../scripts/${name}`, import.meta.url));
@@ -20,7 +25,8 @@ function temporary(testContext) {
 
 test("portable scripts do not require a shell-specific command", () => {
   const result = spawnSync(process.execPath, [script("check-portability.mjs")], {
-    cwd: root, encoding: "utf8",
+    cwd: root,
+    encoding: "utf8",
   });
   assert.equal(result.status, 0, result.stderr || result.stdout);
 });
@@ -32,7 +38,8 @@ test("CSS copy accepts paths with spaces and Unicode on every host", (t) => {
   mkdirSync(join(dir, "fuente á"), { recursive: true });
   writeFileSync(source, ":root { --neshel-primary: #663399; }\n", "utf8");
   const result = spawnSync(process.execPath, [script("copy-css.mjs"), source, target], {
-    cwd: dir, encoding: "utf8",
+    cwd: dir,
+    encoding: "utf8",
   });
   assert.equal(result.status, 0, result.stderr || result.stdout);
   assert.equal(readFileSync(target, "utf8"), readFileSync(source, "utf8"));
@@ -53,7 +60,8 @@ test("clean only deletes output within its own repository, regardless of cwd", (
   writeFileSync(join(localDist, "generated.txt"), "delete me", "utf8");
   writeFileSync(join(unrelatedDist, "keep.txt"), "keep me", "utf8");
   const result = spawnSync(process.execPath, [join(scriptsDir, "clean.mjs")], {
-    cwd: dir, encoding: "utf8",
+    cwd: dir,
+    encoding: "utf8",
   });
   assert.equal(result.status, 0, result.stderr || result.stdout);
   assert.equal(existsSync(localDist), false);

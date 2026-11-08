@@ -35,8 +35,15 @@ if (process.argv.includes("--help")) {
 }
 
 const args = [
-  "init", "--here", "--force", "--non-interactive", "--integration", "claude",
-  "--script", "py", "--ignore-agent-tools",
+  "init",
+  "--here",
+  "--force",
+  "--non-interactive",
+  "--integration",
+  "claude",
+  "--script",
+  "py",
+  "--ignore-agent-tools",
 ];
 const command = process.platform === "win32" ? "specify.exe" : "specify";
 console.info(`Bootstrapping official Spec Kit from ${root}`);

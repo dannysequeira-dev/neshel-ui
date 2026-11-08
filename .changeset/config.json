@@ -7,11 +7,7 @@
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": [
-    "@neshel-ui/core",
-    "@neshel-ui/storybook",
-    "@neshel-ui/playground-vite"
-  ],
+  "ignore": ["@neshel-ui/core", "@neshel-ui/storybook", "@neshel-ui/playground-vite"],
   "privatePackages": {
     "version": false,
     "tag": false

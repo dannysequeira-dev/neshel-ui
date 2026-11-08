@@ -9,7 +9,7 @@ and package name availability are unverified.
 1. Verify scope ownership and name availability on npm; check brand conflicts.
 2. Settle ADR 0001's private-core dependency trap: bundle core or publish it.
 3. Finalize public exports, `files`, dependency/peer ranges, license and
-   `publishConfig: { "access": "public" }` on each *approved* public package.
+   `publishConfig: { "access": "public" }` on each _approved_ public package.
 4. Execute `pnpm install` and commit the real `pnpm-lock.yaml`.
 5. Run `pnpm doctor` and lint/typecheck/tests and all package/app builds. Require native
    Windows, Linux and macOS GitHub Actions checks to pass before release.

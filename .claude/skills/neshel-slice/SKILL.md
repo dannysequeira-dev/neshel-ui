@@ -1,4 +1,5 @@
 ---
+
 name: neshel-slice
 description: Plan or implement a new Neshel-UI package feature through a Spec Kit slice. Use for tokens, layout, typography, components, or CLI work.
 ---

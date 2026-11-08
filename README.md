@@ -21,14 +21,14 @@ precise typography (Capsize), composable layouts, and independently consumable n
 
 ## Planned npm packages
 
-| Package | Purpose | Current status |
-| --- | --- | --- |
-| `@neshel-ui/config` | Semantic tokens, CSS themes, typed configuration | Baseline CSS only |
-| `@neshel-ui/layout` | Box, Stack, Inline, Grid, Center, Container | Empty module |
-| `@neshel-ui/typography` | Heading, Text, Paragraph, Caption + Capsize | Empty module |
-| `@neshel-ui/components` | Button, Card, Badge, Input, Separator, Skeleton | Empty module |
-| `@neshel-ui/cli` | Validate config; generate static CSS | Placeholder CLI |
-| `@neshel-ui/core` | Private utilities, types and shared contracts | Empty internal module |
+| Package                 | Purpose                                          | Current status        |
+| ----------------------- | ------------------------------------------------ | --------------------- |
+| `@neshel-ui/config`     | Semantic tokens, CSS themes, typed configuration | Baseline CSS only     |
+| `@neshel-ui/layout`     | Box, Stack, Inline, Grid, Center, Container      | Empty module          |
+| `@neshel-ui/typography` | Heading, Text, Paragraph, Caption + Capsize      | Empty module          |
+| `@neshel-ui/components` | Button, Card, Badge, Input, Separator, Skeleton  | Empty module          |
+| `@neshel-ui/cli`        | Validate config; generate static CSS             | Placeholder CLI       |
+| `@neshel-ui/core`       | Private utilities, types and shared contracts    | Empty internal module |
 
 The `@neshel-ui` npm scope is **proposed, not verified or reserved**.
 
