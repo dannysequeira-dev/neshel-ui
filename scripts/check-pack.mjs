@@ -2,18 +2,16 @@
 // Validates every intended public package from its real `pnpm pack` tarball (ADR 0004 §5,
 // research R11/R12). Cross-platform: Node standard library only, no shell built-ins.
 import { spawnSync } from "node:child_process";
+import { createHash } from "node:crypto";
 import {
   existsSync,
   mkdirSync,
-  mkdtempSync,
   readFileSync,
   realpathSync,
-  rmSync,
   symlinkSync,
   writeFileSync,
 } from "node:fs";
 import { createRequire } from "node:module";
-import { tmpdir } from "node:os";
 import { basename, dirname, join } from "node:path";
 import { publint } from "publint";
 import { formatMessage } from "publint/utils";
@@ -28,6 +26,7 @@ import {
 } from "./lib/pack-checks.mjs";
 import { packPackage, pnpm } from "./lib/pnpm.mjs";
 import { readTarGz } from "./lib/tar.mjs";
+import { createTempDir } from "./lib/temp.mjs";
 import { listWorkspacePackages, repoRoot } from "./lib/workspace.mjs";
 
 const requireFromRoot = createRequire(join(repoRoot, "package.json"));
@@ -218,7 +217,7 @@ async function main() {
   }
 
   // Spaces and Unicode in the path exercise path handling on every OS.
-  const workDir = mkdtempSync(join(tmpdir(), "neshel check-pack ñ-"));
+  const { dir: workDir, dispose } = createTempDir("neshel check-pack ñ-");
   const consumerDir = join(workDir, "consumer app");
   const nodeModules = join(consumerDir, "node_modules");
   let failed = false;
@@ -233,6 +232,13 @@ async function main() {
     for (const pkg of publicPackages) {
       const tarballPath = packPackage(pkg.dir, join(workDir, "tarballs", pkg.dirName));
       const tarball = readFileSync(tarballPath);
+      // Research R19: packing the same build twice must produce byte-identical tarballs.
+      const repacked = readFileSync(packPackage(pkg.dir, join(workDir, "repack", pkg.dirName)));
+      const sha256 = (bytes) => createHash("sha256").update(bytes).digest("hex");
+      const determinismErrors =
+        sha256(tarball) === sha256(repacked)
+          ? []
+          : ["packing twice produced different tarballs (non-deterministic contents or metadata)"];
       const files = new Map();
       for (const [path, contents] of readTarGz(tarball)) {
         files.set(path.replace(/^package\//, ""), contents);
@@ -245,6 +251,7 @@ async function main() {
         ...checkSourceMaps(files),
         ...checkSideEffects(manifest),
         ...checkUnexpectedFiles(files),
+        ...determinismErrors,
       ];
       const lint = await runPublint(tarball, manifest);
       const types = runAttw(tarballPath, manifest);
@@ -290,7 +297,7 @@ async function main() {
       `Consumer checks: ${consumer.imports} runtime import(s), ${consumer.typed} typed entrypoint(s) under NodeNext and Bundler.`,
     );
   } finally {
-    rmSync(workDir, { recursive: true, force: true });
+    dispose();
   }
 
   if (failed) {

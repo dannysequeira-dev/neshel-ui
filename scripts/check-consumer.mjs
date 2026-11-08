@@ -7,17 +7,15 @@ import { spawnSync } from "node:child_process";
 import {
   copyFileSync,
   mkdirSync,
-  mkdtempSync,
   readdirSync,
   readFileSync,
   realpathSync,
-  rmSync,
   writeFileSync,
 } from "node:fs";
-import { tmpdir } from "node:os";
 import { basename, dirname, join, relative, sep } from "node:path";
 import { checkConsumerCss } from "./lib/consumer-checks.mjs";
 import { packPackage, pnpm } from "./lib/pnpm.mjs";
+import { createTempDir } from "./lib/temp.mjs";
 import { listWorkspacePackages, repoRoot } from "./lib/workspace.mjs";
 
 const PACKAGE_UNDER_TEST = "@neshel-ui/config";
@@ -184,7 +182,8 @@ async function main() {
   }
 
   // Outside the repository, with spaces and Unicode in every generated segment.
-  const workDir = mkdtempSync(join(tmpdir(), "neshel consumer ñ-"));
+  const keep = process.argv.includes("--keep");
+  const { dir: workDir, dispose } = createTempDir("neshel consumer ñ-", { keep });
   const appDir = join(workDir, "consumer app ñ");
   const errors = [];
   console.info(`External consumer: ${appDir}`);
@@ -263,12 +262,8 @@ async function main() {
       errors.push(`Node resolution check failed:\n${encapsulation.stdout}${encapsulation.stderr}`);
     }
   } finally {
-    if (process.argv.includes("--keep")) {
-      console.info(`Kept ${workDir} (--keep).`);
-    } else {
-      // Retries cover transient Windows file locks (antivirus, esbuild service shutdown).
-      rmSync(workDir, { recursive: true, force: true, maxRetries: 5, retryDelay: 200 });
-    }
+    if (keep) console.info(`Kept ${workDir} (--keep).`);
+    dispose();
   }
 
   if (errors.length > 0) {
