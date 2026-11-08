@@ -84,9 +84,10 @@ jobs:
       - name: Verify packed artifacts
         run: pnpm check:pack --no-build
 
-      # Installs packed tarballs into generated React 19 + Vite apps outside the workspace
-      # (Tailwind v4 and plain CSS; tools come from the registry). Builds feed the browser check.
-      - name: Verify external consumers (Tailwind and plain CSS)
+      # Installs packed tarballs into generated React 19 + Vite apps outside the workspace:
+      # Tailwind v4, plain CSS, and a configured app that runs the packed `neshel generate`
+      # (tools come from the registry). Builds feed the browser check.
+      - name: Verify external consumers (Tailwind, plain CSS, configured)
         run: pnpm check:consumer --no-build --artifacts "${{ runner.temp }}/neshel-consumers"
 
       # Computed-style precedence matrix in headless Chrome (preinstalled on GitHub runners).

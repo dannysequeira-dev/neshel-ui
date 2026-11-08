@@ -16,6 +16,7 @@ import {
   rowsFor,
 } from "./lib/browser-matrix.mjs";
 import { findBrowser, launchBrowser } from "./lib/cdp.mjs";
+import { CONFIGURED_FIXTURE } from "./lib/consumer-configured.mjs";
 import { createTempDir } from "./lib/temp.mjs";
 import { repoRoot } from "./lib/workspace.mjs";
 
@@ -23,13 +24,8 @@ const configDist = join(repoRoot, "packages", "config", "dist");
 const cliDist = join(repoRoot, "packages", "cli", "dist");
 const load = (path) => import(pathToFileURL(path).href);
 
-/** Configuration used for generated-CSS fixtures (hex only, so expectations are exact). */
-export const GENERATED_FIXTURE_CONFIG = {
-  themes: {
-    light: { colors: { primary: "#1d3f73", background: "#fffdf8" } },
-    sepia: { extends: "light", colors: { background: "#f4ecd8", foreground: "#2b2118" } },
-  },
-};
+// Same configuration as the "configured" consumer, so its computed values can be compared too.
+const GENERATED_FIXTURE_CONFIG = CONFIGURED_FIXTURE;
 
 function argValue(name) {
   const index = process.argv.indexOf(name);
