@@ -81,3 +81,10 @@ test("the browser-safe entry imports only relative modules and no Node built-ins
     assert.doesNotMatch(source, /\bnode:|\bprocess\.|\brequire\(/, file);
   }
 });
+
+test("defineConfig returns its argument unchanged", async () => {
+  const { defineConfig } = await import("../dist/index.js");
+  const config = { themes: { sepia: { extends: "light" } } };
+  assert.equal(defineConfig(config), config);
+  assert.deepEqual(config, { themes: { sepia: { extends: "light" } } });
+});

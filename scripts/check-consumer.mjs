@@ -226,14 +226,46 @@ const allVariants = {
   return <section className="card">Neshel-UI plain CSS consumer</section>;
 }
 `,
+      // SC-006: a bundle importing only defineConfig must stay tiny and carry no contract data.
+      "size-entry.ts": `import { defineConfig } from "${CONFIG}";
+
+export const config = defineConfig({ themes: { light: { colors: { primary: "#1d3f73" } } } });
+`,
+      "bundle-size.mjs": `import { build } from "vite";
+const [result] = [].concat(
+  await build({
+    configFile: false,
+    logLevel: "silent",
+    build: {
+      write: false,
+      minify: true,
+      lib: { entry: "size-entry.ts", formats: ["es"], fileName: "size" },
+    },
+  }),
+);
+const code = result.output.filter((chunk) => chunk.type === "chunk").map((chunk) => chunk.code).join("");
+console.log(JSON.stringify({ bytes: Buffer.byteLength(code), code }));
+`,
     }),
-    check: ({ outputCss, installed, buildLog }) => {
+    check: ({ outputCss, installed, buildLog, appDir }) => {
       const errors = checkPlainCss(
         outputCss,
         readFileSync(join(installed, "dist", "tokens.css"), "utf8"),
       );
       if (/unknown at[- ]rule/i.test(buildLog)) {
         errors.push(`the build reported an unknown at-rule:\n${buildLog}`);
+      }
+      const size = node(["bundle-size.mjs"], appDir);
+      try {
+        const { bytes, code } = JSON.parse(size.stdout);
+        if (bytes >= 1024) errors.push(`defineConfig-only bundle is ${bytes} bytes (limit < 1024)`);
+        for (const marker of ["#fbf9f6", "surfaceForeground", "1.4.11"]) {
+          if (code.includes(marker))
+            errors.push(`defineConfig-only bundle contains contract data (${marker})`);
+        }
+        console.info(`  · defineConfig-only bundle: ${bytes} bytes minified`);
+      } catch {
+        errors.push(`bundle-size measurement failed:\n${size.stdout}${size.stderr}`);
       }
       return errors;
     },

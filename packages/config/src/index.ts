@@ -1,6 +1,7 @@
 // Public, browser-safe entry of @neshel-ui/config: types and frozen token-contract data.
 // No runtime dependencies, no Node built-ins, no side effects (ADR 0007).
 export { colorRoles, contrastPairs, defaults } from "./contract.js";
+export { defineConfig, type ExactConfig } from "./define-config.js";
 export type {
   BuiltInThemeInput,
   ColorRole,
