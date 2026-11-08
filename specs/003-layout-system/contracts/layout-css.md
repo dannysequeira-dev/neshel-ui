@@ -31,37 +31,37 @@ Status: **planned** (003.0). Normative for 003.1–003.4.
 
 ## Base classes
 
-| Class | Declarations |
-| --- | --- |
-| `neshel-flex` | `display: flex` |
-| `neshel-stack` | `display: flex; flex-direction: column` |
-| `neshel-inline` | `display: flex; flex-direction: row` |
-| `neshel-center` | `display: flex; align-items: center; justify-content: center` |
-| `neshel-grid` | `display: grid` |
-| `neshel-container` | `box-sizing: border-box; width: 100%; margin-inline: auto` |
-| `neshel-separator` | `flex: none; align-self: stretch; margin: 0; padding: 0; list-style: none; border: 0 solid var(--neshel-border)` |
-| `neshel-separator-horizontal` | `border-block-start-width: 1px` |
-| `neshel-separator-vertical` | `border-inline-start-width: 1px` |
+| Class                         | Declarations                                                                                                     |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `neshel-flex`                 | `display: flex`                                                                                                  |
+| `neshel-stack`                | `display: flex; flex-direction: column`                                                                          |
+| `neshel-inline`               | `display: flex; flex-direction: row`                                                                             |
+| `neshel-center`               | `display: flex; align-items: center; justify-content: center`                                                    |
+| `neshel-grid`                 | `display: grid`                                                                                                  |
+| `neshel-container`            | `box-sizing: border-box; width: 100%; margin-inline: auto`                                                       |
+| `neshel-separator`            | `flex: none; align-self: stretch; margin: 0; padding: 0; list-style: none; border: 0 solid var(--neshel-border)` |
+| `neshel-separator-horizontal` | `border-block-start-width: 1px`                                                                                  |
+| `neshel-separator-vertical`   | `border-inline-start-width: 1px`                                                                                 |
 
 ## Property classes
 
 Name: `neshel-<key>-<value>` at `base`; `neshel-<bp>-<key>-<value>` inside the breakpoint's media
 block. Dots in values are escaped in selectors (`.neshel-gap-0\.5`).
 
-| Key | CSS property | Values → declaration |
-| --- | --- | --- |
-| `gap` | `gap` | space tokens → `calc(var(--neshel-spacing) * n)` |
-| `gap-x` | `column-gap` | space tokens |
-| `gap-y` | `row-gap` | space tokens |
-| `pi` | `padding-inline` | space tokens |
-| `d` | `display` | `none`, `block`, `inline`, `inline-block` |
-| `dir` | `flex-direction` | `row`, `column`, `row-reverse`, `column-reverse` |
-| `fw` | `flex-wrap` | `wrap`, `nowrap` |
-| `ai` | `align-items` | `start`, `center`, `end`, `stretch`, `baseline`; `normal` (breakpoints only, reset) |
-| `jc` | `justify-content` | `start`, `center`, `end`, `between` → `space-between`, `around` → `space-around`, `evenly` → `space-evenly`; `normal` (breakpoints only, reset) |
-| `ji` | `justify-items` | `start`, `center`, `end`, `stretch` |
-| `cols` | `grid-template-columns` | `1`…`12` → `repeat(n, minmax(0, 1fr))` |
-| `mw` | `max-width` | `sm` 40rem, `md` 48rem, `lg` 64rem, `xl` 80rem, `2xl` 96rem, `full` → `none` |
+| Key     | CSS property            | Values → declaration                                                                                                                            |
+| ------- | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `gap`   | `gap`                   | space tokens → `calc(var(--neshel-spacing) * n)`                                                                                                |
+| `gap-x` | `column-gap`            | space tokens                                                                                                                                    |
+| `gap-y` | `row-gap`               | space tokens                                                                                                                                    |
+| `pi`    | `padding-inline`        | space tokens                                                                                                                                    |
+| `d`     | `display`               | `none`, `block`, `inline`, `inline-block`                                                                                                       |
+| `dir`   | `flex-direction`        | `row`, `column`, `row-reverse`, `column-reverse`                                                                                                |
+| `fw`    | `flex-wrap`             | `wrap`, `nowrap`                                                                                                                                |
+| `ai`    | `align-items`           | `start`, `center`, `end`, `stretch`, `baseline`; `normal` (breakpoints only, reset)                                                             |
+| `jc`    | `justify-content`       | `start`, `center`, `end`, `between` → `space-between`, `around` → `space-around`, `evenly` → `space-evenly`; `normal` (breakpoints only, reset) |
+| `ji`    | `justify-items`         | `start`, `center`, `end`, `stretch`                                                                                                             |
+| `cols`  | `grid-template-columns` | `1`…`12` → `repeat(n, minmax(0, 1fr))`                                                                                                          |
+| `mw`    | `max-width`             | `sm` 40rem, `md` 48rem, `lg` 64rem, `xl` 80rem, `2xl` 96rem, `full` → `none`                                                                    |
 
 Breakpoints: `sm` 40rem, `md` 48rem, `lg` 64rem, `xl` 80rem, `2xl` 96rem (`min-width`).
 

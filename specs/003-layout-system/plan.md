@@ -31,16 +31,16 @@ browser globals, ESM/NodeNext, cross-platform scripts (Node APIs only)
 
 ## Constitution Check
 
-| Principle | Gate | Status |
-| --- | --- | --- |
-| II Modular packages | `layout` imports neither `components` nor `core`; deps justified (R2, R9) | Pass (design) |
+| Principle             | Gate                                                                                  | Status        |
+| --------------------- | ------------------------------------------------------------------------------------- | ------------- |
+| II Modular packages   | `layout` imports neither `components` nor `core`; deps justified (R2, R9)             | Pass (design) |
 | III CSS-first, tokens | Precompiled CSS, `--neshel-spacing`, `--neshel-border`; no interpolated utility names | Pass (design) |
-| IV Accessibility | Native elements, `as` semantics, decorative separators `aria-hidden`, `li` in lists | Pass (design) |
-| V Intentional layout | Polymorphic only via closed `as` union and `asChild`; SSR-safe pure render | Pass (design) |
-| VI Evidence | Unit, type, browser, packed consumers, negative controls; evidence.md | Planned |
-| VII Spec-driven | This plan, tasks, analysis, ADRs 0008/0009 | Pass |
-| VIII Safe releases | `private: true` kept; no publish/tags; pushes authorised by the brief | Pass |
-| IX Cross-platform | Node-only scripts; CI on three OSes | Planned |
+| IV Accessibility      | Native elements, `as` semantics, decorative separators `aria-hidden`, `li` in lists   | Pass (design) |
+| V Intentional layout  | Polymorphic only via closed `as` union and `asChild`; SSR-safe pure render            | Pass (design) |
+| VI Evidence           | Unit, type, browser, packed consumers, negative controls; evidence.md                 | Planned       |
+| VII Spec-driven       | This plan, tasks, analysis, ADRs 0008/0009                                            | Pass          |
+| VIII Safe releases    | `private: true` kept; no publish/tags; pushes authorised by the brief                 | Pass          |
+| IX Cross-platform     | Node-only scripts; CI on three OSes                                                   | Planned       |
 
 No violations; Complexity Tracking empty.
 
@@ -104,14 +104,14 @@ docs/layout.md, docs/decisions/0008, 0009
 
 ## Milestones and gates
 
-| Milestone | Gate |
-| --- | --- |
-| 003.0 | Spec, contracts, ADRs, plan, tasks, analysis committed |
-| 003.1 | Foundations + Box/Flex/Stack/Inline; unit + drift + consistency tests; `pnpm check` |
-| 003.2 | Grid/Center/Container; browser layout section passes locally |
-| 003.3 | asChild/separators/errors; type fixtures; jsdom tests |
-| 003.4 | Storybook; pack contract; consumers with SSR + hydration; CI 5/5 |
-| 003.5 | Docs, evidence, traceability, closure CI 5/5 |
+| Milestone | Gate                                                                                |
+| --------- | ----------------------------------------------------------------------------------- |
+| 003.0     | Spec, contracts, ADRs, plan, tasks, analysis committed                              |
+| 003.1     | Foundations + Box/Flex/Stack/Inline; unit + drift + consistency tests; `pnpm check` |
+| 003.2     | Grid/Center/Container; browser layout section passes locally                        |
+| 003.3     | asChild/separators/errors; type fixtures; jsdom tests                               |
+| 003.4     | Storybook; pack contract; consumers with SSR + hydration; CI 5/5                    |
+| 003.5     | Docs, evidence, traceability, closure CI 5/5                                        |
 
 Each milestone ends with a local `pnpm check` (plus relevant consumer/browser checks), a
 Conventional Commit and, from 003.1 on, a push followed by CI verification via the GitHub REST API.

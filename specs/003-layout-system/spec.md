@@ -353,14 +353,14 @@ rendered with the distributed stylesheet.
 
 ## Milestones
 
-| Milestone | Scope                                                                        |
-| --------- | ---------------------------------------------------------------------------- |
-| 003.0     | Spec, research, contracts, ADRs 0008/0009, plan, tasks, analysis             |
-| 003.1     | Foundations (types, tables, resolver, generator, tv) + Box, Flex, Stack, Inline |
-| 003.2     | Grid, Center, Container; responsive resolution; browser layout checks        |
-| 003.3     | `as`/`asChild`, separators, validation errors, type fixtures                 |
+| Milestone | Scope                                                                            |
+| --------- | -------------------------------------------------------------------------------- |
+| 003.0     | Spec, research, contracts, ADRs 0008/0009, plan, tasks, analysis                 |
+| 003.1     | Foundations (types, tables, resolver, generator, tv) + Box, Flex, Stack, Inline  |
+| 003.2     | Grid, Center, Container; responsive resolution; browser layout checks            |
+| 003.3     | `as`/`asChild`, separators, validation errors, type fixtures                     |
 | 003.4     | Storybook, pack contract, external consumers (Tailwind / plain, SSR + hydration) |
-| 003.5     | Documentation, evidence, traceability, CI verification, closure              |
+| 003.5     | Documentation, evidence, traceability, CI verification, closure                  |
 
 ## Assumptions
 

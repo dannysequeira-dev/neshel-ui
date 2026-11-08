@@ -50,7 +50,7 @@ The sub-layer keeps Neshel rules identifiable and below a consumer's own unlayer
 rules. A top-level `neshel.layout` layer would be ordered after Tailwind's layers in the canonical
 import order and beat utilities.
 
-**Consequence**: if the layout stylesheet is imported *before* Tailwind, `components` is ordered
+**Consequence**: if the layout stylesheet is imported _before_ Tailwind, `components` is ordered
 before `base`, and preflight's `margin: 0` beats Container's `margin-inline: auto`. Only the
 canonical order (Tailwind first) is supported; the browser check verifies it.
 
@@ -181,26 +181,26 @@ packed `@neshel-ui/layout` through Node ESM) into `dist/index.html`. The client 
 
 ## Brief audit
 
-| Brief item | Status in spec |
-| --- | --- |
-| §2 Spacer evaluation | Deferred with rationale (R12) |
-| §4 runtime conflict error, no DOM forwarding | FR-012, FR-005 |
-| §5 `alignX="between"` not a substitute | `between` only in `justify` (FR-021) |
-| §5 writing modes | FR-025 / R7 (documented limitation) |
-| §6 Box/Container responsive controls only where meaningful | R14 |
-| §7 lite vs normal entry | R2 |
-| §8 `as` + `asChild` conflict | FR-052 |
-| §9 separator + wrap / asChild | FR-064 (reject wrap; asChild host-only) |
-| §11 negative tests | SC-005 |
-| §14 no Co-Authored-By, push allowed | Workflow (plan.md) |
+| Brief item                                                 | Status in spec                          |
+| ---------------------------------------------------------- | --------------------------------------- |
+| §2 Spacer evaluation                                       | Deferred with rationale (R12)           |
+| §4 runtime conflict error, no DOM forwarding               | FR-012, FR-005                          |
+| §5 `alignX="between"` not a substitute                     | `between` only in `justify` (FR-021)    |
+| §5 writing modes                                           | FR-025 / R7 (documented limitation)     |
+| §6 Box/Container responsive controls only where meaningful | R14                                     |
+| §7 lite vs normal entry                                    | R2                                      |
+| §8 `as` + `asChild` conflict                               | FR-052                                  |
+| §9 separator + wrap / asChild                              | FR-064 (reject wrap; asChild host-only) |
+| §11 negative tests                                         | SC-005                                  |
+| §14 no Co-Authored-By, push allowed                        | Workflow (plan.md)                      |
 
 ## Risks
 
-| ID | Risk | Mitigation |
-| --- | --- | --- |
-| K1 | Only Chrome is browser-tested | Logical keywords are standard; Firefox/Safari listed as untested |
-| K2 | Stylesheet size grows with each new prop | Budget test (FR-044) |
-| K3 | Breakpoints fixed; differ from a consumer's custom Tailwind breakpoints | Documented; future generated layout CSS via CLI |
-| K4 | `asChild` children that do not forward props lose styles silently | Documented (FR-053); undetectable |
-| K5 | `tailwind-variants` 4.x migration | Lite API surface used is small (`tv`, `extend`) |
-| K6 | Consumer imports layout CSS before Tailwind | Canonical order documented; only it is tested |
+| ID  | Risk                                                                    | Mitigation                                                       |
+| --- | ----------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| K1  | Only Chrome is browser-tested                                           | Logical keywords are standard; Firefox/Safari listed as untested |
+| K2  | Stylesheet size grows with each new prop                                | Budget test (FR-044)                                             |
+| K3  | Breakpoints fixed; differ from a consumer's custom Tailwind breakpoints | Documented; future generated layout CSS via CLI                  |
+| K4  | `asChild` children that do not forward props lose styles silently       | Documented (FR-053); undetectable                                |
+| K5  | `tailwind-variants` 4.x migration                                       | Lite API surface used is small (`tv`, `extend`)                  |
+| K6  | Consumer imports layout CSS before Tailwind                             | Canonical order documented; only it is tested                    |

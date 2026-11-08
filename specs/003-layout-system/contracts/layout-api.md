@@ -22,8 +22,22 @@ type Breakpoint = "base" | "sm" | "md" | "lg" | "xl" | "2xl";
 type Responsive<T> = T | { readonly [K in Breakpoint]?: T };
 
 type SpaceValue =
-  | "0" | "0.5" | "1" | "1.5" | "2" | "2.5" | "3" | "4"
-  | "5" | "6" | "8" | "10" | "12" | "16" | "20" | "24";
+  | "0"
+  | "0.5"
+  | "1"
+  | "1.5"
+  | "2"
+  | "2.5"
+  | "3"
+  | "4"
+  | "5"
+  | "6"
+  | "8"
+  | "10"
+  | "12"
+  | "16"
+  | "20"
+  | "24";
 
 type SpacingProps =
   | { space?: Responsive<SpaceValue>; spaceX?: never; spaceY?: never }
@@ -35,12 +49,24 @@ type GridAlign = MainAxisAlign | "stretch";
 type Justify = "start" | "center" | "end" | "between" | "around" | "evenly";
 
 type LayoutElement =
-  | "div" | "span" | "section" | "article" | "aside" | "header" | "footer" | "main"
-  | "nav" | "ul" | "ol" | "li" | "form" | "fieldset" | "figure" | "address";
+  | "div"
+  | "span"
+  | "section"
+  | "article"
+  | "aside"
+  | "header"
+  | "footer"
+  | "main"
+  | "nav"
+  | "ul"
+  | "ol"
+  | "li"
+  | "form"
+  | "fieldset"
+  | "figure"
+  | "address";
 
-type PolymorphicProps =
-  | { as?: LayoutElement; asChild?: false }
-  | { as?: never; asChild: true };
+type PolymorphicProps = { as?: LayoutElement; asChild?: false } | { as?: never; asChild: true };
 
 // Every primitive also accepts:
 type CommonProps = React.HTMLAttributes<HTMLElement> & { ref?: React.Ref<HTMLElement> };
@@ -49,15 +75,15 @@ type SeparatorProp = boolean | React.ReactElement;
 
 ## Components
 
-| Component | Specific props | Spacing | Axis mapping (X / Y) |
-| --- | --- | --- | --- |
-| `Box` | `display?: Responsive<"none" \| "block" \| "inline" \| "inline-block">` | — | — |
-| `Flex` | `direction?: Responsive<"row" \| "column" \| "row-reverse" \| "column-reverse">`, `wrap?: Responsive<boolean>`, `align?: Responsive<MainAxisAlign>`, `alignX?`/`alignY?: Responsive<CrossAxisAlign>`, `justify?: Responsive<Justify>` | yes | by direction (row: jc / ai, column: ai / jc) |
-| `Stack` | `align?: Responsive<MainAxisAlign>`, `alignX?: Responsive<"start" \| "center" \| "end" \| "stretch">`, `alignY?: Responsive<MainAxisAlign>`, `justify?: Responsive<Justify>`, `separator?: SeparatorProp` | yes | `align-items` / `justify-content` |
-| `Inline` | `align?: Responsive<MainAxisAlign>`, `alignX?: Responsive<MainAxisAlign>`, `alignY?: Responsive<CrossAxisAlign>`, `justify?: Responsive<Justify>`, `wrap?: Responsive<boolean>`, `separator?: SeparatorProp` | yes | `justify-content` / `align-items` |
-| `Grid` | `columns?: Responsive<1 \| 2 \| … \| 12>`, `align?`/`alignX?`/`alignY?: Responsive<GridAlign>` | yes | `justify-items` / `align-items` |
-| `Center` | `align?`/`alignX?: Responsive<MainAxisAlign>`, `alignY?: Responsive<CrossAxisAlign>` | yes | `justify-content` / `align-items`, both `center` by default |
-| `Container` | `size?: Responsive<"sm" \| "md" \| "lg" \| "xl" \| "2xl" \| "full">` (default `xl`), `gutter?: Responsive<SpaceValue>` | — | — |
+| Component   | Specific props                                                                                                                                                                                                                        | Spacing | Axis mapping (X / Y)                                        |
+| ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | ----------------------------------------------------------- |
+| `Box`       | `display?: Responsive<"none" \| "block" \| "inline" \| "inline-block">`                                                                                                                                                               | —       | —                                                           |
+| `Flex`      | `direction?: Responsive<"row" \| "column" \| "row-reverse" \| "column-reverse">`, `wrap?: Responsive<boolean>`, `align?: Responsive<MainAxisAlign>`, `alignX?`/`alignY?: Responsive<CrossAxisAlign>`, `justify?: Responsive<Justify>` | yes     | by direction (row: jc / ai, column: ai / jc)                |
+| `Stack`     | `align?: Responsive<MainAxisAlign>`, `alignX?: Responsive<"start" \| "center" \| "end" \| "stretch">`, `alignY?: Responsive<MainAxisAlign>`, `justify?: Responsive<Justify>`, `separator?: SeparatorProp`                             | yes     | `align-items` / `justify-content`                           |
+| `Inline`    | `align?: Responsive<MainAxisAlign>`, `alignX?: Responsive<MainAxisAlign>`, `alignY?: Responsive<CrossAxisAlign>`, `justify?: Responsive<Justify>`, `wrap?: Responsive<boolean>`, `separator?: SeparatorProp`                          | yes     | `justify-content` / `align-items`                           |
+| `Grid`      | `columns?: Responsive<1 \| 2 \| … \| 12>`, `align?`/`alignX?`/`alignY?: Responsive<GridAlign>`                                                                                                                                        | yes     | `justify-items` / `align-items`                             |
+| `Center`    | `align?`/`alignX?: Responsive<MainAxisAlign>`, `alignY?: Responsive<CrossAxisAlign>`                                                                                                                                                  | yes     | `justify-content` / `align-items`, both `center` by default |
+| `Container` | `size?: Responsive<"sm" \| "md" \| "lg" \| "xl" \| "2xl" \| "full">` (default `xl`), `gutter?: Responsive<SpaceValue>`                                                                                                                | —       | —                                                           |
 
 All seven accept `CommonProps & PolymorphicProps`. Flex, Stack, Inline, Grid and Center also
 accept `SpacingProps`.
@@ -107,16 +133,16 @@ accept `SpacingProps`.
 All errors are `Error` instances with `name === "NeshelLayoutError"` and messages starting with
 `[@neshel-ui/layout] <Component>:`. Thrown during render (server and client alike).
 
-| Condition | Message contains |
-| --- | --- |
-| `space` with `spaceX` and/or `spaceY` | `"space" cannot be combined with "spaceX"` (and/or `"spaceY"`) |
-| `as` with `asChild` | `"as" and "asChild" cannot be combined` |
+| Condition                                        | Message contains                                               |
+| ------------------------------------------------ | -------------------------------------------------------------- |
+| `space` with `spaceX` and/or `spaceY`            | `"space" cannot be combined with "spaceX"` (and/or `"spaceY"`) |
+| `as` with `asChild`                              | `"as" and "asChild" cannot be combined`                        |
 | `asChild` child count ≠ 1, non-element, Fragment | `asChild expects exactly one React element child` / `Fragment` |
-| unknown breakpoint key | `unknown breakpoint "<key>" in "<prop>"` |
-| invalid value | `invalid value <value> for "<prop>"` + allowed values |
-| Flex main-axis `stretch`/`baseline` | `maps to justify-content` + breakpoint |
-| separator + wrap | `"separator" cannot be combined with "wrap"` |
-| separator + asChild component child | `"separator" with "asChild" requires a DOM element child` |
-| invalid separator value | `"separator" must be a boolean or a React element` |
+| unknown breakpoint key                           | `unknown breakpoint "<key>" in "<prop>"`                       |
+| invalid value                                    | `invalid value <value> for "<prop>"` + allowed values          |
+| Flex main-axis `stretch`/`baseline`              | `maps to justify-content` + breakpoint                         |
+| separator + wrap                                 | `"separator" cannot be combined with "wrap"`                   |
+| separator + asChild component child              | `"separator" with "asChild" requires a DOM element child`      |
+| invalid separator value                          | `"separator" must be a boolean or a React element`             |
 
 `null` is treated as absent for every layout prop.
