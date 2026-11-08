@@ -1,17 +1,20 @@
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync } from "node:fs";
 import { resolve } from "node:path";
+import { listWorkspacePackages } from "./lib/workspace.mjs";
 
-const root = resolve(import.meta.dirname, "..");
-const names = ["core", "config", "layout", "typography", "components", "cli"];
+/** Collect every string target of a (possibly nested, conditional) exports value. */
+function targets(value) {
+  if (typeof value === "string") return [value];
+  if (value && typeof value === "object") return Object.values(value).flatMap(targets);
+  return [];
+}
+
 let failures = 0;
-for (const name of names) {
-  const dir = resolve(root, "packages", name);
-  const pkg = JSON.parse(readFileSync(resolve(dir, "package.json"), "utf8"));
-  for (const [subpath, target] of Object.entries(pkg.exports)) {
-    const paths = typeof target === "string" ? [target] : Object.values(target);
-    for (const item of paths) {
+for (const { dir, name, manifest } of listWorkspacePackages()) {
+  for (const [subpath, target] of Object.entries(manifest.exports ?? {})) {
+    for (const item of targets(target)) {
       if (!existsSync(resolve(dir, item))) {
-        console.error(`Missing ${pkg.name} ${subpath} -> ${item}. Run pnpm build:packages.`);
+        console.error(`Missing ${name} ${subpath} -> ${item}. Run pnpm build:packages.`);
         failures++;
       }
     }

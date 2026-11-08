@@ -55,6 +55,8 @@ test("clean only deletes output within its own repository, regardless of cwd", (
   mkdirSync(localDist, { recursive: true });
   mkdirSync(unrelatedDist, { recursive: true });
   copyFileSync(script("clean.mjs"), join(scriptsDir, "clean.mjs"));
+  mkdirSync(join(scriptsDir, "lib"), { recursive: true });
+  copyFileSync(script("lib/workspace.mjs"), join(scriptsDir, "lib", "workspace.mjs"));
   // file URL imports should work in an isolated directory even with spaces.
   writeFileSync(join(fakeRepo, "package.json"), '{"type":"module"}', "utf8");
   writeFileSync(join(localDist, "generated.txt"), "delete me", "utf8");

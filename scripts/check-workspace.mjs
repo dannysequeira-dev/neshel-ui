@@ -1,7 +1,7 @@
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync } from "node:fs";
 import { resolve } from "node:path";
+import { listWorkspacePackages, repoRoot } from "./lib/workspace.mjs";
 
-const root = resolve(import.meta.dirname, "..");
 const required = [
   "CLAUDE.md",
   "pnpm-workspace.yaml",
@@ -9,26 +9,33 @@ const required = [
   ".specify/memory/constitution.md",
   "specs/001-foundation/spec.md",
 ];
-const packages = ["core", "config", "layout", "typography", "components", "cli"];
 const problems = [];
 for (const relative of required) {
-  if (!existsSync(resolve(root, relative))) problems.push(`Missing ${relative}`);
+  if (!existsSync(resolve(repoRoot, relative))) problems.push(`Missing ${relative}`);
 }
-for (const name of packages) {
-  const file = resolve(root, `packages/${name}/package.json`);
-  if (!existsSync(file)) {
-    problems.push(`Missing packages/${name}/package.json`);
-    continue;
+
+const packages = listWorkspacePackages();
+if (packages.length === 0) problems.push("No workspace packages found under packages/");
+for (const { dirName, name, manifest, intendedPublic } of packages) {
+  if (name !== `@neshel-ui/${dirName}`) {
+    problems.push(`packages/${dirName}: name must be @neshel-ui/${dirName}, found ${name}`);
   }
-  const pkg = JSON.parse(readFileSync(file, "utf8"));
-  if (pkg.name !== `@neshel-ui/${name}`) problems.push(`Invalid name in ${file}`);
-  if (pkg.private !== true) problems.push(`Publishing guard missing: ${pkg.name}`);
-  if (!pkg.exports?.["."]?.types || !pkg.exports?.["."]?.import)
-    problems.push(`Missing type or ESM exports in ${pkg.name}`);
+  if (manifest.private !== true) problems.push(`Publishing guard missing: ${name}`);
+  if (!manifest.exports?.["."]?.types || !manifest.exports?.["."]?.import) {
+    problems.push(`Missing type or ESM exports in ${name}`);
+  }
+  // ADR 0002: core is internal and must never be marked for publication.
+  if (dirName === "core" && intendedPublic) {
+    problems.push(`${name} is internal and must not declare publishConfig.access "public"`);
+  }
 }
+
 if (problems.length > 0) {
   for (const problem of problems) console.error(`ERROR ${problem}`);
   process.exitCode = 1;
 } else {
-  console.info(`Workspace scaffold verified (${packages.length} guarded packages).`);
+  const publicCount = packages.filter((pkg) => pkg.intendedPublic).length;
+  console.info(
+    `Workspace scaffold verified (${packages.length} guarded packages, ${publicCount} intended public).`,
+  );
 }
