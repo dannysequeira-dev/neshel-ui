@@ -23,6 +23,7 @@
     "test": "node --test",
     "check:workspace": "node scripts/check-workspace.mjs",
     "check:exports": "node scripts/check-exports.mjs",
+    "check:pack": "node scripts/check-pack.mjs",
     "check": "pnpm run doctor && pnpm lint && pnpm typecheck && pnpm test && pnpm build:packages && pnpm check:exports",
     "changeset": "changeset",
     "changeset:status": "changeset status",
