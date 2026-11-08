@@ -7,6 +7,15 @@ and `memory/constitution.md`; everything else under `.specify/` and the
 `.specify/integrations/*.manifest.json`. Do not hand-edit or reformat them; refresh
 them with the CLI.
 
+## Onboarding in a fresh clone
+
+1. Nothing to install for the skills: `.claude/skills/speckit-*` and `.specify/` are committed.
+   The Specify CLI is only needed to re-initialize or upgrade (below).
+2. Make sure `python --version` reports 3.11+ (the skills call `python .specify/scripts/python/…`).
+3. Select the active feature once per clone (next sections), then use `/speckit-plan`,
+   `/speckit-tasks`, `/speckit-analyze` and `/speckit-implement` in Claude Code.
+4. Active feature today: `specs/001-foundation` (spec, plan, research, tasks, evidence).
+
 ## Re-initialize or upgrade (Windows, Linux or macOS)
 
 ```text

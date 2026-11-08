@@ -1,130 +1,100 @@
 # Neshel-UI: soporte multiplataforma (Windows, Linux y macOS)
 
-> Alcance: Node.js 22.13+ (Node 22 y 24 en CI), pnpm fijado en `package.json`,
-> React/TypeScript y CSS. **No se necesita WSL para desarrollar en Windows.**
+> Windows, Linux y macOS tienen el **mismo nivel de soporte** para contribuidores y para
+> consumidores de los paquetes. **No se necesita WSL.** Decisión: [ADR 0003](decisions/0003-cross-platform-ci.md).
 
-## Aplicar el ZIP de actualización al repositorio existente
+## Política de runtime
 
-La actualización conserva los seis paquetes y **no incluye `.git` ni `node_modules`**.
-Incluye únicamente archivos nuevos o modificados; el ZIP no tiene carpeta superior.
+| Ámbito                                                                 | Política                                                                                                                |
+| ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| Desarrollo                                                             | **Node 26** (línea principal; `.nvmrc` y `.node-version`)                                                               |
+| Mínimo para contribuir                                                 | Node **22.13** (`engines.node` raíz); `pnpm run doctor` lo verifica                                                     |
+| pnpm                                                                   | **12.16.1**, fijado en `packageManager`; CI lo lee de ahí                                                               |
+| Paquetes de navegador (`config`, `layout`, `typography`, `components`) | Sin `engines`; salida ESM ES2022 sin APIs de Node. Desarrollar con Node 26 **no** sube el requisito de los consumidores |
+| `@neshel-ui/cli`                                                       | `engines.node >=22.13.0`                                                                                                |
+| `@types/node`                                                          | Se mantiene en la línea 22 (el mínimo) para no usar APIs más nuevas por accidente                                       |
 
-1. Guardá primero cualquier cambio local (`git status`). No sobrescribás trabajo
-   sin revisar; el ZIP reemplazará algunos archivos de configuración/documentación.
-2. Extraé el ZIP directamente sobre el **root** de Neshel-UI.
-3. Revisá `git diff` antes de hacer commit.
-
-**Windows / PowerShell 7:**
-
-```powershell
-# Ejecutar desde la raiz del repositorio (sin cambiar de carpeta)
-Expand-Archive -LiteralPath "$HOME\Downloads\neshel-ui-cross-platform.zip" -DestinationPath . -Force
-git status --short
-git diff --stat
-```
-
-**Linux / macOS:**
-
-```bash
-cd /ruta/a/neshel-ui
-unzip -o ~/Downloads/neshel-ui-cross-platform.zip -d .
-git status --short
-git diff --stat
-```
-
-## Requisitos
-
-- Node.js 22.13+; se recomienda Node 22 para desarrollo local al iniciar.
-- pnpm **12.16.1** (el `packageManager` es la referencia definitiva).
-- Git. Claude Code es opcional.
-- **Solo para Spec Kit:** Python 3.11+ y `uv` con `specify-cli`.
-
-### Instalar pnpm (cualquier OS)
-
-Usá la versión fijada por el repo:
+## Primer uso (mismos comandos en los tres sistemas)
 
 ```text
-npm install --global pnpm@12.16.1
-```
-
-Se puede usar un gestor de Node de cada plataforma (`fnm`, `nvm`, `mise`,
-Volta, etc.); no imponemos uno. `.nvmrc` y `.node-version` apuntan a Node 22.
-
-## Desarrollo (los mismos comandos en los tres sistemas)
-
-```text
+git clone https://github.com/dannysequeira-dev/neshel-ui.git
+cd neshel-ui
 pnpm install --frozen-lockfile
-pnpm run doctor
-pnpm lint
-pnpm test
-pnpm typecheck
-pnpm build:packages
-pnpm check:exports
-pnpm build:playground
-pnpm build:storybook
+pnpm check
+pnpm check:consumer
 ```
 
-También: `pnpm format` (aplica las correcciones de Biome), `pnpm check` (doctor, lint,
-tipos, tests, build y exports en un solo paso), `pnpm dev:playground`, `pnpm dev:storybook`.
+Guía detallada para Windows: [`SETUP-WINDOWS.es.md`](SETUP-WINDOWS.es.md). En Linux y macOS
+instalá Node 26 con el gestor que prefieras (`fnm`, `nvm`, `mise`, Volta) y pnpm con
+`npm install --global pnpm@12.16.1` o Corepack.
 
-`pnpm run doctor` comprueba la versión de Node y audita manifestos, scripts y
-colisiones de nombres en rutas que pueden fallar en sistemas de archivos
-case-insensitive. **No sustituye las pruebas de los runners nativos.**
+| Comando                        | Qué verifica                                                                                                                     |
+| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
+| `pnpm run doctor`              | Versión de Node, layout del workspace, scripts portables, colisiones de mayúsculas                                               |
+| `pnpm lint` / `pnpm format`    | Biome (los archivos administrados por Spec Kit están excluidos: sus hashes están en los manifiestos)                             |
+| `pnpm typecheck` · `pnpm test` | Proyectos TypeScript · suites `node:test`                                                                                        |
+| `pnpm build:packages`          | Build limpio de todos los paquetes (borra `dist` antes)                                                                          |
+| `pnpm check:exports`           | Que los targets de `exports` existan en `dist`                                                                                   |
+| `pnpm check:pack`              | Tarballs reales de `pnpm pack`: manifiesto, targets, source maps, publint, attw, import/tipos desde fuera del repo, determinismo |
+| `pnpm check:consumer`          | El tarball de `@neshel-ui/config` en una app externa React 19 + Vite + Tailwind v4 (requiere red)                                |
+| `pnpm check`                   | doctor → lint → typecheck → test → build → check:exports → check:pack (sin red)                                                  |
 
-`pnpm-lock.yaml` está commiteado. CI instala siempre con `--frozen-lockfile` para
-proteger la reproducibilidad en Windows, macOS y Linux; si cambiás dependencias,
-commiteá el lockfile actualizado en el mismo cambio.
+## CI — resultados reales, no promesas
 
-Biome no procesa los archivos que administra Spec Kit (`.claude/skills/speckit-*` y
-`.specify/{templates,scripts,workflows,integrations}`, más sus JSON de metadatos):
-están registrados por hash en sus manifiestos y no se reformatean a mano.
+`.github/workflows/ci.yml` (sin secretos, sin publicación, permisos de solo lectura):
 
-## Spec Kit + Claude, sin scripts ligados a Windows
+| Runner           | Node | Motivo                       |
+| ---------------- | ---- | ---------------------------- |
+| `ubuntu-latest`  | 26   | Línea principal              |
+| `windows-latest` | 26   | Línea principal              |
+| `macos-latest`   | 26   | Línea principal              |
+| `ubuntu-latest`  | 22   | Compatibilidad con el mínimo |
+| `ubuntu-latest`  | 24   | Compatibilidad intermedia    |
+
+No es un producto cartesiano completo: el comportamiento propio de cada sistema operativo se
+cubre en la línea principal, y las versiones de Node en Linux. Cada job ejecuta: instalación
+`--frozen-lockfile` con caché del store de pnpm (clave `pnpm-lock.yaml`), doctor, lint,
+tests, typecheck, build, check:exports, check:pack, check:consumer, build del playground y de
+Storybook. `fail-fast: false` evita que un fallo oculte otro. Los runs de pull requests
+obsoletos se cancelan; los pushes a `main` siempre conservan su resultado completo.
+
+Estado de cada verificación: [`specs/001-foundation/evidence.md`](../specs/001-foundation/evidence.md).
+**Cambiar la matriz no prueba nada hasta que GitHub Actions la ejecuta.**
+
+## Spec Kit + Claude sin scripts ligados a una shell
+
+Spec Kit usa su modo oficial de scripts Python (`--script py`). Reinicializar:
 
 ```text
 uv tool install specify-cli
-specify version
 pnpm run spec-kit:init
 ```
 
-`pnpm run spec-kit:init` invoca el CLI oficial en modo no interactivo usando
-**`--script py`**, compatible con Windows/macOS/Linux. Preserva los archivos
-de contexto existentes (`CLAUDE.md`, `AGENTS.md`, constitution y settings).
-El inicializador modifica el repositorio: revisá `git diff` después.
+El wrapper protege `CLAUDE.md`, la constitución, los skills `neshel-*` y la configuración, e
+informa cualquier archivo protegido que Spec Kit intente cambiar. Revisá `git diff` después.
+Para elegir la feature activa en un clon nuevo, ver [`.specify/README.md`](../.specify/README.md).
 
-> El wrapper `scripts/bootstrap-spec-kit.ps1` sigue disponible para Windows,
-> pero redirige al mismo script Node. Algunos _extensions_ opcionales de Spec
-> Kit pueden seguir requiriendo Bash o PowerShell; verificarlos al habilitarlos.
+## Reglas para contribuciones
 
-## CI — pruebas reales, no solo promesas
+- Operaciones de archivos con `node:fs`, `node:path` y `node:url`; nada de `rm`, `cp`, `sed`
+  o `grep` en scripts npm. `pnpm run doctor` audita los scripts.
+- Scripts npm independientes de la shell: sin `export X=...`, sin `rm -rf`, sin comandos
+  exclusivos de PowerShell o Bash, sin rutas absolutas del equipo.
+- Procesos hijos sin shell cuando sea posible. En Windows, si hace falta la shell para un
+  `.cmd`, pasá un único string y poné comillas solo en los argumentos (DEP0190; un nombre de
+  `.cmd` entre comillas rompe `%~dp0`). Ver `scripts/lib/pnpm.mjs`.
+- Directorios temporales con espacios y Unicode, creados con `scripts/lib/temp.mjs`: se
+  borran al terminar y también con Ctrl+C/SIGTERM.
+- Comparar rutas con `realpath` en ambos lados (macOS `/private/var`, nombres cortos de
+  Windows).
+- Importar con la misma capitalización que el archivo en disco
+  (`forceConsistentCasingInFileNames` está activo).
+- Todo el texto en LF (`* text=auto eol=lf`); un test lo verifica en el índice.
+- Builds deterministas: `check:pack` empaqueta dos veces y exige tarballs idénticos.
+- Ninguna fase se marca como aprobada en un sistema operativo sin un resultado verde de
+  GitHub Actions en ese sistema.
 
-`.github/workflows/ci.yml` ejecuta en GitHub Actions:
+## Publicación npm
 
-| Host             | Runtime | Checks                                                |
-| ---------------- | ------- | ----------------------------------------------------- |
-| `ubuntu-latest`  | Node 22 | doctor, lint, tests, tipos, packages, Vite, Storybook |
-| `windows-latest` | Node 22 | los mismos                                            |
-| `macos-latest`   | Node 22 | los mismos                                            |
-| `ubuntu-latest`  | Node 24 | los mismos                                            |
-
-Matriz con `fail-fast: false`: un fallo de Windows no oculta uno de macOS.
-Instalación con `--frozen-lockfile` y caché del store de pnpm (`actions/setup-node`,
-clave derivada de `pnpm-lock.yaml`). El lint es un gate bloqueante. No hay workflow de
-publicación npm ni secretos de publishing. La matriz Node 26 (decisión D1) llega en el
-hito 001.4.
-
-## Reglas para futuras contribuciones
-
-- Preferir Node `node:fs`, `node:path`, `node:url` sobre `rm`, `cp`, `sed`, `grep`.
-- Scripts npm independientes de la shell: nada de `export X=...`, `rm -rf`,
-  comandos exclusivos de PowerShell, ni rutas absolutas del equipo.
-- Importar con la misma capitalización que usa el archivo en disco.
-- Mantener ESM y imports compatibles con Windows; probar rutas con espacios.
-- Usar LF para código y scripts, vía `.gitattributes`.
-- Verificar CSS, `.d.ts`, package exports y consumidores reales en los tres OS.
-- No marcar ninguna fase como aprobada en macOS/Windows/Linux hasta ver
-  resultados verdes en runners de GitHub Actions.
-
-## Nota sobre publicación npm
-
-Los paquetes siguen marcados como `private: true`. Esta actualización **no**
-publica nada ni verifica disponibilidad del scope `@neshel-ui`.
+Los seis paquetes mantienen `private: true`; no hay workflow de publicación y el scope
+`@neshel-ui` no está verificado. Ver [`releasing.md`](releasing.md).

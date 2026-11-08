@@ -23,8 +23,10 @@ Legend: **Scaffold** = files exist, **Planned** = work not done, **Verified** = 
 - Packages' `private` guard removed only on explicit approval.
 - CI and release workflow reviewed and npm publishing authorized manually.
 
-## Why the setup ZIP stops here
+## Status vocabulary
 
-The maintainer requested a **bootstrap first**, before implementing the design
-system with Claude. This ZIP delivers structure, project context and a feature
-specification to prevent the agent from inventing APIs without review.
+Feature 001 tracks four states in [its evidence log](../specs/001-foundation/evidence.md):
+**implemented** (code or configuration exists), **verified locally** (gates passed on a
+named machine), **verified in GitHub Actions** (gates passed on native runners for a named
+commit) and **planned**. A changed CI matrix counts as verified only after GitHub Actions
+runs it.

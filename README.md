@@ -75,35 +75,50 @@ pnpm add @neshel-ui/config @neshel-ui/layout @neshel-ui/typography
 @import "@neshel-ui/typography/styles.css";
 ```
 
-Installation alone does **not** inject CSS. The final import contract will be
-verified using external, packed-package consumers before release.
+Installation alone does **not** inject CSS. Today the `@neshel-ui/config` stylesheet is
+verified from its packed tarball in an external React 19 + Vite + Tailwind v4 app
+(`pnpm check:consumer`); the remaining packages are still empty and their stylesheets are
+placeholders. See [package contracts](docs/package-contracts.md) for tested versus intended
+compatibility.
 
 ## Development
 
-This is a **pnpm monorepo** intended for contributors using **Windows, Linux,
-or macOS**. Check the repository's `.nvmrc` and `package.json` for the pinned
-Node.js and pnpm versions instead of assuming your globally installed versions.
+Contributors are equally supported on **Windows, Linux and macOS**; every command below
+runs unchanged in PowerShell 7, Bash and Zsh.
+
+**Requirements**
+
+- **Node.js 26** (primary line, see `.nvmrc`); 22.13 or newer is supported.
+- **pnpm 12.16.1**, pinned by `packageManager` (`npm install --global pnpm@12.16.1` or Corepack).
+- **Git**. Optional: Python 3.11+ and `uv` for the Spec Kit CLI.
 
 ```bash
-# Run from the repository root
-pnpm install
-pnpm run doctor
-pnpm typecheck
-pnpm test
-pnpm build:packages
-pnpm check:exports
+git clone https://github.com/dannysequeira-dev/neshel-ui.git
+cd neshel-ui
+pnpm install --frozen-lockfile
+pnpm check            # doctor, lint, typecheck, tests, package build, exports, packed artifacts
+pnpm check:consumer   # external Vite + Tailwind app built from the packed tarball (needs network)
 ```
 
-For local previews (as the scaffold supports them):
+Local previews:
 
 ```bash
-pnpm dev:playground
-# Or, in another terminal:
-pnpm dev:storybook
+pnpm dev:playground   # Vite playground
+pnpm dev:storybook    # Storybook on port 6006
 ```
 
-Read the [cross-platform setup guide](docs/CROSS-PLATFORM.es.md) before changing
-portable scripts, CI workflows, or development requirements.
+| Command                                  | What it verifies                                                                                  |
+| ---------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `pnpm run doctor`                        | Node version, workspace layout, script portability, case collisions                               |
+| `pnpm lint` / `pnpm format`              | Biome check / apply fixes                                                                         |
+| `pnpm typecheck` · `pnpm test`           | TypeScript projects · `node:test` suites                                                          |
+| `pnpm build:packages`                    | Clean build of every package (ESM, `.d.ts`, maps, CSS)                                            |
+| `pnpm check:exports` · `pnpm check:pack` | Export targets in `dist` · real `pnpm pack` tarballs (publint, attw, external import/type checks) |
+| `pnpm check:consumer`                    | Packed `@neshel-ui/config` in a generated external React 19 + Vite + Tailwind v4 app              |
+
+Platform guides (Spanish): [Windows setup](docs/SETUP-WINDOWS.es.md) and
+[cross-platform policy](docs/CROSS-PLATFORM.es.md). Current verification status, separated
+into implemented, locally verified and CI-verified: [Phase 001 evidence](specs/001-foundation/evidence.md).
 
 ### Architecture and working agreements
 
@@ -113,7 +128,8 @@ portable scripts, CI workflows, or development requirements.
 - [Theme strategy](docs/theming.md)
 - [Typography strategy](docs/typography.md)
 - [Spec Kit constitution](.specify/memory/constitution.md)
-- [First Claude prompt](docs/CLAUDE-FIRST-PROMPT.md)
+- [Spec Kit onboarding](.specify/README.md)
+- [Architecture decisions](docs/decisions/README.md)
 - [Release policy](docs/releasing.md)
 
 Use specification-driven development and keep architecture decisions documented.

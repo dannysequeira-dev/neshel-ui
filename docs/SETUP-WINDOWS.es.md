@@ -1,118 +1,83 @@
-# Neshel-UI: preparar el repositorio en Windows 11 / PowerShell 7
+# Neshel-UI: entorno de desarrollo en Windows 11 / PowerShell 7
 
-> Esta guía es para el maintainer en Windows. Para Linux/macOS y el CI multiplataforma,
-> ver [`CROSS-PLATFORM.es.md`](CROSS-PLATFORM.es.md).
+> Guía para contribuir desde Windows. Linux y macOS usan exactamente los mismos comandos;
+> la política multiplataforma y el CI están en [`CROSS-PLATFORM.es.md`](CROSS-PLATFORM.es.md).
+> No se necesita WSL.
 
 ## 0. Requisitos
 
-- Node.js 22.13 o superior (`node --version`)
-- pnpm 12.16.1 (fijado en `package.json`)
-- Git (`git --version`)
-- Opcional: GitHub CLI `gh`, Claude Code, Python 3.11+ y `uv` para Spec Kit.
+| Herramienta              | Versión                                              | Comprobar                          |
+| ------------------------ | ---------------------------------------------------- | ---------------------------------- |
+| Node.js                  | **26** (línea principal, `.nvmrc`); 22.13+ soportado | `node --version`                   |
+| pnpm                     | **12.16.1** (fijado en `packageManager`)             | `pnpm --version`                   |
+| Git                      | cualquiera reciente                                  | `git --version`                    |
+| Python + `uv` (opcional) | Python 3.11+, solo para el CLI de Spec Kit           | `python --version`, `uv --version` |
 
-## 1. Descomprimir sin carpeta intermedia
-
-El ZIP **no trae una carpeta superior**. Contiene directamente `package.json`,
-`pnpm-workspace.yaml`, `.claude/`, `.specify/`, `packages/`, `apps/`, etc.
+Instalar pnpm si falta (cualquier gestor de Node sirve: `fnm`, `nvm-windows`, Volta, etc.):
 
 ```powershell
-$root = 'C:\Users\Drica\projects\neshel-ui'
-New-Item -ItemType Directory -Path $root -Force | Out-Null
-Expand-Archive -Path "$env:USERPROFILE\Downloads\neshel-ui-starter.zip" -DestinationPath $root -Force
-Set-Location $root
-Get-ChildItem -Force
+npm install --global pnpm@12.16.1
 ```
 
-Usá el directorio real de tu máquina y la ruta donde descargaste el ZIP.
+Git debe respetar `.gitattributes` (todo el texto se guarda en LF); no hace falta cambiar
+`core.autocrlf`.
 
-## 2. Primer commit e instalación
+## 1. Clonar e instalar
 
 ```powershell
-node --version
-pnpm --version
-# Si falta pnpm: npm install --global pnpm@12.16.1
+git clone https://github.com/dannysequeira-dev/neshel-ui.git
+Set-Location neshel-ui
+pnpm install --frozen-lockfile
+```
 
-pnpm install
-pnpm run doctor
-pnpm build:packages
-pnpm check:exports
-pnpm test
-pnpm typecheck
-pnpm lint
+`pnpm-lock.yaml` está versionado: la instalación nunca resuelve dependencias nuevas. Si
+cambiás dependencias, commiteá el lockfile actualizado en el mismo cambio.
+
+## 2. Verificar
+
+```powershell
+pnpm check            # doctor, lint, tipos, tests, build, exports y tarballs (check:pack)
+pnpm check:consumer   # app externa React 19 + Vite + Tailwind v4 desde el tarball (requiere red)
 pnpm build:playground
 pnpm build:storybook
 ```
 
-**Importante:** `pnpm install` genera `pnpm-lock.yaml`: agregalo a Git.
-Si Biome exige formateo en la primera ejecución: `pnpm format`, revisá el diff,
-y repetí `pnpm lint`. Si falla alguna integración, que Claude investigue con
-resultados reales en vez de ocultarla.
+Todos deben terminar con código 0. `pnpm run doctor` informa la versión de Node recomendada
+y audita scripts y rutas; no reemplaza el CI nativo.
 
-## 3. Inicializar Git y subir a un repositorio nuevo
+## 3. Desarrollo diario
 
 ```powershell
-git init -b main
-git add .
-git commit -m "chore: bootstrap Neshel-UI monorepo"
+pnpm dev:playground   # Vite (normalmente puerto 5173)
+pnpm dev:storybook    # Storybook en el puerto 6006
+pnpm format           # aplica las correcciones de Biome antes de commitear
+pnpm lint
 ```
 
-Creá un repositorio **vacío** `neshel-ui` en tu cuenta de GitHub; no agregués un
-README o `.gitignore` desde GitHub porque ya están aquí.
+## 4. Spec Kit + Claude Code (opcional)
 
-```powershell
-git remote add origin https://github.com/TU-USUARIO/neshel-ui.git
-git push -u origin main
-```
-
-O con GitHub CLI autenticado:
-
-```powershell
-gh repo create neshel-ui --public --source=. --remote=origin --push
-```
-
-No se hace ningún push desde el ZIP. Si querés repo privado primero, cambiá
-`--public` por `--private`.
-
-## 4. Preparar GitHub Spec Kit para Claude (opcional, recomendado)
-
-**El ZIP ya incluye constitución y especificación, pero no las skills oficiales**.
-Instalación oficial: https://github.github.io/spec-kit/installation.html
+Spec Kit ya está instalado en el repositorio (`.specify/` y `.claude/skills/speckit-*`).
+Solo hace falta el CLI para reinicializar o actualizar:
 
 ```powershell
 uv tool install specify-cli
 specify version
-pnpm run spec-kit:init
 ```
 
-Este comando usa Node y el modo de scripts Python oficial de Spec Kit (`--script py`),
-por lo que funciona también en Linux/macOS. Conserva los archivos de contexto
-y la constitución del proyecto. El wrapper anterior `.ps1` sigue existiendo.
-
-Revisá `git status` y `git diff` antes de aceptar cualquier cambio generado.
-No confundás `specify` (terminal) con `/speckit-*` (dentro de Claude Code).
-
-## 5. Empezar con Claude
+Seleccioná la feature activa una vez por clon (el puntero `.specify/feature.json` es local y
+está ignorado por Git):
 
 ```powershell
-claude
+$env:SPECIFY_FEATURE_DIRECTORY = "specs/001-foundation"
+python .specify/scripts/python/check_prerequisites.py --json
+Remove-Item Env:SPECIFY_FEATURE_DIRECTORY
 ```
 
-Pegá el prompt de [`docs/CLAUDE-FIRST-PROMPT.md`](CLAUDE-FIRST-PROMPT.md).
-Claude primero debe **validar el bootstrap**, instalar lockfile y dejar la
-base estable. Después se comienza el primer feature slice.
+Detalles y equivalente Bash/Zsh: [`.specify/README.md`](../.specify/README.md). Dentro de
+Claude Code se usan los skills `/speckit-*`; no confundir con el comando `specify`.
 
-## 6. Arrancar aplicaciones de desarrollo
+## 5. Antes de publicar en npm
 
-```powershell
-pnpm dev:storybook
-# otro terminal:
-pnpm dev:playground
-```
-
-Storybook: puerto 6006. Vite: normalmente puerto 5173.
-
-## Antes de publicar npm
-
-Todavía **no** hay paquetes implementados, disponibles ni publicados. Revisar
-scope, licencias, acceso, documentación, producción de tarballs, seguridad de
-publishing y permisos GitHub antes de ejecutar cualquier `publish`.
+No hay paquetes publicados. Los seis paquetes mantienen `private: true` y el scope
+`@neshel-ui` no está verificado. Ver [`releasing.md`](releasing.md): ningún `publish`,
+release ni push sin aprobación explícita del maintainer.

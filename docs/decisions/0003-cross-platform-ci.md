@@ -31,7 +31,9 @@ output and build pipeline must not depend on that fact.
 - Point 5 is complete: `pnpm-lock.yaml` is committed, so CI installs only with
   `--frozen-lockfile`. CI adds pnpm caching, lint and package-integrity checks.
 - GitHub CLI may be used to inspect runs; it is never a required dependency.
-- Vite 8 is evaluated in a time-boxed spike; Vite 7 remains until gates pass.
+- Vite 8 was evaluated in a time-boxed spike and adopted ([ADR 0005](0005-vite-8.md)).
+- Implemented in 001.4: `.nvmrc`/`.node-version` 26, the 5-job matrix, node24-based
+  actions (checkout v7, setup-node v7, pnpm/action-setup pinned v6.1.1).
 
 ## Consequences
 

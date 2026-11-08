@@ -1,3 +1,9 @@
+> [!NOTE]
+> **Historical document.** This was the bootstrap prompt used once, after extracting the
+> original scaffold, to start feature 001. It is kept for provenance only. Current work
+> follows `CLAUDE.md`, `specs/001-foundation/` and the Spec Kit skills; current status is in
+> `specs/001-foundation/evidence.md`.
+
 # First message to Claude Code
 
 Copy this **after** extracting the ZIP, installing dependencies, initializing Git,

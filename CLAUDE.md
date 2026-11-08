@@ -1,6 +1,7 @@
 # Claude Code — Neshel-UI Project Contract
 
-**Current phase:** repository bootstrap only. All npm packages are private placeholders.
+**Current phase:** feature 001 (foundation) — milestone 001.4; see `specs/001-foundation/`.
+All npm packages are private placeholders with validated distribution tooling.
 **Mission:** build a small, modular, accessible React design system that consumers can
 install without monorepo internals. **Do not implement the entire library in one pass.**
 
@@ -24,7 +25,7 @@ install without monorepo internals. **Do not implement the entire library in one
 
 ## Technology / architecture
 
-- Node >=22.13; pnpm pinned by `packageManager`.
+- Node 26 for development (`.nvmrc`); contributor floor >=22.13; pnpm pinned by `packageManager`.
 - React + TypeScript strict, CSS-first Tailwind v4, Storybook React/Vite, Vite sandbox.
 - Capsize is for typography with real font metrics and deterministic generated CSS.
 - Radix may be used selectively for complex accessibility. Prefer native semantic HTML.
@@ -55,10 +56,13 @@ install without monorepo internals. **Do not implement the entire library in one
 - `pnpm check:portability` — detect problematic scripts and case-colliding paths.
 - `pnpm run spec-kit:init` — install official Claude Spec Kit helpers using portable Python mode.
 - `pnpm check:workspace` — verify bootstrap structure (works without dependencies).
-- `pnpm install` — install dependencies and generate `pnpm-lock.yaml` (commit it).
-- `pnpm build:packages` — build TS package exports and copy styles.
+- `pnpm install --frozen-lockfile` — install from the committed `pnpm-lock.yaml`.
+- `pnpm build:packages` — clean `packages/*/dist`, build TS package exports and copy styles.
 - `pnpm check:exports` — check exported paths exist (requires build).
-- `pnpm test` — starter Node.js workspace tests.
+- `pnpm check:pack` — validate real `pnpm pack` tarballs (publint, attw, external import/type checks).
+- `pnpm check:consumer` — packed `@neshel-ui/config` in a generated external Vite + Tailwind app (network).
+- `pnpm check` — doctor, lint, typecheck, test, build, check:exports, check:pack (offline).
+- `pnpm test` — `node:test` suites (scripts, tarball reader, validators, portability).
 - `pnpm typecheck` — workspace typecheck.
 - `pnpm lint` / `pnpm format` — Biome.
 - `pnpm dev:storybook` / `pnpm dev:playground` — startup in local dev.

@@ -26,8 +26,8 @@ import any React component package. React packages declare React 19 as a peer.
 Since milestone 001.2, workspace dependencies are declared only when a source file
 imports them, so today no package has a runtime dependency on another (research R9);
 the arrows above become real dependencies in the slices that introduce those imports.
-The foundation pins Vite 7 (plus React plugin 5) until Vite 8 compatibility
-with the Tailwind and Storybook plugin matrix is installation-tested.
+The workspace apps use Vite 8 with `@vitejs/plugin-react` 5 since milestone 001.4
+([ADR 0005](decisions/0005-vite-8.md)); published packages do not depend on Vite.
 
 ## Publication boundary
 
@@ -77,7 +77,8 @@ Applications load their fonts; no remote fetch required by the library.
 - Windows 11 / PowerShell is the maintainer environment, but **Linux and macOS are first-class**.
 - Every root/package npm script must run in the native default shell of each platform.
 - File operations use Node (path-safe) helpers; no absolute drives or POSIX shell assumptions.
-- GitHub Actions runs the same build/test matrix on three OSes and an extra Node 24 Linux lane.
+- GitHub Actions runs the same gates on Node 26 for Linux, Windows and macOS, plus Node 22
+  and 24 on Linux (5 jobs, research R17).
 - Spec Kit uses its official `--script py` mode through `pnpm spec-kit:init`.
 - See [ADR 0003](decisions/0003-cross-platform-ci.md).
 
@@ -99,7 +100,7 @@ Applications load their fonts; no remote fetch required by the library.
   [ADR 0004](decisions/0004-package-distribution.md). Apps may keep `Bundler`.
 - Node 26 primary for development; CI Node 26 on three OSes plus Node 22/24 on Linux:
   [ADR 0003](decisions/0003-cross-platform-ci.md) amendment.
-- Vite 8: time-boxed spike in Phase 001; Vite 7 stays until gates pass.
+- Vite 8 adopted after the 001.4 spike ([ADR 0005](decisions/0005-vite-8.md)).
 - Standard CSS tokens and the Tailwind `@theme` integration become separate
   exports in feature 002.
 

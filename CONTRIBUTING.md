@@ -12,21 +12,20 @@ Thank you for helping build thoughtful, accessible and reliable UI primitives.
 
 ## Local development
 
+Use Node 26 (`.nvmrc`; 22.13+ supported) and the pnpm version pinned in `packageManager`.
+
 ```bash
-pnpm install
-pnpm run doctor
-pnpm build:packages
-pnpm test
-pnpm typecheck
-pnpm lint
+pnpm install --frozen-lockfile
+pnpm check            # doctor, lint, typecheck, tests, build, exports, packed artifacts
+pnpm check:consumer   # external Vite + Tailwind consumer from the packed tarball (network)
 pnpm dev:storybook
 ```
 
-These commands work in PowerShell, Bash and Zsh. We require native CI green
-on Windows/Linux/macOS for changes to tooling or public packages.
+These commands work in PowerShell, Bash and Zsh. Run `pnpm format` before committing. We
+require green native CI on Windows, Linux and macOS for changes to tooling or public packages.
 
-The codebase is currently a bootstrap: component PRs should be scoped to a
-Spec Kit feature slice and include tests, docs and stories once implemented.
+Packages are still placeholders: feature work must be scoped to a Spec Kit feature slice
+(`specs/`) and include tests, documentation and stories once components exist.
 
 ## Pull requests
 
