@@ -1,6 +1,6 @@
 # Contract — `@neshel-ui/layout` React API
 
-Status: **planned** (003.0). Normative for milestones 003.1–003.3. Package entry: `.`
+Status: **implemented and CI-verified** (feature 003). Package entry: `.`
 (`dist/index.js` + `dist/index.d.ts`). Peer: `react ^19.0.0`.
 
 ## Exports

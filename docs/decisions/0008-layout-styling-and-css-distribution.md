@@ -1,7 +1,7 @@
 # ADR 0008 — Layout styling: tailwind-variants lite, namespaced precompiled CSS, cascade layer
 
-- Status: **Accepted** (2026-11-08, within the owner's Phase 003 brief); verification pending
-  (see Verification)
+- Status: **Accepted** (2026-11-08, within the owner's Phase 003 brief); implemented and
+  CI-verified in feature 003 (see Verification)
 - Date: 2026-11-08
 - Feature: [003](../../specs/003-layout-system/spec.md); normative detail in
   [contracts/layout-css.md](../../specs/003-layout-system/contracts/layout-css.md)
@@ -58,6 +58,11 @@ be missing entirely without Tailwind.
 
 ## Verification
 
-Planned: drift test, consistency sweep, `check:pack` stylesheet hygiene and dependency contract,
-`check:consumer` Tailwind/plain variants, `check:browser` computed styles and the Tailwind
-override case, on Linux/Windows/macOS CI. Results: `specs/003-layout-system/evidence.md`.
+- Drift and exhaustive consistency tests (`packages/layout/test/styles.test.mjs`): 661 classes,
+  every emitted class defined and every rule reachable; negative controls detected.
+- `check:pack` layout contract (exports, exact dependencies, allowed imports, stylesheet hygiene,
+  tarball stylesheet equals the committed source); manual mutations fail as expected.
+- `check:consumer` Tailwind and plain variants from tarballs (no `@source`), `check:browser`
+  computed styles at 360–1600 px, the Tailwind-utility override and both import orders.
+- Size: 42 283 bytes raw, 3 584 bytes gzip.
+- CI: runs 42480913188 (`73ac0c9`), 42481749103 (`3656920`) and 42482142182 (`f31878a`), 5/5 jobs each. Details: `specs/003-layout-system/evidence.md`.

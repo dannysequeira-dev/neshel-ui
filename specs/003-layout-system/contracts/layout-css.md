@@ -1,6 +1,6 @@
 # Contract — `@neshel-ui/layout/styles.css`
 
-Status: **planned** (003.0). Normative for 003.1–003.4.
+Status: **implemented and CI-verified** (feature 003).
 
 ## Export and import
 

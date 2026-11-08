@@ -4,7 +4,8 @@
 
 **Created**: 2026-11-08
 
-**Status**: Draft — milestone 003.0 (specification, contracts, plan).
+**Status**: Implemented — milestones 003.0–003.5 complete; closure recorded in
+[evidence.md](evidence.md) and [traceability.md](traceability.md). No package is published.
 
 **Input**: Owner brief "Neshel-UI — Phase 003: Complete Layout System" (2026-11-08), summarised in
 [brief.md](brief.md). The brief is authoritative and pre-authorises autonomous execution of all

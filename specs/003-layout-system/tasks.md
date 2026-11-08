@@ -30,93 +30,93 @@ Tests are mandatory for this feature (constitution VI, spec SC-001–SC-007).
 
 - [x] T006 Add `tailwind-variants` ^3.3.1 and `@radix-ui/react-slot` ^1.5.0 (layout deps), `jsdom`
   ^29.1.1 and React (root dev) to the catalog and manifests; refresh `pnpm-lock.yaml`
-- [ ] T007 Move `rootDir` to `packages/layout/tsconfig.build.json`; include `type-tests/**/*.tsx`
+- [x] T007 Move `rootDir` to `packages/layout/tsconfig.build.json`; include `type-tests/**/*.tsx`
   in `packages/layout/tsconfig.json`
 
 ### Phase 2: Foundational (blocks all stories)
 
-- [ ] T008 `packages/layout/src/types.ts` — shared public types (contracts/layout-api.md)
-- [ ] T009 `packages/layout/src/style-tables.ts` — breakpoints, space scale, base classes,
+- [x] T008 `packages/layout/src/types.ts` — shared public types (contracts/layout-api.md)
+- [x] T009 `packages/layout/src/style-tables.ts` — breakpoints, space scale, base classes,
   property tables (contracts/layout-css.md)
-- [ ] T010 `packages/layout/src/errors.ts` — `NeshelLayoutError` and message helpers
-- [ ] T011 `packages/layout/src/resolve.ts` — normalise/validate responsive values, cascade,
+- [x] T010 `packages/layout/src/errors.ts` — `NeshelLayoutError` and message helpers
+- [x] T011 `packages/layout/src/resolve.ts` — normalise/validate responsive values, cascade,
   spacing exclusivity, diff to class selections
-- [ ] T012 `packages/layout/src/variants.ts` — `tv()` from `tailwind-variants/lite`, generated
+- [x] T012 `packages/layout/src/variants.ts` — `tv()` from `tailwind-variants/lite`, generated
   variants per (breakpoint, key), `extend` composition
-- [ ] T013 `packages/layout/scripts/generate-css.mjs` + `src/styles.css` + build script; Biome
+- [x] T013 `packages/layout/scripts/generate-css.mjs` + `src/styles.css` + build script; Biome
   ignore for the generated file; root `generate:layout-css`
-- [ ] T014 `packages/layout/src/render.tsx` — prop stripping, element rendering (as/asChild hooks
+- [x] T014 `packages/layout/src/render.tsx` — prop stripping, element rendering (as/asChild hooks
   completed in 003.3)
 
 ### Phase 3: User Story 1 — Stack and Inline (P1)
 
-- [ ] T015 [P] [US1] `box.tsx` (display) and `flex.tsx` (direction, wrap, direction-aware alignment)
-- [ ] T016 [P] [US1] `stack.tsx` and `inline.tsx` (spacing, align*, justify, wrap)
-- [ ] T017 [US1] `src/index.ts` exports
-- [ ] T018 [US1] `test/render.test.mjs` — SSR markup, defaults, class merging, prop stripping,
+- [x] T015 [P] [US1] `box.tsx` (display) and `flex.tsx` (direction, wrap, direction-aware alignment)
+- [x] T016 [P] [US1] `stack.tsx` and `inline.tsx` (spacing, align*, justify, wrap)
+- [x] T017 [US1] `src/index.ts` exports
+- [x] T018 [US1] `test/render.test.mjs` — SSR markup, defaults, class merging, prop stripping,
   spacing classes, alignment precedence, Flex direction mapping and resets
-- [ ] T019 [US1] `test/styles.test.mjs` — drift (C3), consistency sweep (C1/C2), hygiene, budget;
+- [x] T019 [US1] `test/styles.test.mjs` — drift (C3), consistency sweep (C1/C2), hygiene, budget;
   negative control for the consistency checker
 
 ## Milestone 003.2 — Grid, Center, Container, responsive verification
 
 ### Phase 4: User Story 2 — Responsive grids and containers (P1)
 
-- [ ] T020 [P] [US2] `grid.tsx`, `center.tsx`, `container.tsx` (+ exports)
-- [ ] T021 [US2] Unit tests for Grid/Center/Container and responsive cascades
-- [ ] T022 [US2] `scripts/lib/cdp.mjs` `setViewport()`; `scripts/lib/layout-browser.mjs`
+- [x] T020 [P] [US2] `grid.tsx`, `center.tsx`, `container.tsx` (+ exports)
+- [x] T021 [US2] Unit tests for Grid/Center/Container and responsive cascades
+- [x] T022 [US2] `scripts/lib/cdp.mjs` `setViewport()`; `scripts/lib/layout-browser.mjs`
   fixtures/probes; `check:browser` layout section (viewports 360–1600, LTR/RTL/row-reverse,
   separators, theme inheritance) with a negative control and a non-canonical import-order fixture
   (layout before Tailwind) that documents the lost `margin-inline: auto`
-- [ ] T023 [US2] Pure tests for `layout-browser.mjs` in `tests/`
+- [x] T023 [US2] Pure tests for `layout-browser.mjs` in `tests/`
 
 ## Milestone 003.3 — Composition, separators, validation
 
 ### Phase 5: User Story 3 — `as` / `asChild` (P1)
 
-- [ ] T024 [US3] Complete `render.tsx`: `as` union check, `asChild` validation, Radix Slot
-- [ ] T025 [US3] `test/composition.test.mjs` (jsdom): refs, handlers, className/style merge,
+- [x] T024 [US3] Complete `render.tsx`: `as` union check, `asChild` validation, Radix Slot
+- [x] T025 [US3] `test/composition.test.mjs` (jsdom): refs, handlers, className/style merge,
   custom forwarding components, invalid children, `as` + `asChild`
 
 ### Phase 6: User Story 4 — Separators (P2)
 
-- [ ] T026 [US4] `separators.tsx`; Stack/Inline integration; wrap/asChild rules
-- [ ] T027 [US4] `test/separators.test.mjs`: 0/1/n children, conditional children, keys, tags,
+- [x] T026 [US4] `separators.tsx`; Stack/Inline integration; wrap/asChild rules
+- [x] T027 [US4] `test/separators.test.mjs`: 0/1/n children, conditional children, keys, tags,
   custom separators, asChild host/component, wrap rejection
 
 ### Phase 7: Type contract
 
-- [ ] T028 `type-tests/valid.tsx` and `type-tests/invalid.tsx` (spacing exclusivity, responsive
+- [x] T028 `type-tests/valid.tsx` and `type-tests/invalid.tsx` (spacing exclusivity, responsive
   keys/values, as/asChild, per-component alignment sets, separator type)
-- [ ] T029 `test/errors.test.mjs`: every error row of the contract, SSR and client parity,
+- [x] T029 `test/errors.test.mjs`: every error row of the contract, SSR and client parity,
   hydration without mismatch (jsdom)
 
 ## Milestone 003.4 — Storybook, packaging, external consumers
 
 ### Phase 8: User Story 6 — Storybook (P2)
 
-- [ ] T030 [US6] Storybook dependency on `@neshel-ui/layout`, stylesheet import, theme toolbar
+- [x] T030 [US6] Storybook dependency on `@neshel-ui/layout`, stylesheet import, theme toolbar
   decorator (`preview.tsx`)
-- [ ] T031 [P] [US6] Stories: Box, Flex, Stack, Inline, Grid, Center, Container, composition
+- [x] T031 [P] [US6] Stories: Box, Flex, Stack, Inline, Grid, Center, Container, composition
   (asChild, separators, nesting, custom theme, realistic app layout)
 
 ### Phase 9: User Story 5 — Distribution (P1)
 
-- [ ] T032 [US5] `scripts/lib/pack-checks.mjs` layout contract (exports, deps, imports, stylesheet
+- [x] T032 [US5] `scripts/lib/pack-checks.mjs` layout contract (exports, deps, imports, stylesheet
   hygiene, C4) + tests with negative cases in `tests/pack-checks.test.mjs`
-- [ ] T033 [US5] `check:consumer`: layout in Tailwind and plain variants, SSR prerender + hydrate,
+- [x] T033 [US5] `check:consumer`: layout in Tailwind and plain variants, SSR prerender + hydrate,
   CSS selector check (C5), type checks incl. `@ts-expect-error` conflict; checker unit tests
-- [ ] T034 [US5] `check:browser`: consumer probes (computed layout, Tailwind override, hydration)
-- [ ] T035 Push; verify CI 5/5 via GitHub REST API; fix failures
+- [x] T034 [US5] `check:browser`: consumer probes (computed layout, Tailwind override, hydration)
+- [x] T035 Push; verify CI 5/5 via GitHub REST API; fix failures
 
 ## Milestone 003.5 — Documentation and closure
 
-- [ ] T036 [P] `docs/layout.md`, `packages/layout/README.md`, `docs/package-contracts.md`,
+- [x] T036 [P] `docs/layout.md`, `packages/layout/README.md`, `docs/package-contracts.md`,
   `docs/architecture.md`, `docs/roadmap.md`, root `README.md`, `CLAUDE.md` phase line;
   document limitations FR-053 (asChild) and FR-065 (spacing around separators)
-- [ ] T037 [P] Changeset for `@neshel-ui/layout`
-- [ ] T038 `evidence.md`, `traceability.md`, ADR verification sections, spec status
-- [ ] T039 Final `pnpm check`, `check:consumer`, `check:browser`, Storybook build; push; CI 5/5;
+- [x] T037 [P] Changeset for `@neshel-ui/layout`
+- [x] T038 `evidence.md`, `traceability.md`, ADR verification sections, spec status
+- [x] T039 Final `pnpm check`, `check:consumer`, `check:browser`, Storybook build; push; CI 5/5;
   closure recommendation
 
 ---

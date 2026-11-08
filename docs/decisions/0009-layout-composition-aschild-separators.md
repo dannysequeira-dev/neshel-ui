@@ -1,6 +1,7 @@
 # ADR 0009 — Layout composition: `as`, `asChild`, refs, separators and prop validation
 
-- Status: **Accepted** (2026-11-08, within the owner's Phase 003 brief); verification pending
+- Status: **Accepted** (2026-11-08, within the owner's Phase 003 brief); implemented and
+  CI-verified in feature 003
 - Date: 2026-11-08
 - Feature: [003](../../specs/003-layout-system/spec.md); normative detail in
   [contracts/layout-api.md](../../specs/003-layout-system/contracts/layout-api.md)
@@ -50,6 +51,11 @@ TypeScript contract for JavaScript consumers.
 
 ## Verification
 
-Planned: unit tests (jsdom) for refs, handlers, merging, invalid children, separator sequences
-and keys; type fixtures; SSR + hydration in packed consumers. Results:
-`specs/003-layout-system/evidence.md`.
+- `packages/layout/test/composition.test.mjs`, `separators.test.mjs`, `errors.test.mjs` (jsdom):
+  refs on all primitives, handler order, className/style merging, custom forwarding components,
+  invalid children, `as` + `asChild`, separator sequences, keys across re-renders, wrap/asChild
+  rules, server/client error parity, hydration without warnings.
+- Type fixtures (31 negative cases) with a mutation check; the packed declarations reject
+  `space` + `spaceX` in the consumer type check.
+- SSR in Node from the tarball and hydration in Chrome with 0 recoverable errors.
+- CI: runs 42480913188 (`73ac0c9`), 42481749103 (`3656920`) and 42482142182 (`f31878a`), 5/5 jobs each. Details: `specs/003-layout-system/evidence.md`.
