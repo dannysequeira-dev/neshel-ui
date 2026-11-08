@@ -1,8 +1,12 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import {
+  bareImports,
   checkDeclarations,
   checkDependencySpecs,
+  checkLifecycleScripts,
+  checkPackageContract,
+  checkPublicPeers,
   checkSideEffects,
   checkSourceMaps,
   checkTargets,
@@ -125,4 +129,79 @@ test("flags tests, stories, tsconfigs and dotfiles in tarballs", () => {
     }),
   );
   assert.equal(errors.length, 4);
+});
+
+test("rejects install lifecycle scripts", () => {
+  assert.deepEqual(checkLifecycleScripts({ scripts: { build: "tsc", test: "x" } }), []);
+  const errors = checkLifecycleScripts({ scripts: { postinstall: "x", prepare: "y" } });
+  assert.equal(errors.length, 2);
+  assert.match(errors[0], /scripts.postinstall/);
+});
+
+test("public workspace peers must be caret ranges", () => {
+  const publicNames = ["@neshel-ui/config"];
+  assert.deepEqual(
+    checkPublicPeers({ peerDependencies: { "@neshel-ui/config": "^0.1.0" } }, publicNames),
+    [],
+  );
+  assert.deepEqual(checkPublicPeers({ peerDependencies: { react: "^19.0.0" } }, publicNames), []);
+  assert.match(
+    checkPublicPeers({ peerDependencies: { "@neshel-ui/config": "0.1.0" } }, publicNames)[0],
+    /caret range/,
+  );
+});
+
+test("bareImports finds package and node: specifiers, ignoring relative ones", () => {
+  const source = [
+    'import a from "./a.js";',
+    'export { b } from "../b.js";',
+    'import x from "node:fs";',
+    'const y = await import("pkg");',
+  ].join("\n");
+  assert.deepEqual(bareImports(source), ["node:fs", "pkg"]);
+});
+
+const configFiles = (overrides = {}) =>
+  files({
+    "dist/index.js": 'export { a } from "./contract.js";',
+    "dist/contract.js": "export const a = 1;",
+    "dist/tailwind.css": "@theme inline {}",
+    "dist/styles.css": "@theme inline {}",
+    ...overrides,
+  });
+const configManifest = {
+  name: "@neshel-ui/config",
+  exports: { ".": {}, "./tokens.css": "", "./tailwind.css": "", "./styles.css": "" },
+};
+
+test("config package contract: exact exports, no deps, relative imports, identical alias", () => {
+  assert.deepEqual(checkPackageContract(configManifest, configFiles()), []);
+  const errors = checkPackageContract(
+    {
+      ...configManifest,
+      exports: { ...configManifest.exports, "./engine": "" },
+      dependencies: { "colorjs.io": "~0.7.1" },
+    },
+    configFiles({ "dist/index.js": 'import "node:fs";', "dist/styles.css": "old" }),
+  );
+  assert.equal(errors.length, 4);
+  const text = errors.join("\n");
+  assert.match(text, /exports must be exactly/);
+  assert.match(text, /dependencies must be empty/);
+  assert.match(text, /imports "node:fs"/);
+  assert.match(text, /byte-identical/);
+});
+
+test("cli package contract: exact runtime dependencies and config peer", () => {
+  const good = {
+    name: "@neshel-ui/cli",
+    dependencies: { jiti: "^2.7.0", "colorjs.io": "~0.7.1" },
+    peerDependencies: { "@neshel-ui/config": "^0.0.0" },
+  };
+  assert.deepEqual(checkPackageContract(good, new Map()), []);
+  const errors = checkPackageContract(
+    { name: "@neshel-ui/cli", dependencies: { jiti: "^2.7.0", zod: "^4.0.0" } },
+    new Map(),
+  );
+  assert.equal(errors.length, 2);
 });

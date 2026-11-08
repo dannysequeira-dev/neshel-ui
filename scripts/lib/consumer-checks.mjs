@@ -59,3 +59,57 @@ export function checkConsumerCss(outputCss, packageCss, { neshelUtilities, coreU
   }
   return errors;
 }
+
+/** Cascade layer names in order of first appearance (statements and blocks, nested names joined). */
+export function layerOrder(css) {
+  const order = [];
+  for (const match of css.matchAll(/@layer\s+([^{;]+)[{;]/g)) {
+    for (const name of match[1].split(",").map((part) => part.trim())) {
+      if (name && !order.includes(name)) order.push(name);
+    }
+  }
+  return order;
+}
+
+/**
+ * ADR 0006 relies on `neshel.defaults` being ordered before `neshel.config`. Bundlers may rewrite
+ * the statement (Lightning CSS turns `@layer a, b; @layer a {…}` into `@layer a {…} @layer b;`),
+ * so the check is semantic: both layers are declared and defaults appears first.
+ */
+export function checkLayerStatement(outputCss) {
+  const order = layerOrder(outputCss);
+  const defaults = order.indexOf("neshel.defaults");
+  const config = order.indexOf("neshel.config");
+  if (defaults === -1 || config === -1) {
+    return ["built CSS does not declare both neshel.defaults and neshel.config layers"];
+  }
+  if (defaults > config) return ["built CSS orders neshel.config before neshel.defaults"];
+  return [];
+}
+
+/**
+ * Plain-CSS consumer (no Tailwind): every token and theme selector of tokens.css is present,
+ * the layer statement survived, and no Tailwind directive leaked into the output.
+ */
+export function checkPlainCss(outputCss, packageCss) {
+  const errors = [];
+  for (const token of declaredTokens(packageCss)) {
+    if (!new RegExp(`${escapeRegExp(token)}s*:`).test(outputCss)) {
+      errors.push(`built CSS is missing the ${token} declaration from tokens.css`);
+    }
+  }
+  const outputSelectors = new Set(themeSelectors(outputCss));
+  for (const theme of themeSelectors(packageCss)) {
+    if (!outputSelectors.has(theme)) {
+      errors.push(`built CSS is missing the [data-neshel-theme=${theme}] theme selector`);
+    }
+  }
+  if (/@(?:theme|tailwind|apply|source|utility|custom-variant)\b/.test(outputCss)) {
+    errors.push("plain-CSS output contains a Tailwind directive");
+  }
+  if (!/prefers-color-scheme:\s*dark/.test(outputCss)) {
+    errors.push("built CSS lost the prefers-color-scheme media block for system mode");
+  }
+  errors.push(...checkLayerStatement(outputCss));
+  return errors;
+}

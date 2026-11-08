@@ -198,3 +198,79 @@ export function checkUnexpectedFiles(files) {
   }
   return errors;
 }
+
+const LIFECYCLE_SCRIPTS = ["preinstall", "install", "postinstall", "prepare"];
+
+/** Installing a package must never run code (feature 002 FR-023: explicit generation only). */
+export function checkLifecycleScripts(manifest) {
+  return LIFECYCLE_SCRIPTS.filter((name) => manifest.scripts?.[name] !== undefined).map(
+    (name) =>
+      `scripts.${name} runs on install; packages must not declare install lifecycle scripts`,
+  );
+}
+
+/** Public workspace packages may be peers only as caret ranges (packed from `workspace:^`). */
+export function checkPublicPeers(manifest, publicNames = []) {
+  const errors = [];
+  const publicSet = new Set(publicNames);
+  for (const [name, spec] of Object.entries(manifest.peerDependencies ?? {})) {
+    if (publicSet.has(name) && !/^\^\d+\.\d+\.\d+/.test(String(spec))) {
+      errors.push(`peerDependencies.${name} is "${spec}"; expected a caret range (workspace:^)`);
+    }
+  }
+  return errors;
+}
+
+/** Bare (non-relative) import specifiers of an ES module source, including `node:` built-ins. */
+export function bareImports(source) {
+  const specifiers = [...source.matchAll(/(?:\bfrom\s*|\bimport\s*\(?\s*)["']([^"']+)["']/g)].map(
+    (match) => match[1],
+  );
+  return specifiers.filter((specifier) => !/^\.\.?\//.test(specifier));
+}
+
+const sameKeys = (object, expected) =>
+  JSON.stringify(Object.keys(object ?? {}).sort()) === JSON.stringify([...expected].sort());
+
+/**
+ * Package-specific contracts of feature 002 (ADR 0006/0007): exact `config` exports, a
+ * dependency-free browser-safe entry, the styles.css alias, and the exact `cli` dependency set.
+ */
+export function checkPackageContract(manifest, files) {
+  const errors = [];
+  if (manifest.name === "@neshel-ui/config") {
+    const expected = [".", "./tokens.css", "./tailwind.css", "./styles.css"];
+    if (!sameKeys(manifest.exports, expected)) {
+      errors.push(`exports must be exactly ${expected.join(", ")}`);
+    }
+    for (const field of ["dependencies", "peerDependencies", "optionalDependencies"]) {
+      if (Object.keys(manifest[field] ?? {}).length > 0) {
+        errors.push(`${field} must be empty: @neshel-ui/config has no runtime dependencies`);
+      }
+    }
+    for (const [path, contents] of files) {
+      if (!/^dist\/.*\.js$/.test(path)) continue;
+      for (const specifier of bareImports(contents.toString("utf8"))) {
+        errors.push(
+          `${path} imports "${specifier}"; the browser-safe entry may import only relative modules`,
+        );
+      }
+    }
+    const styles = files.get("dist/styles.css");
+    const tailwind = files.get("dist/tailwind.css");
+    if (!styles || !tailwind || !styles.equals(tailwind)) {
+      errors.push("dist/styles.css must be byte-identical to dist/tailwind.css (0.x alias)");
+    }
+  }
+  if (manifest.name === "@neshel-ui/cli") {
+    if (!sameKeys(manifest.dependencies, ["colorjs.io", "jiti"])) {
+      errors.push(
+        `dependencies must be exactly colorjs.io and jiti; found ${Object.keys(manifest.dependencies ?? {}).join(", ") || "none"}`,
+      );
+    }
+    if (!manifest.peerDependencies?.["@neshel-ui/config"]) {
+      errors.push("peerDependencies must include @neshel-ui/config (token contract)");
+    }
+  }
+  return errors;
+}

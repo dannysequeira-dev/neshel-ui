@@ -2,7 +2,10 @@ import assert from "node:assert/strict";
 import test from "node:test";
 import {
   checkConsumerCss,
+  checkLayerStatement,
+  checkPlainCss,
   declaredTokens,
+  layerOrder,
   themeSelectors,
 } from "../scripts/lib/consumer-checks.mjs";
 
@@ -59,4 +62,37 @@ test("fails on unprocessed @theme or unresolved @import", () => {
 
 test("fails when the package stylesheet declares no tokens", () => {
   assert.match(checkConsumerCss(goodOutput, ":root{}", expected)[0], /declares no --neshel-\*/);
+});
+
+test("layerOrder follows first appearance across statements and blocks", () => {
+  assert.deepEqual(
+    layerOrder("@layer theme,base;@layer neshel.defaults{a{}}@layer neshel.config;@layer base{}"),
+    ["theme", "base", "neshel.defaults", "neshel.config"],
+  );
+});
+
+test("checkLayerStatement accepts equivalent rewrites and rejects reordering or loss", () => {
+  assert.deepEqual(
+    checkLayerStatement("@layer neshel.defaults,neshel.config;@layer neshel.defaults{}"),
+    [],
+  );
+  assert.deepEqual(checkLayerStatement("@layer neshel.defaults{:root{}}@layer neshel.config;"), []);
+  assert.match(checkLayerStatement("@layer neshel.config{}@layer neshel.defaults{}")[0], /before/);
+  assert.match(checkLayerStatement("@layer neshel.defaults{}")[0], /both/);
+});
+
+test("checkPlainCss requires tokens, selectors, system media and no Tailwind directives", () => {
+  const tokens =
+    "@layer neshel.defaults, neshel.config;@layer neshel.defaults{:root{--neshel-primary:#193767}" +
+    '@media (prefers-color-scheme: dark){[data-neshel-theme="system"]{--neshel-primary:#9fb8e6}}' +
+    '[data-neshel-theme="dark"]{--neshel-primary:#9fb8e6}}';
+  const built =
+    "@layer neshel.defaults{:root{--neshel-primary:#193767}@media (prefers-color-scheme:dark)" +
+    "{[data-neshel-theme=system]{--neshel-primary:#9fb8e6}}[data-neshel-theme=dark]{--neshel-primary:#9fb8e6}}" +
+    "@layer neshel.config;";
+  assert.deepEqual(checkPlainCss(built, tokens), []);
+  const errors = checkPlainCss("@theme inline{}", tokens).join("\n");
+  assert.match(errors, /missing the --neshel-primary/);
+  assert.match(errors, /Tailwind directive/);
+  assert.match(errors, /prefers-color-scheme/);
 });

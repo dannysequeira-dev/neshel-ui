@@ -18,6 +18,9 @@ import { formatMessage } from "publint/utils";
 import {
   checkDeclarations,
   checkDependencySpecs,
+  checkLifecycleScripts,
+  checkPackageContract,
+  checkPublicPeers,
   checkSideEffects,
   checkSourceMaps,
   checkTargets,
@@ -209,6 +212,7 @@ async function main() {
   const packages = listWorkspacePackages();
   const publicPackages = packages.filter((pkg) => pkg.intendedPublic);
   const internalNames = packages.filter((pkg) => !pkg.intendedPublic).map((pkg) => pkg.name);
+  const publicNames = publicPackages.map((pkg) => pkg.name);
   if (publicPackages.length === 0) throw new Error("No intended public packages found.");
 
   if (!process.argv.includes("--no-build")) {
@@ -251,6 +255,9 @@ async function main() {
         ...checkSourceMaps(files),
         ...checkSideEffects(manifest),
         ...checkUnexpectedFiles(files),
+        ...checkLifecycleScripts(manifest),
+        ...checkPublicPeers(manifest, publicNames),
+        ...checkPackageContract(manifest, files),
         ...determinismErrors,
       ];
       const lint = await runPublint(tarball, manifest);
@@ -258,19 +265,6 @@ async function main() {
       errors.push(...lint.errors, ...types.errors);
 
       writeFiles(files, join(nodeModules, ...manifest.name.split("/")));
-      for (const dependency of Object.keys({
-        ...manifest.dependencies,
-        ...manifest.peerDependencies,
-      })) {
-        if (!linkFromWorkspace(dependency, pkg.dir, nodeModules)) {
-          errors.push(`dependency ${dependency} is not installed in the workspace; cannot verify`);
-        }
-        linkFromWorkspace(
-          `@types/${dependency.replace(/^@/, "").replace("/", "__")}`,
-          pkg.dir,
-          nodeModules,
-        );
-      }
       artifacts.push({
         pkg,
         manifest,
@@ -280,6 +274,25 @@ async function main() {
         errors,
         notes: [...lint.notes, ...types.notes],
       });
+    }
+
+    // Link third-party dependencies after all packed packages are extracted, so a public
+    // workspace dependency (e.g. cli -> config) resolves to its packed copy, never to the repo.
+    for (const { pkg, manifest, errors } of artifacts) {
+      for (const dependency of Object.keys({
+        ...manifest.dependencies,
+        ...manifest.peerDependencies,
+      })) {
+        if (publicNames.includes(dependency)) continue;
+        if (!linkFromWorkspace(dependency, pkg.dir, nodeModules)) {
+          errors.push(`dependency ${dependency} is not installed in the workspace; cannot verify`);
+        }
+        linkFromWorkspace(
+          `@types/${dependency.replace(/^@/, "").replace("/", "__")}`,
+          pkg.dir,
+          nodeModules,
+        );
+      }
     }
 
     const consumer = checkConsumer(consumerDir, artifacts);
