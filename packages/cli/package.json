@@ -5,11 +5,17 @@
   "type": "module",
   "private": true,
   "license": "MIT",
-  "sideEffects": [
-    "**/*.css"
-  ],
+  "engines": {
+    "node": ">=22.13.0"
+  },
+  "sideEffects": false,
   "files": [
     "dist",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "!src/**/*.test.ts",
+    "!src/**/*.test.tsx",
+    "!src/**/*.stories.tsx",
     "README.md",
     "LICENSE"
   ],
@@ -19,18 +25,18 @@
       "import": "./dist/index.js"
     }
   },
+  "bin": {
+    "neshel": "./dist/bin.js"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
-  "dependencies": {
-    "@neshel-ui/config": "workspace:*"
-  },
   "devDependencies": {
     "typescript": "catalog:",
     "@types/node": "catalog:"
-  },
-  "bin": {
-    "neshel": "./dist/index.js"
   }
 }

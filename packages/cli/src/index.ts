@@ -1,3 +1,3 @@
-#!/usr/bin/env node
-
-throw new Error("Neshel CLI is intentionally not implemented in the foundation scaffold.");
+/* Public programmatic API placeholder: implementation begins in feature 002.
+   The executable lives in ./bin.ts so importing this module has no side effects. */
+export {};

@@ -326,10 +326,6 @@ importers:
         version: 7.3.7(@types/node@22.20.5)(jiti@2.7.0)(lightningcss@1.33.0)(yaml@2.9.1)
 
   packages/cli:
-    dependencies:
-      '@neshel-ui/config':
-        specifier: workspace:*
-        version: link:../config
     devDependencies:
       '@types/node':
         specifier: 'catalog:'
@@ -339,13 +335,6 @@ importers:
         version: 5.9.3
 
   packages/components:
-    dependencies:
-      '@neshel-ui/config':
-        specifier: workspace:*
-        version: link:../config
-      '@neshel-ui/core':
-        specifier: workspace:*
-        version: link:../core
     devDependencies:
       '@types/react':
         specifier: 'catalog:'
@@ -370,10 +359,6 @@ importers:
         version: 5.9.3
 
   packages/layout:
-    dependencies:
-      '@neshel-ui/core':
-        specifier: workspace:*
-        version: link:../core
     devDependencies:
       '@types/react':
         specifier: 'catalog:'
@@ -386,10 +371,6 @@ importers:
         version: 5.9.3
 
   packages/typography:
-    dependencies:
-      '@neshel-ui/core':
-        specifier: workspace:*
-        version: link:../core
     devDependencies:
       '@types/react':
         specifier: 'catalog:'
