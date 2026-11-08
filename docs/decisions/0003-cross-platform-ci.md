@@ -23,6 +23,16 @@ output and build pipeline must not depend on that fact.
    a frozen installation is mandatory.
 6. This is a foundation update, not a reason to build React components early.
 
+## Amendment 2026-11-07 (Phase 001 decisions D1, D4, D7)
+
+- Node 26 LTS is the primary development version (`.nvmrc`, `.node-version`).
+- CI matrix: Node 26 on native Windows, Linux and macOS; Node 22 and Node 24 on Linux.
+  The contributor floor stays `>=22.13`; consumers are not required to run Node 26.
+- Point 5 is complete: `pnpm-lock.yaml` is committed, so CI installs only with
+  `--frozen-lockfile`. CI adds pnpm caching, lint and package-integrity checks.
+- GitHub CLI may be used to inspect runs; it is never a required dependency.
+- Vite 8 is evaluated in a time-boxed spike; Vite 7 remains until gates pass.
+
 ## Consequences
 
 - More CI runtime and potential OS-specific dependency defects discovered early.

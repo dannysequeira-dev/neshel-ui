@@ -29,4 +29,5 @@ careful consumer integration; npm scope availability has not been checked.
 workspace dependency of public-intended modules. Before publication, either
 bundle/in-line these runtime helpers into consumer artifacts or make `core`
 a genuinely published semver package. **Never publish a package with an
-unavailable private runtime dependency.** Document the final choice in ADR 0002.
+unavailable private runtime dependency.** Resolved by
+[ADR 0002](0002-internal-core-package.md) (2026-11-07).

@@ -1,9 +1,13 @@
 # Feature 001
 
-This specification describes how to verify the **existing scaffold**.
+Foundation and architecture validation. Official Spec Kit (1.2.6, Claude integration,
+`--script py`) is installed; continue with `/speckit-plan`, `/speckit-tasks` and
+`/speckit-analyze` using `spec.md` in this directory.
 
-Official Spec Kit commands are not bundled into the ZIP. After bootstrapping
-Spec Kit, use the `001-foundation/spec.md` as the starting point for clarify,
-planning and task generation. Do not fabricate a completed task checklist.
+- `spec.md` — approved specification with maintainer decisions D1–D7.
+- `evidence.md` — real gate results, separated into implemented / locally verified / CI-verified.
 
-Next feature brief is in `specs/002-config-and-tokens/brief.md`.
+To select this feature in a fresh clone, follow
+[Selecting the active feature](../../.specify/README.md#selecting-the-active-feature-per-checkout).
+
+Next feature brief: `specs/002-config-and-tokens/brief.md`.

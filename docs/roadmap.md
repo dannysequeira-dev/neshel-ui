@@ -4,7 +4,7 @@ Legend: **Scaffold** = files exist, **Planned** = work not done, **Verified** = 
 
 | Slice | Scope | Status | Mandatory gate |
 | --- | --- | --- | --- |
-| 001 | Foundation: repo setup, pnpm, TS, Storybook, Vite, CI, Spec Kit | Scaffold, awaiting dependency validation | Fresh install, build, typecheck, Storybook, CI |
+| 001 | Foundation: repo setup, pnpm, TS, Storybook, Vite, CI, Spec Kit, packed-artifact validation | In progress — spec approved; 001.0 (Spec Kit) done locally; 001.1–001.5 planned | `specs/001-foundation/spec.md` SC-001–SC-007 |
 | 002 | Config & tokens: typed `defineConfig`, themes, generator CLI | Planned | CSS-only consumer; generated CSS determinism |
 | 003 | Layout primitives: Box / Stack / Inline / Grid / Center / Container | Planned | Responsive variants, semantic DOM, SSR, tests |
 | 004 | Typography: Heading / Text / Paragraph / Caption + Capsize | Planned | Font metrics snapshots, accessibility, SSR |

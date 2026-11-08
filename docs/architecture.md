@@ -85,9 +85,25 @@ Applications load their fonts; no remote fetch required by the library.
 - SSR/render/hydration tests for React public components when implemented.
 - Packed tarball tests in a clean consumer (not only `workspace:*`).
 
+## Phase 001 decisions (2026-11-07)
+
+- `core` stays private; unused dependencies on it are removed. Rules for future
+  shared utilities: [ADR 0002](decisions/0002-internal-core-package.md).
+- Library packages: ESM only, NodeNext resolution with explicit `.js` extensions,
+  published source maps with their sources, React 19 peer range, validation from
+  packed artifacts with `check:pack`, `publint` and `@arethetypeswrong/cli`:
+  [ADR 0004](decisions/0004-package-distribution.md). Apps may keep `Bundler`.
+- Node 26 primary for development; CI Node 26 on three OSes plus Node 22/24 on Linux:
+  [ADR 0003](decisions/0003-cross-platform-ci.md) amendment.
+- Vite 8: time-boxed spike in Phase 001; Vite 7 stays until gates pass.
+- Standard CSS tokens and the Tailwind `@theme` integration become separate
+  exports in feature 002.
+
+Status of each decision (implemented / locally verified / CI-verified) is tracked in
+`specs/001-foundation/evidence.md`.
+
 ## Open decisions
 
-- Whether internal `core` should be bundler-inlined or published as a scoped runtime dependency.
 - Exact semantic token vocabulary and accessibility policy.
 - Component-level CSS distribution strategy and choice of class variance tooling.
 - Stable polymorphism / `asChild` / refs contract for layouts and typography.
