@@ -104,36 +104,39 @@ Milestones 001.2–001.5 are intentionally coarse and will be refined before imp
 
 ## Phase 5: User Story 1 + 5 — milestone 001.4, matrix and documentation (P0/P1)
 
-- [ ] T041 [US1] Set `.nvmrc` and `.node-version` to 26; CI matrix Node 26 × {ubuntu, windows, macos} + Node 22/24 × ubuntu in `.github/workflows/ci.yml` (D1)
-- [ ] T042 [US1] Time-boxed Vite 8 spike (catalog, playground, Storybook, CI); adopt or record the blocker in `research.md` and an ADR (D4, SC-007)
-- [ ] T043 [P] [US5] Evaluate GitHub Actions major versions for runtime deprecations in `.github/workflows/ci.yml`
-- [ ] T044 [P] [US1] Refresh `docs/CROSS-PLATFORM.es.md`, `docs/roadmap.md`, `README.md`; retire `docs/VALIDATION-REPORT.md` in favour of `evidence.md`
+- [ ] T041 [US1] Set `.nvmrc`/`.node-version` to 26; CI matrix ubuntu × {22, 24, 26}, windows × 26, macos × 26; `scripts/check-platform.mjs` keeps the 22.13 floor and reports the recommended major (D1, R17)
+- [ ] T042 [US5] Upgrade `.github/workflows/ci.yml` to `actions/checkout@v7`, `actions/setup-node@v7`, `pnpm/action-setup` pinned to v6.1.1's commit; cancel in-progress runs only for pull requests (R18)
+- [ ] T043 [US1] Cross-platform fixes: re-pack determinism check in `scripts/check-pack.mjs`; `scripts/lib/temp.mjs` (signal-safe temp dirs) used by `check-pack` and `check-consumer`; LF regression test `tests/line-endings.test.mjs` (R19)
+- [ ] T044 [US1] Time-boxed Vite 8 spike on a local branch (catalog `vite` only); run all gates; adopt or record the blocker in `research.md` R21 and an ADR (D4, SC-007)
+- [ ] T045 [P] [US1] Refresh `README.md`, `docs/SETUP-WINDOWS.es.md`, `docs/CROSS-PLATFORM.es.md`, `docs/architecture.md`, `docs/roadmap.md`, `docs/package-contracts.md`, `.specify/README.md`, `CLAUDE.md` command list; mark `docs/CLAUDE-FIRST-PROMPT.md` historical; retire `docs/VALIDATION-REPORT.md` in favour of `evidence.md`; no ZIP instructions
+- [ ] T046 [US1] Reproducibility: fresh clone into a temp path with spaces/Unicode, frozen install, `pnpm check`, `pnpm check:consumer`, Spec Kit feature selection (R22)
+- [ ] T047 [US1] Run all gates locally; add the verification matrix (implemented / local / CI / planned) to `specs/001-foundation/evidence.md`
 
 ## Phase 6: User Story 5 — milestone 001.5, native CI verification (P1)
 
-- [ ] T045 [US5] With maintainer approval, push and record per-job CI results (run ID, OS, Node) in `specs/001-foundation/evidence.md` (SC-006)
+- [ ] T048 [US5] With maintainer approval, push and record per-job CI results (run ID, OS, Node) in `specs/001-foundation/evidence.md` (SC-006)
 
 ## Phase 7: Polish & cross-cutting
 
-- [ ] T046 Run `/speckit-analyze` after each milestone's tasks are refined; update `roadmap.md` status (implemented / local / CI)
+- [ ] T049 Run `/speckit-analyze` after each milestone's tasks are refined; update `roadmap.md` status (implemented / local / CI)
 
 ---
 
 ## Dependencies & execution order
 
 - Phase 1 (done) → Phase 2 (001.1, blocks everything) → Phase 3 (001.2) → Phase 4 (001.3, needs `check:pack` tarballs) → Phase 5 (001.4) → Phase 6 (001.5).
-- Phase 5's Vite spike (T042) may run in parallel with Phases 3–4 on a separate local branch; it must not block them (D4).
+- Phase 5's Vite spike (T044) may run in parallel with Phases 3–4 on a separate local branch; it must not block them (D4).
 - Within 001.1: T007–T009 before T012; T010/T011 independent; T015–T017 sequential (same file); T019/T020 parallel; T021–T023 last.
 
 ## Parallel examples
 
 ```text
 001.1: T010 (check-portability.mjs) ‖ T011 (check-workspace.mjs) ‖ T019 (storybook main.ts) ‖ T020 (CROSS-PLATFORM.es.md)
-001.4: T043 (workflow action versions review) ‖ T044 (docs refresh)
+001.4: T042 (workflow actions) ‖ T045 (docs refresh)
 ```
 
 ## Implementation strategy
 
 Deliver one milestone at a time; each ends with local gates, an evidence entry, local
-commits and a maintainer review. 001.0–001.2 are complete and CI-verified; 001.3 is the current authorized
-scope; nothing from 001.4+ is implemented until approved.
+commits and a maintainer review. 001.0–001.3 are complete and CI-verified; 001.4 is the current authorized
+scope; nothing from 001.5 is implemented until approved.

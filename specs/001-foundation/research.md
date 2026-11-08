@@ -180,3 +180,59 @@ Observed Tailwind 4.3.5 output for the current `@neshel-ui/config/styles.css`:
 - **Decision**: `check:consumer` runs as its own CI step on every job, but is **not** part of
   `pnpm check`, which stays offline-capable. Cleanup uses `rmSync` with retries for
   transient Windows file locks.
+
+## R17 — Node.js matrix and runtime floors (001.4, D1)
+
+- **Decision**: `.nvmrc`/`.node-version` → `26`. CI matrix (5 jobs, not a Cartesian product):
+  ubuntu × {22, 24, 26}, windows × 26, macos × 26. Root `engines.node` stays `>=22.13.0`
+  (contributors); browser packages declare no `engines`; `cli` keeps `>=22.13.0`.
+- **Rationale**: Node 26 is the primary development line; 22/24 on one OS catch runtime API
+  regressions cheaply; OS-specific behaviour is covered on the primary version.
+- **Consumer floor**: library output is ES2022 ESM with no Node API usage, so developing on
+  Node 26 does not raise the consumer requirement. `check-platform` keeps the 22.13 floor and
+  only reports when the local Node is not the recommended major.
+
+## R18 — GitHub Actions versions (observed 2026-11-08)
+
+- Run 42435072683 annotated: "Node.js 20 is deprecated … actions/checkout@v4,
+  actions/setup-node@v4, pnpm/action-setup@v4 are being forced to run on Node.js 24".
+- `action.yml` `runs.using`: checkout v5+, setup-node v5+, pnpm/action-setup v5+ use `node24`.
+- **Decision**: `actions/checkout@v7` (credentials persisted to a separate file since v6),
+  `actions/setup-node@v7` (cache hardening/logging; explicit `cache: pnpm` kept),
+  `pnpm/action-setup` pinned to the v6.1.1 commit `73e46992e05b19abd31f2f3c20e0e7370d762115`
+  (third-party action; v6 documents pnpm 12 support and reads `packageManager`). First-party
+  actions stay on major tags.
+- `concurrency.cancel-in-progress` only for pull requests, so every push to `main` keeps a
+  complete result instead of a cancelled run.
+
+## R19 — Cross-platform audit findings
+
+- Packing is deterministic: two clean builds produced byte-identical tarballs (SHA-256) for
+  `config` and `cli`. **Decision**: `check:pack` re-packs each package and fails if the
+  tarball hash differs.
+- Line endings: index is 100% LF. Five Spec Kit metadata JSON files had CRLF only in the
+  maintainer's working copy (written before `eol=lf`); restored from the index. **Decision**:
+  a `node:test` regression test asserts every tracked text file is LF in the index and that
+  `.gitattributes` keeps `* text=auto eol=lf` (skipped outside a git checkout).
+- Temporary directories: `check:pack`/`check:consumer` clean up in `finally`, but an
+  interrupt (Ctrl+C) bypassed it. **Decision**: a small `scripts/lib/temp.mjs` creates the
+  directory and removes it on exit, `SIGINT` and `SIGTERM` (exit codes 130/143).
+- Already sound: Node path APIs everywhere, spaces/Unicode in temp paths, junction symlinks,
+  quoted-args Windows fallback, realpath comparisons (macOS `/private/var`, Windows short
+  names), exit codes via `process.exitCode`.
+
+## R20 — Vite 8 compatibility spike (D4)
+
+- Peer ranges accept Vite 8: `@tailwindcss/vite` 4.3.5 (`^5.2.0 || ^6 || ^7 || ^8`),
+  `@storybook/react-vite` and `builder-vite` 10.6.6 (`… || ^8.0.0`), `@vitejs/plugin-react`
+  5.2.0 (`… || ^8.0.0`). Vite 8 replaces esbuild/Rollup with Rolldown; `engines.node`
+  `^20.19.0 || >=22.12.0` fits the `>=22.13` floor. `@vitejs/plugin-react` 6 requires Vite 8
+  and new peers; the spike keeps 5.2.0 to stay narrow.
+- Method: isolated local branch; change only the `vite` catalog entry; run every gate.
+  Outcome recorded in R21 after the run.
+
+## R22 — Reproducibility
+
+- **Decision**: validate the contributor workflow from a fresh `git clone` of the committed
+  history into a temp path with spaces and Unicode: `pnpm install --frozen-lockfile`,
+  `pnpm check`, `pnpm check:consumer --no-build`, Spec Kit feature selection as documented.

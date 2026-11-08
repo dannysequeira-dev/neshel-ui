@@ -108,11 +108,19 @@ FR-021, US-06, SC-005; design in [research.md](research.md) R13–R16, tasks T03
 5. Scope guard: only the existing `./styles.css` and `.` exports are exercised; no Phase 002
    token or Tailwind-split work.
 
-### 001.4 — Cross-platform matrix and documentation (outline)
+### 001.4 — Cross-platform matrix, runtime alignment and documentation
 
-FR-013, FR-024, D1, D4. `.nvmrc`/`.node-version` → 26; CI Node 26 × 3 OSes + Node 22/24 Linux;
-time-boxed Vite 8 spike with adopt-or-document outcome; refresh `CROSS-PLATFORM.es.md`,
-`roadmap.md`, retire `VALIDATION-REPORT.md` in favour of `evidence.md`.
+FR-013, FR-024, D1, D4; research R17–R22; tasks T041–T047.
+
+1. Node 26 primary (`.nvmrc`, `.node-version`); CI matrix ubuntu × {22, 24, 26}, windows × 26,
+   macos × 26; consumer/runtime floors unchanged (R17).
+2. Actions on node24 runtimes: checkout v7, setup-node v7, pnpm/action-setup pinned v6.1.1;
+   PR-only cancellation (R18).
+3. Cross-platform hardening from the audit: re-pack determinism, signal-safe temp dirs, LF
+   regression test (R19).
+4. Vite 8 spike on an isolated branch; adopt only if every gate passes (R20/R21).
+5. Documentation refresh without ZIP-era instructions; verification matrix in evidence.
+6. Fresh-clone reproducibility check (R22).
 
 ### 001.5 — Native CI verification (outline)
 
