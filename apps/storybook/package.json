@@ -4,15 +4,17 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "storybook dev -p 6006",
-    "build": "storybook build",
-    "typecheck": "tsc -p tsconfig.json --noEmit"
+    "dev": "neshel generate && storybook dev -p 6006",
+    "build": "neshel generate && storybook build",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "check:generated": "neshel generate --check"
   },
   "dependencies": {
     "@neshel-ui/config": "workspace:*",
     "@neshel-ui/layout": "workspace:*",
     "react": "catalog:",
-    "react-dom": "catalog:"
+    "react-dom": "catalog:",
+    "@neshel-ui/typography": "workspace:*"
   },
   "devDependencies": {
     "@storybook/addon-a11y": "catalog:",
@@ -24,6 +26,7 @@
     "typescript": "catalog:",
     "vite": "catalog:",
     "@types/react": "catalog:",
-    "@types/react-dom": "catalog:"
+    "@types/react-dom": "catalog:",
+    "@neshel-ui/cli": "workspace:*"
   }
 }

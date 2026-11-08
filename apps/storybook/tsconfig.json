@@ -4,8 +4,9 @@
     "types": ["vite/client"],
     "paths": {
       "@neshel-ui/config": ["../../packages/config/src/index.ts"],
-      "@neshel-ui/layout": ["../../packages/layout/src/index.ts"]
+      "@neshel-ui/layout": ["../../packages/layout/src/index.ts"],
+      "@neshel-ui/typography": ["../../packages/typography/src/index.ts"]
     }
   },
-  "include": ["src", ".storybook"]
+  "include": ["src", ".storybook", "neshel.config.ts"]
 }
