@@ -16,8 +16,8 @@ Use Node 26 (`.nvmrc`; 22.13+ supported) and the pnpm version pinned in `package
 
 ```bash
 pnpm install --frozen-lockfile
-pnpm check            # doctor, lint, typecheck, tests, build, exports, packed artifacts
-pnpm check:consumer   # external Vite + Tailwind consumer from the packed tarball (network)
+pnpm check            # doctor, lint, typecheck, tests, build, package tests, exports, packed artifacts
+pnpm check:consumer   # external Vite consumers (Tailwind, plain CSS) from packed tarballs (network)
 pnpm dev:storybook
 ```
 
@@ -26,6 +26,18 @@ require green native CI on Windows, Linux and macOS for changes to tooling or pu
 
 Packages are still placeholders: feature work must be scoped to a Spec Kit feature slice
 (`specs/`) and include tests, documentation and stories once components exist.
+
+## Design tokens
+
+`packages/config/src/tokens.css` and `tailwind.css` are generated from the contract data in
+`packages/config/src/contract.ts`; do not edit them by hand. After changing the contract:
+
+```bash
+pnpm build:packages
+pnpm generate:tokens   # rewrites the two stylesheets with the CLI's generator
+pnpm build:packages
+pnpm test:packages     # drift, contrast and golden-file tests
+```
 
 ## Pull requests
 

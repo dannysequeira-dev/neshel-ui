@@ -25,38 +25,38 @@ US5 validate/generate. **Nothing below is started; 002.1 requires owner authoriz
 
 ### Phase 1: Setup
 
-- [ ] T001 Create `specs/002-config-and-tokens/evidence.md` with the four status states (implemented / verified locally / verified in GitHub Actions / planned) and one section per milestone
-- [ ] T002 Add `jiti` `^2.7.0` and `colorjs.io` `~0.7.1` to `dependencies`, and `@neshel-ui/config` `workspace:^` to `peerDependencies` and `devDependencies` of `packages/cli/package.json`; refresh `pnpm-lock.yaml` with pnpm only
-- [ ] T003 [P] Create `packages/config/test/`, `packages/cli/test/`, `packages/config/type-tests/`; exclude them from `tsconfig.build.json` and the `files` allowlist of both packages
-- [ ] T004 Change root `package.json`: `test` → `node --test "tests/**/*.test.mjs"`, add `test:packages` → `node --test "packages/*/test/**/*.test.mjs"`, add `generate:tokens`, and order `check` as doctor, lint, typecheck, test, build:packages, test:packages, check:exports, check:pack; `pnpm check:portability` must pass
-- [ ] T005 Add a "Package tests" step (`pnpm test:packages`) after "Build packages" in `.github/workflows/ci.yml`
+- [x] T001 Create `specs/002-config-and-tokens/evidence.md` with the four status states (implemented / verified locally / verified in GitHub Actions / planned) and one section per milestone
+- [x] T002 Add `jiti` `^2.7.0` and `colorjs.io` `~0.7.1` to `dependencies`, and `@neshel-ui/config` `workspace:^` to `peerDependencies` and `devDependencies` of `packages/cli/package.json`; refresh `pnpm-lock.yaml` with pnpm only
+- [x] T003 [P] Create `packages/config/test/`, `packages/cli/test/`, `packages/config/type-tests/`; exclude them from `tsconfig.build.json` and the `files` allowlist of both packages
+- [x] T004 Change root `package.json`: `test` → `node --test "tests/**/*.test.mjs"`, add `test:packages` → `node --test "packages/*/test/**/*.test.mjs"`, add `generate:tokens`, and order `check` as doctor, lint, typecheck, test, build:packages, test:packages, check:exports, check:pack; `pnpm check:portability` must pass
+- [x] T005 Add a "Package tests" step (`pnpm test:packages`) after "Build packages" in `.github/workflows/ci.yml`
 
 ### Phase 2: Foundational (blocks all stories)
 
-- [ ] T006 [P] Write public types in `packages/config/src/types.ts` per [contracts/config-api.md](contracts/config-api.md) (without `ExactConfig`, which is T035)
-- [ ] T007 Write `colorRoles`, `contrastPairs` and `defaults` (palette of [contracts/tokens.md](contracts/tokens.md)), deep-frozen, in `packages/config/src/contract.ts`; re-export from `packages/config/src/index.ts`
-- [ ] T008 [P] Test contract data in `packages/config/test/contract.test.mjs`: role order and uniqueness match tokens.md, pairs reference valid roles, both default themes complete, objects frozen, `dist/index.js` has no `import`
-- [ ] T009 Implement `packages/cli/src/validate/colour.ts`: syntax allowlist, Color.js (`colorjs.io/fn`, sRGB/HSL/OKLCH only) parse, alpha, gamut check and CSS gamut mapping, `contrastWCAG21`; the only module importing `colorjs.io`
-- [ ] T010 [P] Test colour handling in `packages/cli/test/colour.test.mjs`: each accepted format, each rejected syntax (named, `var()`, `color-mix()`, `lab()`), malformed input, alpha, out-of-gamut, reference ratios (black/white 21, identical 1, palette values)
-- [ ] T011 Implement `packages/cli/src/resolve.ts`: defaults + light/dark overrides + named themes from resolved bases, radius derivation, font-stack serialization, code-point sorting of named themes
-- [ ] T012 Implement `packages/cli/src/generate/css.ts`: header, layer statement, `:root` tokens, complete light / system-dark / dark / named blocks, optional `@theme inline`, LF and trailing newline
-- [ ] T013 [P] Test resolution and generation in `packages/cli/test/generate.test.mjs`: golden CSS for defaults (tokens and tailwind variants), 21 roles + `color-scheme` per block, selector/at-rule allowlist, no resets/`url()`/`@font-face`, generate twice → identical, override and named-theme resolution
-- [ ] T014 Implement `packages/cli/src/validate/contrast.ts` and test built-in themes in `packages/cli/test/builtin-contrast.test.mjs`: every pair of both defaults meets its threshold; ratios match tokens.md to two decimals (SC-002)
+- [x] T006 [P] Write public types in `packages/config/src/types.ts` per [contracts/config-api.md](contracts/config-api.md) (without `ExactConfig`, which is T035)
+- [x] T007 Write `colorRoles`, `contrastPairs` and `defaults` (palette of [contracts/tokens.md](contracts/tokens.md)), deep-frozen, in `packages/config/src/contract.ts`; re-export from `packages/config/src/index.ts`
+- [x] T008 [P] Test contract data in `packages/config/test/contract.test.mjs`: role order and uniqueness match tokens.md, pairs reference valid roles, both default themes complete, objects frozen, `dist/index.js` has no `import`
+- [x] T009 Implement `packages/cli/src/validate/colour.ts`: syntax allowlist, Color.js (`colorjs.io/fn`, sRGB/HSL/OKLCH only) parse, alpha, gamut check and CSS gamut mapping, `contrastWCAG21`; the only module importing `colorjs.io`
+- [x] T010 [P] Test colour handling in `packages/cli/test/colour.test.mjs`: each accepted format, each rejected syntax (named, `var()`, `color-mix()`, `lab()`), malformed input, alpha, out-of-gamut, reference ratios (black/white 21, identical 1, palette values)
+- [x] T011 Implement `packages/cli/src/resolve.ts`: defaults + light/dark overrides + named themes from resolved bases, radius derivation, font-stack serialization, code-point sorting of named themes
+- [x] T012 Implement `packages/cli/src/generate/css.ts`: header, layer statement, `:root` tokens, complete light / system-dark / dark / named blocks, optional `@theme inline`, LF and trailing newline
+- [x] T013 [P] Test resolution and generation in `packages/cli/test/generate.test.mjs`: golden CSS for defaults (tokens and tailwind variants), 21 roles + `color-scheme` per block, selector/at-rule allowlist, no resets/`url()`/`@font-face`, generate twice → identical, override and named-theme resolution
+- [x] T014 Implement `packages/cli/src/validate/contrast.ts` and test built-in themes in `packages/cli/test/builtin-contrast.test.mjs`: every pair of both defaults meets its threshold; ratios match tokens.md to two decimals (SC-002)
 
 ### Phase 3: User Story 1 — Zero-config with Tailwind (P1)
 
 **Goal**: one import of `tailwind.css` (or the `styles.css` alias) gives tokens, utilities and dark mode.
 **Independent test**: Tailwind consumer from tarballs passes; drift test passes.
 
-- [ ] T015 [US1] Write `scripts/generate-default-css.mjs` (imports built `packages/cli/dist` generator, writes `packages/config/src/tokens.css` and `tailwind.css` with the "do not edit" header); delete the Phase 001 `packages/config/src/styles.css` source; document the regenerate workflow (edit `contract.ts` → `build:packages` → `generate:tokens` → rebuild) in `CONTRIBUTING.md`
-- [ ] T016 [US1] Update `packages/config/package.json` exports (`./tokens.css`, `./tailwind.css`, `./styles.css`) and its build to copy both files and `tailwind.css` → `dist/styles.css` (extend `scripts/copy-css.mjs` if needed)
-- [ ] T017 [P] [US1] Test in `packages/config/test/default-css.test.mjs`: committed CSS equals generator output (drift), `dist/styles.css` byte-identical to `dist/tailwind.css`, `tokens.css` has no `@theme`; plus `tests/no-hardcoded-colors.test.mjs` asserting no colour literals in `packages/{layout,typography,components}/src` (FR-002)
-- [ ] T018 [US1] Extend `scripts/check-pack.mjs` and `scripts/lib/pack-checks.mjs`: exact `config` export set, zero `config` dependencies, `node:`/import-free `dist/index.js`, alias identity, `cli` dependencies exactly `jiti` + `colorjs.io`, public workspace peer allowed only as a caret range, internal packages still rejected, no install lifecycle scripts (`preinstall`, `install`, `postinstall`, `prepare`) in any packed manifest (FR-023); negative cases in `tests/pack-checks.test.mjs`
-- [ ] T019 [US1] Switch `scripts/check-consumer.mjs` to a `tailwind` variant importing `tailwind.css`, extend utilities (new roles, radius scale, `font-neshel-mono`), add an alias build importing `styles.css`, derive expectations from shipped CSS; update `tests/consumer-checks.test.mjs`
-- [ ] T020 [P] [US1] Make `scripts/check-exports.mjs` resolve the new CSS subpaths
-- [ ] T021 [US1] Migrate `apps/playground-vite/src/styles.css` and `apps/storybook/src/styles.css` to `@neshel-ui/config/tailwind.css`
-- [ ] T022 [P] [US1] Update `packages/config/README.md` with the zero-config imports, the alias and the canonical order (final docs in T064)
-- [ ] T023 Run `pnpm check`, `pnpm check:consumer`, `pnpm build:playground`, `pnpm build:storybook`; record results in `evidence.md`
+- [x] T015 [US1] Write `scripts/generate-default-css.mjs` (imports built `packages/cli/dist` generator, writes `packages/config/src/tokens.css` and `tailwind.css` with the "do not edit" header); delete the Phase 001 `packages/config/src/styles.css` source; document the regenerate workflow (edit `contract.ts` → `build:packages` → `generate:tokens` → rebuild) in `CONTRIBUTING.md`
+- [x] T016 [US1] Update `packages/config/package.json` exports (`./tokens.css`, `./tailwind.css`, `./styles.css`) and its build to copy both files and `tailwind.css` → `dist/styles.css` (extend `scripts/copy-css.mjs` if needed)
+- [x] T017 [P] [US1] Test in `packages/config/test/default-css.test.mjs`: committed CSS equals generator output (drift), `dist/styles.css` byte-identical to `dist/tailwind.css`, `tokens.css` has no `@theme`; plus `tests/no-hardcoded-colors.test.mjs` asserting no colour literals in `packages/{layout,typography,components}/src` (FR-002)
+- [x] T018 [US1] Extend `scripts/check-pack.mjs` and `scripts/lib/pack-checks.mjs`: exact `config` export set, zero `config` dependencies, `node:`/import-free `dist/index.js`, alias identity, `cli` dependencies exactly `jiti` + `colorjs.io`, public workspace peer allowed only as a caret range, internal packages still rejected, no install lifecycle scripts (`preinstall`, `install`, `postinstall`, `prepare`) in any packed manifest (FR-023); negative cases in `tests/pack-checks.test.mjs`
+- [x] T019 [US1] Switch `scripts/check-consumer.mjs` to a `tailwind` variant importing `tailwind.css`, extend utilities (new roles, radius scale, `font-neshel-mono`), add an alias build importing `styles.css`, derive expectations from shipped CSS; update `tests/consumer-checks.test.mjs`
+- [x] T020 [P] [US1] Make `scripts/check-exports.mjs` resolve the new CSS subpaths
+- [x] T021 [US1] Migrate `apps/playground-vite/src/styles.css` and `apps/storybook/src/styles.css` to `@neshel-ui/config/tailwind.css`
+- [x] T022 [P] [US1] Update `packages/config/README.md` with the zero-config imports, the alias and the canonical order (final docs in T064)
+- [x] T023 Run `pnpm check`, `pnpm check:consumer`, `pnpm build:playground`, `pnpm build:storybook`; record results in `evidence.md`
 - [ ] T024 Stop for owner review; push only with explicit approval and record the CI run (5 jobs) in `evidence.md`
 
 ---
@@ -67,8 +67,8 @@ US5 validate/generate. **Nothing below is started; 002.1 requires owner authoriz
 
 **Goal**: `tokens.css` works as standard CSS. **Independent test**: plain consumer from tarballs.
 
-- [ ] T025 [US2] Add a `plain` variant to `scripts/check-consumer.mjs` (Vite + TypeScript, no Tailwind, imports `tokens.css`): no `@theme`, layer statement first, every declaration present, no unknown at-rule warnings in the build log
-- [ ] T026 [P] [US2] Cover plain-variant expectations in `tests/consumer-checks.test.mjs`
+- [x] T025 [US2] Add a `plain` variant to `scripts/check-consumer.mjs` (Vite + TypeScript, no Tailwind, imports `tokens.css`): no `@theme`, layer statement first, every declaration present, no unknown at-rule warnings in the build log
+- [x] T026 [P] [US2] Cover plain-variant expectations in `tests/consumer-checks.test.mjs`
 
 ### Phase 5: User Story 3 — Theme precedence (P1)
 

@@ -1,6 +1,6 @@
 # Contract — Semantic tokens
 
-Status: **approved for implementation** (owner, 2026-11-07, D3); not implemented. Machine-readable
+Status: **implemented** in 002.1 (owner approval 2026-11-07, D3). Machine-readable
 source of truth after 002.1: `colorRoles`, `contrastPairs` and `defaults` exported by
 `@neshel-ui/config` (see [config-api.md](config-api.md)).
 
@@ -100,28 +100,29 @@ WCAG 2.1 relative-luminance ratio, colours gamut-mapped to sRGB. Built-in themes
 
 | Foreground              | Background    | Min | Light | Dark  | Basis                |
 | ----------------------- | ------------- | --- | ----- | ----- | -------------------- |
-| `foreground`            | `background`  | 4.5 | 16.36 | 16.83 | 1.4.3                |
-| `surfaceForeground`     | `surface`     | 4.5 | 17.19 | 13.48 | 1.4.3                |
-| `mutedForeground`       | `muted`       | 4.5 | 6.36  | 7.32  | 1.4.3                |
-| `mutedForeground`       | `background`  | 4.5 | 7.24  | 10.18 | 1.4.3                |
+| `foreground`            | `background`  | 4.5 | 16.35 | 16.82 | 1.4.3                |
+| `surfaceForeground`     | `surface`     | 4.5 | 17.18 | 13.48 | 1.4.3                |
+| `mutedForeground`       | `muted`       | 4.5 | 6.36  | 7.31  | 1.4.3                |
+| `mutedForeground`       | `background`  | 4.5 | 7.24  | 10.17 | 1.4.3                |
 | `mutedForeground`       | `surface`     | 4.5 | 7.61  | 8.15  | 1.4.3                |
-| `primaryForeground`     | `primary`     | 4.5 | 11.77 | 8.72  | 1.4.3                |
+| `primaryForeground`     | `primary`     | 4.5 | 11.77 | 8.71  | 1.4.3                |
 | `primary`               | `background`  | 4.5 | 11.20 | 9.69  | 1.4.3 (links)        |
-| `primary`               | `surface`     | 4.5 | 11.77 | 7.77  | 1.4.3                |
+| `primary`               | `surface`     | 4.5 | 11.77 | 7.76  | 1.4.3                |
 | `secondaryForeground`   | `secondary`   | 4.5 | 9.66  | 10.19 | 1.4.3                |
 | `accentForeground`      | `accent`      | 4.5 | 6.75  | 8.98  | 1.4.3                |
-| `destructiveForeground` | `destructive` | 4.5 | 6.57  | 7.07  | 1.4.3                |
-| `destructive`           | `background`  | 4.5 | 6.26  | 6.98  | 1.4.3 (errors)       |
+| `destructiveForeground` | `destructive` | 4.5 | 6.57  | 7.06  | 1.4.3                |
+| `destructive`           | `background`  | 4.5 | 6.25  | 6.97  | 1.4.3 (errors)       |
 | `destructive`           | `surface`     | 4.5 | 6.57  | 5.59  | 1.4.3                |
-| `selectedForeground`    | `selected`    | 4.5 | 12.16 | 9.43  | 1.4.3                |
-| `focus`                 | `background`  | 3   | 4.51  | 11.02 | 1.4.11 / 2.4.13      |
-| `focus`                 | `surface`     | 3   | 4.74  | 8.83  | 1.4.11               |
-| `input`                 | `background`  | 3   | 3.57  | 5.02  | 1.4.11               |
-| `input`                 | `surface`     | 3   | 3.75  | 4.02  | 1.4.11               |
+| `selectedForeground`    | `selected`    | 4.5 | 12.16 | 9.42  | 1.4.3                |
+| `focus`                 | `background`  | 3   | 4.51  | 11.01 | 1.4.11 / 2.4.13      |
+| `focus`                 | `surface`     | 3   | 4.74  | 8.82  | 1.4.11               |
+| `input`                 | `background`  | 3   | 3.56  | 5.01  | 1.4.11               |
+| `input`                 | `surface`     | 3   | 3.74  | 4.01  | 1.4.11               |
 | `disabledForeground`    | `disabled`    | —   | 2.66  | 3.33  | exempt (inactive UI) |
 
-Ratios computed 2026-11-07 with Color.js 0.7.1 `contrastWCAG21` in a throwaway spike outside the
-repository (Windows 11, Node 26); 002.1 replaces them with the CLI test output. Passing these
+Ratios are produced by the CLI's contrast module (Color.js 0.7.1 `contrastWCAG21`), **rounded down**
+to two decimals so a displayed value never overstates contrast, and pinned by
+`packages/cli/test/builtin-contrast.test.mjs`. Passing these
 pairs does **not** make an application WCAG conformant: usage (gold text on ivory, small text over
 images, non-token colours) remains the consumer's responsibility.
 
