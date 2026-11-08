@@ -212,3 +212,19 @@ Local results (Windows 11, Node v26.13.0, pnpm 12.16.1), after `pnpm clean`:
 
 No temporary directory left behind. CI: **pending push** (consumer step not yet run on
 Linux/macOS or Node 22/24).
+
+### 001.3 — native CI result (run 42435072683, commit `64e4cfb`, 2026-11-08)
+
+**CI pass** — all 4 configured jobs `success`; every step `success` (none skipped or cancelled).
+Gates per job: frozen install, doctor, lint, tests, typecheck, build packages, check:exports,
+check:pack, **check:consumer**, Vite build, Storybook build.
+
+| Job                      | Duration | External consumer (`check:consumer`) |
+| ------------------------ | -------- | ------------------------------------ |
+| ubuntu-latest / Node 22  | 52 s     | pass                                 |
+| windows-latest / Node 22 | 63 s     | pass                                 |
+| macos-latest / Node 22   | 54 s     | pass                                 |
+| ubuntu-latest / Node 24  | 45 s     | pass                                 |
+
+The external consumer (React 19.3.1, Vite 7.3.7, Tailwind 4.3.5, TypeScript 5.9.3, tarball
+install) is therefore CI-verified on Linux, Windows and macOS. Node 26 is still not in CI.
