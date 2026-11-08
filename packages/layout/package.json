@@ -35,9 +35,15 @@
   "devDependencies": {
     "typescript": "catalog:",
     "@types/react": "catalog:",
-    "react": "catalog:"
+    "react": "catalog:",
+    "react-dom": "catalog:",
+    "@types/react-dom": "catalog:"
   },
   "peerDependencies": {
     "react": "^19.0.0"
+  },
+  "dependencies": {
+    "@radix-ui/react-slot": "catalog:",
+    "tailwind-variants": "catalog:"
   }
 }
