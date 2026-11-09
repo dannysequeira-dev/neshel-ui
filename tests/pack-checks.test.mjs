@@ -377,3 +377,26 @@ test("checkReleaseMetadata requires the public release fields (feature 006)", as
   );
   assert.match(checkReleaseMetadata({ ...good, keywords: [] }).join(), /keywords/);
 });
+
+test("release guards: tag must match every public version, guards lifted, core private", async () => {
+  const { guardProblems } = await import("../scripts/release-guards.mjs");
+  const pkg = (name, extra = {}) => ({
+    name,
+    version: "0.1.0",
+    publishConfig: { access: "public" },
+    ...extra,
+  });
+  const five = ["config", "layout", "typography", "components", "cli"].map((n) =>
+    pkg(`@neshel-ui/${n}`),
+  );
+  assert.deepEqual(guardProblems("v0.1.0", five, { private: true }), []);
+  assert.match(guardProblems("0.1.0", five, { private: true }).join(), /not of the form/);
+  assert.match(guardProblems("v0.2.0", five, { private: true }).join(), /tag is 0.2.0/);
+  assert.match(
+    guardProblems("v0.1.0", [pkg("@neshel-ui/config", { private: true })], {
+      private: true,
+    }).join(),
+    /still private/,
+  );
+  assert.match(guardProblems("v0.1.0", five, {}).join(), /core must remain private/);
+});

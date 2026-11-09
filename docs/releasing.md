@@ -1,43 +1,74 @@
-# Release safety and npm publishing
+# Releasing Neshel-UI
 
-**There is no functional v0.1.0 and no publication automation.**
-All packages are deliberately `private: true`; `@neshel-ui` scope ownership
-and package name availability are unverified.
+**Nothing is published.** All packages are `private: true`. Feature 006 prepared and rehearsed the
+pipeline; executing it is the owner-authorised publication milestone (roadmap row 007). A green CI
+is not an authorisation to publish. Decisions: [ADR 0017](decisions/0017-release-and-publishing-pipeline.md);
+normative detail: [contracts/release.md](../specs/006-docs-dx-release/contracts/release.md).
 
-## Before lifting publishing guards
+## Versioning policy
 
-1. Verify scope ownership and name availability on npm; check brand conflicts.
-2. Keep ADR 0002 satisfied: no public package may depend on the internal `core`
-   package (`pnpm check:pack` enforces this; resolved for the current code in 001.2).
-3. Finalize public exports, `files`, dependency/peer ranges and license. Intended public
-   packages already declare `publishConfig: { "access": "public" }` (001.2); removing
-   `private: true` is a separate, explicitly approved step.
-4. Keep `pnpm-lock.yaml` committed; CI installs with `--frozen-lockfile`.
-5. Run `pnpm doctor` and lint/typecheck/tests and all package/app builds. Require native
-   Windows, Linux and macOS GitHub Actions checks to pass before release.
-6. Run `pnpm check:pack` (packs and validates every intended public package: manifest,
-   targets, declarations, source maps, publint, attw, external import/type checks), then
-   install the tarballs into isolated Vite and Next applications (001.3, feature 006).
-7. Verify CSS/theme, Capsize typography, React peer resolution, SSR, tree shaking,
-   install size and correct type declarations from packed artifacts.
-8. Review npm provenance/trusted publishing requirements and GitHub Actions OIDC
-   configuration. Avoid persistent npm tokens when supported.
-9. Generate and review Changesets, package changelogs and semver versions. Note:
-   `.changeset/config.json` sets `privatePackages.version: false`, so Changesets ignores the
-   packages while they are `private: true`; the release slice must decide the order of
-   lifting the guard and versioning (found in the 001.5 audit).
-10. Obtain explicit maintainer approval before `npm publish`, `pnpm publish`,
-    `changeset publish`, release tags or remote pushes.
+- Changesets with a **fixed group** of the five public packages during 0.x: one version number for
+  `config`, `layout`, `typography`, `components` and `cli`. `@neshel-ui/core` is never published.
+- Before 1.0: breaking change → **minor** (0.1 → 0.2), feature → minor, fix → **patch**. Breaking
+  changes are always called out in the changelog. From 1.0: semver majors for breaking changes.
+- Every user-facing change carries a changeset (`pnpm changeset`). The version source is the
+  `version` field written by `changeset version` — nothing else.
+- Peer ranges: packages declare `@neshel-ui/config` as `workspace:^`, packed as `^X.Y.Z`.
 
-## Versioning
+## What is verified automatically
 
-- First meaningful public version target: **0.1.0**.
-- Keep breaking API changes explicit; pre-1.0 does not excuse surprises.
-- Use Changesets only for user-facing changes after packages are implemented.
+| Gate                                        | Command                                   |
+| ------------------------------------------- | ----------------------------------------- |
+| Packed tarballs, metadata, publint, attw    | `pnpm check:pack`                         |
+| External Vite consumers, SSR, tree-shaking  | `pnpm check:consumer`                     |
+| Next.js App Router consumer                 | `pnpm check:next`                         |
+| Chrome interaction suite, backdrop fallback | `pnpm check:browser:components`           |
+| Chromium, Firefox, WebKit                   | `pnpm check:browsers`                     |
+| Bundle budgets                              | `pnpm check:bundles`                      |
+| Starters from ZIP archives                  | `pnpm check:starters`                     |
+| Documentation                               | `pnpm check:docs`, `pnpm check:docs-site` |
+| 0.1.0 transition + `npm publish --dry-run`  | `pnpm release:simulate`                   |
 
-## Out of scope for foundation
+## Publication order
 
-No working `publish.yml`, automatic version bump PRs or npm release scripts
-are included; they must be added and reviewed in slice 007.
+`@neshel-ui/config` → `layout` → `typography` → `components` → `cli` (every other package peers on
+`config`). `scripts/publish-tarballs.mjs` publishes in this order, skips versions already on the
+registry (a failed run can be repeated) and then verifies `npm view` and a clean install.
 
-See: https://docs.npmjs.com/trusted-publishers
+## Owner actions — first publication (0.1.0)
+
+1. **npm organisation.** Sign in to npmjs.com, create (or confirm you own) the organisation
+   `neshel-ui`, enforce 2FA for members. A 404 for the package names only shows they are unused; it
+   does not prove you can own the scope.
+2. **Brand policy.** Review and approve [BRAND-POLICY.md](BRAND-POLICY.md) (currently a draft).
+3. **GitHub environment.** Settings → Environments → `npm-release`: required reviewers (you),
+   deployment branches/tags limited to `v*.*.*`.
+4. **Release PR** (owner-approved, the only change that lifts the guards): remove `"private": true`
+   from the five public package manifests, run `pnpm changeset version`, review the five
+   `CHANGELOG.md` files and the `0.1.0` versions, merge after green CI. (`pnpm release:simulate`
+   already proves this produces exactly 0.1.0.)
+5. **Bootstrap credential** (npm trusted publishing cannot be configured before a package exists).
+   Recommended: create a _granular_ access token limited to the five `@neshel-ui/*` packages, with
+   publish permission and an expiry of at most 7 days; store it as the environment secret
+   `NPM_BOOTSTRAP_TOKEN` in `npm-release`. Alternative: download the `release-tarballs` artefact of a
+   verified run and publish them manually with `npm publish <tgz> --access public` (2FA; no
+   provenance for 0.1.0).
+6. **Tag.** `git tag -a v0.1.0 -m "Neshel-UI 0.1.0"` on the merged release commit and push it. The
+   `Release` workflow runs the gates, the guards (tag = all versions, guards lifted, core private),
+   packs once, and waits for your approval of `npm-release`. Approve to publish.
+7. **After 0.1.0.** For each package on npmjs.com → Settings → Trusted publisher: GitHub Actions,
+   repository `dannysequeira-dev/neshel-ui`, workflow `release.yml`, environment `npm-release`. Then
+   Publishing access → "Require two-factor authentication and disallow tokens", and delete the
+   bootstrap token and secret. Later releases publish with OIDC and automatic provenance.
+8. **Documentation site.** Settings → Pages → Source: GitHub Actions; run "Deploy documentation"
+   with the public URL (for example `https://dannysequeira-dev.github.io` and base path
+   `/neshel-ui`). A custom domain is an owner decision (DNS). Then set
+   `release.published = true` in `apps/docs/lib/release.ts` to switch the site from tarball to npm
+   instructions and enable starter downloads.
+9. **GitHub Release** (optional): create it from the tag with the release notes draft
+   ([specs/006-docs-dx-release/release-notes-0.1.0.md](../specs/006-docs-dx-release/release-notes-0.1.0.md)).
+
+## Later releases
+
+Merge changes with changesets → open a version PR (`pnpm changeset version`) → merge → push the tag
+`vX.Y.Z` → approve the environment. The guards refuse a tag that does not match all five versions.

@@ -1,5 +1,4 @@
 ---
-
 "@neshel-ui/config": minor
 "@neshel-ui/cli": minor
 "@neshel-ui/layout": minor

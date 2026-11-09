@@ -48,7 +48,8 @@
     "check:next": "node scripts/check-next.mjs",
     "check:browsers": "node scripts/check-browsers.mjs",
     "check:docs-site": "node scripts/check-docs-site.mjs",
-    "check:bundles": "node scripts/check-bundles.mjs"
+    "check:bundles": "node scripts/check-bundles.mjs",
+    "release:simulate": "node scripts/release-simulate.mjs"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "catalog:",

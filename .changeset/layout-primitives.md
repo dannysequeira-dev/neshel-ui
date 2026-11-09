@@ -1,6 +1,6 @@
 ---
-
-## "@neshel-ui/layout": minor
+"@neshel-ui/layout": minor
+---
 
 Layout primitives (feature 003): `Box`, `Flex`, `Stack`, `Inline`, `Grid`, `Center` and
 `Container`.

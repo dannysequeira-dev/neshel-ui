@@ -191,6 +191,8 @@ jobs:
         run: pnpm check:bundles
       - name: Starters (deterministic ZIPs, tarball install, build)
         run: pnpm check:starters --zip-out "${{ runner.temp }}/neshel-starters"
+      - name: Release rehearsal (0.1.0 transition in a copy, npm publish --dry-run)
+        run: pnpm release:simulate
 
   # Feature 006 (R3, ADR 0016): Chromium, Firefox and WebKit smoke flows with Playwright against the
   # packed component consumers. WebKit is Playwright's WebKit build, not Safari.

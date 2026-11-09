@@ -1,0 +1,105 @@
+# Release pipeline (feature 006, ADR 0017, specs/006-docs-dx-release/contracts/release.md).
+#
+# PREPARED, NOT AUTHORISED: nothing here runs on branch pushes or pull requests. Publication happens
+# only when the owner pushes a tag `vX.Y.Z` AND approves the protected `npm-release` environment.
+# A manual run (workflow_dispatch) is always a dry run: it rehearses the 0.1.0 transition in a
+# temporary copy (pnpm release:simulate) and publishes nothing.
+#
+# Owner setup before the first real run (docs/releasing.md):
+#   - npm organisation `neshel-ui` exists and is owned by the maintainers (2FA enforced);
+#   - the release PR removed `private: true` and ran `changeset version` (packages at X.Y.Z);
+#   - GitHub environment `npm-release` with required reviewers and a tag rule `v*.*.*`;
+#   - 0.1.0 bootstrap: secret NPM_BOOTSTRAP_TOKEN (granular, short-lived, five packages) in that
+#     environment, OR a manual publish of the CI tarballs; afterwards trusted publishers per package
+#     (workflow file `release.yml`, environment `npm-release`) and the token is revoked.
+name: Release
+
+on:
+  push:
+    tags: ["v*.*.*"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  verify:
+    name: Verify and pack
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    outputs:
+      version: ${{ steps.guards.outputs.version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Set up pnpm
+        uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+        with:
+          run_install: false
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "26"
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Quality gates
+        run: pnpm check
+      - name: Release guards (tag = version of all five packages, none private, core private)
+        id: guards
+        if: github.event_name == 'push'
+        run: node scripts/release-guards.mjs --tag "${{ github.ref_name }}"
+      - name: Rehearsal (dry run of the version transition and npm publish)
+        if: github.event_name == 'workflow_dispatch'
+        run: pnpm release:simulate
+      - name: Pack the five public packages once
+        if: github.event_name == 'push'
+        run: node scripts/pack-local.mjs --out release-tarballs
+      - name: Upload tarballs
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v7
+        with:
+          name: release-tarballs
+          path: release-tarballs/*.tgz
+          if-no-files-found: error
+          retention-days: 30
+
+  publish:
+    name: Publish to npm
+    needs: verify
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: npm-release
+    permissions:
+      contents: read
+      id-token: write # npm trusted publishing (OIDC) and provenance
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "26"
+          registry-url: "https://registry.npmjs.org"
+      - name: npm with trusted publishing support (>= 11.5.1)
+        run: |
+          node -e "const [a,b,c]=process.argv[1].split('.').map(Number);process.exit(a>11||(a===11&&(b>5||(b===5&&c>=1)))?0:1)" "$(npm --version)" || npm install --global npm@11
+          npm --version
+      - name: Download tarballs
+        uses: actions/download-artifact@v7
+        with:
+          name: release-tarballs
+          path: release-tarballs
+      - name: Publish in dependency order (idempotent)
+        env:
+          # Only for the 0.1.0 bootstrap; leave unset once trusted publishers are configured.
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_BOOTSTRAP_TOKEN }}
+        run: node scripts/publish-tarballs.mjs release-tarballs --version "${{ needs.verify.outputs.version }}"
+      - name: Verify installation from the registry
+        run: node scripts/publish-tarballs.mjs release-tarballs --version "${{ needs.verify.outputs.version }}" --verify-only

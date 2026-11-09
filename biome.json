@@ -33,7 +33,8 @@
       "!apps/docs/generated",
       "!apps/docs/.snippets",
       "!apps/docs/out",
-      "!apps/docs/.source"
+      "!apps/docs/.source",
+      "!.changeset/*.md"
     ]
   },
   "formatter": {
