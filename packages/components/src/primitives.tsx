@@ -25,7 +25,9 @@ export type BadgeVariant = (typeof badgeColorVariants)[number] | "outline";
 export type BadgeSize = "sm" | "md";
 
 export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
+  /** Colour role (default `"default"`). */
   variant?: BadgeVariant;
+  /** Size (default `"md"`). */
   size?: BadgeSize;
   ref?: Ref<HTMLSpanElement>;
 }
@@ -120,6 +122,7 @@ export function Label({ required, className, children, ...rest }: LabelProps) {
 // ---------------------------------------------------------------------------------------------
 
 export interface VisuallyHiddenProps extends HTMLAttributes<HTMLSpanElement> {
+  /** Hide the single child element instead of rendering a `span`. */
   asChild?: boolean;
   ref?: Ref<HTMLSpanElement>;
 }
@@ -146,6 +149,7 @@ export function VisuallyHidden({ asChild, className, children, ...rest }: Visual
 // ---------------------------------------------------------------------------------------------
 
 export interface SeparatorProps extends HTMLAttributes<HTMLDivElement> {
+  /** Direction of the rule (default `"horizontal"`). */
   orientation?: "horizontal" | "vertical";
   /** Purely visual: `role="none"` instead of `role="separator"`. */
   decorative?: boolean;
@@ -184,6 +188,7 @@ export function Separator({ orientation, decorative, className, ...rest }: Separ
 // ---------------------------------------------------------------------------------------------
 
 export interface SkeletonProps extends HTMLAttributes<HTMLSpanElement> {
+  /** Placeholder shape (default `"rectangle"`). */
   shape?: "rectangle" | "circle" | "text";
   /** Inline size; numbers are pixels. */
   width?: number | string;

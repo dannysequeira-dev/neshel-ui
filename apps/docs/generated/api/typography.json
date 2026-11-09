@@ -1,0 +1,600 @@
+{
+  "package": "@neshel-ui/typography",
+  "exports": [
+    {
+      "name": "Breakpoint",
+      "description": "Responsive keys: `base` (no media query) plus the application's breakpoint names — the defaults\n`sm md lg xl 2xl`, or the names configured in neshel.config.ts once the declarations generated\nby `neshel generate` are part of the program (ADR 0010).",
+      "module": "types",
+      "kind": "type",
+      "definition": "\"base\" | BreakpointName"
+    },
+    {
+      "name": "Caption",
+      "description": "Small supporting text (`p` by default; `figcaption` for figures). Muted by default.",
+      "module": "components",
+      "kind": "component",
+      "signature": "(props: CaptionProps): ReactElement<unknown, string | JSXElementConstructor<any>>",
+      "props": "CaptionProps",
+      "client": false
+    },
+    {
+      "name": "CaptionElement",
+      "description": "",
+      "module": "types",
+      "kind": "type",
+      "definition": "\"p\" | \"span\" | \"div\" | \"small\" | \"figcaption\""
+    },
+    {
+      "name": "CaptionProps",
+      "description": "",
+      "module": "types",
+      "kind": "type",
+      "props": [
+        {
+          "name": "align",
+          "type": "Responsive<TextAlign>",
+          "optional": true,
+          "description": "Text alignment (logical: `start`/`end`)."
+        },
+        {
+          "name": "as",
+          "type": "never | E",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "asChild",
+          "type": "true | false",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "family",
+          "type": "FontRole",
+          "optional": true,
+          "description": "Font role (Heading `\"display\"`, Paragraph and Caption `\"body\"`; Text inherits)."
+        },
+        {
+          "name": "leading",
+          "type": "Responsive<TextLeading>",
+          "optional": true,
+          "description": "Unitless line height; defaults to the size's leading. Drives Capsize trimming."
+        },
+        {
+          "name": "measure",
+          "type": "TextMeasure",
+          "optional": true,
+          "description": "Maximum line length: `narrow` 45ch, `comfortable` 65ch, `wide` 80ch."
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "size",
+          "type": "Responsive<TextSize>",
+          "optional": true,
+          "description": "Size token; `font-size = token × the font role's cap-height scale`."
+        },
+        {
+          "name": "tone",
+          "type": "TextTone",
+          "optional": true,
+          "description": "Colour role paired with the background for contrast (Caption defaults to `\"muted\"`)."
+        },
+        {
+          "name": "tracking",
+          "type": "TextTracking",
+          "optional": true,
+          "description": "Letter spacing."
+        },
+        {
+          "name": "trim",
+          "type": "boolean",
+          "optional": true,
+          "description": "Capsize trimming of the space above the cap height and below the baseline (default true).",
+          "default": "true"
+        },
+        {
+          "name": "truncate",
+          "type": "boolean",
+          "optional": true,
+          "description": "One line with an ellipsis (clips overflow, so trimming is removed)."
+        },
+        {
+          "name": "weight",
+          "type": "Responsive<TextWeight>",
+          "optional": true,
+          "description": "Font weight; Heading defaults to `\"semibold\"`."
+        },
+        {
+          "name": "wrap",
+          "type": "TextWrap",
+          "optional": true,
+          "description": "Line wrapping strategy (`balance` suits headings, `pretty` paragraphs)."
+        }
+      ],
+      "inherits": ["React DOM attributes"],
+      "definition": "TypographyProps & Trimmable & Polymorphic<CaptionElement>"
+    },
+    {
+      "name": "FontRole",
+      "description": "",
+      "module": "types",
+      "kind": "type",
+      "definition": "\"body\" | \"display\" | \"mono\""
+    },
+    {
+      "name": "Heading",
+      "description": "Semantic heading (`h1`–`h6`, default `h2`); visual size is independent of the level.",
+      "module": "components",
+      "kind": "component",
+      "signature": "(props: HeadingProps): ReactElement<unknown, string | JSXElementConstructor<any>>",
+      "props": "HeadingProps",
+      "client": false
+    },
+    {
+      "name": "HeadingElement",
+      "description": "",
+      "module": "types",
+      "kind": "type",
+      "definition": "\"h1\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\""
+    },
+    {
+      "name": "HeadingProps",
+      "description": "",
+      "module": "types",
+      "kind": "type",
+      "props": [
+        {
+          "name": "align",
+          "type": "Responsive<TextAlign>",
+          "optional": true,
+          "description": "Text alignment (logical: `start`/`end`)."
+        },
+        {
+          "name": "as",
+          "type": "never | E",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "asChild",
+          "type": "true | false",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "family",
+          "type": "FontRole",
+          "optional": true,
+          "description": "Font role (Heading `\"display\"`, Paragraph and Caption `\"body\"`; Text inherits)."
+        },
+        {
+          "name": "leading",
+          "type": "Responsive<TextLeading>",
+          "optional": true,
+          "description": "Unitless line height; defaults to the size's leading. Drives Capsize trimming."
+        },
+        {
+          "name": "measure",
+          "type": "TextMeasure",
+          "optional": true,
+          "description": "Maximum line length: `narrow` 45ch, `comfortable` 65ch, `wide` 80ch."
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "size",
+          "type": "Responsive<TextSize>",
+          "optional": true,
+          "description": "Size token; `font-size = token × the font role's cap-height scale`."
+        },
+        {
+          "name": "tone",
+          "type": "TextTone",
+          "optional": true,
+          "description": "Colour role paired with the background for contrast (Caption defaults to `\"muted\"`)."
+        },
+        {
+          "name": "tracking",
+          "type": "TextTracking",
+          "optional": true,
+          "description": "Letter spacing."
+        },
+        {
+          "name": "trim",
+          "type": "boolean",
+          "optional": true,
+          "description": "Capsize trimming of the space above the cap height and below the baseline (default true).",
+          "default": "true"
+        },
+        {
+          "name": "truncate",
+          "type": "boolean",
+          "optional": true,
+          "description": "One line with an ellipsis (clips overflow, so trimming is removed)."
+        },
+        {
+          "name": "weight",
+          "type": "Responsive<TextWeight>",
+          "optional": true,
+          "description": "Font weight; Heading defaults to `\"semibold\"`."
+        },
+        {
+          "name": "wrap",
+          "type": "TextWrap",
+          "optional": true,
+          "description": "Line wrapping strategy (`balance` suits headings, `pretty` paragraphs)."
+        }
+      ],
+      "inherits": ["React DOM attributes"],
+      "definition": "TypographyProps & Trimmable & Polymorphic<HeadingElement>"
+    },
+    {
+      "name": "NeshelTypographyError",
+      "description": "Error thrown for invalid typography props; identical on the server and the client.",
+      "module": "errors",
+      "kind": "class"
+    },
+    {
+      "name": "Paragraph",
+      "description": "Body paragraph (`p`), trimmed to its cap height and baseline.",
+      "module": "components",
+      "kind": "component",
+      "signature": "(props: ParagraphProps): ReactElement<unknown, string | JSXElementConstructor<any>>",
+      "props": "ParagraphProps",
+      "client": false
+    },
+    {
+      "name": "ParagraphElement",
+      "description": "",
+      "module": "types",
+      "kind": "type",
+      "definition": "\"p\" | \"div\""
+    },
+    {
+      "name": "ParagraphProps",
+      "description": "",
+      "module": "types",
+      "kind": "type",
+      "props": [
+        {
+          "name": "align",
+          "type": "Responsive<TextAlign>",
+          "optional": true,
+          "description": "Text alignment (logical: `start`/`end`)."
+        },
+        {
+          "name": "as",
+          "type": "never | E",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "asChild",
+          "type": "true | false",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "family",
+          "type": "FontRole",
+          "optional": true,
+          "description": "Font role (Heading `\"display\"`, Paragraph and Caption `\"body\"`; Text inherits)."
+        },
+        {
+          "name": "leading",
+          "type": "Responsive<TextLeading>",
+          "optional": true,
+          "description": "Unitless line height; defaults to the size's leading. Drives Capsize trimming."
+        },
+        {
+          "name": "measure",
+          "type": "TextMeasure",
+          "optional": true,
+          "description": "Maximum line length: `narrow` 45ch, `comfortable` 65ch, `wide` 80ch."
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "size",
+          "type": "Responsive<TextSize>",
+          "optional": true,
+          "description": "Size token; `font-size = token × the font role's cap-height scale`."
+        },
+        {
+          "name": "tone",
+          "type": "TextTone",
+          "optional": true,
+          "description": "Colour role paired with the background for contrast (Caption defaults to `\"muted\"`)."
+        },
+        {
+          "name": "tracking",
+          "type": "TextTracking",
+          "optional": true,
+          "description": "Letter spacing."
+        },
+        {
+          "name": "trim",
+          "type": "boolean",
+          "optional": true,
+          "description": "Capsize trimming of the space above the cap height and below the baseline (default true).",
+          "default": "true"
+        },
+        {
+          "name": "truncate",
+          "type": "boolean",
+          "optional": true,
+          "description": "One line with an ellipsis (clips overflow, so trimming is removed)."
+        },
+        {
+          "name": "weight",
+          "type": "Responsive<TextWeight>",
+          "optional": true,
+          "description": "Font weight; Heading defaults to `\"semibold\"`."
+        },
+        {
+          "name": "wrap",
+          "type": "TextWrap",
+          "optional": true,
+          "description": "Line wrapping strategy (`balance` suits headings, `pretty` paragraphs)."
+        }
+      ],
+      "inherits": ["React DOM attributes"],
+      "definition": "TypographyProps & Trimmable & Polymorphic<ParagraphElement>"
+    },
+    {
+      "name": "Responsive",
+      "description": "A value, or values per breakpoint that cascade upwards (mobile first).",
+      "module": "types",
+      "kind": "type",
+      "definition": "T | { readonly [K in Breakpoint]?: T; }"
+    },
+    {
+      "name": "Text",
+      "description": "Inline text (`span` by default) that inherits everything it does not set. Never trimmed.",
+      "module": "components",
+      "kind": "component",
+      "signature": "(props: TextProps): ReactElement<unknown, string | JSXElementConstructor<any>>",
+      "props": "TextProps",
+      "client": false
+    },
+    {
+      "name": "TextAlign",
+      "description": "",
+      "module": "types",
+      "kind": "type",
+      "definition": "\"start\" | \"center\" | \"end\" | \"justify\""
+    },
+    {
+      "name": "TextElement",
+      "description": "",
+      "module": "types",
+      "kind": "type",
+      "definition": "\"span\" | \"p\" | \"div\" | \"strong\" | \"em\" | \"b\" | \"i\" | \"small\" | \"code\" | \"kbd\" | \"samp\" | \"mark\" | \"abbr\" | \"cite\" | \"q\" | \"s\" | \"del\" | \"ins\" | \"sub\" | \"sup\" | \"time\" | \"dfn\""
+    },
+    {
+      "name": "TextLeading",
+      "description": "",
+      "module": "types",
+      "kind": "type",
+      "definition": "\"none\" | \"tight\" | \"snug\" | \"normal\" | \"relaxed\" | \"loose\""
+    },
+    {
+      "name": "TextMeasure",
+      "description": "",
+      "module": "types",
+      "kind": "type",
+      "definition": "\"narrow\" | \"comfortable\" | \"wide\" | \"none\""
+    },
+    {
+      "name": "TextProps",
+      "description": "",
+      "module": "types",
+      "kind": "type",
+      "props": [
+        {
+          "name": "align",
+          "type": "Responsive<TextAlign>",
+          "optional": true,
+          "description": "Text alignment (logical: `start`/`end`)."
+        },
+        {
+          "name": "as",
+          "type": "never | E",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "asChild",
+          "type": "true | false",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "family",
+          "type": "FontRole",
+          "optional": true,
+          "description": "Font role (Heading `\"display\"`, Paragraph and Caption `\"body\"`; Text inherits)."
+        },
+        {
+          "name": "leading",
+          "type": "Responsive<TextLeading>",
+          "optional": true,
+          "description": "Unitless line height; defaults to the size's leading. Drives Capsize trimming."
+        },
+        {
+          "name": "measure",
+          "type": "TextMeasure",
+          "optional": true,
+          "description": "Maximum line length: `narrow` 45ch, `comfortable` 65ch, `wide` 80ch."
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "size",
+          "type": "Responsive<TextSize>",
+          "optional": true,
+          "description": "Size token; `font-size = token × the font role's cap-height scale`."
+        },
+        {
+          "name": "tone",
+          "type": "TextTone",
+          "optional": true,
+          "description": "Colour role paired with the background for contrast (Caption defaults to `\"muted\"`)."
+        },
+        {
+          "name": "tracking",
+          "type": "TextTracking",
+          "optional": true,
+          "description": "Letter spacing."
+        },
+        {
+          "name": "truncate",
+          "type": "boolean",
+          "optional": true,
+          "description": "One line with an ellipsis (clips overflow, so trimming is removed)."
+        },
+        {
+          "name": "weight",
+          "type": "Responsive<TextWeight>",
+          "optional": true,
+          "description": "Font weight; Heading defaults to `\"semibold\"`."
+        },
+        {
+          "name": "wrap",
+          "type": "TextWrap",
+          "optional": true,
+          "description": "Line wrapping strategy (`balance` suits headings, `pretty` paragraphs)."
+        }
+      ],
+      "inherits": ["React DOM attributes"],
+      "definition": "TypographyProps & Polymorphic<TextElement>"
+    },
+    {
+      "name": "TextSize",
+      "description": "",
+      "module": "types",
+      "kind": "type",
+      "definition": "\"xs\" | \"sm\" | \"base\" | \"lg\" | \"xl\" | \"2xl\" | \"3xl\" | \"4xl\" | \"5xl\" | \"6xl\""
+    },
+    {
+      "name": "TextTone",
+      "description": "",
+      "module": "types",
+      "kind": "type",
+      "definition": "\"default\" | \"muted\" | \"primary\" | \"destructive\""
+    },
+    {
+      "name": "TextTracking",
+      "description": "",
+      "module": "types",
+      "kind": "type",
+      "definition": "\"tight\" | \"normal\" | \"wide\""
+    },
+    {
+      "name": "TextWeight",
+      "description": "",
+      "module": "types",
+      "kind": "type",
+      "definition": "\"light\" | \"regular\" | \"medium\" | \"semibold\" | \"bold\""
+    },
+    {
+      "name": "TextWrap",
+      "description": "",
+      "module": "types",
+      "kind": "type",
+      "definition": "\"wrap\" | \"nowrap\" | \"balance\" | \"pretty\""
+    },
+    {
+      "name": "TypographyProps",
+      "description": "Visual props shared by every typography component (contracts/typography-api.md).",
+      "module": "types",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "align",
+          "type": "Responsive<TextAlign>",
+          "optional": true,
+          "description": "Text alignment (logical: `start`/`end`)."
+        },
+        {
+          "name": "family",
+          "type": "FontRole",
+          "optional": true,
+          "description": "Font role (Heading `\"display\"`, Paragraph and Caption `\"body\"`; Text inherits)."
+        },
+        {
+          "name": "leading",
+          "type": "Responsive<TextLeading>",
+          "optional": true,
+          "description": "Unitless line height; defaults to the size's leading. Drives Capsize trimming."
+        },
+        {
+          "name": "measure",
+          "type": "TextMeasure",
+          "optional": true,
+          "description": "Maximum line length: `narrow` 45ch, `comfortable` 65ch, `wide` 80ch."
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "size",
+          "type": "Responsive<TextSize>",
+          "optional": true,
+          "description": "Size token; `font-size = token × the font role's cap-height scale`."
+        },
+        {
+          "name": "tone",
+          "type": "TextTone",
+          "optional": true,
+          "description": "Colour role paired with the background for contrast (Caption defaults to `\"muted\"`)."
+        },
+        {
+          "name": "tracking",
+          "type": "TextTracking",
+          "optional": true,
+          "description": "Letter spacing."
+        },
+        {
+          "name": "truncate",
+          "type": "boolean",
+          "optional": true,
+          "description": "One line with an ellipsis (clips overflow, so trimming is removed)."
+        },
+        {
+          "name": "weight",
+          "type": "Responsive<TextWeight>",
+          "optional": true,
+          "description": "Font weight; Heading defaults to `\"semibold\"`."
+        },
+        {
+          "name": "wrap",
+          "type": "TextWrap",
+          "optional": true,
+          "description": "Line wrapping strategy (`balance` suits headings, `pretty` paragraphs)."
+        }
+      ],
+      "inherits": ["React DOM attributes"]
+    }
+  ]
+}

@@ -26,12 +26,16 @@ export type AlertDialogTriggerProps = RadixAlert.AlertDialogTriggerProps & {
   ref?: Ref<HTMLButtonElement>;
 };
 export type AlertDialogContentProps = Omit<RadixAlert.AlertDialogContentProps, "ref"> & {
+  /** Maximum width (default `"sm"`). */
   size?: "sm" | "md" | "lg";
+  /** Portal target (default `document.body`, wrapped with the trigger's theme). */
   container?: HTMLElement | null;
   ref?: Ref<HTMLDivElement>;
 };
 type ButtonLike = {
+  /** Button style (Action default `"primary"`, Cancel default `"outline"`). */
   variant?: ButtonVariant;
+  /** Button size, static or per breakpoint (default `"md"`). */
   size?: Responsive<ButtonSize>;
   ref?: Ref<HTMLButtonElement>;
 };

@@ -24,22 +24,32 @@ import {
 
 export type ComboboxItem = SelectOption;
 export interface ComboboxItemGroup {
+  /** Group heading. */
   label: string;
+  /** Items of the group. */
   items: readonly ComboboxItem[];
 }
 
 interface ComboboxBaseProps extends SelectFieldProps {
   /** Items, or groups of items (not mixed). */
   items: readonly ComboboxItem[] | readonly ComboboxItemGroup[];
+  /** Controlled text of the input. */
   inputValue?: string;
+  /** Initial text of the input when uncontrolled. */
   defaultInputValue?: string;
+  /** Called when the user types; use with `filter={null}` for server-side search. */
   onInputValueChange?: (value: string) => void;
   /** Local filter (default: case-insensitive label match); `null` when the app filters `items`. */
   filter?: ((item: ComboboxItem, query: string) => boolean) | null;
+  /** Shown when no item matches (default `"No results"`). */
   emptyMessage?: ReactNode;
+  /** Shows `loadingMessage` while external results load. */
   loading?: boolean;
+  /** Loading text (default `"Loading…"`). */
   loadingMessage?: ReactNode;
+  /** Show a clear button when a value is selected (default `true`). */
   clearable?: boolean;
+  /** Accessible name of the clear button (default `"Clear selection"`). */
   clearLabel?: string;
   /** Accessible name of the button that opens the list (default "Show options"). */
   triggerLabel?: string;
@@ -47,17 +57,26 @@ interface ComboboxBaseProps extends SelectFieldProps {
 }
 
 export interface ComboboxSingleProps extends ComboboxBaseProps {
+  /** Single selection (default). */
   multiple?: false;
+  /** Controlled selected value (`null` = none). */
   value?: string | null;
+  /** Initial selected value when uncontrolled. */
   defaultValue?: string | null;
+  /** Called with the new value (`null` when cleared). */
   onValueChange?: (value: string | null) => void;
 }
 
 export interface ComboboxMultipleProps extends ComboboxBaseProps {
+  /** Multiple selection with removable chips. */
   multiple: true;
+  /** Controlled selected values. */
   value?: readonly string[];
+  /** Initial selected values when uncontrolled. */
   defaultValue?: readonly string[];
+  /** Called with the new list of values. */
   onValueChange?: (value: string[]) => void;
+  /** Accessible name of a chip's remove button (default: `Remove <label>`). */
   removeLabel?: (label: string) => string;
 }
 

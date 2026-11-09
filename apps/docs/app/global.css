@@ -1,0 +1,68 @@
+/* Canonical Neshel import order: Tailwind → config stylesheet → generated config → packages → app. */
+@import "tailwindcss";
+@import "fumadocs-ui/css/neutral.css";
+@import "fumadocs-ui/css/preset.css";
+@import "@neshel-ui/config/tailwind.css";
+@import "./neshel.generated.css";
+@import "@neshel-ui/layout/styles.css";
+@import "@neshel-ui/typography/styles.css";
+@import "@neshel-ui/components/styles.css";
+
+/*
+ * Brand: Fumadocs' colour variables follow Neshel's semantic tokens, so the site is themed by the
+ * same tokens consumers use (navy, ivory, restrained gold). `data-neshel-theme` is set on <html>
+ * together with Fumadocs' `dark` class by one theme switch.
+ */
+:root,
+:root.dark {
+  --color-fd-background: var(--neshel-background);
+  --color-fd-foreground: var(--neshel-foreground);
+  --color-fd-muted: var(--neshel-muted);
+  --color-fd-muted-foreground: var(--neshel-muted-foreground);
+  --color-fd-popover: var(--neshel-surface);
+  --color-fd-popover-foreground: var(--neshel-surface-foreground);
+  --color-fd-card: var(--neshel-surface);
+  --color-fd-card-foreground: var(--neshel-surface-foreground);
+  --color-fd-border: var(--neshel-border);
+  --color-fd-primary: var(--neshel-primary);
+  --color-fd-primary-foreground: var(--neshel-primary-foreground);
+  --color-fd-secondary: var(--neshel-secondary);
+  --color-fd-secondary-foreground: var(--neshel-secondary-foreground);
+  --color-fd-accent: var(--neshel-selected);
+  --color-fd-accent-foreground: var(--neshel-selected-foreground);
+  --color-fd-ring: var(--neshel-focus);
+  --color-fd-overlay: color-mix(in srgb, var(--neshel-foreground) 35%, transparent);
+  --color-fd-info: var(--neshel-primary);
+  --color-fd-warning: var(--neshel-accent);
+  --color-fd-error: var(--neshel-destructive);
+  --color-fd-success: var(--neshel-success);
+  --color-fd-idea: var(--neshel-accent);
+}
+
+:root #nd-sidebar,
+:root.dark #nd-sidebar {
+  --color-fd-muted: var(--neshel-muted);
+  --color-fd-secondary: var(--neshel-secondary);
+  --color-fd-muted-foreground: var(--neshel-muted-foreground);
+}
+
+html {
+  scrollbar-gutter: stable;
+}
+
+body {
+  font-family: var(--neshel-font-body);
+  background-color: var(--neshel-background);
+  color: var(--neshel-foreground);
+}
+
+/* Restrained gold accent for the active sidebar item and headings anchors. */
+#nd-sidebar a[data-active="true"] {
+  box-shadow: inset 2px 0 0 var(--neshel-accent);
+}
+
+/* Live previews: a framed canvas that takes the page theme (or a forced one). */
+.docs-preview-canvas {
+  background-color: var(--neshel-background);
+  color: var(--neshel-foreground);
+}

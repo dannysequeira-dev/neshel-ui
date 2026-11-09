@@ -30,6 +30,7 @@ export interface NavbarNavProps extends HTMLAttributes<HTMLElement> {
 export interface NavbarLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
   /** The current page: sets `aria-current="page"`. */
   active?: boolean;
+  /** Render the single child element (e.g. a router link) inside the `<li>` instead of an `<a>`. */
   asChild?: boolean;
   ref?: Ref<HTMLAnchorElement>;
 }

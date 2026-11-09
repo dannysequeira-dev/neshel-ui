@@ -17,7 +17,14 @@ import {
   useState,
 } from "react";
 import { buttonClassName } from "./button.js";
-import { Sheet, SheetContent, type SheetContentProps, SheetTitle, SheetTrigger } from "./dialog.js";
+import {
+  Sheet,
+  SheetContent,
+  type SheetContentProps,
+  type SheetSide,
+  SheetTitle,
+  SheetTrigger,
+} from "./dialog.js";
 import { closeOnNavigate, useCssMode } from "./internal/css-mode.js";
 import { componentsError } from "./internal/errors.js";
 import { MenuIcon } from "./internal/icons.js";
@@ -111,7 +118,9 @@ export function MobileMenuTrigger({
   );
 }
 
-export type MobileMenuContentProps = Omit<SheetContentProps, "title"> & {
+export type MobileMenuContentProps = Omit<SheetContentProps, "title" | "side"> & {
+  /** Edge the menu slides from (default `"left"`). */
+  side?: SheetSide;
   /** Dialog title (default "Menu"). */
   title?: ReactNode;
   /** Keep the title for assistive technology only (default true). */
@@ -167,7 +176,9 @@ export function MobileMenuNav({ className, children, ...rest }: MobileMenuNavPro
 }
 
 export interface MobileMenuLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
+  /** Current page: sets `aria-current="page"`. */
   active?: boolean;
+  /** Render the single child element (e.g. a router link) with the link styles. */
   asChild?: boolean;
   ref?: Ref<HTMLAnchorElement>;
 }

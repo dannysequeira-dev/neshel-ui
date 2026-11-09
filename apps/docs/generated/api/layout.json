@@ -1,0 +1,670 @@
+{
+  "package": "@neshel-ui/layout",
+  "exports": [
+    {
+      "name": "Box",
+      "description": "Neutral polymorphic element; adds CSS only for the responsive `display` prop.",
+      "module": "box",
+      "kind": "component",
+      "signature": "(props: BoxProps): ReactElement<unknown, string | JSXElementConstructor<any>>",
+      "props": "BoxProps",
+      "client": false
+    },
+    {
+      "name": "BoxDisplay",
+      "description": "",
+      "module": "types",
+      "kind": "type",
+      "definition": "\"none\" | \"block\" | \"inline\" | \"inline-block\""
+    },
+    {
+      "name": "BoxProps",
+      "description": "",
+      "module": "types",
+      "kind": "type",
+      "props": [
+        {
+          "name": "as",
+          "type": "LayoutElement | never",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "asChild",
+          "type": "false | true",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "display",
+          "type": "Responsive<BoxDisplay>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["React DOM attributes"],
+      "definition": "CommonProps & PolymorphicProps & { display?: Responsive<BoxDisplay>; }"
+    },
+    {
+      "name": "Breakpoint",
+      "description": "Responsive keys: `base` (no media query) plus the application's breakpoint names — the defaults\n`sm md lg xl 2xl`, or the names configured in neshel.config.ts once the declarations generated\nby `neshel generate` are part of the program (ADR 0010).",
+      "module": "types",
+      "kind": "type",
+      "definition": "\"base\" | BreakpointName"
+    },
+    {
+      "name": "Center",
+      "description": "Flex container centred on both axes by default. X → justify-content, Y → align-items.",
+      "module": "center",
+      "kind": "component",
+      "signature": "(props: CenterProps): ReactElement<unknown, string | JSXElementConstructor<any>>",
+      "props": "CenterProps",
+      "client": false
+    },
+    {
+      "name": "CenterProps",
+      "description": "",
+      "module": "types",
+      "kind": "type",
+      "props": [
+        {
+          "name": "align",
+          "type": "Responsive<MainAxisAlign>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "alignX",
+          "type": "Responsive<MainAxisAlign>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "alignY",
+          "type": "Responsive<CrossAxisAlign>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "as",
+          "type": "LayoutElement | never",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "asChild",
+          "type": "false | true",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "space",
+          "type": "Responsive<SpaceValue> | never",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "spaceX",
+          "type": "never | Responsive<SpaceValue>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "spaceY",
+          "type": "never | Responsive<SpaceValue>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["React DOM attributes"],
+      "definition": "CommonProps & PolymorphicProps & SpacingProps & { align?: Responsive<MainAxisAlign>; alignX?: Responsive<MainAxisAlign>; alignY?: Responsive<CrossAxisAlign>; }"
+    },
+    {
+      "name": "CommonProps",
+      "description": "Native attributes and the DOM ref shared by every primitive.",
+      "module": "types",
+      "kind": "type",
+      "props": [
+        {
+          "name": "ref",
+          "type": "Ref<HTMLElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["React DOM attributes"],
+      "definition": "Omit<HTMLAttributes<HTMLElement>, LayoutPropNames> & { ref?: Ref<HTMLElement>; }"
+    },
+    {
+      "name": "Container",
+      "description": "Width-constrained block with automatic inline margins; `size` defaults to `xl` (80rem).",
+      "module": "container",
+      "kind": "component",
+      "signature": "(props: ContainerProps): ReactElement<unknown, string | JSXElementConstructor<any>>",
+      "props": "ContainerProps",
+      "client": false
+    },
+    {
+      "name": "ContainerProps",
+      "description": "",
+      "module": "types",
+      "kind": "type",
+      "props": [
+        {
+          "name": "as",
+          "type": "LayoutElement | never",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "asChild",
+          "type": "false | true",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "gutter",
+          "type": "Responsive<SpaceValue>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "size",
+          "type": "Responsive<ContainerSize>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["React DOM attributes"],
+      "definition": "CommonProps & PolymorphicProps & { size?: Responsive<ContainerSize>; gutter?: Responsive<SpaceValue>; }"
+    },
+    {
+      "name": "ContainerSize",
+      "description": "",
+      "module": "types",
+      "kind": "type",
+      "definition": "\"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\" | \"full\""
+    },
+    {
+      "name": "CrossAxisAlign",
+      "description": "Alignment on an axis that maps to `align-items`.",
+      "module": "types",
+      "kind": "type",
+      "definition": "MainAxisAlign | \"stretch\" | \"baseline\""
+    },
+    {
+      "name": "Flex",
+      "description": "Flexbox container with a responsive direction; alignment follows the active direction.",
+      "module": "flex",
+      "kind": "component",
+      "signature": "(props: FlexProps): ReactElement<unknown, string | JSXElementConstructor<any>>",
+      "props": "FlexProps",
+      "client": false
+    },
+    {
+      "name": "FlexDirection",
+      "description": "",
+      "module": "types",
+      "kind": "type",
+      "definition": "\"row\" | \"column\" | \"row-reverse\" | \"column-reverse\""
+    },
+    {
+      "name": "FlexProps",
+      "description": "",
+      "module": "types",
+      "kind": "type",
+      "props": [
+        {
+          "name": "align",
+          "type": "Responsive<MainAxisAlign>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "alignX",
+          "type": "Responsive<CrossAxisAlign>",
+          "optional": true,
+          "description": "Validated at runtime against the axis it maps to for the active direction."
+        },
+        {
+          "name": "alignY",
+          "type": "Responsive<CrossAxisAlign>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "as",
+          "type": "LayoutElement | never",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "asChild",
+          "type": "false | true",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "direction",
+          "type": "Responsive<FlexDirection>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "justify",
+          "type": "Responsive<Justify>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "space",
+          "type": "Responsive<SpaceValue> | never",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "spaceX",
+          "type": "never | Responsive<SpaceValue>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "spaceY",
+          "type": "never | Responsive<SpaceValue>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "wrap",
+          "type": "Responsive<boolean>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["React DOM attributes"]
+    },
+    {
+      "name": "Grid",
+      "description": "CSS Grid with equal responsive columns. X → justify-items, Y → align-items.",
+      "module": "grid",
+      "kind": "component",
+      "signature": "(props: GridProps): ReactElement<unknown, string | JSXElementConstructor<any>>",
+      "props": "GridProps",
+      "client": false
+    },
+    {
+      "name": "GridAlign",
+      "description": "Grid item alignment (`justify-items` / `align-items`).",
+      "module": "types",
+      "kind": "type",
+      "definition": "MainAxisAlign | \"stretch\""
+    },
+    {
+      "name": "GridColumns",
+      "description": "",
+      "module": "types",
+      "kind": "type",
+      "definition": "1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12"
+    },
+    {
+      "name": "GridProps",
+      "description": "",
+      "module": "types",
+      "kind": "type",
+      "props": [
+        {
+          "name": "align",
+          "type": "Responsive<GridAlign>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "alignX",
+          "type": "Responsive<GridAlign>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "alignY",
+          "type": "Responsive<GridAlign>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "as",
+          "type": "LayoutElement | never",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "asChild",
+          "type": "false | true",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "columns",
+          "type": "Responsive<GridColumns>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "space",
+          "type": "Responsive<SpaceValue> | never",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "spaceX",
+          "type": "never | Responsive<SpaceValue>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "spaceY",
+          "type": "never | Responsive<SpaceValue>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["React DOM attributes"],
+      "definition": "CommonProps & PolymorphicProps & SpacingProps & { columns?: Responsive<GridColumns>; align?: Responsive<GridAlign>; alignX?: Responsive<GridAlign>; alignY?: Responsive<GridAlign>; }"
+    },
+    {
+      "name": "Inline",
+      "description": "Horizontal flex layout (`flex-direction: row`). X → justify-content, Y → align-items.",
+      "module": "inline",
+      "kind": "component",
+      "signature": "(props: InlineProps): ReactElement<unknown, string | JSXElementConstructor<any>>",
+      "props": "InlineProps",
+      "client": false
+    },
+    {
+      "name": "InlineProps",
+      "description": "",
+      "module": "types",
+      "kind": "type",
+      "props": [
+        {
+          "name": "align",
+          "type": "Responsive<MainAxisAlign>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "alignX",
+          "type": "Responsive<MainAxisAlign>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "alignY",
+          "type": "Responsive<CrossAxisAlign>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "as",
+          "type": "LayoutElement | never",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "asChild",
+          "type": "false | true",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "justify",
+          "type": "Responsive<Justify>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "separator",
+          "type": "SeparatorProp",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "space",
+          "type": "Responsive<SpaceValue> | never",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "spaceX",
+          "type": "never | Responsive<SpaceValue>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "spaceY",
+          "type": "never | Responsive<SpaceValue>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "wrap",
+          "type": "Responsive<boolean>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["React DOM attributes"]
+    },
+    {
+      "name": "Justify",
+      "description": "Main-axis distribution (`justify-content`).",
+      "module": "types",
+      "kind": "type",
+      "definition": "\"start\" | \"center\" | \"end\" | \"between\" | \"around\" | \"evenly\""
+    },
+    {
+      "name": "LayoutElement",
+      "description": "Elements a primitive can render through `as`. Use `asChild` for anything else.",
+      "module": "types",
+      "kind": "type",
+      "definition": "\"div\" | \"span\" | \"section\" | \"article\" | \"aside\" | \"header\" | \"footer\" | \"main\" | \"nav\" | \"ul\" | \"ol\" | \"li\" | \"form\" | \"fieldset\" | \"figure\" | \"address\""
+    },
+    {
+      "name": "MainAxisAlign",
+      "description": "Alignment on an axis that maps to `justify-content`.",
+      "module": "types",
+      "kind": "type",
+      "definition": "\"start\" | \"center\" | \"end\""
+    },
+    {
+      "name": "PolymorphicProps",
+      "description": "`as` and `asChild` are mutually exclusive (also enforced at runtime).",
+      "module": "types",
+      "kind": "type",
+      "props": [
+        {
+          "name": "as",
+          "type": "LayoutElement | never",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "asChild",
+          "type": "false | true",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [],
+      "definition": "{ as?: LayoutElement; asChild?: false; } | { as?: never; asChild: true; }"
+    },
+    {
+      "name": "Responsive",
+      "description": "A value, or values per breakpoint that cascade upwards (mobile first).",
+      "module": "types",
+      "kind": "type",
+      "definition": "T | { readonly [K in Breakpoint]?: T; }"
+    },
+    {
+      "name": "SeparatorProp",
+      "description": "`true` renders the default decorative separator; an element renders that element.",
+      "module": "types",
+      "kind": "type",
+      "definition": "boolean | ReactElement"
+    },
+    {
+      "name": "SpaceValue",
+      "description": "Spacing token; CSS value `calc(var(--neshel-spacing) * n)`.",
+      "module": "types",
+      "kind": "type",
+      "definition": "\"0\" | \"0.5\" | \"1\" | \"1.5\" | \"2\" | \"2.5\" | \"3\" | \"4\" | \"5\" | \"6\" | \"8\" | \"10\" | \"12\" | \"16\" | \"20\" | \"24\""
+    },
+    {
+      "name": "SpacingProps",
+      "description": "`space` (CSS `gap`) excludes `spaceX` (`column-gap`) and `spaceY` (`row-gap`); the latter two\nmay be combined. Also enforced at runtime.",
+      "module": "types",
+      "kind": "type",
+      "props": [
+        {
+          "name": "space",
+          "type": "Responsive<SpaceValue> | never",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "spaceX",
+          "type": "never | Responsive<SpaceValue>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "spaceY",
+          "type": "never | Responsive<SpaceValue>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [],
+      "definition": "{ space?: Responsive<SpaceValue>; spaceX?: never; spaceY?: never; } | { space?: never; spaceX?: Responsive<SpaceValue>; spaceY?: Responsive<SpaceValue>; }"
+    },
+    {
+      "name": "Stack",
+      "description": "Vertical flex layout (`flex-direction: column`). X → align-items, Y → justify-content.",
+      "module": "stack",
+      "kind": "component",
+      "signature": "(props: StackProps): ReactElement<unknown, string | JSXElementConstructor<any>>",
+      "props": "StackProps",
+      "client": false
+    },
+    {
+      "name": "StackProps",
+      "description": "",
+      "module": "types",
+      "kind": "type",
+      "props": [
+        {
+          "name": "align",
+          "type": "Responsive<MainAxisAlign>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "alignX",
+          "type": "Responsive<\"start\" | \"center\" | \"end\" | \"stretch\">",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "alignY",
+          "type": "Responsive<MainAxisAlign>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "as",
+          "type": "LayoutElement | never",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "asChild",
+          "type": "false | true",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "justify",
+          "type": "Responsive<Justify>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "separator",
+          "type": "SeparatorProp",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "space",
+          "type": "Responsive<SpaceValue> | never",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "spaceX",
+          "type": "never | Responsive<SpaceValue>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "spaceY",
+          "type": "never | Responsive<SpaceValue>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["React DOM attributes"]
+    }
+  ]
+}

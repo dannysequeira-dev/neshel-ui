@@ -39,8 +39,10 @@ import type { Breakpoint } from "./types.js";
 export interface AppShellState {
   /** `undefined` until the shell has read its CSS mode after hydration. */
   mode: CssMode | undefined;
+  /** Desktop sidebar collapsed state. */
   collapsed: boolean;
   setCollapsed(collapsed: boolean): void;
+  /** Mobile drawer open state. */
   mobileOpen: boolean;
   setMobileOpen(open: boolean): void;
   /** Toggles the rail on desktop and the drawer on mobile. */
@@ -82,11 +84,15 @@ export interface AppShellProps extends HTMLAttributes<HTMLDivElement> {
   breakpoint?: Breakpoint;
   /** Desktop rail/hidden state (controlled). */
   collapsed?: boolean;
+  /** Initial collapsed state when uncontrolled (default `false`). */
   defaultCollapsed?: boolean;
+  /** Called when the desktop collapsed state should change. */
   onCollapsedChange?: (collapsed: boolean) => void;
   /** Mobile drawer state (controlled). */
   mobileOpen?: boolean;
+  /** Initial mobile drawer state when uncontrolled (default `false`). */
   defaultMobileOpen?: boolean;
+  /** Called when the mobile drawer should open or close (trigger, Escape, overlay, navigation, switch to desktop). */
   onMobileOpenChange?: (open: boolean) => void;
   ref?: Ref<HTMLDivElement>;
 }
@@ -315,6 +321,7 @@ export interface SidebarItemProps extends Omit<ButtonHTMLAttributes<HTMLButtonEl
   tooltip?: string;
   /** Render the single child (a link or router link) as the item. */
   asChild?: boolean;
+  /** Button type when no `asChild` child is given (default `"button"`). */
   type?: "button" | "submit" | "reset";
   ref?: Ref<HTMLButtonElement>;
 }
@@ -371,7 +378,9 @@ export function SidebarItem({
 }
 
 export interface SidebarSubProps {
+  /** Visible label of the collapsible group trigger. */
   label: ReactNode;
+  /** Decorative icon; in the collapsed rail it is the only visible content. */
   icon?: ReactNode;
   open?: boolean;
   defaultOpen?: boolean;

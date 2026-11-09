@@ -15,6 +15,7 @@ export type CardTitleElement = "h1" | "h2" | "h3" | "h4" | "h5" | "h6" | "p" | "
 type Polymorphic<E extends string> = { as?: E; asChild?: false } | { as?: never; asChild: true };
 
 export type CardProps = Omit<HTMLAttributes<HTMLElement>, "color"> & {
+  /** Surface style (default `"default"`). */
   variant?: CardVariant;
   padding?: CardPadding;
   ref?: Ref<HTMLElement>;

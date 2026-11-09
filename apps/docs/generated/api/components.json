@@ -1,0 +1,3989 @@
+{
+  "package": "@neshel-ui/components",
+  "exports": [
+    {
+      "name": "AlertDialog",
+      "description": "",
+      "module": "alert-dialog",
+      "kind": "component",
+      "signature": "(props: AlertDialogProps): Element",
+      "props": "AlertDialogProps",
+      "client": true
+    },
+    {
+      "name": "AlertDialogAction",
+      "description": "Confirms the action (default variant `primary`; use `destructive` for destructive actions).",
+      "module": "alert-dialog",
+      "kind": "component",
+      "signature": "({ variant, size, className, ...props }: AlertDialogActionProps): Element",
+      "props": "AlertDialogActionProps",
+      "client": true
+    },
+    {
+      "name": "AlertDialogActionProps",
+      "description": "",
+      "module": "alert-dialog",
+      "kind": "type",
+      "props": [
+        {
+          "name": "ref",
+          "type": "Ref<HTMLButtonElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "size",
+          "type": "Responsive<ButtonSize>",
+          "optional": true,
+          "description": "Button size, static or per breakpoint (default `\"md\"`).",
+          "default": "\"md\""
+        },
+        {
+          "name": "variant",
+          "type": "ButtonVariant",
+          "optional": true,
+          "description": "Button style (Action default `\"primary\"`, Cancel default `\"outline\"`).",
+          "default": "\"primary\""
+        }
+      ],
+      "inherits": ["@radix-ui/react-primitive", "React DOM attributes"],
+      "definition": "RadixAlert.AlertDialogActionProps & ButtonLike"
+    },
+    {
+      "name": "AlertDialogCancel",
+      "description": "Cancels; receives initial focus (default variant `outline`).",
+      "module": "alert-dialog",
+      "kind": "component",
+      "signature": "({ variant, size, className, ...props }: AlertDialogCancelProps): Element",
+      "props": "AlertDialogCancelProps",
+      "client": true
+    },
+    {
+      "name": "AlertDialogCancelProps",
+      "description": "",
+      "module": "alert-dialog",
+      "kind": "type",
+      "props": [
+        {
+          "name": "ref",
+          "type": "Ref<HTMLButtonElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "size",
+          "type": "Responsive<ButtonSize>",
+          "optional": true,
+          "description": "Button size, static or per breakpoint (default `\"md\"`).",
+          "default": "\"md\""
+        },
+        {
+          "name": "variant",
+          "type": "ButtonVariant",
+          "optional": true,
+          "description": "Button style (Action default `\"primary\"`, Cancel default `\"outline\"`).",
+          "default": "\"primary\""
+        }
+      ],
+      "inherits": ["@radix-ui/react-primitive", "React DOM attributes"],
+      "definition": "RadixAlert.AlertDialogCancelProps & ButtonLike"
+    },
+    {
+      "name": "AlertDialogContent",
+      "description": "",
+      "module": "alert-dialog",
+      "kind": "component",
+      "signature": "({ size, container, className, children, onEscapeKeyDown, onOpenAutoFocus, onCloseAutoFocus, ref, ...rest }: AlertDialogContentProps): Element",
+      "props": "AlertDialogContentProps",
+      "client": true
+    },
+    {
+      "name": "AlertDialogContentProps",
+      "description": "",
+      "module": "alert-dialog",
+      "kind": "type",
+      "props": [
+        {
+          "name": "container",
+          "type": "HTMLElement | null",
+          "optional": true,
+          "description": "Portal target (default `document.body`, wrapped with the trigger's theme).",
+          "default": "document.body"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "size",
+          "type": "\"sm\" | \"md\" | \"lg\"",
+          "optional": true,
+          "description": "Maximum width (default `\"sm\"`).",
+          "default": "\"sm\""
+        }
+      ],
+      "inherits": [
+        "@radix-ui/react-dialog",
+        "@radix-ui/react-dismissable-layer",
+        "@radix-ui/react-primitive",
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "AlertDialogDescription",
+      "description": "",
+      "module": "alert-dialog",
+      "kind": "component",
+      "signature": "({ className, ...props }: AlertDialogDescriptionProps): Element",
+      "props": "AlertDialogDescriptionProps",
+      "client": true
+    },
+    {
+      "name": "AlertDialogDescriptionProps",
+      "description": "",
+      "module": "alert-dialog",
+      "kind": "type",
+      "props": [
+        {
+          "name": "ref",
+          "type": "Ref<HTMLParagraphElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["@radix-ui/react-primitive", "React DOM attributes"],
+      "definition": "RadixAlert.AlertDialogDescriptionProps & { ref?: Ref<HTMLParagraphElement>; }"
+    },
+    {
+      "name": "AlertDialogFooter",
+      "description": "",
+      "module": "alert-dialog",
+      "kind": "component",
+      "signature": "({ className, ...rest }: AlertDialogPartProps): Element",
+      "props": "AlertDialogPartProps",
+      "client": true
+    },
+    {
+      "name": "AlertDialogHeader",
+      "description": "",
+      "module": "alert-dialog",
+      "kind": "component",
+      "signature": "({ className, ...rest }: AlertDialogPartProps): Element",
+      "props": "AlertDialogPartProps",
+      "client": true
+    },
+    {
+      "name": "AlertDialogPartProps",
+      "description": "",
+      "module": "alert-dialog",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["React DOM attributes"]
+    },
+    {
+      "name": "AlertDialogProps",
+      "description": "",
+      "module": "alert-dialog",
+      "kind": "type",
+      "props": [],
+      "inherits": ["@radix-ui/react-dialog"],
+      "definition": "RadixAlert.AlertDialogProps"
+    },
+    {
+      "name": "AlertDialogTitle",
+      "description": "",
+      "module": "alert-dialog",
+      "kind": "component",
+      "signature": "({ className, ...props }: AlertDialogTitleProps): Element",
+      "props": "AlertDialogTitleProps",
+      "client": true
+    },
+    {
+      "name": "AlertDialogTitleProps",
+      "description": "",
+      "module": "alert-dialog",
+      "kind": "type",
+      "props": [
+        {
+          "name": "ref",
+          "type": "Ref<HTMLHeadingElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["@radix-ui/react-primitive", "React DOM attributes"],
+      "definition": "RadixAlert.AlertDialogTitleProps & { ref?: Ref<HTMLHeadingElement>; }"
+    },
+    {
+      "name": "AlertDialogTrigger",
+      "description": "",
+      "module": "alert-dialog",
+      "kind": "component",
+      "signature": "({ ref, ...props }: AlertDialogTriggerProps): Element",
+      "props": "AlertDialogTriggerProps",
+      "client": true
+    },
+    {
+      "name": "AlertDialogTriggerProps",
+      "description": "",
+      "module": "alert-dialog",
+      "kind": "type",
+      "props": [
+        {
+          "name": "ref",
+          "type": "Ref<HTMLButtonElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["@radix-ui/react-primitive", "React DOM attributes"],
+      "definition": "RadixAlert.AlertDialogTriggerProps & { ref?: Ref<HTMLButtonElement>; }"
+    },
+    {
+      "name": "AppShell",
+      "description": "",
+      "module": "app-shell",
+      "kind": "component",
+      "signature": "({ breakpoint, collapsed, defaultCollapsed, onCollapsedChange, mobileOpen, defaultMobileOpen, onMobileOpenChange, className, children, ref, ...rest }: AppShellProps): Element",
+      "props": "AppShellProps",
+      "client": true
+    },
+    {
+      "name": "AppShellContent",
+      "description": "The `<main>` landmark; give it an `id` for skip links.",
+      "module": "app-shell",
+      "kind": "component",
+      "signature": "({ className, ...rest }: HTMLAttributes<HTMLElement> & { ref?: Ref<HTMLElement> | undefined; }): Element",
+      "props": "HTMLAttributes<HTMLElement> & {\n    ref?: Ref<HTMLElement>;\n}",
+      "client": true
+    },
+    {
+      "name": "AppShellMain",
+      "description": "Column next to the sidebar (navbar + content).",
+      "module": "app-shell",
+      "kind": "component",
+      "signature": "({ className, ...rest }: AppShellPartProps): Element",
+      "props": "AppShellPartProps",
+      "client": true
+    },
+    {
+      "name": "AppShellPartProps",
+      "description": "",
+      "module": "app-shell",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["React DOM attributes"]
+    },
+    {
+      "name": "AppShellProps",
+      "description": "",
+      "module": "app-shell",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "breakpoint",
+          "type": "Breakpoint",
+          "optional": true,
+          "description": "Desktop layout at and above this breakpoint (default \"lg\"; \"base\" = always desktop)."
+        },
+        {
+          "name": "collapsed",
+          "type": "boolean",
+          "optional": true,
+          "description": "Desktop rail/hidden state (controlled)."
+        },
+        {
+          "name": "defaultCollapsed",
+          "type": "boolean",
+          "optional": true,
+          "description": "Initial collapsed state when uncontrolled (default `false`).",
+          "default": "false"
+        },
+        {
+          "name": "defaultMobileOpen",
+          "type": "boolean",
+          "optional": true,
+          "description": "Initial mobile drawer state when uncontrolled (default `false`).",
+          "default": "false"
+        },
+        {
+          "name": "mobileOpen",
+          "type": "boolean",
+          "optional": true,
+          "description": "Mobile drawer state (controlled)."
+        },
+        {
+          "name": "onCollapsedChange",
+          "type": "(collapsed: boolean) => void",
+          "optional": true,
+          "description": "Called when the desktop collapsed state should change."
+        },
+        {
+          "name": "onMobileOpenChange",
+          "type": "(open: boolean) => void",
+          "optional": true,
+          "description": "Called when the mobile drawer should open or close (trigger, Escape, overlay, navigation, switch to desktop)."
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["React DOM attributes"]
+    },
+    {
+      "name": "AppShellState",
+      "description": "",
+      "module": "app-shell",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "collapsed",
+          "type": "boolean",
+          "optional": false,
+          "description": "Desktop sidebar collapsed state."
+        },
+        {
+          "name": "mobileOpen",
+          "type": "boolean",
+          "optional": false,
+          "description": "Mobile drawer open state."
+        },
+        {
+          "name": "mode",
+          "type": "CssMode | undefined",
+          "optional": false,
+          "description": "`undefined` until the shell has read its CSS mode after hydration."
+        },
+        {
+          "name": "setCollapsed",
+          "type": "(collapsed: boolean) => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "setMobileOpen",
+          "type": "(open: boolean) => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "toggle",
+          "type": "() => void",
+          "optional": false,
+          "description": "Toggles the rail on desktop and the drawer on mobile."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "Badge",
+      "description": "Non-interactive status label. Add `role=\"status\"` yourself only for live updates.",
+      "module": "primitives",
+      "kind": "component",
+      "signature": "({ variant, size, className, ...rest }: BadgeProps): Element",
+      "props": "BadgeProps",
+      "client": false
+    },
+    {
+      "name": "BadgeProps",
+      "description": "",
+      "module": "primitives",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "ref",
+          "type": "Ref<HTMLSpanElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "size",
+          "type": "BadgeSize",
+          "optional": true,
+          "description": "Size (default `\"md\"`).",
+          "default": "\"md\""
+        },
+        {
+          "name": "variant",
+          "type": "BadgeVariant",
+          "optional": true,
+          "description": "Colour role (default `\"default\"`).",
+          "default": "\"default\""
+        }
+      ],
+      "inherits": ["React DOM attributes"]
+    },
+    {
+      "name": "BadgeSize",
+      "description": "",
+      "module": "primitives",
+      "kind": "type",
+      "definition": "\"sm\" | \"md\""
+    },
+    {
+      "name": "BadgeVariant",
+      "description": "",
+      "module": "primitives",
+      "kind": "type",
+      "definition": "(typeof badgeColorVariants)[number] | \"outline\""
+    },
+    {
+      "name": "Breakpoint",
+      "description": "Responsive keys: `base` (no media query) plus the application's breakpoint names — the defaults\n`sm md lg xl 2xl`, or the names configured in neshel.config.ts once the declarations generated\nby `neshel generate` are part of the program (ADR 0010).",
+      "module": "types",
+      "kind": "type",
+      "definition": "\"base\" | BreakpointName"
+    },
+    {
+      "name": "Button",
+      "description": "",
+      "module": "button",
+      "kind": "component",
+      "signature": "(props: ButtonProps): Element",
+      "props": "ButtonProps",
+      "client": false
+    },
+    {
+      "name": "ButtonProps",
+      "description": "",
+      "module": "button",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "asChild",
+          "type": "boolean",
+          "optional": true,
+          "description": "Render the single child element (e.g. a link) with the button styles."
+        },
+        {
+          "name": "fullWidth",
+          "type": "boolean",
+          "optional": true,
+          "description": "Fill the inline size of the container."
+        },
+        {
+          "name": "iconOnly",
+          "type": "boolean",
+          "optional": true,
+          "description": "Square button for a single icon; requires `aria-label` or `aria-labelledby`."
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "optional": true,
+          "description": "Busy state: keeps focus (`aria-disabled`), ignores activation and form submission, shows a\ndecorative spinner. Announce progress with your own live region."
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLButtonElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "size",
+          "type": "Responsive<ButtonSize>",
+          "optional": true,
+          "description": "Size, static or per breakpoint (default `\"md\"`).",
+          "default": "\"md\""
+        },
+        {
+          "name": "variant",
+          "type": "ButtonVariant",
+          "optional": true,
+          "description": "Visual style (default `\"primary\"`).",
+          "default": "\"primary\""
+        }
+      ],
+      "inherits": ["React DOM attributes"]
+    },
+    {
+      "name": "ButtonSize",
+      "description": "",
+      "module": "button",
+      "kind": "type",
+      "definition": "(typeof buttonSizeNames)[number]"
+    },
+    {
+      "name": "ButtonVariant",
+      "description": "",
+      "module": "button",
+      "kind": "type",
+      "definition": "(typeof buttonVariantNames)[number]"
+    },
+    {
+      "name": "Card",
+      "description": "",
+      "module": "card",
+      "kind": "component",
+      "signature": "(props: CardProps): Element",
+      "props": "CardProps",
+      "client": false
+    },
+    {
+      "name": "CardAction",
+      "description": "",
+      "module": "card",
+      "kind": "component",
+      "signature": "({ className, ...rest }: CardPartProps): Element",
+      "props": "CardPartProps",
+      "client": false
+    },
+    {
+      "name": "CardContent",
+      "description": "",
+      "module": "card",
+      "kind": "component",
+      "signature": "({ className, ...rest }: CardPartProps): Element",
+      "props": "CardPartProps",
+      "client": false
+    },
+    {
+      "name": "CardDescription",
+      "description": "",
+      "module": "card",
+      "kind": "component",
+      "signature": "({ className, ...rest }: CardDescriptionProps): Element",
+      "props": "CardDescriptionProps",
+      "client": false
+    },
+    {
+      "name": "CardDescriptionProps",
+      "description": "",
+      "module": "card",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "ref",
+          "type": "Ref<HTMLParagraphElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["React DOM attributes"]
+    },
+    {
+      "name": "CardElement",
+      "description": "",
+      "module": "card",
+      "kind": "type",
+      "definition": "\"div\" | \"section\" | \"article\" | \"aside\" | \"li\""
+    },
+    {
+      "name": "CardFooter",
+      "description": "",
+      "module": "card",
+      "kind": "component",
+      "signature": "({ className, ...rest }: CardPartProps): Element",
+      "props": "CardPartProps",
+      "client": false
+    },
+    {
+      "name": "CardHeader",
+      "description": "",
+      "module": "card",
+      "kind": "component",
+      "signature": "({ className, ...rest }: CardPartProps): Element",
+      "props": "CardPartProps",
+      "client": false
+    },
+    {
+      "name": "CardPadding",
+      "description": "",
+      "module": "card",
+      "kind": "type",
+      "definition": "\"sm\" | \"md\" | \"lg\""
+    },
+    {
+      "name": "CardPartProps",
+      "description": "",
+      "module": "card",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["React DOM attributes"]
+    },
+    {
+      "name": "CardProps",
+      "description": "",
+      "module": "card",
+      "kind": "type",
+      "props": [
+        {
+          "name": "as",
+          "type": "never | E",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "asChild",
+          "type": "true | false",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "padding",
+          "type": "CardPadding",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "variant",
+          "type": "CardVariant",
+          "optional": true,
+          "description": "Surface style (default `\"default\"`).",
+          "default": "\"default\""
+        }
+      ],
+      "inherits": ["React DOM attributes"],
+      "definition": "Omit<HTMLAttributes<HTMLElement>, \"color\"> & { /** Surface style (default `\"default\"`). */ variant?: CardVariant; padding?: CardPadding; ref?: Ref<HTMLElement>; } & Polymorphic<CardElement>"
+    },
+    {
+      "name": "CardTitle",
+      "description": "",
+      "module": "card",
+      "kind": "component",
+      "signature": "(props: CardTitleProps): Element",
+      "props": "CardTitleProps",
+      "client": false
+    },
+    {
+      "name": "CardTitleElement",
+      "description": "",
+      "module": "card",
+      "kind": "type",
+      "definition": "\"h1\" | \"h2\" | \"h3\" | \"h4\" | \"h5\" | \"h6\" | \"p\" | \"div\""
+    },
+    {
+      "name": "CardTitleProps",
+      "description": "",
+      "module": "card",
+      "kind": "type",
+      "props": [
+        {
+          "name": "as",
+          "type": "never | E",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "asChild",
+          "type": "true | false",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLHeadingElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["React DOM attributes"],
+      "definition": "HTMLAttributes<HTMLHeadingElement> & { ref?: Ref<HTMLHeadingElement>; } & Polymorphic<CardTitleElement>"
+    },
+    {
+      "name": "CardVariant",
+      "description": "",
+      "module": "card",
+      "kind": "type",
+      "definition": "\"default\" | \"outline\" | \"muted\""
+    },
+    {
+      "name": "Combobox",
+      "description": "Searchable selection (single by default, `multiple` for several values with chips).",
+      "module": "combobox",
+      "kind": "component",
+      "signature": "(props: ComboboxProps): Element",
+      "props": "ComboboxProps",
+      "client": true
+    },
+    {
+      "name": "ComboboxItem",
+      "description": "",
+      "module": "combobox",
+      "kind": "type",
+      "props": [
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": false,
+          "description": "Visible text (also used for typeahead and chips)."
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "optional": false,
+          "description": "Value submitted with the form and passed to `onValueChange`."
+        }
+      ],
+      "inherits": [],
+      "definition": "SelectOption"
+    },
+    {
+      "name": "ComboboxItemGroup",
+      "description": "",
+      "module": "combobox",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "items",
+          "type": "readonly ComboboxItem[]",
+          "optional": false,
+          "description": "Items of the group."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": false,
+          "description": "Group heading."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ComboboxMultipleProps",
+      "description": "",
+      "module": "combobox",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "aria-describedby",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "aria-label",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "aria-labelledby",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "clearLabel",
+          "type": "string",
+          "optional": true,
+          "description": "Accessible name of the clear button (default `\"Clear selection\"`).",
+          "default": "\"Clear selection\""
+        },
+        {
+          "name": "clearable",
+          "type": "boolean",
+          "optional": true,
+          "description": "Show a clear button when a value is selected (default `true`).",
+          "default": "true"
+        },
+        {
+          "name": "container",
+          "type": "HTMLElement | null",
+          "optional": true,
+          "description": "Portal target for the popup (default: the enclosing Neshel overlay, else `document.body`)."
+        },
+        {
+          "name": "defaultInputValue",
+          "type": "string",
+          "optional": true,
+          "description": "Initial text of the input when uncontrolled."
+        },
+        {
+          "name": "defaultOpen",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "defaultValue",
+          "type": "readonly string[]",
+          "optional": true,
+          "description": "Initial selected values when uncontrolled."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "emptyMessage",
+          "type": "ReactNode",
+          "optional": true,
+          "description": "Shown when no item matches (default `\"No results\"`).",
+          "default": "\"No results\""
+        },
+        {
+          "name": "filter",
+          "type": "((item: ComboboxItem, query: string) => boolean) | null",
+          "optional": true,
+          "description": "Local filter (default: case-insensitive label match); `null` when the app filters `items`."
+        },
+        {
+          "name": "form",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "optional": true,
+          "description": "Id of the focusable control; associate a `<Label htmlFor>` with it."
+        },
+        {
+          "name": "inputValue",
+          "type": "string",
+          "optional": true,
+          "description": "Controlled text of the input."
+        },
+        {
+          "name": "invalid",
+          "type": "boolean",
+          "optional": true,
+          "description": "Marks the control `aria-invalid`. Describe the error with `aria-describedby`."
+        },
+        {
+          "name": "items",
+          "type": "readonly ComboboxItem[] | readonly ComboboxItemGroup[]",
+          "optional": false,
+          "description": "Items, or groups of items (not mixed)."
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "optional": true,
+          "description": "Shows `loadingMessage` while external results load."
+        },
+        {
+          "name": "loadingMessage",
+          "type": "ReactNode",
+          "optional": true,
+          "description": "Loading text (default `\"Loading…\"`).",
+          "default": "\"Loading…\""
+        },
+        {
+          "name": "multiple",
+          "type": "true",
+          "optional": false,
+          "description": "Multiple selection with removable chips."
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": true,
+          "description": "Form field name; one entry per selected value."
+        },
+        {
+          "name": "onInputValueChange",
+          "type": "(value: string) => void",
+          "optional": true,
+          "description": "Called when the user types; use with `filter={null}` for server-side search."
+        },
+        {
+          "name": "onOpenChange",
+          "type": "(open: boolean) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onValueChange",
+          "type": "(value: string[]) => void",
+          "optional": true,
+          "description": "Called with the new list of values."
+        },
+        {
+          "name": "open",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "optional": true,
+          "description": "Text shown when nothing is selected."
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLInputElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "removeLabel",
+          "type": "(label: string) => string",
+          "optional": true,
+          "description": "Accessible name of a chip's remove button (default: `Remove <label>`).",
+          "default": "Remove <label>"
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "triggerLabel",
+          "type": "string",
+          "optional": true,
+          "description": "Accessible name of the button that opens the list (default \"Show options\").",
+          "default": "\"Show options\""
+        },
+        {
+          "name": "uiSize",
+          "type": "FieldSize",
+          "optional": true,
+          "description": "Field size (default `\"md\"`).",
+          "default": "\"md\""
+        },
+        {
+          "name": "value",
+          "type": "readonly string[]",
+          "optional": true,
+          "description": "Controlled selected values."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ComboboxProps",
+      "description": "",
+      "module": "combobox",
+      "kind": "type",
+      "props": [
+        {
+          "name": "aria-describedby",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "aria-label",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "aria-labelledby",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "clearLabel",
+          "type": "string",
+          "optional": true,
+          "description": "Accessible name of the clear button (default `\"Clear selection\"`).",
+          "default": "\"Clear selection\""
+        },
+        {
+          "name": "clearable",
+          "type": "boolean",
+          "optional": true,
+          "description": "Show a clear button when a value is selected (default `true`).",
+          "default": "true"
+        },
+        {
+          "name": "container",
+          "type": "HTMLElement | null",
+          "optional": true,
+          "description": "Portal target for the popup (default: the enclosing Neshel overlay, else `document.body`)."
+        },
+        {
+          "name": "defaultInputValue",
+          "type": "string",
+          "optional": true,
+          "description": "Initial text of the input when uncontrolled."
+        },
+        {
+          "name": "defaultOpen",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "defaultValue",
+          "type": "string | null | readonly string[]",
+          "optional": true,
+          "description": "Initial selected value when uncontrolled."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "emptyMessage",
+          "type": "ReactNode",
+          "optional": true,
+          "description": "Shown when no item matches (default `\"No results\"`).",
+          "default": "\"No results\""
+        },
+        {
+          "name": "filter",
+          "type": "((item: ComboboxItem, query: string) => boolean) | null",
+          "optional": true,
+          "description": "Local filter (default: case-insensitive label match); `null` when the app filters `items`."
+        },
+        {
+          "name": "form",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "optional": true,
+          "description": "Id of the focusable control; associate a `<Label htmlFor>` with it."
+        },
+        {
+          "name": "inputValue",
+          "type": "string",
+          "optional": true,
+          "description": "Controlled text of the input."
+        },
+        {
+          "name": "invalid",
+          "type": "boolean",
+          "optional": true,
+          "description": "Marks the control `aria-invalid`. Describe the error with `aria-describedby`."
+        },
+        {
+          "name": "items",
+          "type": "readonly ComboboxItem[] | readonly ComboboxItemGroup[]",
+          "optional": false,
+          "description": "Items, or groups of items (not mixed)."
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "optional": true,
+          "description": "Shows `loadingMessage` while external results load."
+        },
+        {
+          "name": "loadingMessage",
+          "type": "ReactNode",
+          "optional": true,
+          "description": "Loading text (default `\"Loading…\"`).",
+          "default": "\"Loading…\""
+        },
+        {
+          "name": "multiple",
+          "type": "false | true",
+          "optional": true,
+          "description": "Single selection (default)."
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": true,
+          "description": "Form field name; one entry per selected value."
+        },
+        {
+          "name": "onInputValueChange",
+          "type": "(value: string) => void",
+          "optional": true,
+          "description": "Called when the user types; use with `filter={null}` for server-side search."
+        },
+        {
+          "name": "onOpenChange",
+          "type": "(open: boolean) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onValueChange",
+          "type": "(value: string | null) => void | (value: string[]) => void",
+          "optional": true,
+          "description": "Called with the new value (`null` when cleared)."
+        },
+        {
+          "name": "open",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "optional": true,
+          "description": "Text shown when nothing is selected."
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLInputElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "removeLabel",
+          "type": "(label: string) => string",
+          "optional": true,
+          "description": "Accessible name of a chip's remove button (default: `Remove <label>`).",
+          "default": "Remove <label>",
+          "variantOnly": true
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "triggerLabel",
+          "type": "string",
+          "optional": true,
+          "description": "Accessible name of the button that opens the list (default \"Show options\").",
+          "default": "\"Show options\""
+        },
+        {
+          "name": "uiSize",
+          "type": "FieldSize",
+          "optional": true,
+          "description": "Field size (default `\"md\"`).",
+          "default": "\"md\""
+        },
+        {
+          "name": "value",
+          "type": "string | null | readonly string[]",
+          "optional": true,
+          "description": "Controlled selected value (`null` = none)."
+        }
+      ],
+      "inherits": [],
+      "definition": "ComboboxSingleProps | ComboboxMultipleProps"
+    },
+    {
+      "name": "ComboboxSingleProps",
+      "description": "",
+      "module": "combobox",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "aria-describedby",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "aria-label",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "aria-labelledby",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "clearLabel",
+          "type": "string",
+          "optional": true,
+          "description": "Accessible name of the clear button (default `\"Clear selection\"`).",
+          "default": "\"Clear selection\""
+        },
+        {
+          "name": "clearable",
+          "type": "boolean",
+          "optional": true,
+          "description": "Show a clear button when a value is selected (default `true`).",
+          "default": "true"
+        },
+        {
+          "name": "container",
+          "type": "HTMLElement | null",
+          "optional": true,
+          "description": "Portal target for the popup (default: the enclosing Neshel overlay, else `document.body`)."
+        },
+        {
+          "name": "defaultInputValue",
+          "type": "string",
+          "optional": true,
+          "description": "Initial text of the input when uncontrolled."
+        },
+        {
+          "name": "defaultOpen",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "defaultValue",
+          "type": "string | null",
+          "optional": true,
+          "description": "Initial selected value when uncontrolled."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "emptyMessage",
+          "type": "ReactNode",
+          "optional": true,
+          "description": "Shown when no item matches (default `\"No results\"`).",
+          "default": "\"No results\""
+        },
+        {
+          "name": "filter",
+          "type": "((item: ComboboxItem, query: string) => boolean) | null",
+          "optional": true,
+          "description": "Local filter (default: case-insensitive label match); `null` when the app filters `items`."
+        },
+        {
+          "name": "form",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "optional": true,
+          "description": "Id of the focusable control; associate a `<Label htmlFor>` with it."
+        },
+        {
+          "name": "inputValue",
+          "type": "string",
+          "optional": true,
+          "description": "Controlled text of the input."
+        },
+        {
+          "name": "invalid",
+          "type": "boolean",
+          "optional": true,
+          "description": "Marks the control `aria-invalid`. Describe the error with `aria-describedby`."
+        },
+        {
+          "name": "items",
+          "type": "readonly ComboboxItem[] | readonly ComboboxItemGroup[]",
+          "optional": false,
+          "description": "Items, or groups of items (not mixed)."
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "optional": true,
+          "description": "Shows `loadingMessage` while external results load."
+        },
+        {
+          "name": "loadingMessage",
+          "type": "ReactNode",
+          "optional": true,
+          "description": "Loading text (default `\"Loading…\"`).",
+          "default": "\"Loading…\""
+        },
+        {
+          "name": "multiple",
+          "type": "false",
+          "optional": true,
+          "description": "Single selection (default)."
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": true,
+          "description": "Form field name; one entry per selected value."
+        },
+        {
+          "name": "onInputValueChange",
+          "type": "(value: string) => void",
+          "optional": true,
+          "description": "Called when the user types; use with `filter={null}` for server-side search."
+        },
+        {
+          "name": "onOpenChange",
+          "type": "(open: boolean) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onValueChange",
+          "type": "(value: string | null) => void",
+          "optional": true,
+          "description": "Called with the new value (`null` when cleared)."
+        },
+        {
+          "name": "open",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "optional": true,
+          "description": "Text shown when nothing is selected."
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLInputElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "triggerLabel",
+          "type": "string",
+          "optional": true,
+          "description": "Accessible name of the button that opens the list (default \"Show options\").",
+          "default": "\"Show options\""
+        },
+        {
+          "name": "uiSize",
+          "type": "FieldSize",
+          "optional": true,
+          "description": "Field size (default `\"md\"`).",
+          "default": "\"md\""
+        },
+        {
+          "name": "value",
+          "type": "string | null",
+          "optional": true,
+          "description": "Controlled selected value (`null` = none)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "Dialog",
+      "description": "Modal dialog root (`open` / `defaultOpen` / `onOpenChange`, `modal`).",
+      "module": "dialog",
+      "kind": "component",
+      "signature": "(props: DialogProps): Element",
+      "props": "DialogProps",
+      "client": true
+    },
+    {
+      "name": "DialogBody",
+      "description": "",
+      "module": "dialog",
+      "kind": "component",
+      "signature": "({ className, ...rest }: DialogPartProps): Element",
+      "props": "DialogPartProps",
+      "client": true
+    },
+    {
+      "name": "DialogClose",
+      "description": "",
+      "module": "dialog",
+      "kind": "component",
+      "signature": "(props: DialogCloseProps): Element",
+      "props": "DialogCloseProps",
+      "client": true
+    },
+    {
+      "name": "DialogCloseProps",
+      "description": "",
+      "module": "dialog",
+      "kind": "type",
+      "props": [
+        {
+          "name": "ref",
+          "type": "Ref<HTMLButtonElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["@radix-ui/react-primitive", "React DOM attributes"],
+      "definition": "RadixDialog.DialogCloseProps & { ref?: Ref<HTMLButtonElement>; }"
+    },
+    {
+      "name": "DialogContent",
+      "description": "",
+      "module": "dialog",
+      "kind": "component",
+      "signature": "({ size, ...props }: DialogContentProps): Element",
+      "props": "DialogContentProps",
+      "client": true
+    },
+    {
+      "name": "DialogContentProps",
+      "description": "",
+      "module": "dialog",
+      "kind": "type",
+      "props": [
+        {
+          "name": "closeLabel",
+          "type": "string",
+          "optional": true,
+          "description": "Accessible name of the close button (default \"Close\").",
+          "default": "\"Close\""
+        },
+        {
+          "name": "container",
+          "type": "HTMLElement | null",
+          "optional": true,
+          "description": "Portal target (default `document.body`, wrapped with the trigger's theme).",
+          "default": "document.body"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "showClose",
+          "type": "boolean",
+          "optional": true,
+          "description": "Render a close button with an accessible label (default true).",
+          "default": "true"
+        },
+        {
+          "name": "size",
+          "type": "DialogSize",
+          "optional": true,
+          "description": "Maximum width; `\"full\"` fills the viewport (default `\"md\"`).",
+          "default": "\"md\""
+        }
+      ],
+      "inherits": [
+        "@radix-ui/react-dialog",
+        "@radix-ui/react-dismissable-layer",
+        "@radix-ui/react-primitive",
+        "React DOM attributes"
+      ],
+      "definition": "ContentBase & { /** Maximum width; `\"full\"` fills the viewport (default `\"md\"`). */ size?: DialogSize; }"
+    },
+    {
+      "name": "DialogDescription",
+      "description": "",
+      "module": "dialog",
+      "kind": "component",
+      "signature": "({ className, ...props }: DialogDescriptionProps): Element",
+      "props": "DialogDescriptionProps",
+      "client": true
+    },
+    {
+      "name": "DialogDescriptionProps",
+      "description": "",
+      "module": "dialog",
+      "kind": "type",
+      "props": [
+        {
+          "name": "ref",
+          "type": "Ref<HTMLParagraphElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["@radix-ui/react-primitive", "React DOM attributes"],
+      "definition": "RadixDialog.DialogDescriptionProps & { ref?: Ref<HTMLParagraphElement>; }"
+    },
+    {
+      "name": "DialogFooter",
+      "description": "",
+      "module": "dialog",
+      "kind": "component",
+      "signature": "({ className, ...rest }: DialogPartProps): Element",
+      "props": "DialogPartProps",
+      "client": true
+    },
+    {
+      "name": "DialogHeader",
+      "description": "",
+      "module": "dialog",
+      "kind": "component",
+      "signature": "({ className, ...rest }: DialogPartProps): Element",
+      "props": "DialogPartProps",
+      "client": true
+    },
+    {
+      "name": "DialogPartProps",
+      "description": "",
+      "module": "dialog",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["React DOM attributes"]
+    },
+    {
+      "name": "DialogProps",
+      "description": "",
+      "module": "dialog",
+      "kind": "type",
+      "props": [],
+      "inherits": ["@radix-ui/react-dialog"],
+      "definition": "RootProps"
+    },
+    {
+      "name": "DialogSize",
+      "description": "",
+      "module": "dialog",
+      "kind": "type",
+      "definition": "\"sm\" | \"md\" | \"lg\" | \"xl\" | \"full\""
+    },
+    {
+      "name": "DialogTitle",
+      "description": "",
+      "module": "dialog",
+      "kind": "component",
+      "signature": "({ className, ...props }: DialogTitleProps): Element",
+      "props": "DialogTitleProps",
+      "client": true
+    },
+    {
+      "name": "DialogTitleProps",
+      "description": "",
+      "module": "dialog",
+      "kind": "type",
+      "props": [
+        {
+          "name": "ref",
+          "type": "Ref<HTMLHeadingElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["@radix-ui/react-primitive", "React DOM attributes"],
+      "definition": "RadixDialog.DialogTitleProps & { ref?: Ref<HTMLHeadingElement>; }"
+    },
+    {
+      "name": "DialogTrigger",
+      "description": "",
+      "module": "dialog",
+      "kind": "component",
+      "signature": "(props: DialogTriggerProps): Element",
+      "props": "DialogTriggerProps",
+      "client": true
+    },
+    {
+      "name": "DialogTriggerProps",
+      "description": "",
+      "module": "dialog",
+      "kind": "type",
+      "props": [
+        {
+          "name": "ref",
+          "type": "Ref<HTMLButtonElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["@radix-ui/react-primitive", "React DOM attributes"],
+      "definition": "RadixDialog.DialogTriggerProps & { ref?: Ref<HTMLButtonElement>; }"
+    },
+    {
+      "name": "DropdownMenu",
+      "description": "",
+      "module": "menus",
+      "kind": "component",
+      "signature": "(props: DropdownMenuProps): Element",
+      "props": "DropdownMenuProps",
+      "client": true
+    },
+    {
+      "name": "DropdownMenuCheckboxItem",
+      "description": "",
+      "module": "menus",
+      "kind": "component",
+      "signature": "({ className, children, ...props }: DropdownMenuCheckboxItemProps): Element",
+      "props": "DropdownMenuCheckboxItemProps",
+      "client": true
+    },
+    {
+      "name": "DropdownMenuCheckboxItemProps",
+      "description": "",
+      "module": "menus",
+      "kind": "type",
+      "props": [
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["@radix-ui/react-menu", "@radix-ui/react-primitive", "React DOM attributes"],
+      "definition": "RadixMenu.DropdownMenuCheckboxItemProps & { ref?: Ref<HTMLDivElement>; }"
+    },
+    {
+      "name": "DropdownMenuContent",
+      "description": "",
+      "module": "menus",
+      "kind": "component",
+      "signature": "({ container, className, sideOffset, collisionPadding, ...props }: DropdownMenuContentProps): Element",
+      "props": "DropdownMenuContentProps",
+      "client": true
+    },
+    {
+      "name": "DropdownMenuContentProps",
+      "description": "",
+      "module": "menus",
+      "kind": "type",
+      "props": [
+        {
+          "name": "container",
+          "type": "HTMLElement | null",
+          "optional": true,
+          "description": "Portal target (default `document.body`, wrapped with the trigger's theme).",
+          "default": "document.body"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "@radix-ui/react-menu",
+        "@radix-ui/react-popper",
+        "@radix-ui/react-primitive",
+        "React DOM attributes"
+      ],
+      "definition": "Omit<RadixMenu.DropdownMenuContentProps, \"ref\"> & { /** Portal target (default `document.body`, wrapped with the trigger's theme). */ container?: HTMLElement | null; ref?: Ref<HTMLDivElement>; }"
+    },
+    {
+      "name": "DropdownMenuGroup",
+      "description": "",
+      "module": "menus",
+      "kind": "component",
+      "signature": "(props: DropdownMenuGroupProps): Element",
+      "props": "DropdownMenuGroupProps",
+      "client": true
+    },
+    {
+      "name": "DropdownMenuGroupProps",
+      "description": "",
+      "module": "menus",
+      "kind": "type",
+      "props": [],
+      "inherits": ["@radix-ui/react-primitive", "React DOM attributes"],
+      "definition": "RadixMenu.DropdownMenuGroupProps"
+    },
+    {
+      "name": "DropdownMenuItem",
+      "description": "A command. Use `asChild` with a link only for menu items that navigate as a command.",
+      "module": "menus",
+      "kind": "component",
+      "signature": "({ variant, inset, className, ...props }: DropdownMenuItemProps): Element",
+      "props": "DropdownMenuItemProps",
+      "client": true
+    },
+    {
+      "name": "DropdownMenuItemProps",
+      "description": "",
+      "module": "menus",
+      "kind": "type",
+      "props": [
+        {
+          "name": "inset",
+          "type": "boolean",
+          "optional": true,
+          "description": "Indent to align with items that have an indicator or icon."
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "variant",
+          "type": "\"default\" | \"destructive\"",
+          "optional": true,
+          "description": "Use `\"destructive\"` for dangerous commands (default `\"default\"`).",
+          "default": "\"default\""
+        }
+      ],
+      "inherits": ["@radix-ui/react-menu", "@radix-ui/react-primitive", "React DOM attributes"]
+    },
+    {
+      "name": "DropdownMenuLabel",
+      "description": "",
+      "module": "menus",
+      "kind": "component",
+      "signature": "({ inset, className, ...props }: DropdownMenuLabelProps): Element",
+      "props": "DropdownMenuLabelProps",
+      "client": true
+    },
+    {
+      "name": "DropdownMenuLabelProps",
+      "description": "",
+      "module": "menus",
+      "kind": "type",
+      "props": [
+        {
+          "name": "inset",
+          "type": "boolean",
+          "optional": true,
+          "description": "Indent to align with items that have an indicator or icon."
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["@radix-ui/react-primitive", "React DOM attributes"],
+      "definition": "RadixMenu.DropdownMenuLabelProps & { /** Indent to align with items that have an indicator or icon. */ inset?: boolean; ref?: Ref<HTMLDivElement>; }"
+    },
+    {
+      "name": "DropdownMenuProps",
+      "description": "",
+      "module": "menus",
+      "kind": "type",
+      "props": [],
+      "inherits": ["@radix-ui/react-dropdown-menu"],
+      "definition": "RadixMenu.DropdownMenuProps"
+    },
+    {
+      "name": "DropdownMenuRadioGroup",
+      "description": "",
+      "module": "menus",
+      "kind": "component",
+      "signature": "(props: DropdownMenuRadioGroupProps): Element",
+      "props": "DropdownMenuRadioGroupProps",
+      "client": true
+    },
+    {
+      "name": "DropdownMenuRadioGroupProps",
+      "description": "",
+      "module": "menus",
+      "kind": "type",
+      "props": [],
+      "inherits": ["@radix-ui/react-menu", "@radix-ui/react-primitive", "React DOM attributes"],
+      "definition": "RadixMenu.DropdownMenuRadioGroupProps"
+    },
+    {
+      "name": "DropdownMenuRadioItem",
+      "description": "",
+      "module": "menus",
+      "kind": "component",
+      "signature": "({ className, children, ...props }: DropdownMenuRadioItemProps): Element",
+      "props": "DropdownMenuRadioItemProps",
+      "client": true
+    },
+    {
+      "name": "DropdownMenuRadioItemProps",
+      "description": "",
+      "module": "menus",
+      "kind": "type",
+      "props": [
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["@radix-ui/react-menu", "@radix-ui/react-primitive", "React DOM attributes"],
+      "definition": "RadixMenu.DropdownMenuRadioItemProps & { ref?: Ref<HTMLDivElement>; }"
+    },
+    {
+      "name": "DropdownMenuSeparator",
+      "description": "",
+      "module": "menus",
+      "kind": "component",
+      "signature": "({ className, ...props }: DropdownMenuSeparatorProps): Element",
+      "props": "DropdownMenuSeparatorProps",
+      "client": true
+    },
+    {
+      "name": "DropdownMenuSeparatorProps",
+      "description": "",
+      "module": "menus",
+      "kind": "type",
+      "props": [],
+      "inherits": ["@radix-ui/react-primitive", "React DOM attributes"],
+      "definition": "RadixMenu.DropdownMenuSeparatorProps"
+    },
+    {
+      "name": "DropdownMenuShortcut",
+      "description": "",
+      "module": "menus",
+      "kind": "component",
+      "signature": "({ className, ...props }: DropdownMenuShortcutProps): Element",
+      "props": "DropdownMenuShortcutProps",
+      "client": true
+    },
+    {
+      "name": "DropdownMenuShortcutProps",
+      "description": "",
+      "module": "menus",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "ref",
+          "type": "Ref<HTMLSpanElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["React DOM attributes"]
+    },
+    {
+      "name": "DropdownMenuSub",
+      "description": "",
+      "module": "menus",
+      "kind": "component",
+      "signature": "(props: DropdownMenuSubProps): Element",
+      "props": "DropdownMenuSubProps",
+      "client": true
+    },
+    {
+      "name": "DropdownMenuSubContent",
+      "description": "",
+      "module": "menus",
+      "kind": "component",
+      "signature": "({ container, className, ...props }: DropdownMenuSubContentProps): Element",
+      "props": "DropdownMenuSubContentProps",
+      "client": true
+    },
+    {
+      "name": "DropdownMenuSubContentProps",
+      "description": "",
+      "module": "menus",
+      "kind": "type",
+      "props": [
+        {
+          "name": "container",
+          "type": "HTMLElement | null",
+          "optional": true,
+          "description": "Portal target (default `document.body`, wrapped with the trigger's theme).",
+          "default": "document.body"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "@radix-ui/react-menu",
+        "@radix-ui/react-popper",
+        "@radix-ui/react-primitive",
+        "React DOM attributes"
+      ],
+      "definition": "Omit<RadixMenu.DropdownMenuSubContentProps, \"ref\"> & { /** Portal target (default `document.body`, wrapped with the trigger's theme). */ container?: HTMLElement | null; ref?: Ref<HTMLDivElement>; }"
+    },
+    {
+      "name": "DropdownMenuSubProps",
+      "description": "",
+      "module": "menus",
+      "kind": "type",
+      "props": [],
+      "inherits": ["@radix-ui/react-dropdown-menu"],
+      "definition": "RadixMenu.DropdownMenuSubProps"
+    },
+    {
+      "name": "DropdownMenuSubTrigger",
+      "description": "",
+      "module": "menus",
+      "kind": "component",
+      "signature": "({ inset, className, children, ...props }: DropdownMenuSubTriggerProps): Element",
+      "props": "DropdownMenuSubTriggerProps",
+      "client": true
+    },
+    {
+      "name": "DropdownMenuSubTriggerProps",
+      "description": "",
+      "module": "menus",
+      "kind": "type",
+      "props": [
+        {
+          "name": "inset",
+          "type": "boolean",
+          "optional": true,
+          "description": "Indent to align with items that have an indicator or icon."
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["@radix-ui/react-menu", "@radix-ui/react-primitive", "React DOM attributes"],
+      "definition": "RadixMenu.DropdownMenuSubTriggerProps & { /** Indent to align with items that have an indicator or icon. */ inset?: boolean; ref?: Ref<HTMLDivElement>; }"
+    },
+    {
+      "name": "DropdownMenuTrigger",
+      "description": "",
+      "module": "menus",
+      "kind": "component",
+      "signature": "({ ref, ...props }: DropdownMenuTriggerProps): Element",
+      "props": "DropdownMenuTriggerProps",
+      "client": true
+    },
+    {
+      "name": "DropdownMenuTriggerProps",
+      "description": "",
+      "module": "menus",
+      "kind": "type",
+      "props": [
+        {
+          "name": "ref",
+          "type": "Ref<HTMLButtonElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["@radix-ui/react-primitive", "React DOM attributes"],
+      "definition": "RadixMenu.DropdownMenuTriggerProps & { ref?: Ref<HTMLButtonElement>; }"
+    },
+    {
+      "name": "FieldSize",
+      "description": "Styling size of form fields (`uiSize`; the native `size` attribute keeps its HTML meaning).",
+      "module": "types",
+      "kind": "type",
+      "definition": "\"sm\" | \"md\" | \"lg\""
+    },
+    {
+      "name": "Input",
+      "description": "Native `<input>`: controlled or uncontrolled, every native type and attribute.",
+      "module": "primitives",
+      "kind": "component",
+      "signature": "({ uiSize, invalid, className, ...rest }: InputProps): Element",
+      "props": "InputProps",
+      "client": false
+    },
+    {
+      "name": "InputProps",
+      "description": "",
+      "module": "primitives",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "invalid",
+          "type": "boolean",
+          "optional": true,
+          "description": "Sets `aria-invalid=\"true\"` unless `aria-invalid` is given explicitly."
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLInputElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "uiSize",
+          "type": "FieldSize",
+          "optional": true,
+          "description": "Styling size; the native numeric `size` attribute keeps its HTML meaning."
+        }
+      ],
+      "inherits": ["React DOM attributes"]
+    },
+    {
+      "name": "Label",
+      "description": "",
+      "module": "primitives",
+      "kind": "component",
+      "signature": "({ required, className, children, ...rest }: LabelProps): Element",
+      "props": "LabelProps",
+      "client": false
+    },
+    {
+      "name": "LabelProps",
+      "description": "",
+      "module": "primitives",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "ref",
+          "type": "Ref<HTMLLabelElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "optional": true,
+          "description": "Shows a decorative \"*\" (hidden from assistive technology; use `required` on the control)."
+        }
+      ],
+      "inherits": ["React DOM attributes"]
+    },
+    {
+      "name": "MobileMenu",
+      "description": "",
+      "module": "mobile-menu",
+      "kind": "component",
+      "signature": "({ open, defaultOpen, onOpenChange, breakpoint, children, }: MobileMenuProps): Element",
+      "props": "MobileMenuProps",
+      "client": true
+    },
+    {
+      "name": "MobileMenuContent",
+      "description": "",
+      "module": "mobile-menu",
+      "kind": "component",
+      "signature": "({ side, title, titleHidden, children, onClick, ...rest }: MobileMenuContentProps): Element",
+      "props": "MobileMenuContentProps",
+      "client": true
+    },
+    {
+      "name": "MobileMenuContentProps",
+      "description": "",
+      "module": "mobile-menu",
+      "kind": "type",
+      "props": [
+        {
+          "name": "closeLabel",
+          "type": "string",
+          "optional": true,
+          "description": "Accessible name of the close button (default \"Close\").",
+          "default": "\"Close\""
+        },
+        {
+          "name": "container",
+          "type": "HTMLElement | null",
+          "optional": true,
+          "description": "Portal target (default `document.body`, wrapped with the trigger's theme).",
+          "default": "document.body"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "showClose",
+          "type": "boolean",
+          "optional": true,
+          "description": "Render a close button with an accessible label (default true).",
+          "default": "true"
+        },
+        {
+          "name": "side",
+          "type": "SheetSide",
+          "optional": true,
+          "description": "Edge the menu slides from (default `\"left\"`).",
+          "default": "\"left\""
+        },
+        {
+          "name": "size",
+          "type": "\"sm\" | \"md\" | \"lg\"",
+          "optional": true,
+          "description": "Width (left/right) or height (top/bottom) of the sheet (default `\"md\"`).",
+          "default": "\"md\""
+        },
+        {
+          "name": "title",
+          "type": "ReactNode",
+          "optional": true,
+          "description": "Dialog title (default \"Menu\").",
+          "default": "\"Menu\""
+        },
+        {
+          "name": "titleHidden",
+          "type": "boolean",
+          "optional": true,
+          "description": "Keep the title for assistive technology only (default true).",
+          "default": "true"
+        }
+      ],
+      "inherits": [
+        "@radix-ui/react-dialog",
+        "@radix-ui/react-dismissable-layer",
+        "@radix-ui/react-primitive",
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "MobileMenuLink",
+      "description": "",
+      "module": "mobile-menu",
+      "kind": "component",
+      "signature": "({ active, asChild, className, children, ...rest }: MobileMenuLinkProps): Element",
+      "props": "MobileMenuLinkProps",
+      "client": true
+    },
+    {
+      "name": "MobileMenuLinkProps",
+      "description": "",
+      "module": "mobile-menu",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "active",
+          "type": "boolean",
+          "optional": true,
+          "description": "Current page: sets `aria-current=\"page\"`."
+        },
+        {
+          "name": "asChild",
+          "type": "boolean",
+          "optional": true,
+          "description": "Render the single child element (e.g. a router link) with the link styles."
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLAnchorElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["React DOM attributes"]
+    },
+    {
+      "name": "MobileMenuNav",
+      "description": "`<nav>` with a list of MobileMenuLink items.",
+      "module": "mobile-menu",
+      "kind": "component",
+      "signature": "({ className, children, ...rest }: MobileMenuNavProps): Element",
+      "props": "MobileMenuNavProps",
+      "client": true
+    },
+    {
+      "name": "MobileMenuNavProps",
+      "description": "",
+      "module": "mobile-menu",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "ref",
+          "type": "Ref<HTMLElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["React DOM attributes"]
+    },
+    {
+      "name": "MobileMenuProps",
+      "description": "",
+      "module": "mobile-menu",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "breakpoint",
+          "type": "Breakpoint",
+          "optional": true,
+          "description": "At and above this breakpoint the trigger is hidden and the menu closes (default \"md\").",
+          "default": "\"md\""
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "defaultOpen",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onOpenChange",
+          "type": "(open: boolean) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "open",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "MobileMenuTrigger",
+      "description": "",
+      "module": "mobile-menu",
+      "kind": "component",
+      "signature": "({ label, className, children, ref, ...rest }: MobileMenuTriggerProps): Element",
+      "props": "MobileMenuTriggerProps",
+      "client": true
+    },
+    {
+      "name": "MobileMenuTriggerProps",
+      "description": "",
+      "module": "mobile-menu",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "description": "Accessible name (default \"Open menu\").",
+          "default": "\"Open menu\""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLButtonElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["React DOM attributes"]
+    },
+    {
+      "name": "MultiSelect",
+      "description": "Multiple selection: listbox stays open, removable chips beside the trigger, clear-all.",
+      "module": "select",
+      "kind": "component",
+      "signature": "(props: MultiSelectProps): Element",
+      "props": "MultiSelectProps",
+      "client": true
+    },
+    {
+      "name": "MultiSelectProps",
+      "description": "",
+      "module": "select",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "aria-describedby",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "aria-label",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "aria-labelledby",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "chips",
+          "type": "boolean",
+          "optional": true,
+          "description": "Show removable chips for the selected values (default true).",
+          "default": "true"
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "clearLabel",
+          "type": "string",
+          "optional": true,
+          "description": "Accessible name of the clear-all button (default `\"Clear selection\"`).",
+          "default": "\"Clear selection\""
+        },
+        {
+          "name": "clearable",
+          "type": "boolean",
+          "optional": true,
+          "description": "Show a \"clear all\" button when values are selected (default true).",
+          "default": "true"
+        },
+        {
+          "name": "container",
+          "type": "HTMLElement | null",
+          "optional": true,
+          "description": "Portal target for the popup (default: the enclosing Neshel overlay, else `document.body`)."
+        },
+        {
+          "name": "defaultOpen",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "defaultValue",
+          "type": "readonly string[]",
+          "optional": true,
+          "description": "Initial selected values when uncontrolled."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "form",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "optional": true,
+          "description": "Id of the focusable control; associate a `<Label htmlFor>` with it."
+        },
+        {
+          "name": "invalid",
+          "type": "boolean",
+          "optional": true,
+          "description": "Marks the control `aria-invalid`. Describe the error with `aria-describedby`."
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": true,
+          "description": "Form field name; one entry per selected value."
+        },
+        {
+          "name": "onOpenChange",
+          "type": "(open: boolean) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onValueChange",
+          "type": "(value: string[]) => void",
+          "optional": true,
+          "description": "Called with the new list of values."
+        },
+        {
+          "name": "open",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "options",
+          "type": "SelectOptions",
+          "optional": false,
+          "description": "Options, flat or grouped."
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "optional": true,
+          "description": "Text shown when nothing is selected."
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLButtonElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "removeLabel",
+          "type": "(label: string) => string",
+          "optional": true,
+          "description": "Accessible name of a chip's remove button (default: `Remove <label>`).",
+          "default": "Remove <label>"
+        },
+        {
+          "name": "removedMessage",
+          "type": "(label: string) => string",
+          "optional": true,
+          "description": "Live-region announcement after a removal (default: `<label> removed`).",
+          "default": "<label> removed"
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "summary",
+          "type": "(count: number) => string",
+          "optional": true,
+          "description": "Trigger text for the selection count (default: `<n> selected`).",
+          "default": "<n> selected"
+        },
+        {
+          "name": "uiSize",
+          "type": "FieldSize",
+          "optional": true,
+          "description": "Field size (default `\"md\"`).",
+          "default": "\"md\""
+        },
+        {
+          "name": "value",
+          "type": "readonly string[]",
+          "optional": true,
+          "description": "Controlled selected values."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "Navbar",
+      "description": "",
+      "module": "navbar",
+      "kind": "component",
+      "signature": "({ sticky, className, ...rest }: NavbarProps): Element",
+      "props": "NavbarProps",
+      "client": false
+    },
+    {
+      "name": "NavbarActions",
+      "description": "",
+      "module": "navbar",
+      "kind": "component",
+      "signature": "({ className, ...rest }: NavbarActionsProps): Element",
+      "props": "NavbarActionsProps",
+      "client": false
+    },
+    {
+      "name": "NavbarActionsProps",
+      "description": "",
+      "module": "navbar",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["React DOM attributes"]
+    },
+    {
+      "name": "NavbarBrand",
+      "description": "",
+      "module": "navbar",
+      "kind": "component",
+      "signature": "({ asChild, className, children, ...rest }: NavbarBrandProps): Element",
+      "props": "NavbarBrandProps",
+      "client": false
+    },
+    {
+      "name": "NavbarBrandProps",
+      "description": "",
+      "module": "navbar",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "asChild",
+          "type": "boolean",
+          "optional": true,
+          "description": "Render the single child (e.g. a home link) with the brand styles."
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["React DOM attributes"]
+    },
+    {
+      "name": "NavbarLink",
+      "description": "",
+      "module": "navbar",
+      "kind": "component",
+      "signature": "({ active, asChild, className, children, ...rest }: NavbarLinkProps): Element",
+      "props": "NavbarLinkProps",
+      "client": false
+    },
+    {
+      "name": "NavbarLinkProps",
+      "description": "",
+      "module": "navbar",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "active",
+          "type": "boolean",
+          "optional": true,
+          "description": "The current page: sets `aria-current=\"page\"`."
+        },
+        {
+          "name": "asChild",
+          "type": "boolean",
+          "optional": true,
+          "description": "Render the single child element (e.g. a router link) inside the `<li>` instead of an `<a>`."
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLAnchorElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["React DOM attributes"]
+    },
+    {
+      "name": "NavbarNav",
+      "description": "`<nav>` landmark with a list of NavbarLink items.",
+      "module": "navbar",
+      "kind": "component",
+      "signature": "({ hideBelow, className, children, ...rest }: NavbarNavProps): Element",
+      "props": "NavbarNavProps",
+      "client": false
+    },
+    {
+      "name": "NavbarNavProps",
+      "description": "",
+      "module": "navbar",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "hideBelow",
+          "type": "Breakpoint",
+          "optional": true,
+          "description": "Hide the links below this breakpoint (pair with a MobileMenu using the same breakpoint)."
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["React DOM attributes"]
+    },
+    {
+      "name": "NavbarProps",
+      "description": "",
+      "module": "navbar",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "ref",
+          "type": "Ref<HTMLElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "sticky",
+          "type": "boolean",
+          "optional": true,
+          "description": "Stick to the top of the scroll container."
+        }
+      ],
+      "inherits": ["React DOM attributes"]
+    },
+    {
+      "name": "NavigationMenu",
+      "description": "Site navigation: renders a `<nav>` landmark (give it an `aria-label`).",
+      "module": "menus",
+      "kind": "component",
+      "signature": "({ className, ...props }: NavigationMenuProps): Element",
+      "props": "NavigationMenuProps",
+      "client": true
+    },
+    {
+      "name": "NavigationMenuContent",
+      "description": "",
+      "module": "menus",
+      "kind": "component",
+      "signature": "({ className, ...props }: NavigationMenuContentProps): Element",
+      "props": "NavigationMenuContentProps",
+      "client": true
+    },
+    {
+      "name": "NavigationMenuContentProps",
+      "description": "",
+      "module": "menus",
+      "kind": "type",
+      "props": [
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "@radix-ui/react-dismissable-layer",
+        "@radix-ui/react-navigation-menu",
+        "@radix-ui/react-primitive",
+        "React DOM attributes"
+      ],
+      "definition": "RadixNav.NavigationMenuContentProps & { ref?: Ref<HTMLDivElement>; }"
+    },
+    {
+      "name": "NavigationMenuItem",
+      "description": "",
+      "module": "menus",
+      "kind": "component",
+      "signature": "({ className, ...props }: NavigationMenuItemProps): Element",
+      "props": "NavigationMenuItemProps",
+      "client": true
+    },
+    {
+      "name": "NavigationMenuItemProps",
+      "description": "",
+      "module": "menus",
+      "kind": "type",
+      "props": [
+        {
+          "name": "ref",
+          "type": "Ref<HTMLLIElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "@radix-ui/react-navigation-menu",
+        "@radix-ui/react-primitive",
+        "React DOM attributes"
+      ],
+      "definition": "RadixNav.NavigationMenuItemProps & { ref?: Ref<HTMLLIElement>; }"
+    },
+    {
+      "name": "NavigationMenuLink",
+      "description": "A navigation link; `active` marks the current page (`aria-current=\"page\"`).",
+      "module": "menus",
+      "kind": "component",
+      "signature": "({ className, ...props }: NavigationMenuLinkProps): Element",
+      "props": "NavigationMenuLinkProps",
+      "client": true
+    },
+    {
+      "name": "NavigationMenuLinkProps",
+      "description": "",
+      "module": "menus",
+      "kind": "type",
+      "props": [
+        {
+          "name": "ref",
+          "type": "Ref<HTMLAnchorElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "@radix-ui/react-navigation-menu",
+        "@radix-ui/react-primitive",
+        "React DOM attributes"
+      ],
+      "definition": "RadixNav.NavigationMenuLinkProps & { ref?: Ref<HTMLAnchorElement>; }"
+    },
+    {
+      "name": "NavigationMenuList",
+      "description": "",
+      "module": "menus",
+      "kind": "component",
+      "signature": "({ className, ...props }: NavigationMenuListProps): Element",
+      "props": "NavigationMenuListProps",
+      "client": true
+    },
+    {
+      "name": "NavigationMenuListProps",
+      "description": "",
+      "module": "menus",
+      "kind": "type",
+      "props": [
+        {
+          "name": "ref",
+          "type": "Ref<HTMLUListElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["@radix-ui/react-primitive", "React DOM attributes"],
+      "definition": "RadixNav.NavigationMenuListProps & { ref?: Ref<HTMLUListElement>; }"
+    },
+    {
+      "name": "NavigationMenuProps",
+      "description": "",
+      "module": "menus",
+      "kind": "type",
+      "props": [
+        {
+          "name": "ref",
+          "type": "Ref<HTMLElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "@radix-ui/react-navigation-menu",
+        "@radix-ui/react-primitive",
+        "React DOM attributes"
+      ],
+      "definition": "RadixNav.NavigationMenuProps & { ref?: Ref<HTMLElement>; }"
+    },
+    {
+      "name": "NavigationMenuTrigger",
+      "description": "",
+      "module": "menus",
+      "kind": "component",
+      "signature": "({ className, children, ...props }: NavigationMenuTriggerProps): Element",
+      "props": "NavigationMenuTriggerProps",
+      "client": true
+    },
+    {
+      "name": "NavigationMenuTriggerProps",
+      "description": "",
+      "module": "menus",
+      "kind": "type",
+      "props": [
+        {
+          "name": "ref",
+          "type": "Ref<HTMLButtonElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["@radix-ui/react-primitive", "React DOM attributes"],
+      "definition": "RadixNav.NavigationMenuTriggerProps & { ref?: Ref<HTMLButtonElement>; }"
+    },
+    {
+      "name": "NeshelComponentsError",
+      "description": "Error thrown for invalid component usage; identical on the server and the client (ADR 0009).",
+      "module": "internal/errors",
+      "kind": "class"
+    },
+    {
+      "name": "Popover",
+      "description": "",
+      "module": "popover",
+      "kind": "component",
+      "signature": "(props: PopoverProps): Element",
+      "props": "PopoverProps",
+      "client": true
+    },
+    {
+      "name": "PopoverAnchor",
+      "description": "",
+      "module": "popover",
+      "kind": "component",
+      "signature": "(props: PopoverAnchorProps): Element",
+      "props": "PopoverAnchorProps",
+      "client": true
+    },
+    {
+      "name": "PopoverAnchorProps",
+      "description": "",
+      "module": "popover",
+      "kind": "type",
+      "props": [
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["@radix-ui/react-popper", "@radix-ui/react-primitive", "React DOM attributes"],
+      "definition": "RadixPopover.PopoverAnchorProps & { ref?: Ref<HTMLDivElement>; }"
+    },
+    {
+      "name": "PopoverClose",
+      "description": "",
+      "module": "popover",
+      "kind": "component",
+      "signature": "(props: PopoverCloseProps): Element",
+      "props": "PopoverCloseProps",
+      "client": true
+    },
+    {
+      "name": "PopoverCloseProps",
+      "description": "",
+      "module": "popover",
+      "kind": "type",
+      "props": [
+        {
+          "name": "ref",
+          "type": "Ref<HTMLButtonElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["@radix-ui/react-primitive", "React DOM attributes"],
+      "definition": "RadixPopover.PopoverCloseProps & { ref?: Ref<HTMLButtonElement>; }"
+    },
+    {
+      "name": "PopoverContent",
+      "description": "",
+      "module": "popover",
+      "kind": "component",
+      "signature": "({ container, className, children, sideOffset, collisionPadding, onEscapeKeyDown, ref, ...rest }: PopoverContentProps): Element",
+      "props": "PopoverContentProps",
+      "client": true
+    },
+    {
+      "name": "PopoverContentProps",
+      "description": "",
+      "module": "popover",
+      "kind": "type",
+      "props": [
+        {
+          "name": "container",
+          "type": "HTMLElement | null",
+          "optional": true,
+          "description": "Portal target (default `document.body`, wrapped with the trigger's theme).",
+          "default": "document.body"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "@radix-ui/react-dismissable-layer",
+        "@radix-ui/react-popover",
+        "@radix-ui/react-popper",
+        "@radix-ui/react-primitive",
+        "React DOM attributes"
+      ],
+      "definition": "Omit<RadixPopover.PopoverContentProps, \"ref\"> & { /** Portal target (default `document.body`, wrapped with the trigger's theme). */ container?: HTMLElement | null; ref?: Ref<HTMLDivElement>; }"
+    },
+    {
+      "name": "PopoverProps",
+      "description": "",
+      "module": "popover",
+      "kind": "type",
+      "props": [],
+      "inherits": ["@radix-ui/react-popover"],
+      "definition": "RadixPopover.PopoverProps"
+    },
+    {
+      "name": "PopoverTrigger",
+      "description": "",
+      "module": "popover",
+      "kind": "component",
+      "signature": "({ ref, ...props }: PopoverTriggerProps): Element",
+      "props": "PopoverTriggerProps",
+      "client": true
+    },
+    {
+      "name": "PopoverTriggerProps",
+      "description": "",
+      "module": "popover",
+      "kind": "type",
+      "props": [
+        {
+          "name": "ref",
+          "type": "Ref<HTMLButtonElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["@radix-ui/react-primitive", "React DOM attributes"],
+      "definition": "RadixPopover.PopoverTriggerProps & { ref?: Ref<HTMLButtonElement>; }"
+    },
+    {
+      "name": "Responsive",
+      "description": "A value, or values per breakpoint that cascade upwards (mobile first).",
+      "module": "types",
+      "kind": "type",
+      "definition": "T | { readonly [K in Breakpoint]?: T; }"
+    },
+    {
+      "name": "Select",
+      "description": "Accessible single selection with typeahead, groups and native form serialisation.",
+      "module": "select",
+      "kind": "component",
+      "signature": "(props: SelectProps): Element",
+      "props": "SelectProps",
+      "client": true
+    },
+    {
+      "name": "SelectFieldProps",
+      "description": "Props shared by Select, MultiSelect and Combobox.",
+      "module": "select",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "aria-describedby",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "aria-label",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "aria-labelledby",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "container",
+          "type": "HTMLElement | null",
+          "optional": true,
+          "description": "Portal target for the popup (default: the enclosing Neshel overlay, else `document.body`)."
+        },
+        {
+          "name": "defaultOpen",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "form",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "optional": true,
+          "description": "Id of the focusable control; associate a `<Label htmlFor>` with it."
+        },
+        {
+          "name": "invalid",
+          "type": "boolean",
+          "optional": true,
+          "description": "Marks the control `aria-invalid`. Describe the error with `aria-describedby`."
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": true,
+          "description": "Form field name; one entry per selected value."
+        },
+        {
+          "name": "onOpenChange",
+          "type": "(open: boolean) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "open",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "optional": true,
+          "description": "Text shown when nothing is selected."
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "uiSize",
+          "type": "FieldSize",
+          "optional": true,
+          "description": "Field size (default `\"md\"`).",
+          "default": "\"md\""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "SelectOption",
+      "description": "",
+      "module": "select",
+      "kind": "interface",
+      "definition": "SelectOption",
+      "props": [
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": false,
+          "description": "Visible text (also used for typeahead and chips)."
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "optional": false,
+          "description": "Value submitted with the form and passed to `onValueChange`."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "SelectOptionGroup",
+      "description": "",
+      "module": "select",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "label",
+          "type": "string",
+          "optional": false,
+          "description": "Visible text (also used for typeahead and chips)."
+        },
+        {
+          "name": "options",
+          "type": "readonly SelectOption[]",
+          "optional": false,
+          "description": "Options of the group."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "SelectOptions",
+      "description": "",
+      "module": "select",
+      "kind": "type",
+      "props": [],
+      "inherits": ["typescript"],
+      "definition": "readonly (SelectOption | SelectOptionGroup)[]"
+    },
+    {
+      "name": "SelectProps",
+      "description": "",
+      "module": "select",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "aria-describedby",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "aria-label",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "aria-labelledby",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "container",
+          "type": "HTMLElement | null",
+          "optional": true,
+          "description": "Portal target for the popup (default: the enclosing Neshel overlay, else `document.body`)."
+        },
+        {
+          "name": "defaultOpen",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "defaultValue",
+          "type": "string | null",
+          "optional": true,
+          "description": "Initial selected value when uncontrolled."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "form",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "optional": true,
+          "description": "Id of the focusable control; associate a `<Label htmlFor>` with it."
+        },
+        {
+          "name": "invalid",
+          "type": "boolean",
+          "optional": true,
+          "description": "Marks the control `aria-invalid`. Describe the error with `aria-describedby`."
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": true,
+          "description": "Form field name; one entry per selected value."
+        },
+        {
+          "name": "onOpenChange",
+          "type": "(open: boolean) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onValueChange",
+          "type": "(value: string | null) => void",
+          "optional": true,
+          "description": "Called with the new value."
+        },
+        {
+          "name": "open",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "options",
+          "type": "SelectOptions",
+          "optional": false,
+          "description": "Options, flat or grouped."
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "optional": true,
+          "description": "Text shown when nothing is selected."
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLButtonElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "uiSize",
+          "type": "FieldSize",
+          "optional": true,
+          "description": "Field size (default `\"md\"`).",
+          "default": "\"md\""
+        },
+        {
+          "name": "value",
+          "type": "string | null",
+          "optional": true,
+          "description": "Controlled selected value (`null` = none)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "Separator",
+      "description": "",
+      "module": "primitives",
+      "kind": "component",
+      "signature": "({ orientation, decorative, className, ...rest }: SeparatorProps): Element",
+      "props": "SeparatorProps",
+      "client": false
+    },
+    {
+      "name": "SeparatorProps",
+      "description": "",
+      "module": "primitives",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "decorative",
+          "type": "boolean",
+          "optional": true,
+          "description": "Purely visual: `role=\"none\"` instead of `role=\"separator\"`."
+        },
+        {
+          "name": "orientation",
+          "type": "\"horizontal\" | \"vertical\"",
+          "optional": true,
+          "description": "Direction of the rule (default `\"horizontal\"`).",
+          "default": "\"horizontal\""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["React DOM attributes"]
+    },
+    {
+      "name": "Sheet",
+      "description": "Edge-positioned dialog (drawer). No drag gestures.",
+      "module": "dialog",
+      "kind": "component",
+      "signature": "(props: DialogProps): Element",
+      "props": "SheetProps",
+      "client": true
+    },
+    {
+      "name": "SheetBody",
+      "description": "",
+      "module": "dialog",
+      "kind": "component",
+      "client": true
+    },
+    {
+      "name": "SheetClose",
+      "description": "",
+      "module": "dialog",
+      "kind": "component",
+      "signature": "(props: DialogCloseProps): Element",
+      "props": "SheetCloseProps",
+      "client": true
+    },
+    {
+      "name": "SheetCloseProps",
+      "description": "",
+      "module": "dialog",
+      "kind": "type",
+      "props": [
+        {
+          "name": "ref",
+          "type": "Ref<HTMLButtonElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["@radix-ui/react-primitive", "React DOM attributes"],
+      "definition": "DialogCloseProps"
+    },
+    {
+      "name": "SheetContent",
+      "description": "",
+      "module": "dialog",
+      "kind": "component",
+      "signature": "({ side, size, ...props }: SheetContentProps): Element",
+      "props": "SheetContentProps",
+      "client": true
+    },
+    {
+      "name": "SheetContentProps",
+      "description": "",
+      "module": "dialog",
+      "kind": "type",
+      "props": [
+        {
+          "name": "closeLabel",
+          "type": "string",
+          "optional": true,
+          "description": "Accessible name of the close button (default \"Close\").",
+          "default": "\"Close\""
+        },
+        {
+          "name": "container",
+          "type": "HTMLElement | null",
+          "optional": true,
+          "description": "Portal target (default `document.body`, wrapped with the trigger's theme).",
+          "default": "document.body"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "showClose",
+          "type": "boolean",
+          "optional": true,
+          "description": "Render a close button with an accessible label (default true).",
+          "default": "true"
+        },
+        {
+          "name": "side",
+          "type": "SheetSide",
+          "optional": true,
+          "description": "Edge the sheet slides from (default `\"right\"`).",
+          "default": "\"right\""
+        },
+        {
+          "name": "size",
+          "type": "\"sm\" | \"md\" | \"lg\"",
+          "optional": true,
+          "description": "Width (left/right) or height (top/bottom) of the sheet (default `\"md\"`).",
+          "default": "\"md\""
+        }
+      ],
+      "inherits": [
+        "@radix-ui/react-dialog",
+        "@radix-ui/react-dismissable-layer",
+        "@radix-ui/react-primitive",
+        "React DOM attributes"
+      ],
+      "definition": "ContentBase & { /** Edge the sheet slides from (default `\"right\"`). */ side?: SheetSide; /** Width (left/right) or height (top/bottom) of the sheet (default `\"md\"`). */ size?: \"sm\" | \"md\" | \"lg\"; }"
+    },
+    {
+      "name": "SheetDescription",
+      "description": "",
+      "module": "dialog",
+      "kind": "component",
+      "signature": "(props: DialogDescriptionProps): Element",
+      "props": "SheetDescriptionProps",
+      "client": true
+    },
+    {
+      "name": "SheetDescriptionProps",
+      "description": "",
+      "module": "dialog",
+      "kind": "type",
+      "props": [
+        {
+          "name": "ref",
+          "type": "Ref<HTMLParagraphElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["@radix-ui/react-primitive", "React DOM attributes"],
+      "definition": "DialogDescriptionProps"
+    },
+    {
+      "name": "SheetFooter",
+      "description": "",
+      "module": "dialog",
+      "kind": "component",
+      "client": true
+    },
+    {
+      "name": "SheetHeader",
+      "description": "",
+      "module": "dialog",
+      "kind": "component",
+      "client": true
+    },
+    {
+      "name": "SheetProps",
+      "description": "",
+      "module": "dialog",
+      "kind": "type",
+      "props": [],
+      "inherits": ["@radix-ui/react-dialog"],
+      "definition": "DialogProps"
+    },
+    {
+      "name": "SheetSide",
+      "description": "",
+      "module": "dialog",
+      "kind": "type",
+      "definition": "\"left\" | \"right\" | \"top\" | \"bottom\""
+    },
+    {
+      "name": "SheetTitle",
+      "description": "",
+      "module": "dialog",
+      "kind": "component",
+      "signature": "(props: DialogTitleProps): Element",
+      "props": "SheetTitleProps",
+      "client": true
+    },
+    {
+      "name": "SheetTitleProps",
+      "description": "",
+      "module": "dialog",
+      "kind": "type",
+      "props": [
+        {
+          "name": "ref",
+          "type": "Ref<HTMLHeadingElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["@radix-ui/react-primitive", "React DOM attributes"],
+      "definition": "DialogTitleProps"
+    },
+    {
+      "name": "SheetTrigger",
+      "description": "",
+      "module": "dialog",
+      "kind": "component",
+      "signature": "(props: DialogTriggerProps): Element",
+      "props": "SheetTriggerProps",
+      "client": true
+    },
+    {
+      "name": "SheetTriggerProps",
+      "description": "",
+      "module": "dialog",
+      "kind": "type",
+      "props": [
+        {
+          "name": "ref",
+          "type": "Ref<HTMLButtonElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["@radix-ui/react-primitive", "React DOM attributes"],
+      "definition": "DialogTriggerProps"
+    },
+    {
+      "name": "Sidebar",
+      "description": "",
+      "module": "app-shell",
+      "kind": "component",
+      "signature": "({ collapsible, collapsed, mobileTitle, closeLabel, className, children, ...rest }: SidebarProps): Element",
+      "props": "SidebarProps",
+      "client": true
+    },
+    {
+      "name": "SidebarCollapsible",
+      "description": "",
+      "module": "app-shell",
+      "kind": "type",
+      "definition": "\"icon\" | \"offcanvas\" | \"none\""
+    },
+    {
+      "name": "SidebarContent",
+      "description": "Scrollable `<nav>` landmark (default label \"Main navigation\").",
+      "module": "app-shell",
+      "kind": "component",
+      "signature": "({ className, ...rest }: HTMLAttributes<HTMLElement> & { ref?: Ref<HTMLElement> | undefined; }): Element",
+      "props": "HTMLAttributes<HTMLElement> & {\n    ref?: Ref<HTMLElement>;\n}",
+      "client": true
+    },
+    {
+      "name": "SidebarFooter",
+      "description": "",
+      "module": "app-shell",
+      "kind": "component",
+      "signature": "({ className, ...rest }: SidebarPartProps): Element",
+      "props": "SidebarPartProps",
+      "client": true
+    },
+    {
+      "name": "SidebarGroup",
+      "description": "",
+      "module": "app-shell",
+      "kind": "component",
+      "signature": "({ label, className, children, ...rest }: SidebarGroupProps): Element",
+      "props": "SidebarGroupProps",
+      "client": true
+    },
+    {
+      "name": "SidebarGroupProps",
+      "description": "",
+      "module": "app-shell",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "label",
+          "type": "ReactNode",
+          "optional": true,
+          "description": "Visible group heading; labels the list (visually hidden in the rail)."
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["React DOM attributes"]
+    },
+    {
+      "name": "SidebarHeader",
+      "description": "",
+      "module": "app-shell",
+      "kind": "component",
+      "signature": "({ className, ...rest }: SidebarPartProps): Element",
+      "props": "SidebarPartProps",
+      "client": true
+    },
+    {
+      "name": "SidebarItem",
+      "description": "",
+      "module": "app-shell",
+      "kind": "component",
+      "signature": "({ icon, active, tooltip, asChild, className, children, type, ...rest }: SidebarItemProps): Element",
+      "props": "SidebarItemProps",
+      "client": true
+    },
+    {
+      "name": "SidebarItemProps",
+      "description": "",
+      "module": "app-shell",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "active",
+          "type": "boolean",
+          "optional": true,
+          "description": "The current page: `aria-current=\"page\"` on links, `data-active` always."
+        },
+        {
+          "name": "asChild",
+          "type": "boolean",
+          "optional": true,
+          "description": "Render the single child (a link or router link) as the item."
+        },
+        {
+          "name": "icon",
+          "type": "ReactNode",
+          "optional": true,
+          "description": "Decorative icon (shown alone in the rail)."
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLButtonElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "tooltip",
+          "type": "string",
+          "optional": true,
+          "description": "Rail tooltip text (default: the label when it is a string)."
+        },
+        {
+          "name": "type",
+          "type": "\"button\" | \"submit\" | \"reset\"",
+          "optional": true,
+          "description": "Button type when no `asChild` child is given (default `\"button\"`).",
+          "default": "\"button\""
+        }
+      ],
+      "inherits": ["React DOM attributes"]
+    },
+    {
+      "name": "SidebarPartProps",
+      "description": "",
+      "module": "app-shell",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["React DOM attributes"]
+    },
+    {
+      "name": "SidebarProps",
+      "description": "",
+      "module": "app-shell",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "closeLabel",
+          "type": "string",
+          "optional": true,
+          "description": "Accessible name of the drawer's close button (default \"Close navigation\").",
+          "default": "\"Close navigation\""
+        },
+        {
+          "name": "collapsed",
+          "type": "boolean",
+          "optional": true,
+          "description": "Collapsed state for a sidebar used outside an AppShell."
+        },
+        {
+          "name": "collapsible",
+          "type": "SidebarCollapsible",
+          "optional": true,
+          "description": "What collapsing does on desktop: icon rail (default), hide completely, or nothing."
+        },
+        {
+          "name": "mobileTitle",
+          "type": "string",
+          "optional": true,
+          "description": "Accessible title of the mobile drawer (default \"Navigation\").",
+          "default": "\"Navigation\""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["React DOM attributes"]
+    },
+    {
+      "name": "SidebarSeparator",
+      "description": "",
+      "module": "app-shell",
+      "kind": "component",
+      "signature": "({ className, ...rest }: HTMLAttributes<HTMLHRElement>): Element",
+      "props": "HTMLAttributes<HTMLHRElement>",
+      "client": true
+    },
+    {
+      "name": "SidebarSub",
+      "description": "Nested disclosure of SidebarItems (native button + list).",
+      "module": "app-shell",
+      "kind": "component",
+      "signature": "({ label, icon, open, defaultOpen, onOpenChange, className, children, }: SidebarSubProps): Element",
+      "props": "SidebarSubProps",
+      "client": true
+    },
+    {
+      "name": "SidebarSubProps",
+      "description": "",
+      "module": "app-shell",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "defaultOpen",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "icon",
+          "type": "ReactNode",
+          "optional": true,
+          "description": "Decorative icon; in the collapsed rail it is the only visible content."
+        },
+        {
+          "name": "label",
+          "type": "ReactNode",
+          "optional": false,
+          "description": "Visible label of the collapsible group trigger."
+        },
+        {
+          "name": "onOpenChange",
+          "type": "(open: boolean) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "open",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "SidebarTrigger",
+      "description": "",
+      "module": "app-shell",
+      "kind": "component",
+      "signature": "({ label, className, children, onClick, ...rest }: SidebarTriggerProps): Element",
+      "props": "SidebarTriggerProps",
+      "client": true
+    },
+    {
+      "name": "SidebarTriggerProps",
+      "description": "",
+      "module": "app-shell",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "description": "Accessible name when no children are given (default \"Toggle sidebar\").",
+          "default": "\"Toggle sidebar\""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLButtonElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["React DOM attributes"]
+    },
+    {
+      "name": "Skeleton",
+      "description": "Decorative loading placeholder (`aria-hidden`). Mark the loading region with `aria-busy` and\nannounce completion yourself; a skeleton announces nothing.",
+      "module": "primitives",
+      "kind": "component",
+      "signature": "({ shape, width, height, className, style, ...rest }: SkeletonProps): Element",
+      "props": "SkeletonProps",
+      "client": false
+    },
+    {
+      "name": "SkeletonProps",
+      "description": "",
+      "module": "primitives",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "height",
+          "type": "number | string",
+          "optional": true,
+          "description": "Block size; numbers are pixels."
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLSpanElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "shape",
+          "type": "\"rectangle\" | \"circle\" | \"text\"",
+          "optional": true,
+          "description": "Placeholder shape (default `\"rectangle\"`).",
+          "default": "\"rectangle\""
+        },
+        {
+          "name": "width",
+          "type": "number | string",
+          "optional": true,
+          "description": "Inline size; numbers are pixels."
+        }
+      ],
+      "inherits": ["React DOM attributes"]
+    },
+    {
+      "name": "Tooltip",
+      "description": "Supplementary text on hover and focus; never the only accessible name. No Provider needed.",
+      "module": "popover",
+      "kind": "component",
+      "signature": "({ delayDuration, ...props }: TooltipProps): Element",
+      "props": "TooltipProps",
+      "client": true
+    },
+    {
+      "name": "TooltipContent",
+      "description": "",
+      "module": "popover",
+      "kind": "component",
+      "signature": "({ container, className, sideOffset, ...rest }: TooltipContentProps): Element",
+      "props": "TooltipContentProps",
+      "client": true
+    },
+    {
+      "name": "TooltipContentProps",
+      "description": "",
+      "module": "popover",
+      "kind": "type",
+      "props": [
+        {
+          "name": "container",
+          "type": "HTMLElement | null",
+          "optional": true,
+          "description": "Portal target (default `document.body`, wrapped with the trigger's theme).",
+          "default": "document.body"
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "@radix-ui/react-popper",
+        "@radix-ui/react-primitive",
+        "@radix-ui/react-tooltip",
+        "React DOM attributes"
+      ],
+      "definition": "Omit<RadixTooltip.TooltipContentProps, \"ref\"> & { /** Portal target (default `document.body`, wrapped with the trigger's theme). */ container?: HTMLElement | null; ref?: Ref<HTMLDivElement>; }"
+    },
+    {
+      "name": "TooltipProps",
+      "description": "",
+      "module": "popover",
+      "kind": "type",
+      "props": [
+        {
+          "name": "delayDuration",
+          "type": "number",
+          "optional": true,
+          "description": "The duration from when the pointer enters the trigger until the tooltip gets opened. This will\noverride the prop with the same name passed to Provider.\nHover delay in ms (default 300).",
+          "default": "700"
+        }
+      ],
+      "inherits": ["@radix-ui/react-tooltip"],
+      "definition": "RadixTooltip.TooltipProps & { /** Hover delay in ms (default 300). */ delayDuration?: number; }"
+    },
+    {
+      "name": "TooltipTrigger",
+      "description": "",
+      "module": "popover",
+      "kind": "component",
+      "signature": "({ ref, ...props }: TooltipTriggerProps): Element",
+      "props": "TooltipTriggerProps",
+      "client": true
+    },
+    {
+      "name": "TooltipTriggerProps",
+      "description": "",
+      "module": "popover",
+      "kind": "type",
+      "props": [
+        {
+          "name": "ref",
+          "type": "Ref<HTMLButtonElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["@radix-ui/react-primitive", "React DOM attributes"],
+      "definition": "RadixTooltip.TooltipTriggerProps & { ref?: Ref<HTMLButtonElement>; }"
+    },
+    {
+      "name": "VisuallyHidden",
+      "description": "Content for assistive technology only (remains in the accessibility tree).",
+      "module": "primitives",
+      "kind": "component",
+      "signature": "({ asChild, className, children, ...rest }: VisuallyHiddenProps): Element",
+      "props": "VisuallyHiddenProps",
+      "client": false
+    },
+    {
+      "name": "VisuallyHiddenProps",
+      "description": "",
+      "module": "primitives",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "asChild",
+          "type": "boolean",
+          "optional": true,
+          "description": "Hide the single child element instead of rendering a `span`."
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLSpanElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": ["React DOM attributes"]
+    },
+    {
+      "name": "useAppShell",
+      "description": "Shell state for custom triggers; throws outside an AppShell.",
+      "module": "app-shell",
+      "kind": "function",
+      "signature": "(): AppShellState"
+    }
+  ]
+}

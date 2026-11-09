@@ -37,7 +37,12 @@
     "doctor": "node scripts/check-platform.mjs && node scripts/check-workspace.mjs && node scripts/check-portability.mjs",
     "check:portability": "node scripts/check-portability.mjs",
     "spec-kit:init": "node scripts/bootstrap-spec-kit.mjs",
-    "generate:component-css": "node scripts/generate-component-css.mjs"
+    "generate:component-css": "node scripts/generate-component-css.mjs",
+    "docs:dev": "pnpm build:packages && pnpm --filter @neshel-ui/docs dev",
+    "docs:build": "pnpm --filter @neshel-ui/docs build",
+    "docs:preview": "node scripts/docs/serve.mjs apps/docs/out",
+    "docs:api": "node scripts/docs/extract-api.mjs",
+    "check:docs": "node scripts/check-docs.mjs"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "catalog:",

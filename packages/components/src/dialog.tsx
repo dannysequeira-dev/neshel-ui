@@ -40,9 +40,17 @@ export type DialogDescriptionProps = RadixDialog.DialogDescriptionProps & {
   ref?: Ref<HTMLParagraphElement>;
 };
 export type DialogSize = "sm" | "md" | "lg" | "xl" | "full";
-export type DialogContentProps = ContentBase & { size?: DialogSize };
+export type DialogContentProps = ContentBase & {
+  /** Maximum width; `"full"` fills the viewport (default `"md"`). */
+  size?: DialogSize;
+};
 export type SheetSide = "left" | "right" | "top" | "bottom";
-export type SheetContentProps = ContentBase & { side?: SheetSide; size?: "sm" | "md" | "lg" };
+export type SheetContentProps = ContentBase & {
+  /** Edge the sheet slides from (default `"right"`). */
+  side?: SheetSide;
+  /** Width (left/right) or height (top/bottom) of the sheet (default `"md"`). */
+  size?: "sm" | "md" | "lg";
+};
 export interface DialogPartProps extends HTMLAttributes<HTMLDivElement> {
   ref?: Ref<HTMLDivElement>;
 }

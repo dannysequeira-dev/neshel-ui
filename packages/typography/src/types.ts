@@ -68,14 +68,21 @@ type TypographyPropNames =
 export interface TypographyProps extends Omit<HTMLAttributes<HTMLElement>, TypographyPropNames> {
   /** Size token; `font-size = token × the font role's cap-height scale`. */
   size?: Responsive<TextSize>;
+  /** Font weight; Heading defaults to `"semibold"`. */
   weight?: Responsive<TextWeight>;
+  /** Text alignment (logical: `start`/`end`). */
   align?: Responsive<TextAlign>;
   /** Unitless line height; defaults to the size's leading. Drives Capsize trimming. */
   leading?: Responsive<TextLeading>;
+  /** Colour role paired with the background for contrast (Caption defaults to `"muted"`). */
   tone?: TextTone;
+  /** Font role (Heading `"display"`, Paragraph and Caption `"body"`; Text inherits). */
   family?: FontRole;
+  /** Letter spacing. */
   tracking?: TextTracking;
+  /** Maximum line length: `narrow` 45ch, `comfortable` 65ch, `wide` 80ch. */
   measure?: TextMeasure;
+  /** Line wrapping strategy (`balance` suits headings, `pretty` paragraphs). */
   wrap?: TextWrap;
   /** One line with an ellipsis (clips overflow, so trimming is removed). */
   truncate?: boolean;

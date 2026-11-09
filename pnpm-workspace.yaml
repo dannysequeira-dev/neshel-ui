@@ -38,3 +38,8 @@ catalog:
 # esbuild is still installed by Storybook 10 and needs its install script.
 allowBuilds:
   esbuild: true
+
+minimumReleaseAgeExclude:
+  - "@fumadocs/base-ui@16.18.3"
+  - fumadocs-core@16.18.3
+  - fumadocs-mdx@15.5.2

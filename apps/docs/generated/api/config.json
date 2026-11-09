@@ -1,0 +1,460 @@
+{
+  "package": "@neshel-ui/config",
+  "exports": [
+    {
+      "name": "BreakpointName",
+      "description": "Breakpoint names accepted by responsive props (besides `base`): the configured names when the\ngenerated declarations are part of the program, otherwise the defaults `sm md lg xl 2xl`.\nThe conditional type replaces the whole union, so `replace` mode removes the default names.",
+      "module": "index",
+      "kind": "type",
+      "definition": "BreakpointRegistry extends { readonly names: infer Names extends string; } ? Names : DefaultBreakpointName"
+    },
+    {
+      "name": "BreakpointRegistry",
+      "description": "Registry of the application's breakpoint names (ADR 0010). Empty by default; the declarations\nwritten by `neshel generate` augment it with `names`:\n\n```ts\ndeclare module \"@neshel-ui/config\" {\n  interface BreakpointRegistry { readonly names: \"tablet\" | \"desktop\" }\n}\n```\n\nDeclared here (not re-exported) so module augmentation targets the package entry directly.",
+      "module": "index",
+      "kind": "interface",
+      "definition": "BreakpointRegistry"
+    },
+    {
+      "name": "BreakpointWidth",
+      "description": "A breakpoint threshold in `rem`, e.g. `\"48rem\"`. Checked by the `neshel` CLI.",
+      "module": "types",
+      "kind": "type",
+      "definition": "`${number}rem`"
+    },
+    {
+      "name": "BreakpointsInput",
+      "description": "Consumer-defined responsive breakpoints (feature 004, contracts/breakpoints.md).",
+      "module": "types",
+      "kind": "interface",
+      "definition": "BreakpointsInput",
+      "props": [
+        {
+          "name": "mode",
+          "type": "\"extend\" | \"replace\"",
+          "optional": true,
+          "description": "`extend` keeps the defaults (sm, md, lg, xl, 2xl) and adds names; `replace` uses only `values`."
+        },
+        {
+          "name": "tailwind",
+          "type": "boolean",
+          "optional": true,
+          "description": "Also emit Tailwind CSS v4 `@theme` breakpoints in the generated stylesheet."
+        },
+        {
+          "name": "values",
+          "type": "{ readonly [name: string]: BreakpointWidth; }",
+          "optional": false,
+          "description": "Name → `min-width` threshold. Names: lower camelCase (`phoneXL`); widths: distinct `rem`."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "BuiltInThemeInput",
+      "description": "Overrides for a built-in theme (`light` or `dark`).",
+      "module": "types",
+      "kind": "interface",
+      "definition": "BuiltInThemeInput",
+      "props": [
+        {
+          "name": "colors",
+          "type": "Partial<ThemeColors>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "extends",
+          "type": "never",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ColorRole",
+      "description": "One of the 25 semantic colour roles, in canonical order (see `colorRoles`).",
+      "module": "types",
+      "kind": "type",
+      "definition": "(typeof colorRoles)[number]"
+    },
+    {
+      "name": "ColorValue",
+      "description": "A CSS colour: `#rgb`, `#rgba`, `#rrggbb`, `#rrggbbaa`, `rgb()`, `rgba()`, `hsl()`, `hsla()`\nor `oklch()`. Only `border` may be translucent. Checked by the `neshel` CLI, not by types.",
+      "module": "types",
+      "kind": "type",
+      "definition": "string"
+    },
+    {
+      "name": "ContrastPair",
+      "description": "A foreground/background pair whose contrast is checked.",
+      "module": "types",
+      "kind": "interface",
+      "definition": "ContrastPair",
+      "props": [
+        {
+          "name": "background",
+          "type": "ColorRole",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "criterion",
+          "type": "\"1.4.3\" | \"1.4.11\" | \"exempt\"",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "foreground",
+          "type": "ColorRole",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "minimum",
+          "type": "4.5 | 3 | null",
+          "optional": false,
+          "description": "Minimum WCAG 2.1 ratio, or `null` for a documented exemption."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ContrastPolicy",
+      "description": "How contrast failures of custom themes are reported. `neshel --strict` always means \"error\".",
+      "module": "types",
+      "kind": "type",
+      "definition": "\"warn\" | \"error\""
+    },
+    {
+      "name": "DefaultBreakpointName",
+      "description": "Default breakpoint names, ascending: sm 40rem, md 48rem, lg 64rem, xl 80rem, 2xl 96rem.",
+      "module": "types",
+      "kind": "type",
+      "definition": "\"sm\" | \"md\" | \"lg\" | \"xl\" | \"2xl\""
+    },
+    {
+      "name": "Defaults",
+      "description": "Built-in default values of the token contract.",
+      "module": "types",
+      "kind": "interface",
+      "definition": "Defaults",
+      "props": [
+        {
+          "name": "breakpoints",
+          "type": "{ readonly [B in DefaultBreakpointName]: BreakpointWidth; }",
+          "optional": false,
+          "description": "Default breakpoints (Tailwind CSS v4 defaults)."
+        },
+        {
+          "name": "focus",
+          "type": "{ readonly width: LengthValue; readonly offset: LengthValue; }",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "type": "{ readonly base: LengthValue; }",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "spacing",
+          "type": "{ readonly unit: LengthValue; }",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "themes",
+          "type": "{ readonly light: ThemeColors; readonly dark: ThemeColors; }",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "typography",
+          "type": "{ readonly families: { readonly [F in FontRole]: readonly string[]; }; /** Default metrics (Inter for body and display; none for mono). */ readonly metrics: Partial<Record<FontRole, FontMetrics>>; }",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ExactConfig",
+      "description": "Compile-time exactness for `defineConfig`: unknown keys at any level, named themes without\n`extends`, `extends` on `light`/`dark`, and a `system` theme become type errors.",
+      "module": "define-config",
+      "kind": "type",
+      "props": [
+        {
+          "name": "breakpoints",
+          "type": "Section<T, \"breakpoints\">",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "focus",
+          "type": "Section<T, \"focus\">",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "type": "Section<T, \"radius\">",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "spacing",
+          "type": "Section<T, \"spacing\">",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "themes",
+          "type": "T extends { readonly themes: infer Th; } ? { [N in keyof Th]: ThemeCheck<N, Th[N]>; } : unknown",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "typography",
+          "type": "TypographyCheck<T>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "FontMetrics",
+      "description": "Font metrics in Capsize's format (objects from `@capsizecss/metrics` can be passed directly).\nUsed by `neshel generate` for cap-height sizing and trimming (feature 004).",
+      "module": "types",
+      "kind": "interface",
+      "definition": "FontMetrics",
+      "props": [
+        {
+          "name": "ascent",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "capHeight",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "category",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "descent",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "familyName",
+          "type": "string",
+          "optional": true,
+          "description": "Family name; required for fallback fonts (the primary role uses its first family)."
+        },
+        {
+          "name": "fullName",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "lineGap",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "postscriptName",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "subsets",
+          "type": "Readonly<Record<string, { readonly xWidthAvg: number; }>>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "unitsPerEm",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "xHeight",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "xWidthAvg",
+          "type": "number",
+          "optional": true,
+          "description": "Average character width; required for fallback font generation."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "FontRole",
+      "description": "Font roles exposed as `--neshel-font-<role>`.",
+      "module": "types",
+      "kind": "type",
+      "definition": "\"body\" | \"display\" | \"mono\""
+    },
+    {
+      "name": "FontStack",
+      "description": "A font family name or an ordered fallback stack. Names with spaces are quoted on output.",
+      "module": "types",
+      "kind": "type",
+      "definition": "string | readonly string[]"
+    },
+    {
+      "name": "LengthValue",
+      "description": "A CSS length: `\"0\"`, or a number followed by `rem`, `em` or `px` (e.g. `\"0.75rem\"`).",
+      "module": "types",
+      "kind": "type",
+      "definition": "string"
+    },
+    {
+      "name": "NamedThemeInput",
+      "description": "A named theme that starts from a built-in base.",
+      "module": "types",
+      "kind": "interface",
+      "definition": "NamedThemeInput",
+      "props": [
+        {
+          "name": "colors",
+          "type": "Partial<ThemeColors>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "extends",
+          "type": "\"light\" | \"dark\"",
+          "optional": false,
+          "description": "Built-in base; also determines the theme's `color-scheme`."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "NeshelConfig",
+      "description": "The `neshel.config.ts` schema, version 1.",
+      "module": "types",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "breakpoints",
+          "type": "BreakpointsInput",
+          "optional": true,
+          "description": "Custom responsive breakpoints shared by layout and typography."
+        },
+        {
+          "name": "contrast",
+          "type": "ContrastPolicy",
+          "optional": true,
+          "description": "Custom-theme contrast diagnostics; defaults to \"warn\"."
+        },
+        {
+          "name": "focus",
+          "type": "{ readonly width?: LengthValue; readonly offset?: LengthValue; }",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "output",
+          "type": "string",
+          "optional": true,
+          "description": "Output file relative to the config file's directory. Default `\"./neshel.generated.css\"`.",
+          "default": "\"./neshel.generated.css\""
+        },
+        {
+          "name": "radius",
+          "type": "{ readonly base?: LengthValue; readonly sm?: LengthValue; readonly md?: LengthValue; readonly lg?: LengthValue; readonly xl?: LengthValue; }",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "spacing",
+          "type": "{ readonly unit?: LengthValue; }",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "themes",
+          "type": "{ readonly light?: BuiltInThemeInput; readonly dark?: BuiltInThemeInput; readonly system?: never; /** Named themes: lower-case kebab-case, 1–32 characters, `extends` required. */ readonly [name: string]: BuiltInThemeInput | NamedThemeInput | undefined; }",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "types",
+          "type": "string",
+          "optional": true,
+          "description": "Generated TypeScript declarations (written when `breakpoints` is set), relative to the config\nfile's directory. Default `\"./neshel.generated.d.ts\"`.",
+          "default": "\"./neshel.generated.d.ts\""
+        },
+        {
+          "name": "typography",
+          "type": "{ readonly families?: Partial<Record<FontRole, FontStack>>; /** Metrics of each role's primary font (Capsize format). */ readonly metrics?: Partial<Record<FontRole, FontMetrics>>; /** Metrics of local fallback fonts, adjusted to the primary font with Capsize. */ readonly fallbacks?: Partial<Record<FontRole, readonly FontMetrics[]>>; }",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "version",
+          "type": "1",
+          "optional": true,
+          "description": "Configuration schema version; defaults to 1. Other values are rejected."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ThemeColors",
+      "description": "A complete colour map for one theme.",
+      "module": "types",
+      "kind": "type",
+      "definition": "{ readonly [R in ColorRole]: ColorValue; }"
+    },
+    {
+      "name": "colorRoles",
+      "description": "The 25 semantic colour roles in canonical (emission) order.",
+      "module": "contract",
+      "kind": "const",
+      "type": "readonly [\"background\", \"foreground\", \"surface\", \"surfaceForeground\", \"muted\", \"mutedForeground\", \"primary\", \"primaryForeground\", \"secondary\", \"secondaryForeground\", \"accent\", \"accentForeground\", \"destructive\", \"destructiveForeground\", \"success\", \"successForeground\", \"warning\", \"warningForeground\", \"selected\", \"selectedForeground\", \"disabled\", \"disabledForeground\", \"border\", \"input\", \"focus\"]"
+    },
+    {
+      "name": "contrastPairs",
+      "description": "Foreground/background pairs and their WCAG 2.1 thresholds.",
+      "module": "contract",
+      "kind": "const",
+      "type": "readonly ContrastPair[]"
+    },
+    {
+      "name": "defaults",
+      "description": "Built-in defaults: the Neshel navy / ivory / gold themes and non-colour tokens.",
+      "module": "contract",
+      "kind": "const",
+      "type": "Defaults"
+    },
+    {
+      "name": "defineConfig",
+      "description": "Declare a Neshel-UI configuration with type checking and editor completion. Returns its\nargument unchanged; colour, length and theme-name contents are validated by `neshel validate`.",
+      "module": "define-config",
+      "kind": "function",
+      "signature": "<const T extends NeshelConfig>(config: T & Strict<T, NeshelConfig> & { themes?: (T extends { readonly themes: infer Th; } ? { [N in keyof Th]: ThemeCheck<N, Th[N]>; } : unknown) | undefined; radius?: Section<T, \"radius\"> | undefined; spacing?: Section<T, \"spacing\"> | undefined; focus?: Section<T, \"focus\"> | undefined; typography?: TypographyCheck<T> | undefined; breakpoints?: Section<T, \"breakpoints\"> | undefined; }): T"
+    }
+  ]
+}

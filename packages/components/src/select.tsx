@@ -20,12 +20,16 @@ import { fieldSizeClass } from "./primitives.js";
 import type { FieldSize } from "./types.js";
 
 export interface SelectOption {
+  /** Value submitted with the form and passed to `onValueChange`. */
   value: string;
+  /** Visible text (also used for typeahead and chips). */
   label: string;
   disabled?: boolean;
 }
 export interface SelectOptionGroup {
+  /** Visible text (also used for typeahead and chips). */
   label: string;
+  /** Options of the group. */
   options: readonly SelectOption[];
 }
 export type SelectOptions = readonly (SelectOption | SelectOptionGroup)[];
@@ -42,7 +46,9 @@ export interface SelectFieldProps {
   readOnly?: boolean;
   /** Marks the control `aria-invalid`. Describe the error with `aria-describedby`. */
   invalid?: boolean;
+  /** Text shown when nothing is selected. */
   placeholder?: string;
+  /** Field size (default `"md"`). */
   uiSize?: FieldSize;
   open?: boolean;
   defaultOpen?: boolean;
@@ -56,25 +62,37 @@ export interface SelectFieldProps {
 }
 
 export interface SelectProps extends SelectFieldProps {
+  /** Options, flat or grouped. */
   options: SelectOptions;
+  /** Controlled selected value (`null` = none). */
   value?: string | null;
+  /** Initial selected value when uncontrolled. */
   defaultValue?: string | null;
+  /** Called with the new value. */
   onValueChange?: (value: string | null) => void;
   ref?: Ref<HTMLButtonElement>;
 }
 
 export interface MultiSelectProps extends SelectFieldProps {
+  /** Options, flat or grouped. */
   options: SelectOptions;
+  /** Controlled selected values. */
   value?: readonly string[];
+  /** Initial selected values when uncontrolled. */
   defaultValue?: readonly string[];
+  /** Called with the new list of values. */
   onValueChange?: (value: string[]) => void;
   /** Show removable chips for the selected values (default true). */
   chips?: boolean;
   /** Show a "clear all" button when values are selected (default true). */
   clearable?: boolean;
+  /** Accessible name of the clear-all button (default `"Clear selection"`). */
   clearLabel?: string;
+  /** Accessible name of a chip's remove button (default: `Remove <label>`). */
   removeLabel?: (label: string) => string;
+  /** Live-region announcement after a removal (default: `<label> removed`). */
   removedMessage?: (label: string) => string;
+  /** Trigger text for the selection count (default: `<n> selected`). */
   summary?: (count: number) => string;
   ref?: Ref<HTMLButtonElement>;
 }
@@ -190,6 +208,7 @@ function Popup({
   options,
   container,
 }: {
+  /** Options, flat or grouped. */
   options: SelectOptions;
   container: HTMLElement | null | undefined;
 }) {

@@ -79,11 +79,14 @@ export type DropdownMenuTriggerProps = RadixMenu.DropdownMenuTriggerProps & {
   ref?: Ref<HTMLButtonElement>;
 };
 export type DropdownMenuContentProps = Omit<RadixMenu.DropdownMenuContentProps, "ref"> & {
+  /** Portal target (default `document.body`, wrapped with the trigger's theme). */
   container?: HTMLElement | null;
   ref?: Ref<HTMLDivElement>;
 };
 export type DropdownMenuItemProps = RadixMenu.DropdownMenuItemProps & {
+  /** Use `"destructive"` for dangerous commands (default `"default"`). */
   variant?: "default" | "destructive";
+  /** Indent to align with items that have an indicator or icon. */
   inset?: boolean;
   ref?: Ref<HTMLDivElement>;
 };
@@ -95,6 +98,7 @@ export type DropdownMenuRadioItemProps = RadixMenu.DropdownMenuRadioItemProps & 
   ref?: Ref<HTMLDivElement>;
 };
 export type DropdownMenuLabelProps = RadixMenu.DropdownMenuLabelProps & {
+  /** Indent to align with items that have an indicator or icon. */
   inset?: boolean;
   ref?: Ref<HTMLDivElement>;
 };
@@ -102,10 +106,12 @@ export type DropdownMenuGroupProps = RadixMenu.DropdownMenuGroupProps;
 export type DropdownMenuSeparatorProps = RadixMenu.DropdownMenuSeparatorProps;
 export type DropdownMenuSubProps = RadixMenu.DropdownMenuSubProps;
 export type DropdownMenuSubTriggerProps = RadixMenu.DropdownMenuSubTriggerProps & {
+  /** Indent to align with items that have an indicator or icon. */
   inset?: boolean;
   ref?: Ref<HTMLDivElement>;
 };
 export type DropdownMenuSubContentProps = Omit<RadixMenu.DropdownMenuSubContentProps, "ref"> & {
+  /** Portal target (default `document.body`, wrapped with the trigger's theme). */
   container?: HTMLElement | null;
   ref?: Ref<HTMLDivElement>;
 };

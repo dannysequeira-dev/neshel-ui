@@ -27,6 +27,7 @@ export type PopoverTriggerProps = RadixPopover.PopoverTriggerProps & {
 export type PopoverAnchorProps = RadixPopover.PopoverAnchorProps & { ref?: Ref<HTMLDivElement> };
 export type PopoverCloseProps = RadixPopover.PopoverCloseProps & { ref?: Ref<HTMLButtonElement> };
 export type PopoverContentProps = Omit<RadixPopover.PopoverContentProps, "ref"> & {
+  /** Portal target (default `document.body`, wrapped with the trigger's theme). */
   container?: HTMLElement | null;
   ref?: Ref<HTMLDivElement>;
 };
@@ -96,6 +97,7 @@ export type TooltipTriggerProps = RadixTooltip.TooltipTriggerProps & {
   ref?: Ref<HTMLButtonElement>;
 };
 export type TooltipContentProps = Omit<RadixTooltip.TooltipContentProps, "ref"> & {
+  /** Portal target (default `document.body`, wrapped with the trigger's theme). */
   container?: HTMLElement | null;
   ref?: Ref<HTMLDivElement>;
 };
