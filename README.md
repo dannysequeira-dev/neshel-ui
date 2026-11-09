@@ -6,182 +6,159 @@
 
 <p align="center">
   <strong>Rooted in faith. Built with hope.</strong><br />
-  A modular React design system built for composition, accessibility, and thoughtful theming.
+  A modular, accessible and themeable React design system.
 </p>
 
 <p align="center">
-  <a href="#vision">Vision</a> ·
   <a href="#packages">Packages</a> ·
+  <a href="#quick-start">Quick start</a> ·
+  <a href="#documentation">Documentation</a> ·
   <a href="#development">Development</a> ·
-  <a href="#roadmap">Roadmap</a> ·
+  <a href="#project-status">Status</a> ·
   <a href="#contributing">Contributing</a>
 </p>
 
 > [!IMPORTANT]
-> **Pre-release.** Neshel-UI is not published to npm yet. The design tokens, themes and
-> configuration CLI (phase 002) and the layout primitives (phase 003) are implemented and
-> verified from packed tarballs; typography and components are still planned.
+> **Release candidate 0.1.0 — not published to npm yet.** All five packages are implemented and
+> verified from packed tarballs in external Vite and Next.js applications on Linux, Windows and
+> macOS. Until the owner authorises the first publication, install them from local tarballs (see
+> [Quick start](#quick-start)).
 
-## Vision
+Neshel-UI gives React applications **semantic design tokens**, **layout primitives**,
+**metrics-aware typography**, **accessible components** and a **build-time CLI** — as independent
+packages you install only when you need them. It is CSS-first (Tailwind CSS v4 optional, plain CSS
+supported), needs no runtime provider for theming, and works in React Server Components.
 
-Neshel-UI aims to make consistent interfaces easier to build without forcing every
-application into one visual identity. Install focused packages, configure semantic
-tokens, and compose the primitives you actually need.
-
-Its design principles are:
-
-- **Faith, care, and stewardship.** Build with integrity, generosity, and hope.
-- **Composition over complexity.** Small primitives with predictable contracts.
-- **Application-owned identity.** Semantic colors, themes, typography, and design tokens.
-- **Accessibility by default.** Native semantics, clear focus states, and keyboard support.
-- **Precise typography.** Real font metrics with Capsize where they add value.
-- **Independent adoption.** Published packages must work outside this monorepo.
-- **Open-source collaboration.** Reproducible tooling, clear documentation, and transparent decisions.
-
-The project is built around **React**, **TypeScript**, **Tailwind CSS v4**, **Capsize**,
-**pnpm workspaces**, and **Storybook**. Tailwind CSS integration is CSS-first, but
-consumers should not be forced to use Tailwind just to load the core theme tokens.
+The navy, ivory and gold appearance is Neshel's default; your application owns its identity through
+`neshel.config.ts`.
 
 ## Packages
 
-Neshel-UI is organized as independent packages with one shared design vocabulary.
+| Package                                        | What it gives you                                                                     |
+| ---------------------------------------------- | ------------------------------------------------------------------------------------- |
+| [`@neshel-ui/config`](packages/config)         | Tokens as CSS custom properties; light, dark, system and named themes; `defineConfig` |
+| [`@neshel-ui/layout`](packages/layout)         | `Box`, `Flex`, `Stack`, `Inline`, `Grid`, `Center`, `Container`                       |
+| [`@neshel-ui/typography`](packages/typography) | `Heading`, `Text`, `Paragraph`, `Caption` with Capsize trimming                       |
+| [`@neshel-ui/components`](packages/components) | Buttons, cards, form controls, overlays, selection, navigation, application shell     |
+| [`@neshel-ui/cli`](packages/cli)               | `neshel validate` and `neshel generate` for themes, fonts and custom breakpoints      |
 
-| Package                 | Planned responsibility                                          | Status                    |
-| ----------------------- | --------------------------------------------------------------- | ------------------------- |
-| `@neshel-ui/config`     | Semantic tokens, themes, CSS exports, typed configuration       | Implemented (unpublished) |
-| `@neshel-ui/layout`     | Box, Flex, Stack, Inline, Grid, Center, Container               | Implemented (unpublished) |
-| `@neshel-ui/typography` | Heading, Text, Paragraph, Caption, Capsize integration          | Planned                   |
-| `@neshel-ui/components` | Accessible Button, Card, Badge, Input, Separator, Skeleton      | Planned                   |
-| `@neshel-ui/cli`        | Read/validate user configuration and generate deterministic CSS | Implemented (unpublished) |
-| `@neshel-ui/core`       | Internal shared utilities, if needed; not publicly published    | Internal                  |
+Peer dependencies: `react` and `react-dom` 19. ESM only, TypeScript declarations included.
 
-The `@neshel-ui` npm scope must be verified before publication. A package install
-must not depend on unpublished private workspace packages.
+## Quick start
 
-### Intended consumer experience
-
-Once published, consumers should be able to install only the features they need:
+After the 0.1.0 publication:
 
 ```bash
-# Example for a future release — not available on npm yet
-pnpm add @neshel-ui/config @neshel-ui/layout @neshel-ui/typography
+pnpm add @neshel-ui/config @neshel-ui/layout @neshel-ui/typography @neshel-ui/components
+```
+
+Today, from a clone of this repository:
+
+```bash
+pnpm install --frozen-lockfile
+pnpm build:packages
+node scripts/pack-local.mjs --out ../neshel-tarballs
+# in your application:
+node <path-to-neshel-ui>/scripts/pack-local.mjs --use ../neshel-tarballs && pnpm install
 ```
 
 ```css
-/* Zero-config theme with Tailwind CSS v4 */
+/* your global CSS — with Tailwind v4 (or import @neshel-ui/config/tokens.css without it) */
 @import "tailwindcss";
 @import "@neshel-ui/config/tailwind.css";
-
-/* …or without Tailwind: plain CSS custom properties */
-@import "@neshel-ui/config/tokens.css";
+@import "@neshel-ui/layout/styles.css";
+@import "@neshel-ui/typography/styles.css";
+@import "@neshel-ui/components/styles.css";
 ```
 
-```html
-<html data-neshel-theme="system"><!-- light (default) | dark | system | a named theme --></html>
+```tsx
+import { Button } from "@neshel-ui/components";
+import { Stack } from "@neshel-ui/layout";
+import { Heading, Paragraph } from "@neshel-ui/typography";
+
+export function Welcome() {
+  return (
+    <Stack space="4" alignX="start">
+      <Heading as="h1">Welcome</Heading>
+      <Paragraph tone="muted">Rooted in faith. Built with hope.</Paragraph>
+      <Button>Get started</Button>
+    </Stack>
+  );
+}
 ```
 
-For a custom theme, write a typed `neshel.config.ts` with `defineConfig()` and run
-`neshel generate` from `@neshel-ui/cli`; it validates the configuration (including contrast
-diagnostics) and writes a static stylesheet you import after the Neshel one. Installation alone
-does **not** inject CSS. See the [theme guide](docs/theming.md) and
-[package contracts](docs/package-contracts.md) for tested versus intended compatibility.
+Ready-made projects: [`starters/`](starters) (Vite + Tailwind, Vite + plain CSS, Next.js App Router).
+
+## Documentation
+
+The official documentation website (English and Spanish) lives in [`apps/docs`](apps/docs): getting
+started tutorials, guides, the complete component catalogue with live previews and API tables
+generated from the TypeScript declarations, the CLI reference and application examples.
+
+```bash
+pnpm docs:dev       # http://localhost:3000
+pnpm docs:build     # static export to apps/docs/out
+pnpm docs:preview   # serve the export
+```
+
+Its public deployment awaits the owner (see [docs/releasing.md](docs/releasing.md)). Maintainer
+and contract documentation stays in [`docs/`](docs) and [`specs/`](specs).
 
 ## Development
 
-Contributors are equally supported on **Windows, Linux and macOS**; every command below
-runs unchanged in PowerShell 7, Bash and Zsh.
-
-**Requirements**
-
-- **Node.js 26** (primary line, see `.nvmrc`); 22.13 or newer is supported.
-- **pnpm 12.16.1**, pinned by `packageManager` (`npm install --global pnpm@12.16.1` or Corepack).
-- **Git**. Optional: Python 3.11+ and `uv` for the Spec Kit CLI.
+Contributors are equally supported on **Windows, Linux and macOS**; every command runs unchanged in
+PowerShell 7, Bash and Zsh. Requirements: **Node.js 26** (22.13+ supported), **pnpm 12.16.1**
+(pinned by `packageManager`), Git.
 
 ```bash
 git clone https://github.com/dannysequeira-dev/neshel-ui.git
 cd neshel-ui
 pnpm install --frozen-lockfile
-pnpm check            # doctor, lint, typecheck, tests, package build, exports, packed artifacts
-pnpm check:consumer   # external Vite apps (Tailwind, plain CSS, configured) from packed tarballs (network)
-pnpm check:browser    # computed-style theme precedence in headless Chrome (needs a local Chrome/Edge)
+pnpm check
 ```
 
-Local previews:
+| Command                                           | What it verifies                                                                                 |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `pnpm check`                                      | doctor, lint, typecheck, tests, package build, exports, packed artefacts                         |
+| `pnpm check:consumer`                             | packed tarballs in external React 19 + Vite apps (Tailwind, plain CSS, themes, breakpoints, SSR) |
+| `pnpm check:browser` / `check:browser:components` | computed styles; real keyboard/pointer interaction and axe in Chrome                             |
+| `pnpm check:browsers`                             | Chromium, Firefox and WebKit smoke flows (Playwright)                                            |
+| `pnpm check:next`                                 | isolated Next.js App Router app from packed packages (SSR, hydration, portals)                   |
+| `pnpm check:starters` · `check:bundles`           | starters from deterministic ZIPs · per-family bundle budgets                                     |
+| `pnpm check:docs` · `check:docs-site`             | documentation coverage, translations, links, snippets · exported site smoke with axe             |
+| `pnpm release:simulate`                           | the 0.1.0 versioning transition and `npm publish --dry-run`, in a temporary copy                 |
 
-```bash
-pnpm dev:playground   # Vite playground
-pnpm dev:storybook    # Storybook on port 6006
-```
+Working agreements: [constitution](.specify/memory/constitution.md), [architecture](docs/architecture.md),
+[package contracts](docs/package-contracts.md), [decisions](docs/decisions/README.md),
+[cross-platform policy (Spanish)](docs/CROSS-PLATFORM.es.md), [contributing](CONTRIBUTING.md).
 
-| Command                                  | What it verifies                                                                                  |
-| ---------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| `pnpm run doctor`                        | Node version, workspace layout, script portability, case collisions                               |
-| `pnpm lint` / `pnpm format`              | Biome check / apply fixes                                                                         |
-| `pnpm typecheck` · `pnpm test`           | TypeScript projects (incl. type fixtures) · repository `node:test` suites                         |
-| `pnpm test:packages`                     | Package tests against built output (contract, contrast, generator, CLI)                           |
-| `pnpm build:packages`                    | Clean build of every package (ESM, `.d.ts`, maps, CSS)                                            |
-| `pnpm check:exports` · `pnpm check:pack` | Export targets in `dist` · real `pnpm pack` tarballs (publint, attw, external import/type checks) |
-| `pnpm check:consumer`                    | Packed tarballs in generated React 19 + Vite apps: Tailwind, plain CSS, configured via the CLI    |
-| `pnpm check:browser`                     | Theme precedence, nesting and import orders by computed styles in headless Chrome                 |
+## Project status
 
-Platform guides (Spanish): [Windows setup](docs/SETUP-WINDOWS.es.md) and
-[cross-platform policy](docs/CROSS-PLATFORM.es.md). Current verification status, separated
-into implemented, locally verified and CI-verified: [Phase 001 evidence](specs/001-foundation/evidence.md),
-[Phase 002 evidence](specs/002-config-and-tokens/evidence.md),
-[Phase 003 evidence](specs/003-layout-system/evidence.md). Layout usage: [docs/layout.md](docs/layout.md).
+| Phase   | Focus                                                                | Status      |
+| ------- | -------------------------------------------------------------------- | ----------- |
+| 001–005 | Foundation, tokens and CLI, layout, typography, components and shell | Done        |
+| 006     | Documentation website, developer experience, release candidate       | In progress |
+| 007     | First npm publication (owner-authorised)                             | Planned     |
 
-### Architecture and working agreements
-
-- [Claude Code context](CLAUDE.md)
-- [Architecture](docs/architecture.md)
-- [Package contracts](docs/package-contracts.md)
-- [Theme strategy](docs/theming.md)
-- [Typography strategy](docs/typography.md)
-- [Spec Kit constitution](.specify/memory/constitution.md)
-- [Spec Kit onboarding](.specify/README.md)
-- [Architecture decisions](docs/decisions/README.md)
-- [Release policy](docs/releasing.md)
-
-Use specification-driven development and keep architecture decisions documented.
-A working Storybook or a green workspace build is **not**, by itself, proof that
-an npm package is ready for independent consumption.
-
-## Roadmap
-
-| Phase   | Focus                                                          |
-| ------- | -------------------------------------------------------------- |
-| **001** | Foundation, quality gates, portable tooling, package contracts |
-| **002** | Semantic design tokens, themes, CSS generation, configuration  |
-| **003** | Composable layout primitives                                   |
-| **004** | Metrics-aware typography                                       |
-| **005** | Accessible UI components and Storybook                         |
-| **006** | External consumers, documentation, npm publishing              |
-
-See [the development roadmap](docs/roadmap.md) for specifications, milestones,
-and acceptance gates. Version **0.1.0** is the initial release target, not a
-release already available.
+Release readiness and its evidence: [docs/release-readiness.md](docs/release-readiness.md). The
+`@neshel-ui` npm organisation has not yet been confirmed.
 
 ## Brand identity
 
-The Neshel-UI emblem is a **navy-blue rose** with restrained golden reflections
-and a quiet light at its heart. It represents faith as the foundation and hope
-as the reason to keep building.
-
-The original artwork is preserved unchanged in
-[`assets/brand/neshel-ui-logo.png`](assets/brand/neshel-ui-logo.png).
-Cropped, resized variants for avatars and icons are in
-[`assets/brand/`](assets/brand/); see the [brand asset guide](docs/BRANDING.md).
+The emblem is a **navy-blue rose** with restrained golden reflections and a quiet light at its
+heart, representing faith as the foundation and hope as the reason to keep building. The original
+artwork is preserved unchanged in [`assets/brand/`](assets/brand) — see the
+[brand asset guide](docs/BRANDING.md) and the [brand usage policy (draft)](docs/BRAND-POLICY.md).
 
 ## Contributing
 
-Neshel-UI welcomes thoughtful contributions as the library evolves. Please
-start with the [contribution guide](CONTRIBUTING.md),
-[code of conduct](CODE_OF_CONDUCT.md), and [security policy](SECURITY.md).
+Thoughtful contributions are welcome: read the [contribution guide](CONTRIBUTING.md),
+[code of conduct](CODE_OF_CONDUCT.md) and [security policy](SECURITY.md).
 
 ## License
 
-The software project uses the [MIT license](LICENSE). Brand artwork usage
-should follow the project's published brand policy when one is established.
+The software is released under the [MIT license](LICENSE). The MIT license does not grant rights to
+the Neshel-UI name or logo; see the [brand usage policy (draft)](docs/BRAND-POLICY.md).
 
 ---
 

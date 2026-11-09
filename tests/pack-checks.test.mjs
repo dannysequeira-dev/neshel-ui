@@ -350,3 +350,30 @@ test("bareImports ignores string literals that contain the word from", () => {
   ].join("\n");
   assert.deepEqual(bareImports(source), ["react", "tailwind-variants/lite"]);
 });
+
+test("checkReleaseMetadata requires the public release fields (feature 006)", async () => {
+  const { checkReleaseMetadata } = await import("../scripts/lib/pack-checks.mjs");
+  const good = {
+    description: "x",
+    keywords: ["a", "b", "c"],
+    license: "MIT",
+    author: "Neshel-UI maintainers",
+    homepage: "https://github.com/dannysequeira-dev/neshel-ui",
+    bugs: { url: "https://github.com/dannysequeira-dev/neshel-ui/issues" },
+    repository: {
+      type: "git",
+      url: "git+https://github.com/dannysequeira-dev/neshel-ui.git",
+      directory: "packages/config",
+    },
+    publishConfig: { access: "public" },
+  };
+  assert.deepEqual(checkReleaseMetadata(good, "packages/config"), []);
+  assert.equal(
+    checkReleaseMetadata(
+      { ...good, repository: { type: "git", url: "https://example.com/x.git" } },
+      "packages/config",
+    ).length,
+    2,
+  );
+  assert.match(checkReleaseMetadata({ ...good, keywords: [] }).join(), /keywords/);
+});

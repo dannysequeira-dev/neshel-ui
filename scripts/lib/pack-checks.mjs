@@ -211,6 +211,33 @@ export function checkLifecycleScripts(manifest) {
   );
 }
 
+const REPOSITORY_URL = "git+https://github.com/dannysequeira-dev/neshel-ui.git";
+
+/**
+ * Release metadata of a public package (feature 006, contracts/release.md): description, keywords,
+ * MIT licence, author, homepage, bugs and a repository pointing at the package directory (npm
+ * trusted publishing requires repository.url to match the publishing repository).
+ */
+export function checkReleaseMetadata(manifest, packageDir) {
+  const errors = [];
+  const nonEmpty = (value) => typeof value === "string" && value.trim() !== "";
+  if (!nonEmpty(manifest.description)) errors.push("description is missing");
+  if (!Array.isArray(manifest.keywords) || manifest.keywords.length < 3)
+    errors.push("keywords must list at least three terms");
+  if (manifest.license !== "MIT") errors.push(`license must be "MIT" (found ${manifest.license})`);
+  if (!nonEmpty(manifest.author)) errors.push("author is missing");
+  if (!nonEmpty(manifest.homepage) || !manifest.homepage.startsWith("https://"))
+    errors.push("homepage must be an https URL");
+  if (!nonEmpty(manifest.bugs?.url)) errors.push("bugs.url is missing");
+  if (manifest.repository?.type !== "git" || manifest.repository?.url !== REPOSITORY_URL)
+    errors.push(`repository must be { type: "git", url: "${REPOSITORY_URL}" }`);
+  if (packageDir && manifest.repository?.directory !== packageDir)
+    errors.push(`repository.directory must be "${packageDir}"`);
+  if (manifest.publishConfig?.access !== "public")
+    errors.push('publishConfig.access must be "public"');
+  return errors;
+}
+
 /** Public workspace packages may be peers only as caret ranges (packed from `workspace:^`). */
 export function checkPublicPeers(manifest, publicNames = []) {
   const errors = [];

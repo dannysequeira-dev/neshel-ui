@@ -24,8 +24,8 @@ pnpm dev:storybook
 These commands work in PowerShell, Bash and Zsh. Run `pnpm format` before committing. We
 require green native CI on Windows, Linux and macOS for changes to tooling or public packages.
 
-Packages are still placeholders: feature work must be scoped to a Spec Kit feature slice
-(`specs/`) and include tests, documentation and stories once components exist.
+Feature work is scoped to a Spec Kit feature slice (`specs/`) and includes tests, documentation
+(English and Spanish) and stories.
 
 ## Design tokens
 
@@ -39,11 +39,25 @@ pnpm build:packages
 pnpm test:packages     # drift, contrast and golden-file tests
 ```
 
+## Documentation
+
+The documentation website lives in `apps/docs` and is verified like code. A change to a public API
+must update, in the same pull request:
+
+- the package JSDoc (props and defaults are generated from declarations: `pnpm docs:api`);
+- the English **and** Spanish pages (`apps/docs/content/docs/{en,es}`), demos and API description
+  translations (`apps/docs/i18n/api.es.json`);
+- a changeset (`pnpm changeset`).
+
+`pnpm check:docs` (coverage, translations, links, type-checked snippets) and `pnpm docs:build` must
+pass. The full process and the new-component checklist are on the site page "Contributing to the
+documentation" (`apps/docs/content/docs/en/project/contributing-docs.mdx`).
+
 ## Pull requests
 
 Use focused changes and Conventional Commit subjects, e.g. `feat(layout): add Stack`.
 Include test results, compatibility impact, screenshots for visual changes,
-and a Changeset once public packages are released.
+and a changeset for every user-facing change to a public package.
 
 ## Conduct
 

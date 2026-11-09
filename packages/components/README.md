@@ -2,10 +2,10 @@
 
 Accessible React components, navigation and a responsive application shell for Neshel-UI.
 
-**Status:** pre-release, **not published to npm**. Implemented in feature 005 and verified from the
-packed tarball in external React 19 + Vite apps (with and without Tailwind, custom themes, custom
-breakpoints in `extend` and `replace` mode, SSR and hydration) and in headless Chrome with real
-keyboard and pointer input plus axe-core.
+**Status:** release candidate for 0.1.0 — **not published to npm yet**. Verified from the packed
+tarball in external applications on Linux, Windows and macOS. Documentation: the
+official site in [`apps/docs`](https://github.com/dannysequeira-dev/neshel-ui/tree/main/apps/docs) (English and Spanish); pre-publication installation:
+`node scripts/pack-local.mjs` in the repository.
 
 ```css
 @import "@neshel-ui/config/tokens.css"; /* or tailwind.css after @import "tailwindcss" */

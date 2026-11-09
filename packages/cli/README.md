@@ -3,8 +3,10 @@
 Validate a typed `neshel.config.ts` and generate a static Neshel-UI stylesheet (themes, font
 metrics, custom breakpoints) and the matching TypeScript declarations.
 
-**Status:** pre-release, **not published to npm**. Node `>=22.13`, ESM only. Requires
-`@neshel-ui/config` (peer dependency) in the same project.
+**Status:** release candidate for 0.1.0 — **not published to npm yet**. Verified from the packed
+tarball in external applications on Linux, Windows and macOS. Node `>=22.13`, ESM only; requires `@neshel-ui/config` next to it. Documentation: the
+official site in [`apps/docs`](https://github.com/dannysequeira-dev/neshel-ui/tree/main/apps/docs) (English and Spanish); pre-publication installation:
+`node scripts/pack-local.mjs` in the repository.
 
 ## Commands
 

@@ -2,6 +2,26 @@
   "name": "@neshel-ui/cli",
   "version": "0.0.0",
   "description": "Configuration and CSS generation CLI",
+  "keywords": [
+    "neshel-ui",
+    "design-system",
+    "cli",
+    "design-tokens",
+    "theming",
+    "css",
+    "breakpoints",
+    "capsize"
+  ],
+  "homepage": "https://github.com/dannysequeira-dev/neshel-ui/tree/main/packages/cli#readme",
+  "bugs": {
+    "url": "https://github.com/dannysequeira-dev/neshel-ui/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dannysequeira-dev/neshel-ui.git",
+    "directory": "packages/cli"
+  },
+  "author": "Neshel-UI maintainers",
   "type": "module",
   "private": true,
   "license": "MIT",

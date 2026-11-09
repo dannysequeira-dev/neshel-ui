@@ -7,7 +7,7 @@ feedback. The project's faith-inspired origin is not a participation requirement
 
 Maintainers may remove abusive content or restrict participation for serious
 or repeated violations. Report concerns privately to the repository maintainers
-through GitHub's contact methods once the repository has been created.
+through GitHub (a private vulnerability-style report or a direct message to a maintainer).
 
 We will protect the privacy of people involved in reports as far as reasonably
 possible. No private reporting email is invented in this template.

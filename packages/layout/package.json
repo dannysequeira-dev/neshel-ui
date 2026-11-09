@@ -2,6 +2,26 @@
   "name": "@neshel-ui/layout",
   "version": "0.0.0",
   "description": "Composable React layout primitives",
+  "keywords": [
+    "neshel-ui",
+    "design-system",
+    "react",
+    "layout",
+    "stack",
+    "grid",
+    "flexbox",
+    "responsive"
+  ],
+  "homepage": "https://github.com/dannysequeira-dev/neshel-ui/tree/main/packages/layout#readme",
+  "bugs": {
+    "url": "https://github.com/dannysequeira-dev/neshel-ui/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dannysequeira-dev/neshel-ui.git",
+    "directory": "packages/layout"
+  },
+  "author": "Neshel-UI maintainers",
   "type": "module",
   "private": true,
   "license": "MIT",

@@ -2,6 +2,25 @@
   "name": "@neshel-ui/config",
   "version": "0.0.0",
   "description": "CSS-first design tokens and typed theme configuration",
+  "keywords": [
+    "neshel-ui",
+    "design-system",
+    "design-tokens",
+    "theming",
+    "css-variables",
+    "tailwindcss",
+    "dark-mode"
+  ],
+  "homepage": "https://github.com/dannysequeira-dev/neshel-ui/tree/main/packages/config#readme",
+  "bugs": {
+    "url": "https://github.com/dannysequeira-dev/neshel-ui/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dannysequeira-dev/neshel-ui.git",
+    "directory": "packages/config"
+  },
+  "author": "Neshel-UI maintainers",
   "type": "module",
   "private": true,
   "license": "MIT",

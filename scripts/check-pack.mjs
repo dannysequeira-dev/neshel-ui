@@ -21,6 +21,7 @@ import {
   checkLifecycleScripts,
   checkPackageContract,
   checkPublicPeers,
+  checkReleaseMetadata,
   checkSideEffects,
   checkSourceMaps,
   checkTargets,
@@ -259,6 +260,7 @@ async function main() {
         ...checkUnexpectedFiles(files),
         ...checkLifecycleScripts(manifest),
         ...checkPublicPeers(manifest, publicNames),
+        ...checkReleaseMetadata(manifest, `packages/${pkg.dirName}`),
         ...checkPackageContract(manifest, files, {
           sourceCss: readOptional(join(pkg.dir, "src", "styles.css")),
           sourceManifest: readOptional(join(pkg.dir, "src", "style-manifest.json")),
