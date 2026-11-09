@@ -253,7 +253,7 @@ jobs:
       - name: Link a local-only Vercel project (root directory apps/docs)
         run: |
           mkdir -p .vercel
-          printf '{"projectId":"prj_ci_local","orgId":"team_ci_local","settings":{"framework":null,"rootDirectory":"apps/docs"}}' > .vercel/project.json
+          printf '{"projectId":"prj_ci_local","orgId":"team_ci_local","settings":{"framework":"nextjs","rootDirectory":"apps/docs"}}' > .vercel/project.json
       - name: vercel build --prod (install + packages + docs, static output)
         env:
           VERCEL_PROJECT_PRODUCTION_URL: neshel-docs-ci-simulation.invalid
@@ -266,6 +266,7 @@ jobs:
           tail -n 15 vercel-build.log
       - name: Static output exists
         run: |
+          find .vercel/output -maxdepth 3 | head -40
           test -f .vercel/output/config.json
           test -f .vercel/output/static/en/index.html
           test -f .vercel/output/static/es/docs/components/select/index.html

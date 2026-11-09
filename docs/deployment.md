@@ -46,8 +46,8 @@ These require the owner's Vercel account (nothing here can be done from the repo
    - Project name: your choice (it determines the default `*.vercel.app` domain).
    - **Root Directory:** `apps/docs` → enable **"Include files outside of the Root Directory in the
      Build Step"** (needed for the workspace packages; it is the default for monorepos).
-   - Framework Preset: **Other** (vercel.json sets `framework: null`; leave the build, install and
-     output overrides **off** so `vercel.json` applies).
+   - Framework Preset: **Next.js** (vercel.json sets it; leave the build, install and output
+     overrides **off** so `vercel.json` applies).
    - Environment Variables: **none required.** Do not set `NESHEL_DOCS_BASE_PATH`. Set
      `NESHEL_DOCS_SITE_URL` only later, for a custom domain.
 3. **Settings → General → Node.js Version:** **26.x**. `apps/docs/package.json` declares
