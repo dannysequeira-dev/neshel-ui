@@ -1,0 +1,61 @@
+---
+title: Desplegar una aplicación
+description: Compila para producción, mantén los archivos generados al día en CI y despliega en cualquier hosting estático o Node.
+---
+
+Neshel-UI no añade nada especial al despliegue: los paquetes son ESM y CSS normales que compila tu
+empaquetador. Algunos hábitos mantienen fiables las compilaciones de producción.
+
+## Compilar
+
+```bash
+pnpm build
+```
+
+Con la CLI, tu script `build` ejecuta primero `neshel generate` (consulta [Usar la CLI](/es/docs/getting-started/cli/)),
+así que la hoja generada siempre coincide con `neshel.config.ts`.
+
+## Integración continua
+
+```yaml title=".github/workflows/ci.yml"
+name: CI
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec neshel generate --check --strict
+      - run: pnpm build
+```
+
+- `--check` falla cuando los archivos generados versionados están desactualizados (código 4);
+  `--strict` convierte los avisos de contraste en errores.
+- Versiona el `.d.ts` generado si la comprobación de tipos se ejecuta antes de `neshel generate`.
+
+## Alojamiento
+
+| Tipo de aplicación                 | Alojamiento habitual                                             |
+| ---------------------------------- | ---------------------------------------------------------------- |
+| Aplicación de una página con Vite  | Cualquier hosting estático (GitHub Pages, Cloudflare Pages, Netlify, S3…) |
+| Exportación estática de Next.js    | Cualquier hosting estático                                       |
+| Next.js con renderizado en servidor | Un hosting Node.js o una plataforma compatible con Next.js       |
+
+## Lista para producción
+
+- Carga tus fuentes (alojadas por ti o mediante tu framework) y configura sus métricas para un recorte
+  exacto.
+- Establece `data-neshel-theme` en el servidor cuando el usuario pueda elegir tema, para evitar
+  parpadeos.
+- El *tree-shaking* funciona con una sola entrada de import: importar `Button` no arrastra Radix ni
+  Base UI.
+- Mantén `react` y `react-dom` en una sola versión (son dependencias peer: nunca dos copias).
+
+Con esto termina el recorrido de los tutoriales. Explora las [guías](/es/docs/guides/theming/) y el
+[catálogo de componentes](/es/docs/components/).

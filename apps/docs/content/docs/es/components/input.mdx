@@ -1,0 +1,49 @@
+---
+title: Input
+description: Un campo de texto nativo con tamaños de campo y estado inválido.
+package: components
+exports: [Input, InputProps]
+---
+
+<ComponentKind package="components" name="Input" />
+
+## Propósito
+
+`Input` es un `<input>` nativo con estilo. Funcionan todos los atributos nativos: `type`, `name`,
+`autoComplete`, `required`, `pattern`, `list`, …
+
+## Importación
+
+```tsx title="import.tsx"
+import { Input } from "@neshel-ui/components";
+```
+
+## Uso
+
+<Preview demo="components/input-states" />
+
+## API
+
+<ApiTable package="components" name="InputProps" />
+
+- `uiSize` (`sm md lg`) es el tamaño visual; el atributo nativo numérico `size` conserva su significado
+  en HTML.
+- `invalid` establece `aria-invalid="true"` salvo que pases `aria-invalid` tú mismo.
+
+## Controlado y no controlado
+
+Se aplican las reglas nativas de React: `defaultValue` (no controlado), o `value` + `onChange`
+(controlado).
+
+## Accesibilidad
+
+Etiqueta siempre el campo (`<Label htmlFor>`, `aria-label` o `aria-labelledby`). Referencia las pistas
+y los errores con `aria-describedby`. Usa el `type` y el `autoComplete` adecuados para que los
+navegadores y las tecnologías de apoyo puedan ayudar.
+
+## Errores habituales
+
+- Usar `size="lg"` para el estilo: eso fija el ancho nativo en caracteres. Usa `uiSize`.
+- Un *placeholder* en lugar de una etiqueta.
+
+Consulta [Formularios](/es/docs/guides/forms/).

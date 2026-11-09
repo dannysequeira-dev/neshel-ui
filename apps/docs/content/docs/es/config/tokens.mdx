@@ -1,0 +1,37 @@
+---
+title: Tokens y valores predeterminados
+description: Los roles de color, los pares de contraste y los valores predeterminados exportados como datos inmutables.
+package: config
+exports: [colorRoles, ColorRole, contrastPairs, ContrastPair, defaults, Defaults]
+---
+
+La entrada JavaScript exporta el contrato de tokens como datos inmutables, útiles para herramientas,
+documentación y pruebas. No tiene efectos secundarios y es segura para el navegador.
+
+```ts title="list-roles.ts"
+import { colorRoles, contrastPairs, defaults } from "@neshel-ui/config";
+
+console.log(colorRoles.length); // 25
+for (const pair of contrastPairs) {
+  console.log(`${pair.foreground} on ${pair.background}: ≥ ${pair.minimum}:1`);
+}
+console.log(defaults.themes.light.primary); // "#193767"
+```
+
+<ApiTable package="config" name="ColorRole" />
+<ApiTable package="config" name="ContrastPair" />
+<ApiTable package="config" name="Defaults" />
+
+## Propiedades personalizadas CSS
+
+| Token                              | Ejemplo (claro, predeterminado)               |
+| ---------------------------------- | --------------------------------------------- |
+| `--neshel-<rol>`                   | `--neshel-primary: #193767`                   |
+| `--neshel-radius-base` (`-sm` … `-xl`, `-full`) | `0.75rem`                         |
+| `--neshel-spacing`                 | `0.25rem` (unidad de espaciado del layout)    |
+| `--neshel-font-body` / `-display` / `-mono` | pilas de fuentes                     |
+| `--neshel-font-<rol>-scale`, `-cap-trim`, `-baseline-trim`, `-trim` | constantes de Capsize |
+| `--neshel-focus-width`, `--neshel-focus-offset` | `2px`, `2px`                     |
+
+Los consumidores de Tailwind (`tailwind.css`) también obtienen utilidades como `bg-neshel-primary`,
+`text-neshel-muted-foreground`, `border-neshel-border` y `rounded-neshel-md`.

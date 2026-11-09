@@ -1,0 +1,4 @@
+{
+  "title": "Configuración",
+  "pages": ["index", "themes", "tokens", "breakpoints", "typography"]
+}

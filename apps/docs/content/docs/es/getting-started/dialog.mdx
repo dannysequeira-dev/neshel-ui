@@ -1,0 +1,79 @@
+---
+title: Añadir un Dialog
+description: Compón un diálogo modal accesible a partir de sus partes, con gestión del foco y un formulario.
+---
+
+Los diálogos se componen de partes: una raíz, un disparador, el contenido (renderizado en un portal) y
+partes estructurales para el título, la descripción y el pie.
+
+```tsx title="src/App.tsx"
+import {
+  Button,
+  Dialog,
+  DialogBody,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  Input,
+  Label,
+} from "@neshel-ui/components";
+import { Stack } from "@neshel-ui/layout";
+import { useState } from "react";
+
+export default function App() {
+  const [name, setName] = useState("Ana");
+  return (
+    <main style={{ padding: "2rem" }}>
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button>Edit profile ({name})</Button>
+        </DialogTrigger>
+        <DialogContent>
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+              const data = new FormData(event.currentTarget);
+              setName(String(data.get("name") ?? ""));
+            }}
+          >
+            <DialogHeader>
+              <DialogTitle>Edit profile</DialogTitle>
+              <DialogDescription>Change how your name appears.</DialogDescription>
+            </DialogHeader>
+            <DialogBody>
+              <Stack space="2">
+                <Label htmlFor="profile-name">Name</Label>
+                <Input id="profile-name" name="name" defaultValue={name} required />
+              </Stack>
+            </DialogBody>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button variant="outline">Cancel</Button>
+              </DialogClose>
+              <Button type="submit">Save</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </main>
+  );
+}
+```
+
+Lo que obtienes sin código adicional:
+
+- El foco entra en el diálogo, queda atrapado mientras está abierto y vuelve al disparador al cerrar.
+- Escape y una pulsación en el fondo lo cierran; la página de detrás queda inerte y no se desplaza.
+- `DialogTitle` da nombre al diálogo y `DialogDescription` lo describe para las tecnologías de apoyo.
+- El contenido se renderiza en un portal pero conserva el tema del disparador (`data-neshel-theme`).
+
+<Callout type="info">
+  Enviar el formulario anterior no cierra el diálogo. Ciérralo desde tu manejador de envío controlando
+  `open`; consulta [Dialog → Controlado](/es/docs/components/dialog/#controlado-y-no-controlado).
+</Callout>
+
+Siguiente: [Un layout adaptable](/es/docs/getting-started/responsive-layout/).

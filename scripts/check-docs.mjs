@@ -190,7 +190,9 @@ function checkTranslations(problems, pages) {
       problems.push(`translations: API tables differ between en/${rel} and es/${rel}`);
     if (
       !other.data.title ||
-      (other.data.title === page.data.title && !/^S+$/.test(page.data.title))
+      (other.data.title === page.data.title &&
+        !/^\S+$/.test(page.data.title) &&
+        !exceptions.identicalTitles?.[rel])
     ) {
       problems.push(
         `translations: es/${rel} title is missing or identical to English ("${page.data.title}")`,
@@ -209,7 +211,12 @@ function checkTranslations(problems, pages) {
       problems.push(`translations: es/${rel} is missing`);
       continue;
     }
-    const pagesOf = (file) => JSON.stringify(JSON.parse(readFileSync(file, "utf8")).pages ?? []);
+    const pagesOf = (file) =>
+      JSON.stringify(
+        (JSON.parse(readFileSync(file, "utf8")).pages ?? []).map((p) =>
+          /^---.*---$/.test(p) ? "---" : p,
+        ),
+      );
     if (pagesOf(meta) !== pagesOf(esMeta))
       problems.push(`translations: page order differs in ${rel}`);
   }
@@ -277,6 +284,24 @@ function checkLinks(problems, pages) {
           problems.push(`links: ${where} links to missing anchor ${target}`);
       }
     });
+  }
+}
+
+/** YAML pitfalls the simple reader would accept but the MDX loader rejects, and required keys. */
+function checkFrontmatter(problems, pages) {
+  for (const page of pages) {
+    const head = readFileSync(page.file, "utf8").match(/^---\r?\n([\s\S]*?)\r?\n---/)?.[1] ?? "";
+    for (const line of head.split(/\r?\n/)) {
+      const value = line.match(/^[A-Za-z_]+:\s*(.*)$/)?.[1] ?? "";
+      if (/: /.test(value) && !/^["'[]/.test(value)) {
+        problems.push(
+          `frontmatter: ${page.locale}/${page.rel} has an unquoted value with ": " (${line.trim()})`,
+        );
+      }
+    }
+    if (!page.data.title || !page.data.description) {
+      problems.push(`frontmatter: ${page.locale}/${page.rel} needs a title and a description`);
+    }
   }
 }
 
@@ -469,7 +494,10 @@ function main() {
     summary.coverageTargets = Object.values(targets).reduce((n, list) => n + list.length, 0);
   }
   if (run("translations")) summary.translations = checkTranslations(problems, pages).fallbacks;
-  if (run("links")) checkLinks(problems, pages);
+  if (run("links")) {
+    checkLinks(problems, pages);
+    checkFrontmatter(problems, pages);
+  }
   if (run("demos")) checkDemos(problems, pages);
   let configs = [];
   if (run("snippets")) {

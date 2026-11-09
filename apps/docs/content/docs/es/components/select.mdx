@@ -1,0 +1,73 @@
+---
+title: Select
+description: Selección única en una lista de opciones, con grupos, búsqueda por tecleo y serialización nativa en formularios.
+package: components
+exports: [Select, SelectProps, SelectFieldProps, SelectOption, SelectOptionGroup, SelectOptions]
+---
+
+<ComponentKind package="components" name="Select" />
+
+## Propósito
+
+`Select` elige un valor de una lista corta. Renderiza un botón que abre un listbox y envía su valor con
+los formularios mediante `name`.
+
+## Importación
+
+```tsx title="import.tsx"
+import { Select } from "@neshel-ui/components";
+```
+
+## Uso
+
+<Preview demo="components/select-basic" />
+
+## API
+
+<ApiTable package="components" name="SelectProps" />
+<ApiTable package="components" name="SelectFieldProps" />
+<ApiTable package="components" name="SelectOption" />
+<ApiTable package="components" name="SelectOptionGroup" />
+<ApiTable package="components" name="SelectOptions" />
+
+`SelectFieldProps` es común a Select, MultiSelect y Combobox.
+
+## Controlado y no controlado
+
+<Preview demo="components/select-controlled" />
+
+- No controlado: `defaultValue` (o nada, mostrando `placeholder`).
+- Controlado: `value` (`string | null`) + `onValueChange`.
+- `open` / `defaultOpen` / `onOpenChange` controlan el desplegable.
+
+## Formularios
+
+Con `name`, el valor seleccionado se envía como una entrada del formulario. `required`, `disabled`,
+`readOnly` y `form` se comportan como atributos nativos. `invalid` marca el control (`aria-invalid`).
+
+## Accesibilidad
+
+- Etiquétalo con `<Label htmlFor={id}>`, o con `aria-label` / `aria-labelledby`.
+- El disparador es un `combobox` que controla un `listbox`; las opciones anuncian si están
+  seleccionadas.
+- Describe los errores con `aria-describedby`.
+
+## Teclado
+
+| Tecla                       | Acción                                              |
+| --------------------------- | --------------------------------------------------- |
+| Enter / Espacio / ↓ / ↑     | Abrir el listbox                                    |
+| ↓ / ↑, Inicio / Fin         | Moverse entre opciones                              |
+| Escribir letras             | Saltar a la opción coincidente                      |
+| Enter / Espacio             | Seleccionar y cerrar                                |
+| Escape                      | Cerrar sin cambiar el valor                         |
+
+## Estilos
+
+`uiSize` (`sm md lg`) iguala las alturas de Input. La capa del desplegable es `--neshel-z-popover`; las
+opciones seleccionadas usan `--neshel-selected`.
+
+## Errores habituales
+
+- Más de ~15 opciones: hace falta búsqueda; usa [Combobox](/es/docs/components/combobox/).
+- Valores que no son texto: los valores son cadenas; convierte tus objetos en identificadores.

@@ -1,0 +1,70 @@
+---
+title: Personalizar los tokens
+description: Cambia colores, radio, espaciado y fuentes, añade un tema con nombre y cambia de tema sin proveedor.
+---
+
+Los tokens de diseño son propiedades personalizadas CSS como `--neshel-primary` y
+`--neshel-radius-base`. Los componentes solo leen tokens, así que cambiar un token cambia el estilo de
+todo lo que lo usa.
+
+## Cambiar los temas incorporados
+
+```ts title="neshel.config.ts"
+import { defineConfig } from "@neshel-ui/config";
+
+export default defineConfig({
+  radius: { base: "0.5rem" },
+  spacing: { unit: "0.25rem" },
+  themes: {
+    light: {
+      colors: {
+        primary: "#5b2a86",
+        primaryForeground: "#ffffff",
+        accent: "#e0a526",
+        accentForeground: "#1f1300",
+      },
+    },
+    dark: {
+      colors: { primary: "#cfb3ff", primaryForeground: "#1b0a33" },
+    },
+    // A named theme for a marketing section, based on the light theme.
+    sunrise: {
+      extends: "light",
+      colors: { background: "#fff7ed", foreground: "#3b1d00", primary: "#c2410c" },
+    },
+  },
+  output: "./src/neshel.generated.css",
+});
+```
+
+Ejecuta `neshel generate`. Se comprueba el contraste de cada par primer plano/fondo que cambies; los
+fallos son avisos por defecto y errores con `--strict` o `contrast: "error"`.
+
+## Cambiar de tema
+
+Los temas se seleccionan con el atributo `data-neshel-theme`, sin proveedor de React:
+
+```tsx fragment
+<div data-neshel-theme="dark">
+  <Button>Dark button</Button>
+  <section data-neshel-theme="sunrise">
+    <Button>Sunrise button inside a dark page</Button>
+  </section>
+</div>
+```
+
+| Valor del atributo  | Resultado                                         |
+| ------------------- | ------------------------------------------------- |
+| ausente             | claro                                             |
+| `light` / `dark`    | forzado, sea cual sea la preferencia del sistema  |
+| `system`            | sigue `prefers-color-scheme`                      |
+| un tema con nombre  | tu tema de `neshel.config.ts`                     |
+
+Para que el usuario elija, establece el atributo en `<html>` desde tu propio estado y guárdalo (una
+cookie leída en el servidor evita un parpadeo con el tema equivocado).
+
+<Preview demo="theming/theme-scopes" />
+
+El azul marino y el dorado de Neshel son solo los valores predeterminados. Consulta la
+[guía de temas](/es/docs/guides/theming/) para los 25 roles de color, los pares de contraste, las
+fuentes y la cascada. Siguiente: [Desplegar una aplicación](/es/docs/getting-started/deploy/).

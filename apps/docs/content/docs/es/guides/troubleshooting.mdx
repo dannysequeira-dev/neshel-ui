@@ -1,0 +1,62 @@
+---
+title: Solución de problemas
+description: Errores de integración habituales y cómo resolverlos.
+---
+
+## Los componentes aparecen sin estilos
+
+- No se importa la hoja de un paquete. Cada paquete (`layout`, `typography`, `components`) tiene su
+  propio `styles.css`; importa los que uses.
+- No se importa ni `@neshel-ui/config/tokens.css` ni `tailwind.css`, así que los tokens no existen.
+
+## Desaparecen los márgenes de Container o el espaciado con Tailwind
+
+Las hojas de los paquetes se importaron **antes** de `@import "tailwindcss"`. El *preflight* de
+Tailwind queda entonces ordenado después de la capa del paquete. Importa Tailwind primero; consulta
+[Importar el CSS](/es/docs/getting-started/css/).
+
+## Mi sustitución de un token no se aplica en modo oscuro (o se aplica en todas partes)
+
+Un `:root { --neshel-primary: … }` sin capa gana a todas las capas de tema, también a la oscura. Usa
+`neshel.config.ts` o escribe la sustitución dentro de `@layer neshel.config` por cada selector de
+tema; consulta [Temas → La cascada](/es/docs/guides/theming/#la-cascada).
+
+## Un diálogo o menú ignora mis variables CSS en línea
+
+Los portales se renderizan fuera de tu elemento. Los temas se copian; las propiedades personalizadas
+en línea, no. Pasa `container`; consulta [Superposiciones y portales](/es/docs/guides/overlays-portals/#las-propiedades-personalizadas-en-línea-necesitan-un-contenedor-de-portal).
+
+## Los nombres de breakpoint personalizados dan errores de tipos
+
+El `neshel.generated.d.ts` generado no forma parte de tu programa TypeScript. Añádelo a `include` y
+ejecuta `neshel generate`.
+
+## Avisos de «breakpoint desconocido» en la consola del navegador
+
+La hoja cargada no declara una clave adaptable: una errata, un archivo generado desactualizado o la
+hoja generada no se importa (o se importa antes que las hojas de los paquetes).
+
+## Los encabezados parecen desalineados o el espaciado no encaja
+
+Las métricas configuradas no coinciden con la fuente renderizada (por ejemplo métricas de Inter sin
+Inter cargada). Carga la fuente y configura sus métricas: [Tipografía y Capsize](/es/docs/guides/typography-capsize/#limitaciones).
+
+## `NeshelComponentsError`, `NeshelLayoutError` o `NeshelTypographyError`
+
+Un uso incorrecto lanza un error durante el renderizado, en el servidor y en el cliente, con un
+mensaje que nombra el componente; por ejemplo `as` junto con `asChild`, `space` junto con `spaceX`, un
+`Button` deshabilitado con `asChild` o un hijo de `asChild` que no es un único elemento. El mensaje
+explica la solución.
+
+## La barra lateral pierde su estado al redimensionar
+
+En móvil, el contenido de la barra lateral pasa a un cajón; moverse entre ambos contenedores
+**vuelve a montar** a los hijos. Guarda el estado que deba sobrevivir (borradores, secciones
+expandidas) en el componente padre o en tu *store*; consulta [Sidebar → Limitaciones](/es/docs/components/sidebar/#limitaciones).
+
+## Dos copias de React
+
+`react` y `react-dom` son dependencias peer. Si tu configuración instala los paquetes de Neshel-UI
+desde un lugar distinto al de tu aplicación (por ejemplo carpetas enlazadas), puedes acabar con dos
+copias de React y errores «Invalid hook call». Instala tarballs empaquetados o los paquetes de npm en
+lugar de enlaces.

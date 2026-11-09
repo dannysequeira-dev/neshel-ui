@@ -1,0 +1,4 @@
+{
+  "title": "Layout",
+  "pages": ["index", "box", "stack", "inline", "flex", "grid", "center", "container", "recipes"]
+}

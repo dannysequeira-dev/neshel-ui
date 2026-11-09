@@ -1,0 +1,137 @@
+---
+title: Next.js App Router
+description: Usa Neshel-UI con React Server Components, límites de cliente, CSS global, temas y breakpoints personalizados en Next.js.
+---
+
+Neshel-UI funciona en el App Router de Next.js sin configuración: los paquetes son ESM con CSS
+precompilado, los componentes de presentación son compatibles con el servidor y los módulos
+interactivos ya llevan la directiva `"use client"`.
+
+## Instalar e importar el CSS
+
+Instala los paquetes (consulta [Instalación](/es/docs/getting-started/installation/)) e importa las
+hojas de estilos una sola vez, en el CSS global del layout raíz:
+
+```css title="app/globals.css"
+@import "tailwindcss";
+@import "@neshel-ui/config/tailwind.css";
+@import "@neshel-ui/layout/styles.css";
+@import "@neshel-ui/typography/styles.css";
+@import "@neshel-ui/components/styles.css";
+```
+
+```tsx title="app/layout.tsx"
+import type { ReactNode } from "react";
+import "./globals.css";
+
+export default function RootLayout({ children }: { children: ReactNode }) {
+  return (
+    <html lang="en" data-neshel-theme="system">
+      <body>{children}</body>
+    </html>
+  );
+}
+```
+
+Tailwind con Next.js usa `@tailwindcss/postcss` (`postcss.config.mjs` con
+`{ plugins: { "@tailwindcss/postcss": {} } }`). Sin Tailwind, importa `tokens.css` y omite PostCSS.
+
+## Componentes de servidor y de cliente
+
+| Compatibles con servidor (sin directiva)                                           | Módulos de cliente (`"use client"` dentro del paquete)                                     |
+| ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| Todas las primitivas de layout, toda la tipografía, Button, partes de Card, Badge, Input, Label, Separator, Skeleton, VisuallyHidden, partes de Navbar | Dialog, AlertDialog, Sheet, Popover, Tooltip, Select, MultiSelect, Combobox, DropdownMenu, NavigationMenu, MobileMenu, AppShell, partes de Sidebar, `useAppShell` |
+
+Cada página de componente indica su tipo. Puedes renderizar componentes de cliente directamente desde
+una página Server Component: su límite está dentro del paquete:
+
+```tsx title="app/page.tsx"
+import {
+  Button,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+  DialogTrigger,
+} from "@neshel-ui/components";
+import { Stack } from "@neshel-ui/layout";
+import { Heading, Paragraph } from "@neshel-ui/typography";
+
+// A Server Component: no "use client" here.
+export default function Page() {
+  return (
+    <Stack as="main" space="6" className="p-8">
+      <Heading as="h1">Server-rendered page</Heading>
+      <Paragraph>Layout and typography render on the server.</Paragraph>
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button>Open dialog</Button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogTitle>Hydrated on the client</DialogTitle>
+          <DialogDescription>The dialog module is a client component.</DialogDescription>
+        </DialogContent>
+      </Dialog>
+    </Stack>
+  );
+}
+```
+
+Solo necesitas tu propio `"use client"` para **tu** estado y tus manejadores de eventos (por ejemplo
+un `Select` controlado con `useState`). No conviertas páginas enteras en componentes de cliente para
+usar Neshel-UI.
+
+<Callout type="info" title="Nombres planos">
+  Los componentes se exportan con nombres planos (`AppShellMain`, `NavbarBrand`) porque el acceso con
+  punto sobre referencias de cliente (`AppShell.Main`) no funciona a través del límite
+  servidor/cliente.
+</Callout>
+
+## Temas sin parpadeo
+
+Lee la elección del usuario en el servidor (por ejemplo desde una cookie) y renderízala en `<html>`:
+
+```tsx title="app/layout.tsx"
+import { cookies } from "next/headers";
+import type { ReactNode } from "react";
+import "./globals.css";
+
+export default async function RootLayout({ children }: { children: ReactNode }) {
+  const theme = (await cookies()).get("theme")?.value ?? "system";
+  return (
+    <html lang="en" data-neshel-theme={theme}>
+      <body>{children}</body>
+    </html>
+  );
+}
+```
+
+## Breakpoints y temas personalizados
+
+Ejecuta `neshel generate` antes de `next build` y `next dev`:
+
+```jsonc title="package.json (extracto)"
+{
+  "scripts": {
+    "dev": "neshel generate && next dev",
+    "build": "neshel generate && next build"
+  }
+}
+```
+
+Importa la hoja generada después de las hojas de los paquetes en `app/globals.css` e incluye las
+declaraciones generadas en `tsconfig.json`. El *shell* de aplicación y el menú móvil deciden su modo
+con CSS tras la hidratación, así que el marcado del servidor y del cliente siempre coincide.
+
+## Fuentes
+
+`next/font` funciona: da a la fuente una variable CSS, pon esa familia primero en
+`typography.families` y configura sus métricas para que el recorte siga siendo exacto. Consulta
+[Tipografía y Capsize](/es/docs/guides/typography-capsize/).
+
+## Comportamiento verificado
+
+Las comprobaciones de publicación de Neshel-UI construyen una aplicación aislada de Next.js App Router
+a partir de los paquetes **empaquetados**: compilación de producción, renderizado en servidor,
+hidratación sin errores, interacción en el cliente, superposiciones en portales con temas anidados,
+breakpoints personalizados y tipografía. Consulta [Estado de la versión](/es/docs/project/release-status/).

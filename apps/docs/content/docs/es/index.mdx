@@ -1,6 +1,59 @@
 ---
 title: Introducción
-description: Qué es Neshel-UI y cómo encajan sus paquetes.
+description: Qué es Neshel-UI, qué contiene y cómo encajan sus paquetes.
 ---
 
-Neshel-UI es un sistema de diseño modular para React.
+<ReleaseNotice />
+
+Neshel-UI es un sistema de diseño para React pequeño, modular y accesible. Da a una aplicación
+**tokens de diseño semánticos**, **primitivas de layout**, **tipografía basada en métricas reales**,
+**componentes accesibles** y una **CLI de compilación**, en cinco paquetes npm independientes que
+instalas solo cuando los necesitas.
+
+Su lema es *Rooted in faith. Built with hope.* («Arraigado en la fe. Construido con esperanza.»). La
+apariencia predeterminada (azul medianoche, marfil y un dorado sobrio) pertenece a Neshel; tu
+aplicación define su propia identidad mediante configuración.
+
+## Paquetes
+
+| Paquete                 | Qué aporta                                                                                     | Dependencias en tiempo de ejecución |
+| ----------------------- | ---------------------------------------------------------------------------------------------- | ----------------------------------- |
+| `@neshel-ui/config`     | Tokens de diseño como propiedades personalizadas CSS, temas claro/oscuro/sistema y con nombre, `defineConfig` | ninguna                |
+| `@neshel-ui/layout`     | `Box`, `Flex`, `Stack`, `Inline`, `Grid`, `Center`, `Container`                               | Radix Slot, tailwind-variants       |
+| `@neshel-ui/typography` | `Heading`, `Text`, `Paragraph`, `Caption` con recorte Capsize                                  | Radix Slot, tailwind-variants       |
+| `@neshel-ui/components` | Botones, tarjetas, controles de formulario, superposiciones, selección, navegación, *shell* de aplicación | Radix, Base UI (subrutas) |
+| `@neshel-ui/cli`        | `neshel validate` y `neshel generate` para temas, fuentes y breakpoints personalizados         | jiti, Color.js, Capsize core        |
+
+`react` y `react-dom` 19 son **dependencias peer**: los aporta tu aplicación. Los paquetes de layout,
+tipografía y componentes también declaran `@neshel-ui/config` como peer (para los tipos).
+
+## Principios
+
+- **CSS primero.** Cada paquete distribuye CSS precompilado en una capa de cascada. Tailwind CSS v4 es
+  opcional; las aplicaciones con CSS plano funcionan igual. No hace falta que Tailwind escanee
+  `node_modules` con `@source`.
+- **Sin proveedor en tiempo de ejecución para los temas.** Los temas son propiedades personalizadas CSS
+  que se seleccionan con el atributo `data-neshel-theme`, en la raíz o en cualquier elemento.
+- **HTML semántico y accesibilidad por defecto.** Elementos nativos siempre que es posible; Radix y
+  Base UI para los patrones de interacción complejos; teclado, foco y contraste verificados en
+  navegadores.
+- **Configuración en tiempo de compilación.** `neshel.config.ts` lo evalúa la CLI en Node, nunca el
+  navegador. Genera una hoja de estilos estática y declaraciones TypeScript.
+- **Pensado para el servidor.** Los componentes de presentación no llevan `"use client"` y se
+  renderizan en React Server Components; los módulos interactivos llevan la directiva.
+
+## Por dónde empezar
+
+<Cards>
+  <Card title="Primeros pasos" href="/es/docs/getting-started/" description="Requisitos, instalación y tus primeros componentes." />
+  <Card title="Componentes" href="/es/docs/components/" description="El catálogo completo con vistas previas en vivo y tablas de API generadas." />
+  <Card title="Temas" href="/es/docs/guides/theming/" description="Haz tuyo el sistema de diseño: colores, fuentes, radios, breakpoints." />
+  <Card title="CLI" href="/es/docs/cli/" description="Valida y genera los resultados de la configuración." />
+</Cards>
+
+## Estado del proyecto
+
+Neshel-UI prepara su primera versión pública, **0.1.0**. Los paquetes se verifican desde tarballs
+empaquetados en aplicaciones externas sobre Linux, Windows y macOS, pero **todavía no están en npm**.
+Consulta [Estado de la versión](/es/docs/project/release-status/) para saber exactamente qué está
+verificado y qué falta.

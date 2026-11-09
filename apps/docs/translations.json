@@ -1,0 +1,9 @@
+{
+  "$comment": "Declared translation exceptions (research R3). 'missing': pages shown in English under /es/ with a visible notice. 'identicalTitles': titles that are proper names and stay the same in Spanish.",
+  "missing": {},
+  "identicalTitles": {
+    "cli/generate.mdx": "Command name",
+    "cli/validate.mdx": "Command name",
+    "guides/nextjs.mdx": "Product and feature name (Next.js App Router)"
+  }
+}

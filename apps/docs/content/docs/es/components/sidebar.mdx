@@ -1,0 +1,99 @@
+---
+title: Sidebar
+description: Navegación de aplicación con grupos, elementos, secciones plegables, un riel de iconos y un cajón móvil.
+package: components
+exports: [Sidebar, SidebarHeader, SidebarContent, SidebarFooter, SidebarGroup, SidebarItem, SidebarSub, SidebarSeparator, SidebarTrigger, SidebarProps, SidebarPartProps, SidebarGroupProps, SidebarItemProps, SidebarSubProps, SidebarTriggerProps, SidebarCollapsible]
+---
+
+<ComponentKind package="components" name="Sidebar" />
+
+## Propósito
+
+`Sidebar` contiene la navegación de la aplicación. Dentro de un [AppShell](/es/docs/components/app-shell/)
+se contrae en escritorio y se convierte en cajón en móvil; por sí sola se renderiza expandida de forma
+estática.
+
+## Importación
+
+```tsx title="import.tsx"
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarHeader,
+  SidebarItem,
+  SidebarSeparator,
+  SidebarSub,
+  SidebarTrigger,
+} from "@neshel-ui/components";
+```
+
+## Uso
+
+Dentro de un AppShell (consulta la demo completa en [AppShell](/es/docs/components/app-shell/#uso));
+por sí sola:
+
+<Preview demo="components/sidebar-static" />
+
+## API
+
+<ApiTable package="components" name="SidebarProps" />
+<ApiTable package="components" name="SidebarCollapsible" />
+<ApiTable package="components" name="SidebarPartProps" />
+<ApiTable package="components" name="SidebarGroupProps" />
+<ApiTable package="components" name="SidebarItemProps" />
+<ApiTable package="components" name="SidebarSubProps" />
+<ApiTable package="components" name="SidebarTriggerProps" />
+
+| Parte              | Renderiza                                                                         |
+| ------------------ | --------------------------------------------------------------------------------- |
+| `Sidebar`          | `<aside>` (`aria-label` «Sidebar»); `collapsible`, `mobileTitle`                  |
+| `SidebarHeader` / `SidebarFooter` | `div` arriba y abajo                                               |
+| `SidebarContent`   | `<nav aria-label="Main navigation">`                                              |
+| `SidebarGroup`     | Una lista con etiqueta (`label`)                                                  |
+| `SidebarItem`      | `<button>` por defecto, o tu enlace con `asChild`; `icon`, `active`, `tooltip`    |
+| `SidebarSub`       | Un grupo plegable de elementos (`label`, `icon`, `open`/`defaultOpen`/`onOpenChange`) |
+| `SidebarSeparator` | Un divisor                                                                        |
+| `SidebarTrigger`   | Contrae en escritorio y abre el cajón en móvil (`label` «Toggle sidebar»)         |
+
+## Completa y contraída
+
+- `collapsible="icon"` (predeterminado): al contraer se muestra un riel de iconos. Las etiquetas siguen
+  siendo los nombres accesibles y aparecen como tooltips al pasar el puntero o al enfocar.
+- `collapsible="offcanvas"`: al contraer se oculta la barra lateral en escritorio.
+- `collapsible="none"`: siempre expandida en escritorio.
+
+Anchos: `--neshel-sidebar-width` (`16rem` por defecto) y `--neshel-sidebar-rail-width` (`3.5rem`).
+
+## Accesibilidad
+
+- `active` establece `aria-current="page"` en el elemento actual.
+- `SidebarTrigger` expone `aria-expanded` y `aria-controls` según el modo actual.
+- En el cajón, el foco queda atrapado y vuelve al disparador; activar un enlace cierra el cajón.
+
+## Teclado
+
+| Tecla              | Acción                                          |
+| ------------------ | ----------------------------------------------- |
+| Tab                | Recorrer los elementos                          |
+| Enter / Espacio    | Activar un elemento, desplegar un `SidebarSub`  |
+| Escape (cajón)     | Cerrar el cajón                                 |
+
+## Limitaciones
+
+- **Los hijos se vuelven a montar entre escritorio y móvil.** El contenido de la barra lateral se
+  renderiza exactamente una vez —en línea en escritorio, dentro del cajón en móvil—, nunca en los dos
+  sitios. Cuando cambia el modo (al redimensionar cruzando el breakpoint, o al abrir el cajón en
+  móvil), React desmonta los hijos de un contenedor y los monta en el otro. **El estado local de los
+  componentes dentro de la barra lateral se reinicia** (un `SidebarSub` no controlado vuelve a
+  `defaultOpen`, un campo de texto pierde su borrador, los efectos se vuelven a ejecutar). Guarda el
+  estado que deba sobrevivir en un componente padre (`open` controlado en `SidebarSub`, valores en tu
+  *store*) y haz que los efectos sean idempotentes.
+- El cajón no se renderiza en el servidor; los usuarios móviles ven primero el disparador.
+
+## Errores habituales
+
+- Guardar el estado contraído en localStorage y leerlo durante el renderizado (desajuste de
+  hidratación): usa una cookie y `defaultCollapsed`.
+- Elementos solo con icono y sin texto: el riel necesita el texto como nombre accesible.

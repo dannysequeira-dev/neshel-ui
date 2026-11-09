@@ -1,0 +1,65 @@
+---
+title: Popover
+description: Contenido flotante anclado y no modal, con gestión de colisiones.
+package: components
+exports: [Popover, PopoverTrigger, PopoverAnchor, PopoverContent, PopoverClose, PopoverProps, PopoverTriggerProps, PopoverAnchorProps, PopoverContentProps, PopoverCloseProps]
+---
+
+<ComponentKind package="components" name="Popover" />
+
+## Propósito
+
+`Popover` muestra contenido rico junto a un disparador: detalles, formularios pequeños, selectores. No
+es modal: la página sigue siendo interactiva.
+
+## Importación
+
+```tsx title="import.tsx"
+import {
+  Popover,
+  PopoverAnchor,
+  PopoverClose,
+  PopoverContent,
+  PopoverTrigger,
+} from "@neshel-ui/components";
+```
+
+## Uso
+
+<Preview demo="components/popover-basic" />
+
+## API
+
+<ApiTable package="components" name="PopoverProps" />
+<ApiTable package="components" name="PopoverContentProps" />
+<ApiTable package="components" name="PopoverTriggerProps" />
+<ApiTable package="components" name="PopoverAnchorProps" />
+<ApiTable package="components" name="PopoverCloseProps" />
+
+Posicionamiento de `PopoverContent`: `side`, `align`, `sideOffset` (6 por defecto) y las props de
+colisión. `PopoverAnchor` posiciona el contenido respecto a otro elemento distinto del disparador.
+
+## Selección dentro de un Popover
+
+Un `Combobox` (o `Select`) dentro de un Popover renderiza su listbox dentro del popover. Escape cierra
+primero el listbox y después el popover; elegir una opción mantiene el popover abierto.
+
+<Preview demo="components/popover-combobox" />
+
+## Accesibilidad
+
+El disparador expone `aria-expanded` y `aria-controls`. El foco entra en el contenido al abrir y vuelve
+al disparador al cerrar. Da al contenido un encabezado o una etiqueta cuando sea más que una frase.
+
+## Teclado
+
+| Tecla            | Acción                          |
+| ---------------- | ------------------------------- |
+| Enter / Espacio  | Abrir desde el disparador       |
+| Tab              | Recorrer el contenido           |
+| Escape           | Cerrar (capa más interna)       |
+
+## Errores habituales
+
+- Usar un Popover para una pista breve al pasar el puntero: usa un [Tooltip](/es/docs/components/tooltip/).
+- Usarlo para un menú de comandos: usa un [DropdownMenu](/es/docs/components/dropdown-menu/).

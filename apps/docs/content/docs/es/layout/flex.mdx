@@ -1,0 +1,45 @@
+---
+title: Flex
+description: Un layout flex cuya dirección y ajuste cambian por breakpoint, con alineación que sigue la dirección.
+package: layout
+exports: [Flex, FlexProps, FlexDirection]
+---
+
+## Propósito
+
+`Flex` es para layouts que cambian de dirección: una columna en móviles y una fila en pantallas
+mayores. Sus props de alineación siguen la dirección actual, de modo que `alignX` siempre significa
+«horizontal».
+
+## Importación
+
+```tsx title="import.tsx"
+import { Flex } from "@neshel-ui/layout";
+```
+
+## Uso
+
+<Preview demo="layout/flex-direction" />
+
+## API
+
+<ApiTable package="layout" name="FlexProps" />
+<ApiTable package="layout" name="FlexDirection" />
+
+## Cambios de dirección y alineación
+
+En una fila, X es el eje principal (`justify-content`); en una columna, X es el eje transversal
+(`align-items`). El eje principal acepta `start center end`; el transversal añade `stretch` (y
+`baseline` en filas). `Flex` lo valida en ejecución porque los ejes se mueven con `direction`; cuando
+un cambio de dirección deja libre una propiedad, se restablece a `normal`.
+
+## Limitaciones
+
+La validación de `stretch`/`baseline` en el eje principal es exacta para una `direction` estática y en
+los breakpoints donde se escribe `direction`. Un valor heredado de un breakpoint menor a través de un
+cambio de dirección no escrito no se valida en ejecución (limitación conocida heredada de la fase 004).
+
+## Errores habituales
+
+- Usar `Flex` con `direction="column"` fija: eso es un `Stack`.
+- `alignX="stretch"` en una fila: `stretch` no es válido en el eje principal y lanza un error.

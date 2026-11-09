@@ -1,0 +1,66 @@
+---
+title: Card
+description: Una superficie con partes de cabecera, título, descripción, contenido, pie y acción.
+package: components
+exports: [Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter, CardAction, CardProps, CardPartProps, CardTitleProps, CardDescriptionProps, CardVariant, CardPadding, CardElement, CardTitleElement]
+---
+
+<ComponentKind package="components" name="Card" />
+
+## Propósito
+
+`Card` agrupa contenido relacionado sobre una superficie. Sus partes no dependen de un contexto y se
+pueden combinar; usa solo las que necesites.
+
+## Importación
+
+```tsx title="import.tsx"
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@neshel-ui/components";
+```
+
+## Uso
+
+<Preview demo="components/card-basic" />
+
+## API
+
+<ApiTable package="components" name="CardProps" />
+<ApiTable package="components" name="CardVariant" />
+<ApiTable package="components" name="CardPadding" />
+<ApiTable package="components" name="CardElement" />
+<ApiTable package="components" name="CardTitleProps" />
+<ApiTable package="components" name="CardTitleElement" />
+<ApiTable package="components" name="CardDescriptionProps" />
+<ApiTable package="components" name="CardPartProps" />
+
+| Parte             | Elemento          | Notas                                            |
+| ----------------- | ----------------- | ------------------------------------------------ |
+| `Card`            | `div` (o `as`)    | `variant`, `padding`, `as`, `asChild`            |
+| `CardHeader`      | `div`             | Título, descripción y una acción opcional        |
+| `CardTitle`       | `h3` (o `as`)     | `h1`–`h6`, `p`, `div`; `asChild`                 |
+| `CardDescription` | `p`               | Texto de apoyo atenuado                          |
+| `CardContent`     | `div`             | Contenido principal                              |
+| `CardFooter`      | `div`             | Acciones                                         |
+| `CardAction`      | `div`             | Se coloca al final de la cabecera                |
+
+## Accesibilidad
+
+- Elige el nivel de `CardTitle` (`as`) según el esquema de la página.
+- Para una tarjeta dentro de una lista de artículos, usa `as="article"` y `aria-labelledby` apuntando
+  al título.
+- Las tarjetas no son interactivas: pon botones o enlaces dentro; nunca envuelvas una tarjeta entera
+  en un enlace o un botón.
+
+## Errores habituales
+
+- Hacer clicable toda la tarjeta con `onClick`: los usuarios de teclado y de lectores de pantalla no
+  pueden descubrirlo.
+- Varios `CardTitle` con el `h3` predeterminado que rompen el esquema de encabezados.

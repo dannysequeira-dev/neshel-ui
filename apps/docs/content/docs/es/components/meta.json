@@ -1,0 +1,33 @@
+{
+  "title": "Componentes",
+  "pages": [
+    "index",
+    "---Fundación---",
+    "button",
+    "card",
+    "badge",
+    "input",
+    "label",
+    "separator",
+    "skeleton",
+    "visually-hidden",
+    "---Superposiciones---",
+    "dialog",
+    "alert-dialog",
+    "sheet",
+    "popover",
+    "tooltip",
+    "---Selección---",
+    "select",
+    "multi-select",
+    "combobox",
+    "---Navegación---",
+    "navbar",
+    "navigation-menu",
+    "dropdown-menu",
+    "mobile-menu",
+    "---Shell de aplicación---",
+    "app-shell",
+    "sidebar"
+  ]
+}

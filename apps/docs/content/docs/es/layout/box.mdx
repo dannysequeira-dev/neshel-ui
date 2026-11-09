@@ -1,0 +1,41 @@
+---
+title: Box
+description: Un envoltorio semántico con display adaptable opcional, para mostrar/ocultar y regiones.
+package: layout
+exports: [Box, BoxProps, BoxDisplay]
+---
+
+## Propósito
+
+`Box` renderiza un elemento sin ningún estilo, salvo un `display` adaptable opcional. Úsalo para elegir
+un elemento semántico, para aplicar `asChild` o para mostrar y ocultar contenido según el breakpoint
+sin media queries en tu CSS.
+
+## Importación
+
+```tsx title="import.tsx"
+import { Box } from "@neshel-ui/layout";
+```
+
+## Uso
+
+<Preview demo="layout/box-display" />
+
+## API
+
+<ApiTable package="layout" name="BoxProps" />
+<ApiTable package="layout" name="BoxDisplay" />
+
+- Elemento predeterminado: `div`. `as` acepta la [lista de elementos de layout](/es/docs/layout/#as-y-aschild).
+- Valores de `display`: `none`, `block`, `inline`, `inline-block`, adaptables. Sin `display`, el
+  elemento conserva su display nativo.
+
+## Accesibilidad
+
+`display="none"` elimina el contenido del árbol de accesibilidad en ese ancho, igual que el CSS. No
+ocultes en anchos pequeños la única copia de un contenido esencial.
+
+## Errores habituales
+
+- Usar `Box` para espaciar: no tiene prop `space`; usa `Stack` o `Inline`.
+- Esperar `display="flex"`: usa `Flex`, que además gestiona la dirección y la alineación.

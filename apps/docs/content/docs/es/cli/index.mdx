@@ -1,0 +1,64 @@
+---
+title: "@neshel-ui/cli"
+description: El comando neshel — instalación, descubrimiento, opciones globales y modelo de confianza.
+package: cli
+exports: [--config, --debug]
+---
+
+`@neshel-ui/cli` proporciona el ejecutable `neshel`. Valida `neshel.config.ts` y genera una hoja de
+estilos (y, con breakpoints personalizados, declaraciones TypeScript). Se ejecuta en Node **≥ 22.13**
+durante la compilación; nada de lo que hace llega al navegador.
+
+<PackageInstall packages={["@neshel-ui/cli", "@neshel-ui/config"]} dev />
+
+## Uso
+
+```text
+neshel validate [--config <path>] [--strict] [--debug]
+neshel generate [--config <path>] [--out <path>] [--types <path>] [--check] [--strict] [--debug]
+neshel --help | --version
+```
+
+| Comando                                     | Propósito                                                           |
+| ------------------------------------------- | ------------------------------------------------------------------- |
+| [`neshel validate`](/es/docs/cli/validate/) | Comprobar la configuración; nunca escribe                           |
+| [`neshel generate`](/es/docs/cli/generate/) | Validar y después escribir (o comparar con `--check`) los resultados |
+
+Son los únicos comandos. Un comando `neshel init` de andamiaje **no está implementado**; es una
+propuesta para una versión futura.
+
+## Opciones globales
+
+| Opción            | Significado                                                                       |
+| ----------------- | --------------------------------------------------------------------------------- |
+| `--config <path>` | Usar este archivo en lugar del descubrimiento (relativo al directorio de trabajo) |
+| `--debug`         | Mostrar trazas de pila de los errores de carga e internos                         |
+
+## Descubrimiento de la configuración
+
+Solo en el directorio de trabajo (sin buscar hacia arriba), en este orden: `neshel.config.ts`,
+`neshel.config.mts`, `neshel.config.js`, `neshel.config.mjs`. Ninguno o más de uno → código 3.
+`--config` evita el descubrimiento; el archivo debe existir y tener una de esas extensiones. Las
+configuraciones CommonJS (`.cts`, `.cjs`) no son compatibles.
+
+TypeScript se transforma en memoria con `jiti`; no se escribe ningún archivo de caché. Los imports
+relativos y `@neshel-ui/config` se resuelven desde el directorio del archivo de configuración. La
+exportación por defecto debe ser un objeto plano.
+
+## Modelo de confianza
+
+El archivo de configuración es **código ejecutable del proyecto** y se ejecuta con tus privilegios,
+como `vite.config.ts`. La CLI nunca descarga configuraciones remotas ni las carga desde
+`node_modules`, y no ofrece aislamiento. No la ejecutes sobre archivos de configuración en los que no
+confíes.
+
+## Salida y mensajes
+
+Los diagnósticos van a stderr y la línea de resumen a stdout. Las rutas de los mensajes son relativas
+al directorio de trabajo y usan `/`. Los colores se desactivan cuando `NO_COLOR` está definido o la
+salida no es un terminal.
+
+API programática: ninguna en 0.x. La entrada importable del paquete está vacía a propósito y no tiene
+efectos secundarios.
+
+Consulta [Códigos de salida y diagnósticos](/es/docs/cli/diagnostics/) e [Integración continua](/es/docs/cli/ci/).

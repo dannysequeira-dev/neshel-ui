@@ -1,0 +1,70 @@
+---
+title: Un layout adaptable
+description: Usa objetos de props adaptables para cambiar columnas, espaciado y dirección según el breakpoint.
+---
+
+Toda prop adaptable acepta un valor o un objeto con claves de breakpoint. Los valores se heredan
+hacia arriba (*mobile first*): `{ base: 1, md: 2, lg: 4 }` significa una columna por debajo de `md`,
+dos desde `md` y cuatro desde `lg`.
+
+```tsx title="src/App.tsx"
+import { Button, Card, CardContent, CardHeader, CardTitle } from "@neshel-ui/components";
+import { Container, Flex, Grid, Stack } from "@neshel-ui/layout";
+import { Heading, Paragraph } from "@neshel-ui/typography";
+
+const features = ["Tokens", "Layout", "Typography", "Components"];
+
+export default function App() {
+  return (
+    <Container size="lg" gutter={{ base: "4", md: "8" }}>
+      <Stack space={{ base: "6", md: "10" }} className="py-10">
+        <Flex
+          direction={{ base: "column", md: "row" }}
+          justify="between"
+          alignY="center"
+          space="4"
+        >
+          <Heading as="h1" size={{ base: "2xl", md: "4xl" }}>
+            Features
+          </Heading>
+          <Button>Start now</Button>
+        </Flex>
+        <Grid columns={{ base: 1, sm: 2, lg: 4 }} space={{ base: "3", md: "6" }}>
+          {features.map((feature) => (
+            <Card key={feature} as="article">
+              <CardHeader>
+                <CardTitle>{feature}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Paragraph size="sm" tone="muted">
+                  A short description of {feature.toLowerCase()}.
+                </Paragraph>
+              </CardContent>
+            </Card>
+          ))}
+        </Grid>
+      </Stack>
+    </Container>
+  );
+}
+```
+
+## Breakpoints predeterminados
+
+| Clave  | Ancho mínimo              |
+| ------ | ------------------------- |
+| `base` | 0 (sin media query)       |
+| `sm`   | 40rem                     |
+| `md`   | 48rem                     |
+| `lg`   | 64rem                     |
+| `xl`   | 80rem                     |
+| `2xl`  | 96rem                     |
+
+Coinciden con los de Tailwind v4, así que las utilidades `md:` y las props `{ md: … }` cambian a la
+vez. Cada clave que escribes se convierte en una clase precompilada; nada se calcula en el navegador.
+
+<Preview demo="layout/grid-columns" />
+
+¿Quieres nombres como `phone`, `tablet` y `desktop`? Defínelos en `neshel.config.ts`; consulta
+[Breakpoints personalizados](/es/docs/guides/custom-breakpoints/). Siguiente:
+[Usar la CLI](/es/docs/getting-started/cli/).

@@ -1,0 +1,72 @@
+---
+title: "@neshel-ui/components"
+description: Componentes accesibles, superposiciones, controles de selección, navegación y un shell de aplicación.
+package: components
+exports: [Breakpoint, FieldSize, Responsive, NeshelComponentsError]
+---
+
+<PackageInstall packages={["@neshel-ui/config", "@neshel-ui/components"]} />
+
+```css title="src/index.css"
+@import "@neshel-ui/config/tokens.css"; /* o tailwind.css tras @import "tailwindcss" */
+@import "@neshel-ui/components/styles.css";
+```
+
+Peers: `react` y `react-dom` 19 y `@neshel-ui/config` (tipos). No hace falta Tailwind, `@source` ni
+ningún proveedor. Internamente, las partes interactivas usan Radix (diálogos, sheets, popovers, menús,
+menú de navegación, tooltips) y Base UI (Select, MultiSelect, Combobox); tú solo usas la API de Neshel.
+
+## Catálogo
+
+| Familia      | Componentes                                                                                                          |
+| ------------ | -------------------------------------------------------------------------------------------------------------------- |
+| Fundación    | [Button](/es/docs/components/button/), [Card](/es/docs/components/card/), [Badge](/es/docs/components/badge/), [Input](/es/docs/components/input/), [Label](/es/docs/components/label/), [Separator](/es/docs/components/separator/), [Skeleton](/es/docs/components/skeleton/), [VisuallyHidden](/es/docs/components/visually-hidden/) |
+| Superposiciones | [Dialog](/es/docs/components/dialog/), [AlertDialog](/es/docs/components/alert-dialog/), [Sheet](/es/docs/components/sheet/), [Popover](/es/docs/components/popover/), [Tooltip](/es/docs/components/tooltip/) |
+| Selección    | [Select](/es/docs/components/select/), [MultiSelect](/es/docs/components/multi-select/), [Combobox](/es/docs/components/combobox/) (simple y múltiple) |
+| Navegación   | [Navbar](/es/docs/components/navbar/), [NavigationMenu](/es/docs/components/navigation-menu/), [DropdownMenu](/es/docs/components/dropdown-menu/), [MobileMenu](/es/docs/components/mobile-menu/) |
+| Aplicación   | [AppShell](/es/docs/components/app-shell/), [Sidebar](/es/docs/components/sidebar/) (con SidebarTrigger y `useAppShell`) |
+
+¿No sabes cuál usar? Consulta [Elegir componentes](/es/docs/guides/choosing-components/).
+
+## Convenciones
+
+- **Nombres planos**: `DialogContent`, `NavbarBrand` (no `Dialog.Content`), para que las referencias de
+  cliente funcionen en React Server Components.
+- **`asChild`**: renderiza tu elemento (enlaces, enlaces del router) con los estilos y el comportamiento
+  del componente; exactamente un elemento hijo; las clases se unen, los estilos se combinan, los
+  manejadores se componen (primero el del hijo) y las refs también.
+- **Estado**: los componentes con estado ofrecen `value` / `defaultValue` / `onValueChange` (u `open` /
+  `defaultOpen` / `onOpenChange`).
+- **Portales**: los contenidos superpuestos aceptan `container`; los temas se copian a través de los
+  portales.
+- **Props adaptables**: `size` de Button, `breakpoint` de AppShell, `hideBelow` de NavbarNav y
+  `breakpoint` de MobileMenu aceptan tus nombres de breakpoint configurados.
+- **Iconos**: aporta tus propios nodos React (los ejemplos usan `lucide-react`). Los botones de solo
+  icono necesitan `aria-label`.
+
+## Tipos compartidos
+
+<ApiTable package="components" name="Responsive" />
+<ApiTable package="components" name="Breakpoint" />
+<ApiTable package="components" name="FieldSize" />
+
+## Errores
+
+Un uso incorrecto lanza `NeshelComponentsError` durante el renderizado, en el servidor y en el cliente,
+con un mensaje que nombra el componente y la solución (por ejemplo `<Button asChild disabled>`: los
+enlaces no se pueden deshabilitar).
+
+```tsx title="error-boundary-check.tsx"
+import { NeshelComponentsError } from "@neshel-ui/components";
+
+export function describeError(error: unknown): string {
+  return error instanceof NeshelComponentsError ? `Neshel usage error: ${error.message}` : String(error);
+}
+```
+
+## Estilos
+
+Las reglas de los componentes viven en la capa de cascada `components.neshel` y solo leen tokens
+semánticos. Sustitúyelas con tokens (lo preferible), propiedades personalizadas de los componentes,
+utilidades de Tailwind o tu propio CSS mediante `className`. Consulta
+[Temas](/es/docs/guides/theming/#propiedades-personalizadas-de-los-componentes).

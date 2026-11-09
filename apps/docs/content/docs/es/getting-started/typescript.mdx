@@ -1,0 +1,61 @@
+---
+title: TypeScript
+description: Ajustes del compilador que funcionan con las declaraciones ESM de Neshel-UI y cómo se incorporan los tipos de breakpoints generados.
+---
+
+TypeScript es opcional, pero cada paquete incluye declaraciones `.d.ts` (con *declaration maps*) y las
+props tienen tipos estrictos: variantes inválidas, nombres de breakpoint desconocidos y props
+incompatibles, como `space` junto con `spaceX`, son errores de compilación.
+
+## `tsconfig.json` recomendado
+
+```json title="tsconfig.json"
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "skipLibCheck": true,
+    "noEmit": true
+  },
+  "include": ["src"]
+}
+```
+
+- `moduleResolution`: `Bundler` (Vite, Next.js, webpack) o `NodeNext`. Ambas están probadas. La
+  resolución heredada `node`/`node10` no lee `exports` y **no es compatible**.
+- `jsx: "react-jsx"` (runtime automático de React 19).
+- `@types/react` y `@types/react-dom` 19 deben estar instalados en la aplicación.
+
+## Refs y polimorfismo
+
+Los componentes usan `ref` como prop, como en React 19 (sin `forwardRef`). `as` acepta una lista
+cerrada de elementos por componente, y `asChild` renderiza tu elemento en su lugar (exactamente un
+elemento hijo):
+
+```tsx fragment
+<Stack as="section" aria-label="Settings" space="4">
+  <Button asChild variant="ghost">
+    <a href="/docs">Documentation</a>
+  </Button>
+</Stack>
+```
+
+`as` y `asChild` juntos se rechazan en los tipos y en tiempo de ejecución.
+
+## Tipos de breakpoints generados
+
+Cuando `neshel.config.ts` define breakpoints propios, `neshel generate` escribe
+`neshel.generated.d.ts`. Añádelo a tu programa para que las props adaptables acepten tus nombres:
+
+```jsonc title="tsconfig.json (extracto)"
+{
+  "include": ["src", "neshel.generated.d.ts"]
+}
+```
+
+Sin las declaraciones generadas se aplican los nombres predeterminados (`sm`, `md`, `lg`, `xl`,
+`2xl`). Consulta [Breakpoints personalizados](/es/docs/guides/custom-breakpoints/).

@@ -1,0 +1,89 @@
+---
+title: Superposiciones y portales
+description: Cómo se apilan diálogos, sheets, popovers, menús y desplegables de selección, cómo conservan el tema a través de portales y cuándo necesitas un contenedor.
+---
+
+Los contenidos superpuestos —`DialogContent`, `AlertDialogContent`, `SheetContent`, `PopoverContent`,
+`DropdownMenuContent`, `TooltipContent` y los desplegables de `Select`, `MultiSelect` y `Combobox`— se
+renderizan mediante un **portal** en `document.body` por defecto, para escapar de `overflow: hidden` y
+de los contextos de apilamiento.
+
+## Los temas sobreviven a los portales
+
+Un portal sale del subárbol DOM de su disparador y, con él, de cualquier ámbito `data-neshel-theme`.
+Neshel lo resuelve: el contenido se envuelve en `<div data-neshel-portal data-neshel-theme="…">` (con
+`display: contents`) con el tema del ancestro `data-neshel-theme` más cercano al disparador. Un
+diálogo abierto desde una barra lateral oscura dentro de una página clara es oscuro.
+
+## Las propiedades personalizadas en línea necesitan un contenedor de portal
+
+El atributo de tema se copia; **las propiedades personalizadas en línea no**. Si sustituyes tokens o
+propiedades de componentes en línea en un ancestro, una superposición en un portal no las ve:
+
+```tsx fragment
+<section style={{ "--neshel-primary": "#b42318" } as React.CSSProperties}>
+  {/* The Button sees the override; a portalled dialog would not. */}
+  <Button>Red primary</Button>
+</section>
+```
+
+Pasa `container` para que el portal se renderice **dentro** del elemento que tiene las propiedades:
+
+```tsx title="branded-section.tsx"
+"use client";
+import {
+  Button,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@neshel-ui/components";
+import { type CSSProperties, useState } from "react";
+
+export function BrandedSection() {
+  const [container, setContainer] = useState<HTMLElement | null>(null);
+  return (
+    <section ref={setContainer} style={{ "--neshel-primary": "#b42318" } as CSSProperties}>
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button>Open</Button>
+        </DialogTrigger>
+        <DialogContent container={container} aria-describedby={undefined}>
+          <DialogTitle>Uses the section's red primary</DialogTitle>
+        </DialogContent>
+      </Dialog>
+    </section>
+  );
+}
+```
+
+Todos los contenidos superpuestos y todos los controles de selección aceptan `container`. Cuando
+puedas, prefiere temas con nombre en `neshel.config.ts` (se copian automáticamente) a las
+sustituciones en línea.
+
+## Capas y Escape
+
+- z-index: diálogos, sheets y fondos usan `var(--neshel-z-overlay, 50)`; popovers, menús, tooltips y
+  desplegables de selección usan `var(--neshel-z-popover, 60)`.
+- Escape cierra solo la capa **más interna**. Un desplegable de selección dentro de un diálogo se
+  cierra primero; el siguiente Escape cierra el diálogo. Lo mismo ocurre con un `Combobox` dentro de un
+  `Popover`.
+- Los desplegables de selección abiertos dentro de un diálogo, sheet o popover se renderizan dentro de
+  esa superposición (así la captura del foco y la detección de pulsaciones exteriores los tratan como
+  parte de ella).
+
+<Preview demo="components/popover-combobox" />
+
+## Fondo
+
+El color del fondo modal es `var(--neshel-overlay-backdrop)` cuando lo estableces y, si no, una mezcla
+de los colores del tema: el primer plano al 45 % en contextos claros y el fondo al 75 % en contextos
+oscuros (mediante CSS `light-dark()`). Los navegadores sin `light-dark()` reciben un respaldo
+equivalente para los temas incorporados claro, oscuro y sistema; para un tema con nombre **oscuro** en
+esos navegadores, establece `--neshel-overlay-backdrop` explícitamente.
+
+## Foco
+
+El foco entra en un diálogo o sheet al abrirse, queda atrapado mientras está abierto y vuelve al
+disparador (o al elemento que abrió un diálogo controlado) al cerrarse. Popovers y menús devuelven el
+foco a su disparador. Consulta la sección **Teclado** de cada componente.

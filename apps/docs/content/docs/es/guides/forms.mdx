@@ -1,0 +1,86 @@
+---
+title: Formularios
+description: Etiquetas, validación, envío nativo y campos controlados y no controlados con Input, Select, MultiSelect y Combobox.
+---
+
+Los controles de formulario de Neshel-UI están pensados para **formularios nativos**: todos los
+controles tienen `name`, participan en `FormData` y funcionan sin biblioteca de formularios. Usa el
+estado de React cuando lo necesites, no por defecto.
+
+## Etiquetas y descripciones
+
+```tsx fragment
+<Stack space="2">
+  <Label htmlFor="email" required>Email</Label>
+  <Input id="email" name="email" type="email" required aria-describedby="email-hint" />
+  <Caption id="email-hint">We never share your address.</Caption>
+</Stack>
+```
+
+`required` en `Label` añade un asterisco decorativo (oculto para las tecnologías de apoyo); lo que
+usan los navegadores y los lectores de pantalla es el atributo `required` del propio control.
+
+## Envío nativo
+
+Los controles de selección se serializan como campos nativos: una entrada de `FormData` por cada
+valor seleccionado.
+
+```tsx title="signup-form.tsx"
+"use client";
+import { Button, Combobox, Input, Label, MultiSelect, Select } from "@neshel-ui/components";
+import { Stack } from "@neshel-ui/layout";
+
+const countries = [
+  { value: "cr", label: "Costa Rica" },
+  { value: "es", label: "Spain" },
+];
+const topics = [
+  { value: "design", label: "Design" },
+  { value: "react", label: "React" },
+];
+
+export function SignupForm() {
+  return (
+    <form
+      onSubmit={(event) => {
+        event.preventDefault();
+        const data = new FormData(event.currentTarget);
+        console.log(data.get("email"), data.get("country"), data.getAll("topics"), data.get("city"));
+      }}
+    >
+      <Stack space="4">
+        <Label htmlFor="signup-email">Email</Label>
+        <Input id="signup-email" name="email" type="email" required />
+        <Label htmlFor="signup-country">Country</Label>
+        <Select id="signup-country" name="country" options={countries} required />
+        <Label htmlFor="signup-topics">Topics</Label>
+        <MultiSelect id="signup-topics" name="topics" options={topics} />
+        <Label htmlFor="signup-city">City</Label>
+        <Combobox id="signup-city" name="city" items={[{ value: "sjo", label: "San José" }]} />
+        <Button type="submit">Sign up</Button>
+      </Stack>
+    </form>
+  );
+}
+```
+
+## Controlado y no controlado
+
+| Patrón         | Props                                            | Cuándo                                                   |
+| -------------- | ------------------------------------------------ | -------------------------------------------------------- |
+| No controlado  | `defaultValue` (y `name`)                        | Formularios nativos; lees los valores al enviar          |
+| Controlado     | `value` + `onValueChange`                        | Los valores gobiernan otra interfaz o validas al escribir |
+
+`Input` sigue las reglas nativas de React (`defaultValue`, o `value` + `onChange`). `Select`,
+`MultiSelect` y `Combobox` usan `value`/`defaultValue`/`onValueChange` con valores de **texto**
+(`string | null` para selección única, `string[]` para múltiple).
+
+## Validación
+
+- Usa las restricciones nativas (`required`, `type`, `pattern`) para la validación del navegador.
+- Para validaciones propias, establece `invalid` en el control (añade `aria-invalid`) y referencia el
+  mensaje con `aria-describedby`.
+- Escape cierra un desplegable de selección y nunca borra el valor; para borrarlo se usa el botón de
+  limpiar o Retroceso sobre los chips.
+
+El [ejemplo de formulario avanzado](/es/examples/form/) combina todo lo anterior.

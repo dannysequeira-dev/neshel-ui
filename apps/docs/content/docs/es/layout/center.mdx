@@ -1,0 +1,34 @@
+---
+title: Center
+description: Centra contenido en ambos ejes, con espaciado opcional entre los hijos.
+package: layout
+exports: [Center, CenterProps]
+---
+
+## Propósito
+
+`Center` es un contenedor flex que centra a sus hijos en horizontal y en vertical por defecto: estados
+vacíos, indicadores de carga, contenido destacado.
+
+## Importación
+
+```tsx title="import.tsx"
+import { Center } from "@neshel-ui/layout";
+```
+
+## Uso
+
+<Preview demo="layout/center-basic" />
+
+## API
+
+<ApiTable package="layout" name="CenterProps" />
+
+`alignX` / `alignY` sustituyen los valores predeterminados (`center`). El centrado vertical necesita
+que el Center sea más alto que su contenido: dale una altura (`min-h-*`) o colócalo en un padre que se
+estire.
+
+## Errores habituales
+
+- Esperar centrado vertical en un Center de altura automática: no hay espacio libre que distribuir.
+- Usar Center para centrar la columna de una página: eso es `Container`.

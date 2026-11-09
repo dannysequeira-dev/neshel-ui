@@ -1,0 +1,57 @@
+---
+title: Stack
+description: Un layout flex vertical con espaciado por tokens, alineación y separadores opcionales.
+package: layout
+exports: [Stack, StackProps, SeparatorProp]
+---
+
+## Propósito
+
+`Stack` coloca a sus hijos en columna con un espacio constante. Es la primitiva más habitual:
+formularios, contenido de tarjetas, secciones de página.
+
+## Importación
+
+```tsx title="import.tsx"
+import { Stack } from "@neshel-ui/layout";
+```
+
+## Uso
+
+<Preview demo="layout/stack-basic" />
+
+## API
+
+<ApiTable package="layout" name="StackProps" />
+
+- `alignX` corresponde a `align-items` (`start center end stretch`) y `alignY` a `justify-content`.
+- `justify` distribuye el eje vertical cuando el Stack es más alto que su contenido.
+
+## Separadores
+
+<Preview demo="layout/stack-separator" />
+
+<ApiTable package="layout" name="SeparatorProp" />
+
+- `separator` (`true`) renderiza una línea decorativa (`aria-hidden`, color `--neshel-border`) entre
+  los elementos renderizados: un `li` dentro de `ul`/`ol`, un `span` dentro de `span` y, si no, un
+  `div`.
+- Un elemento personalizado se inserta sin cambios (solo se añade una `key`) y conserva su semántica.
+- Los hijos `null`, `undefined`, booleanos y `""` se omiten; un Fragment cuenta como un elemento.
+- `separator` junto con `wrap` lanza un error (una línea envuelta podría empezar por un separador).
+
+## Adaptable
+
+Todas las props de espaciado y alineación son adaptables: `space={{ base: "2", md: "6" }}`.
+
+## Composición
+
+`as="ul"` (u `ol`) crea una lista; los hijos deben ser entonces `li`. Con `asChild`, los estilos del
+stack van a tu elemento y los separadores se insertan dentro de él (un hijo componente con
+`separator` lanza un error).
+
+## Errores habituales
+
+- Añadir márgenes a los hijos para separarlos: deja que lo haga `space` para mantener un ritmo
+  coherente.
+- `space` junto con `spaceY`: un error de tipos y un error en ejecución.

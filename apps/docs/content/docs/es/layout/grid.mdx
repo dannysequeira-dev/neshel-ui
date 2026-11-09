@@ -1,0 +1,42 @@
+---
+title: Grid
+description: Una rejilla CSS con 1–12 columnas iguales, número de columnas adaptable y alineación de elementos.
+package: layout
+exports: [Grid, GridProps, GridColumns, GridAlign]
+---
+
+## Propósito
+
+`Grid` distribuye los elementos en columnas iguales que se alinean entre filas: rejillas de tarjetas,
+paneles, galerías.
+
+## Importación
+
+```tsx title="import.tsx"
+import { Grid } from "@neshel-ui/layout";
+```
+
+## Uso
+
+<Preview demo="layout/grid-columns" />
+
+## API
+
+<ApiTable package="layout" name="GridProps" />
+<ApiTable package="layout" name="GridColumns" />
+<ApiTable package="layout" name="GridAlign" />
+
+- `columns`: de 1 a 12 (adaptable), cada columna `minmax(0, 1fr)`.
+- `alignX` → `justify-items`, `alignY` → `align-items` (`start center end stretch`).
+- `spaceX`/`spaceY` fijan por separado el espacio entre columnas y entre filas.
+
+## Extensión y áreas
+
+La extensión de elementos, las filas y las áreas de plantilla no son props. Usa utilidades
+(`className="lg:col-span-2"`) o tu propio CSS en los hijos; consulta la
+[receta de panel](/es/docs/layout/recipes/#rejilla-de-panel).
+
+## Errores habituales
+
+- Usar `Grid` para una sola fila de elementos de anchos distintos: `Inline` encaja mejor.
+- Esperar columnas automáticas: el número de columnas es explícito por diseño; hazlo adaptable.

@@ -1,0 +1,56 @@
+---
+title: Importar el CSS
+description: Qué hojas de estilos de Neshel-UI importar, con y sin Tailwind CSS, y por qué importa el orden.
+---
+
+Instalar un paquete nunca inyecta CSS. Tu aplicación importa una sola vez, en su archivo CSS global,
+las hojas de estilos que necesita. Todos los estilos de los paquetes viven en capas de cascada, así
+que tu propio CSS —y las utilidades de Tailwind— siempre les ganan.
+
+## Con Tailwind CSS v4
+
+```css title="src/index.css"
+@import "tailwindcss";
+@import "@neshel-ui/config/tailwind.css";
+@import "@neshel-ui/layout/styles.css";
+@import "@neshel-ui/typography/styles.css";
+@import "@neshel-ui/components/styles.css";
+/* el CSS de tu aplicación debajo */
+```
+
+`@neshel-ui/config/tailwind.css` contiene los tokens **y** un mapeo `@theme inline` de Tailwind, de
+modo que utilidades como `bg-neshel-primary` o `text-neshel-muted-foreground` siguen el tema activo.
+
+## Sin Tailwind (CSS plano)
+
+```css title="src/index.css"
+@import "@neshel-ui/config/tokens.css";
+@import "@neshel-ui/layout/styles.css";
+@import "@neshel-ui/typography/styles.css";
+@import "@neshel-ui/components/styles.css";
+```
+
+Importa `tokens.css` **o** `tailwind.css`, nunca ambos. (`@neshel-ui/config/styles.css` es un alias
+de `tailwind.css` durante 0.x.)
+
+## Orden canónico
+
+```text
+Tailwind  →  hoja de config  →  hojas de los paquetes  →  hoja generada  →  tu CSS
+```
+
+- Importa las hojas de los paquetes **después** de Tailwind: si van antes, el *preflight* de Tailwind
+  queda ordenado después de la capa del paquete y elimina, por ejemplo, los márgenes automáticos de
+  `Container`.
+- Con una [hoja generada](/es/docs/getting-started/cli/) (`neshel generate`), impórtala **después** de
+  las hojas de los paquetes: con breakpoints propios contiene las reglas de los componentes para tus
+  breakpoints y debe ir más tarde.
+- Importa solo los paquetes que uses; cada hoja es independiente.
+
+## Lo que no necesitas
+
+- Ninguna entrada `@source` para `node_modules`: el CSS está precompilado y Tailwind no necesita
+  escanear el código de Neshel.
+- Ningún plugin de PostCSS propio, ningún proveedor en tiempo de ejecución, ningún *reset* global más
+  allá de lo que importes.
+- Ningún archivo de fuente: carga tú las fuentes (consulta [Tipografía y Capsize](/es/docs/guides/typography-capsize/)).

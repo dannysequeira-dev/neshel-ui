@@ -1,0 +1,66 @@
+---
+title: Usar la CLI
+description: Añade neshel.config.ts, valídalo y genera una hoja de estilos con neshel generate.
+---
+
+Las hojas de estilos predeterminadas no necesitan configuración. Cuando quieras tus propios colores,
+fuentes, radios o breakpoints, añade `@neshel-ui/cli` y un archivo de configuración. La CLI se ejecuta
+en Node durante la compilación y escribe una hoja de estilos estática; nada se ejecuta en el
+navegador.
+
+## 1. Instalar
+
+<PackageInstall packages={["@neshel-ui/cli"]} dev />
+
+## 2. Crear `neshel.config.ts`
+
+```ts title="neshel.config.ts"
+import { defineConfig } from "@neshel-ui/config";
+
+export default defineConfig({
+  themes: {
+    light: { colors: { primary: "#1f5136", primaryForeground: "#ffffff" } },
+    dark: { colors: { primary: "#8fd3a9", primaryForeground: "#04170b" } },
+  },
+  output: "./src/neshel.generated.css",
+});
+```
+
+El archivo de configuración es código del proyecto, ejecutable y de confianza (como `vite.config.ts`).
+
+## 3. Validar y generar
+
+```bash
+pnpm exec neshel validate
+pnpm exec neshel generate
+```
+
+`validate` comprueba la estructura, los colores y el contraste y nunca escribe. `generate` valida y
+después escribe `src/neshel.generated.css` (solo si el contenido cambió).
+
+## 4. Importar la hoja generada
+
+```css title="src/index.css"
+@import "tailwindcss";
+@import "@neshel-ui/config/tailwind.css";
+@import "@neshel-ui/layout/styles.css";
+@import "@neshel-ui/typography/styles.css";
+@import "@neshel-ui/components/styles.css";
+@import "./neshel.generated.css";
+```
+
+## 5. Ejecutarla en cada compilación
+
+```jsonc title="package.json (extracto)"
+{
+  "scripts": {
+    "dev": "neshel generate && vite",
+    "build": "neshel generate && vite build",
+    "check:theme": "neshel generate --check --strict"
+  }
+}
+```
+
+Encadena el comando explícitamente: pnpm omite los *hooks* `predev`/`prebuild` salvo que se activen.
+En CI, `neshel generate --check` falla (código 4) cuando el resultado versionado está desactualizado.
+Referencia completa: [CLI](/es/docs/cli/). Siguiente: [Personalizar los tokens](/es/docs/getting-started/tokens/).

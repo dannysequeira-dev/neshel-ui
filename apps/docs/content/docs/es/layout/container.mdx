@@ -1,0 +1,35 @@
+---
+title: Container
+description: Un contenedor de página centrado, con ancho máximo y margen interior lateral adaptable.
+package: layout
+exports: [Container, ContainerProps, ContainerSize]
+---
+
+## Propósito
+
+`Container` limita el contenido a un ancho máximo legible, lo centra con márgenes laterales
+automáticos y añade un margen interior lateral (`padding`) que puedes variar por breakpoint.
+
+## Importación
+
+```tsx title="import.tsx"
+import { Container } from "@neshel-ui/layout";
+```
+
+## Uso
+
+<Preview demo="layout/container-sizes" />
+
+## API
+
+<ApiTable package="layout" name="ContainerProps" />
+<ApiTable package="layout" name="ContainerSize" />
+
+- `size` (adaptable) fija `max-width`; `full` elimina el límite.
+- `gutter` (adaptable) usa los tokens de espaciado para el margen interior lateral.
+
+## Errores habituales
+
+- Importar la hoja de layout antes de Tailwind: el *preflight* elimina entonces los márgenes
+  automáticos. Importa Tailwind primero.
+- Anidar Containers: basta con uno por columna de página.

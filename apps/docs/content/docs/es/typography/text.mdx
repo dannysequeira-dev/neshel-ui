@@ -1,0 +1,32 @@
+---
+title: Text
+description: Texto en línea que solo cambia lo que indicas y hereda todo lo demás.
+package: typography
+exports: [Text, TextProps, TextElement]
+---
+
+## Propósito
+
+`Text` da estilo a una frase dentro de otro texto: énfasis, código en línea, una nota atenuada, un
+enlace con estilo mediante `asChild`. Hereda tamaño, fuente, peso y color salvo que los indiques, y
+nunca se recorta.
+
+## Importación
+
+```tsx title="import.tsx"
+import { Text } from "@neshel-ui/typography";
+```
+
+## Uso
+
+<Preview demo="typography/text-inline" />
+
+## API
+
+<ApiTable package="typography" name="TextProps" />
+<ApiTable package="typography" name="TextElement" />
+
+## Errores habituales
+
+- Usar `Text as="p"` para párrafos: usa `Paragraph` (recortado, con espaciado de bloque).
+- Pasar `trim` a `Text`: lanza un error, porque el texto en línea no se puede recortar.

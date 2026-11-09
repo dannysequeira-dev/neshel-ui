@@ -1,0 +1,39 @@
+---
+title: Inline
+description: Un layout flex horizontal para barras de herramientas, etiquetas y grupos de botones, con ajuste de línea y separadores.
+package: layout
+exports: [Inline, InlineProps]
+---
+
+## Propósito
+
+`Inline` coloca a sus hijos en fila: barras de herramientas, listas de etiquetas, grupos de botones,
+migas de pan.
+
+## Importación
+
+```tsx title="import.tsx"
+import { Inline } from "@neshel-ui/layout";
+```
+
+## Uso
+
+<Preview demo="layout/inline-toolbar" />
+
+## API
+
+<ApiTable package="layout" name="InlineProps" />
+
+- `alignX` corresponde a `justify-content` (`start center end`) y `alignY` a `align-items` (`start
+  center end stretch baseline`).
+- `justify="between"` lleva los grupos a los extremos.
+- `wrap` (adaptable) permite que los elementos pasen a nuevas líneas; no se puede combinar con
+  `separator`.
+
+## Errores habituales
+
+- Olvidar `wrap` en contenido que puede desbordarse en pantallas pequeñas.
+- Usar `alignX="between"`: la distribución es `justify`, no un valor de alineación.
+
+Consulta también los [separadores de Stack](/es/docs/layout/stack/#separadores), que funcionan igual
+en Inline.

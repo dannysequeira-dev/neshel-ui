@@ -1,0 +1,64 @@
+---
+title: MultiSelect
+description: Selección múltiple con chips eliminables, un botón para borrar todo y eliminaciones anunciadas.
+package: components
+exports: [MultiSelect, MultiSelectProps]
+---
+
+<ComponentKind package="components" name="MultiSelect" />
+
+## Propósito
+
+`MultiSelect` elige varios valores de una lista. Los valores seleccionados aparecen como chips
+eliminables junto al disparador.
+
+## Importación
+
+```tsx title="import.tsx"
+import { MultiSelect } from "@neshel-ui/components";
+```
+
+## Uso
+
+<Preview demo="components/multi-select-basic" />
+
+## API
+
+<ApiTable package="components" name="MultiSelectProps" />
+
+Las opciones usan las mismas formas `SelectOption` / `SelectOptionGroup` que [Select](/es/docs/components/select/#api).
+
+## Controlado y no controlado
+
+`defaultValue` / `value` (`string[]`) con `onValueChange`.
+
+## Formularios
+
+Con `name`, cada valor seleccionado se convierte en una entrada del formulario
+(`formData.getAll(name)`).
+
+## Accesibilidad
+
+- Los chips están **junto** al disparador, nunca dentro, para que no haya contenido interactivo dentro
+  de un botón. Cada chip tiene un botón de eliminar con la etiqueta de `removeLabel` («Remove
+  Spanish»).
+- Las eliminaciones se anuncian en una región *live* educada (`removedMessage`) y el foco pasa al
+  siguiente chip.
+- `chips={false}` muestra solo un resumen en el disparador (`summary`, «2 selected»).
+- Todas las etiquetas son props, así que puedes traducirlas.
+
+## Teclado
+
+| Tecla                         | Acción                                        |
+| ----------------------------- | --------------------------------------------- |
+| Enter / Espacio / ↓           | Abrir el listbox                              |
+| ↓ / ↑, Inicio / Fin           | Moverse entre opciones                        |
+| Enter / Espacio               | Alternar la opción (el desplegable sigue abierto) |
+| Escape                        | Cerrar; la selección se conserva              |
+| Tab hasta el botón de eliminar de un chip, Enter | Eliminar ese valor          |
+
+## Errores habituales
+
+- Etiquetas sin traducir en interfaces que no están en inglés: pasa `removeLabel`, `removedMessage`,
+  `summary` y `clearLabel`.
+- Listas largas sin búsqueda: usa [Combobox](/es/docs/components/combobox/) con `multiple`.

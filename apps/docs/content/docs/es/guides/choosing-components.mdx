@@ -1,0 +1,74 @@
+---
+title: Elegir componentes
+description: Dialog o AlertDialog, Dialog o Sheet, NavigationMenu o DropdownMenu, Select, MultiSelect o Combobox, y más.
+---
+
+## Dialog frente a AlertDialog
+
+| | Dialog | AlertDialog |
+| --- | --- | --- |
+| Propósito | Cualquier tarea modal: formularios, detalles, ajustes | Una interrupción que requiere una decisión explícita (confirmación destructiva) |
+| Rol | `dialog` | `alertdialog` |
+| Pulsación exterior | Cierra | **Se ignora** |
+| Foco inicial | Primer elemento enfocable | **Cancel** |
+| Escape | Cierra | Cancela |
+
+Usa AlertDialog con moderación; cuando puedas, ofrece deshacer en lugar de pedir confirmación.
+
+## Dialog frente a Sheet
+
+Ambos son diálogos modales con la misma gestión del foco. Un **Sheet** se desliza desde un borde
+(`side`: izquierda, derecha, arriba, abajo) y encaja con contenido secundario ligado a la página
+actual: filtros, detalles, cajones de navegación. Un **Dialog** está centrado y encaja con tareas
+autónomas. En propuestas anteriores `Sheet` se llamaba «Drawer»; no existe un componente Drawer
+aparte.
+
+## NavigationMenu frente a DropdownMenu
+
+| | NavigationMenu | DropdownMenu |
+| --- | --- | --- |
+| Contiene | **Enlaces** a páginas | **Comandos** (acciones, conmutadores, opciones de radio) |
+| Semántica | `<nav>` con listas y paneles desplegables | Roles `menu` / `menuitem` |
+| Lugar típico | Cabecera del sitio | Menú de cuenta, acciones de fila, barras de herramientas |
+
+No pongas enlaces de navegación en un DropdownMenu solo porque se vea bien: los lectores de pantalla
+anuncian un menú de comandos.
+
+## Select frente a Combobox
+
+| | Select | Combobox |
+| --- | --- | --- |
+| Entrada | Un botón que abre un listbox | Un campo de texto que filtra un listbox |
+| Ideal para | Listas cortas (hasta ~15 opciones) | Listas largas, búsqueda, resultados del servidor |
+| Búsqueda por tecleo | Salta por las primeras letras | Escribir libremente filtra los elementos |
+| Valor | Siempre una de las opciones | Siempre uno de los elementos (sin texto libre) |
+
+Para texto libre con sugerencias, usa un `<Input list="…">` nativo con un `<datalist>`.
+
+## Select frente a MultiSelect
+
+`MultiSelect` es el equivalente de `Select` para varios valores: **chips** eliminables junto al
+disparador (nunca dentro), un botón para borrar todo y anuncios cuando se eliminan valores. Para una
+selección múltiple con búsqueda, usa `Combobox` con `multiple`.
+
+## Campos controlados frente a no controlados
+
+No controlado (`defaultValue`) es más sencillo y funciona con formularios nativos; controlado
+(`value` + `onValueChange`) deja que tu estado gobierne la interfaz. No cambies un componente de uno a
+otro durante su vida. Consulta [Formularios](/es/docs/guides/forms/).
+
+## Navegación de escritorio frente a móvil
+
+- **Navbar + NavbarNav + MobileMenu:** una barra superior cuyos enlaces se pliegan en un sheet por
+  debajo de un breakpoint. `NavbarNav hideBelow="md"` con `MobileMenu breakpoint="md"` garantiza que
+  se vea exactamente uno.
+- **AppShell + Sidebar:** navegación de aplicación. En escritorio se ve una barra lateral (expandida o
+  como riel de iconos); por debajo del `breakpoint` del *shell*, el mismo contenido pasa a un cajón
+  modal.
+
+## Sidebar completa frente a contraída
+
+`collapsible="icon"` (predeterminado) contrae a un riel de iconos en escritorio: las etiquetas siguen
+siendo los nombres accesibles y aparecen como tooltips al pasar el puntero o al enfocar.
+`collapsible="offcanvas"` oculta la barra lateral por completo al contraerla. `collapsible="none"` la
+mantiene expandida. En móvil, la barra lateral siempre es un cajón.

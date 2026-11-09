@@ -1,0 +1,63 @@
+---
+title: Navbar
+description: Una barra de cabecera con marca, enlaces de navegación y acciones, adaptable con un MobileMenu.
+package: components
+exports: [Navbar, NavbarBrand, NavbarNav, NavbarLink, NavbarActions, NavbarProps, NavbarBrandProps, NavbarNavProps, NavbarLinkProps, NavbarActionsProps]
+---
+
+<ComponentKind package="components" name="Navbar" />
+
+## Propósito
+
+`Navbar` es la cabecera de un sitio o aplicación: un `<header>` con una marca, una lista `<nav>` de
+enlaces y una zona de acciones. Sus partes son compatibles con el servidor.
+
+## Importación
+
+```tsx title="import.tsx"
+import {
+  Navbar,
+  NavbarActions,
+  NavbarBrand,
+  NavbarLink,
+  NavbarNav,
+} from "@neshel-ui/components";
+```
+
+## Uso
+
+<Preview demo="components/navbar-responsive" />
+
+## API
+
+<ApiTable package="components" name="NavbarProps" />
+<ApiTable package="components" name="NavbarBrandProps" />
+<ApiTable package="components" name="NavbarNavProps" />
+<ApiTable package="components" name="NavbarLinkProps" />
+<ApiTable package="components" name="NavbarActionsProps" />
+
+| Parte           | Renderiza                                                         |
+| --------------- | ----------------------------------------------------------------- |
+| `Navbar`        | `<header>`; `sticky` lo mantiene arriba                           |
+| `NavbarBrand`   | `div`, o tu enlace con `asChild`                                  |
+| `NavbarNav`     | `<nav aria-label="Main">` con un `<ul>`; `hideBelow` (adaptable)  |
+| `NavbarLink`    | `<li>` con un `<a>` (o tu enlace del router con `asChild`)        |
+| `NavbarActions` | `div` para botones y menús                                        |
+
+## Comportamiento adaptable
+
+`<NavbarNav hideBelow="md">` oculta los enlaces por debajo de `md`; `<MobileMenu breakpoint="md">`
+muestra su disparador solo por debajo de `md`. Usa el mismo breakpoint y en cualquier ancho se verá
+exactamente uno, decidido por CSS, sin parpadeo de hidratación.
+
+## Accesibilidad
+
+- `active` establece `aria-current="page"` en el enlace actual.
+- Da a `NavbarNav` un `aria-label` distinto si la página tiene varios `<nav>`.
+- `--neshel-navbar-height` (`3.5rem` por defecto) fija la altura de la barra.
+
+## Errores habituales
+
+- Poner comandos desplegables entre los enlaces: usa un [DropdownMenu](/es/docs/components/dropdown-menu/)
+  en `NavbarActions` y un [NavigationMenu](/es/docs/components/navigation-menu/) para paneles de enlaces.
+- `hideBelow` y `MobileMenu breakpoint` distintos, que muestran los dos o ninguno.

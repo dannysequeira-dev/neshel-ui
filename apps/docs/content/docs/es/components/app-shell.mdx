@@ -1,0 +1,79 @@
+---
+title: AppShell
+description: Un layout de aplicación adaptable con una barra lateral que se convierte en cajón por debajo de un breakpoint.
+package: components
+exports: [AppShell, AppShellMain, AppShellContent, AppShellProps, AppShellPartProps, AppShellState, useAppShell]
+---
+
+<ComponentKind package="components" name="AppShell" />
+
+## Propósito
+
+`AppShell` organiza una aplicación: una [Sidebar](/es/docs/components/sidebar/) y una columna principal
+(`AppShellMain`) que contiene una cabecera y el contenido de la página (`AppShellContent`, un
+`<main>`). A partir de su `breakpoint`, la barra lateral se coloca junto al contenido (expandida o como
+riel de iconos); por debajo, su contenido pasa a un cajón modal.
+
+## Importación
+
+```tsx title="import.tsx"
+import { AppShell, AppShellContent, AppShellMain } from "@neshel-ui/components";
+```
+
+## Uso
+
+<Preview demo="components/app-shell-basic" />
+
+## API
+
+<ApiTable package="components" name="AppShellProps" />
+<ApiTable package="components" name="AppShellPartProps" />
+<ApiTable package="components" name="AppShellState" />
+
+- `breakpoint`: `"lg"` por defecto, cualquier nombre configurado, o `"base"` para que siempre sea de
+  escritorio.
+- `collapsed` / `defaultCollapsed` / `onCollapsedChange`: el estado contraído en escritorio.
+- `mobileOpen` / `defaultMobileOpen` / `onMobileOpenChange`: el cajón móvil.
+
+## `useAppShell`
+
+```tsx title="custom-trigger.tsx"
+"use client";
+import { Button, useAppShell } from "@neshel-ui/components";
+
+export function CollapseButton() {
+  const { mode, collapsed, toggle } = useAppShell();
+  return (
+    <Button variant="ghost" onClick={toggle}>
+      {mode === "mobile" ? "Menu" : collapsed ? "Expand" : "Collapse"}
+    </Button>
+  );
+}
+```
+
+Devuelve `{ mode, collapsed, setCollapsed, mobileOpen, setMobileOpen, toggle }`; lanza un error fuera
+de un AppShell. `mode` es `undefined` durante el renderizado en servidor y antes de la hidratación, y
+después `"desktop"` o `"mobile"`.
+
+## Cómo se decide el modo
+
+El CSS decide el modo en el breakpoint (así sigue a `neshel generate` y a los breakpoints
+personalizados); JavaScript lo lee tras la hidratación y al redimensionar. El marcado del servidor y
+del cliente nunca depende del modo, así que no hay desajustes de hidratación. Cuando la ventana pasa a
+escritorio con el cajón abierto, el *shell* solicita `onMobileOpenChange(false)`.
+
+## Persistencia
+
+La biblioteca nunca lee almacenamiento. Guarda tú `collapsed`, por ejemplo en una cookie leída en el
+servidor y pasada como `defaultCollapsed`, que escribes en `onCollapsedChange`.
+
+## Accesibilidad
+
+Da un `id` a `AppShellContent` y añade un enlace para saltar a él. El cajón es un diálogo modal
+titulado con el `mobileTitle` de la Sidebar; se cierra tras navegar, con Escape y al pulsar el fondo.
+
+## Errores habituales
+
+- Esperar `mode` durante el renderizado en servidor: renderiza el mismo marcado para ambos modos.
+- Guardar estado de componente dentro de los hijos de la barra lateral; consulta
+  [Sidebar → Limitaciones](/es/docs/components/sidebar/#limitaciones).

@@ -1,0 +1,179 @@
+---
+title: Temas
+description: Roles de color semánticos, pares de contraste, temas claro/oscuro/sistema y con nombre, ámbitos anidados y la cascada.
+---
+
+Los temas de Neshel-UI son conjuntos de propiedades personalizadas CSS. Los componentes solo leen
+tokens **semánticos** (`--neshel-primary`, `--neshel-surface-foreground`, …), nunca colores literales,
+así que un tema puede cambiar toda la interfaz, incluso sustituir el azul marino y el dorado de Neshel
+por tu propia identidad.
+
+## Comportamiento predeterminado
+
+Importar `@neshel-ui/config/tokens.css` (o `tailwind.css`) define:
+
+- el tema **claro** en `:root` y en `[data-neshel-theme="light"]`;
+- el tema **oscuro** en `[data-neshel-theme="dark"]`;
+- **sistema** en `[data-neshel-theme="system"]`: claro, u oscuro con `prefers-color-scheme: dark`;
+- tokens de radio, espaciado, anillo de foco y fuentes.
+
+Cada bloque de tema declara **todos** los roles de color y su `color-scheme`, así que los ámbitos
+anidados están totalmente aislados: una tarjeta clara dentro de una página oscura es completamente
+clara.
+
+## Roles de color
+
+Hay 25 roles, definidos como pares primer plano/fondo con un contraste mínimo documentado:
+
+| Rol (fondo)                          | Primer plano emparejado        | Uso                                           |
+| ------------------------------------ | ------------------------------ | --------------------------------------------- |
+| `background`                         | `foreground`                   | Lienzo de la página y texto principal         |
+| `surface`                            | `surfaceForeground`            | Tarjetas, popovers, menús, diálogos           |
+| `muted`                              | `mutedForeground`              | Zonas discretas y texto secundario            |
+| `primary`                            | `primaryForeground`            | Acciones principales, estados activos         |
+| `secondary`                          | `secondaryForeground`          | Acciones secundarias                          |
+| `accent`                             | `accentForeground`             | Realces (el dorado sobrio de Neshel)          |
+| `destructive`                        | `destructiveForeground`        | Acciones peligrosas y errores                 |
+| `success`                            | `successForeground`            | Estado positivo                               |
+| `warning`                            | `warningForeground`            | Estado de advertencia                         |
+| `selected`                           | `selectedForeground`           | Opciones y elementos seleccionados            |
+| `disabled`                           | `disabledForeground`           | Controles deshabilitados                      |
+| `border`, `input`, `focus`           | —                              | Separadores, bordes de campos, anillos de foco |
+
+La lista exacta y el contraste mínimo de cada par se exportan como datos: consulta
+[`colorRoles` y `contrastPairs`](/es/docs/config/tokens/).
+
+## Requisitos de contraste
+
+Los temas incorporados cumplen **4,5:1** en los pares de texto y **3:1** en anillos de foco y bordes
+de campos (luminancia relativa WCAG 2.1), fijados por pruebas. Para tus temas, `neshel validate`
+calcula cada par que afectes:
+
+```text
+warning themes.light  contrast  accentForeground on accent is 3.12:1; minimum 4.5:1 (WCAG 1.4.3).
+```
+
+Avisos por defecto; errores (código 1, sin escribir nada) con `contrast: "error"` o `--strict`.
+Superar estas comprobaciones no hace por sí solo que una interfaz cumpla WCAG.
+
+## Cambiar la identidad visual
+
+```ts title="neshel.config.ts"
+import { defineConfig } from "@neshel-ui/config";
+
+// A teal-and-coral identity for an application that does not use Neshel's navy and gold.
+export default defineConfig({
+  radius: { base: "0.375rem" },
+  themes: {
+    light: {
+      colors: {
+        background: "#f7fafa",
+        foreground: "#0f2a2e",
+        surface: "#ffffff",
+        surfaceForeground: "#0f2a2e",
+        primary: "#0f6e6e",
+        primaryForeground: "#ffffff",
+        accent: "#b84a2e",
+        accentForeground: "#ffffff",
+        focus: "#0f6e6e",
+      },
+    },
+    dark: {
+      colors: {
+        background: "#071a1c",
+        foreground: "#e5f4f2",
+        surface: "#0d2a2d",
+        surfaceForeground: "#e5f4f2",
+        primary: "#6fd1c9",
+        primaryForeground: "#04211f",
+        accent: "#f0a58f",
+        accentForeground: "#2a0d05",
+        focus: "#6fd1c9",
+      },
+    },
+  },
+});
+```
+
+Las entradas de tema son parciales: los roles no indicados conservan los valores de su base.
+
+## Temas con nombre y anidados
+
+Los temas con nombre extienden `light` o `dark` (lo que también fija su `color-scheme`):
+
+```ts title="neshel.config.ts"
+import { defineConfig } from "@neshel-ui/config";
+
+export default defineConfig({
+  themes: {
+    evergreen: { extends: "light", colors: { primary: "#1f5136", primaryForeground: "#ffffff" } },
+    aurora: { extends: "dark", colors: { primary: "#b9a6ff", primaryForeground: "#160d3b" } },
+  },
+});
+```
+
+Aplica un tema con `data-neshel-theme` en cualquier elemento; los ámbitos se anidan:
+
+<Preview demo="theming/theme-scopes" />
+
+Las superposiciones renderizadas en portales (diálogos, menús, desplegables de selección) copian el
+`data-neshel-theme` más cercano de su disparador, así que conservan los temas anidados. Consulta
+[Superposiciones y portales](/es/docs/guides/overlays-portals/).
+
+## La cascada
+
+Cada hoja de Neshel declara `@layer neshel.defaults, neshel.config;`. Los tokens generados viven en
+`neshel.config`, así que sustituyen a los predeterminados sea cual sea el orden de importación. Los
+estilos de los componentes viven en `components.neshel`. Tu CSS sin capa y las utilidades de Tailwind
+ganan a todos ellos.
+
+<Callout type="warn" title="Las sustituciones de tokens sin capa ganan a todos los temas">
+  `:root { --neshel-primary: red }` escrito sin capa también sustituye al tema **oscuro**. Para
+  sustituir tokens a mano, escríbelos dentro de `@layer neshel.config` y por cada selector de tema o,
+  mejor aún, usa `neshel.config.ts`.
+</Callout>
+
+## Cambiar de tema en tiempo de ejecución
+
+No interviene ningún proveedor: establece el atributo.
+
+```tsx title="theme-toggle.tsx"
+"use client";
+import { Button } from "@neshel-ui/components";
+
+export function ThemeToggle() {
+  return (
+    <Button
+      variant="outline"
+      onClick={() => {
+        const root = document.documentElement;
+        const next = root.dataset.neshelTheme === "dark" ? "light" : "dark";
+        root.dataset.neshelTheme = next;
+        document.cookie = `theme=${next}; path=/; max-age=31536000; samesite=lax`;
+      }}
+    >
+      Toggle theme
+    </Button>
+  );
+}
+```
+
+Lee la cookie en el servidor y renderiza `<html data-neshel-theme={theme}>` para evitar un parpadeo
+con el tema equivocado. Guardar la preferencia es responsabilidad de la aplicación.
+
+## Propiedades personalizadas de los componentes
+
+Algunos componentes leen propiedades opcionales que puedes establecer en cualquier ancestro:
+
+| Propiedad                         | Predeterminado    | Afecta a                                            |
+| --------------------------------- | ----------------- | --------------------------------------------------- |
+| `--neshel-sidebar-width`          | `16rem`           | Barra lateral expandida                             |
+| `--neshel-sidebar-rail-width`     | `3.5rem`          | Riel de iconos contraído                            |
+| `--neshel-navbar-height`          | `3.5rem`          | Altura del Navbar                                   |
+| `--neshel-shell-content-padding`  | espaciado × 6     | Relleno de AppShellContent                          |
+| `--neshel-z-overlay`              | `50`              | Capas de diálogo, sheet y fondo                     |
+| `--neshel-z-popover`              | `60`              | Popovers, menús, desplegables de selección, tooltips |
+| `--neshel-overlay-backdrop`       | derivado del tema | Color del fondo modal                               |
+
+Establécelas en un elemento **dentro** del destino del portal cuando el contenido se renderiza en un
+portal; consulta [contenedores de portal](/es/docs/guides/overlays-portals/#las-propiedades-personalizadas-en-línea-necesitan-un-contenedor-de-portal).

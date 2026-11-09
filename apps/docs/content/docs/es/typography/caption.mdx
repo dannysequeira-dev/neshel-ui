@@ -1,0 +1,36 @@
+---
+title: Caption
+description: Texto de apoyo pequeño y atenuado para figuras, metadatos y pistas.
+package: typography
+exports: [Caption, CaptionProps, CaptionElement]
+---
+
+## Propósito
+
+`Caption` renderiza texto de apoyo pequeño (tamaño `sm`, tono `muted`): leyendas de figuras,
+metadatos, pistas de campos y mensajes de error.
+
+## Importación
+
+```tsx title="import.tsx"
+import { Caption } from "@neshel-ui/typography";
+```
+
+## Uso
+
+<Preview demo="typography/caption-figure" />
+
+## API
+
+<ApiTable package="typography" name="CaptionProps" />
+<ApiTable package="typography" name="CaptionElement" />
+
+## Accesibilidad
+
+Para una pista o un error de un campo, da al Caption un `id` y referéncialo desde el control con
+`aria-describedby`. Usa `tone="destructive"` para los errores, pero nunca solo el color: di qué está
+mal.
+
+## Errores habituales
+
+- Usar Caption para encabezados de secciones pequeñas: usa `Heading` con un `size` pequeño.

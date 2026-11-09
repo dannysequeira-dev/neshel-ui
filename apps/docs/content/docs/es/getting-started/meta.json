@@ -1,0 +1,17 @@
+{
+  "title": "Primeros pasos",
+  "pages": [
+    "index",
+    "installation",
+    "typescript",
+    "css",
+    "first-button",
+    "stack",
+    "typography",
+    "dialog",
+    "responsive-layout",
+    "cli",
+    "tokens",
+    "deploy"
+  ]
+}

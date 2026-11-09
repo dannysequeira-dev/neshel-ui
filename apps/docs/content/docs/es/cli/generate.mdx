@@ -1,0 +1,77 @@
+---
+title: neshel generate
+description: Escribe la hoja de estilos y las declaraciones generadas, o comprueba que estén actualizadas.
+package: cli
+exports: [neshel generate, --out, --types, --check]
+---
+
+```bash
+neshel generate [--config <path>] [--out <path>] [--types <path>] [--check] [--strict] [--debug]
+```
+
+`generate` valida exactamente igual que [`validate`](/es/docs/cli/validate/) y después escribe los
+resultados. Ante cualquier error no se escribe nada.
+
+## Opciones
+
+| Opción           | Significado                                                                               |
+| ---------------- | ----------------------------------------------------------------------------------------- |
+| `--out <path>`   | Ruta de la hoja relativa al directorio de trabajo (sustituye a `output`)                  |
+| `--types <path>` | Ruta de las declaraciones relativa al directorio de trabajo (sustituye a `types`)         |
+| `--check`        | Generar en memoria y comparar con los archivos existentes; nunca escribe; código 4 si faltan o están desactualizados |
+| `--strict`       | Los fallos de contraste son errores                                                       |
+
+## Archivos esperados
+
+| Archivo                    | Cuándo                                      | Contenido                                                              |
+| -------------------------- | ------------------------------------------- | ---------------------------------------------------------------------- |
+| `neshel.generated.css`     | siempre                                     | El conjunto completo de tokens de todos los temas (`@layer neshel.config`), las constantes de fuente de Capsize y las reglas `@font-face` de respaldo; con breakpoints, las reglas de layout/tipografía/componentes de los paquetes instalados para tus breakpoints y un bloque `@theme` de Tailwind opcional |
+| `neshel.generated.d.ts`    | solo cuando se configuran `breakpoints`     | Ampliación de `BreakpointRegistry` con tus nombres                     |
+
+Ubicación predeterminada: junto al archivo de configuración. Las rutas de `output`/`types` se
+resuelven respecto al directorio del archivo de configuración; `--out`/`--types`, respecto al
+directorio de trabajo.
+
+La hoja generada también funciona **por sí sola** (en lugar de las hojas de los paquetes) para
+consumidores con CSS plano, porque contiene bloques de tema completos y las reglas de los paquetes.
+
+## Reglas de salida
+
+Se rechaza (sin escribir nada): una extensión distinta de `.css` (`.d.ts` para los tipos), cualquier
+segmento de ruta llamado `node_modules`, el propio archivo de configuración o un directorio existente.
+Desde `--out`/`--types` → código 2; desde la configuración → código 1 con `invalid-output` /
+`invalid-types-output`.
+
+## Escritura y ciclo de vida
+
+1. Generar en memoria.
+2. Si el destino existe y es idéntico byte a byte → no hacer nada («unchanged», código 0). No se
+   disparan los vigilantes de archivos.
+3. Si no, escribir en un archivo temporal del mismo directorio y renombrarlo sobre el destino (con
+   reintentos en Windows cuando el archivo está bloqueado un momento). Un fallo deja intacto el archivo
+   anterior (código 5).
+
+La salida es determinista: finales de línea LF, sin marcas de tiempo, versiones de paquetes solo en
+comentarios, sin rutas absolutas; idéntica byte a byte en Windows, Linux y macOS. Versiona los
+resultados o genéralos en tu compilación; en ambos casos ejecuta `neshel generate --check` en CI.
+
+## Hojas de componentes para breakpoints personalizados
+
+Con `breakpoints`, la CLI lee el `style-manifest.json` de cada paquete de Neshel instalado (`layout`,
+`typography`, `components`) junto a la configuración y renderiza sus reglas para tus breakpoints.
+Instalar o desinstalar un paquete cambia el resultado: vuelve a generar después. Con breakpoints pero
+sin paquetes de componentes instalados, se muestra el aviso `no-component-packages`.
+
+## Scripts recomendados
+
+```jsonc title="package.json (extracto)"
+{
+  "scripts": {
+    "dev": "neshel generate && vite",
+    "build": "neshel generate && vite build",
+    "check:theme": "neshel generate --check --strict"
+  }
+}
+```
+
+No uses *hooks* `postinstall`/`prepare` para la generación.

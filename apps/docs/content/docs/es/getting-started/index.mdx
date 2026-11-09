@@ -1,0 +1,40 @@
+---
+title: Requisitos
+description: Versiones compatibles de React, Node.js, TypeScript y navegadores, y el recorrido por los tutoriales.
+---
+
+## Versiones compatibles
+
+| Requisito          | Compatibilidad                                                                                          |
+| ------------------ | ------------------------------------------------------------------------------------------------------- |
+| React              | `react` y `react-dom` **19** (dependencias peer `^19.0.0`). React 18 no es compatible.                  |
+| Node.js            | Cualquier versión que admita tu empaquetador para los paquetes React. La CLI requiere Node **≥ 22.13**. |
+| TypeScript         | Opcional. Las declaraciones se prueban con TypeScript 5.9, `moduleResolution` `Bundler` y `NodeNext`.  |
+| Formato de módulos | Solo ESM (paquetes `"type": "module"`, `exports` con `types` primero). No hay compilación CommonJS.     |
+| Tailwind CSS       | Opcional. Probado con Tailwind CSS v4 (`@tailwindcss/vite`, `@tailwindcss/postcss`).                    |
+| Navegadores        | Motores actuales Chromium, Firefox y WebKit (Safari); consulta [compatibilidad de navegadores](/es/docs/guides/accessibility/#compatibilidad-con-navegadores-y-tecnologías-de-apoyo). |
+
+Los paquetes se verifican con aplicaciones Vite 8 y Next.js 16 (App Router) construidas a partir de
+los paquetes empaquetados, en Linux, Windows y macOS.
+
+## El recorrido de los tutoriales
+
+Cada página se basa en la anterior y usa archivos completos que puedes copiar en un proyecto nuevo:
+
+1. [Instalación](/es/docs/getting-started/installation/): instala los paquetes con pnpm, npm o Yarn.
+2. [TypeScript](/es/docs/getting-started/typescript/): ajustes del compilador que funcionan con los paquetes.
+3. [Importar el CSS](/es/docs/getting-started/css/): qué hojas de estilos importar y en qué orden.
+4. [Tu primer Button](/es/docs/getting-started/first-button/).
+5. [Un Stack sencillo](/es/docs/getting-started/stack/).
+6. [Heading y Paragraph](/es/docs/getting-started/typography/).
+7. [Añadir un Dialog](/es/docs/getting-started/dialog/).
+8. [Un layout adaptable](/es/docs/getting-started/responsive-layout/).
+9. [Usar la CLI](/es/docs/getting-started/cli/).
+10. [Personalizar los tokens](/es/docs/getting-started/tokens/).
+11. [Desplegar una aplicación](/es/docs/getting-started/deploy/).
+
+<Callout type="info" title="Consumidores y mantenedores">
+  Estas páginas son para **aplicaciones que usan** Neshel-UI. Si quieres trabajar en Neshel-UI
+  (el monorepo, sus pruebas y sus herramientas de publicación), lee el `CONTRIBUTING.md` del
+  repositorio.
+</Callout>

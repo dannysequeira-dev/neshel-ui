@@ -1,0 +1,38 @@
+---
+title: Skeleton
+description: Formas de marcador de posición para contenido que se está cargando.
+package: components
+exports: [Skeleton, SkeletonProps]
+---
+
+<ComponentKind package="components" name="Skeleton" />
+
+## Propósito
+
+`Skeleton` muestra la forma aproximada del contenido mientras se carga.
+
+## Importación
+
+```tsx title="import.tsx"
+import { Skeleton } from "@neshel-ui/components";
+```
+
+## Uso
+
+<Preview demo="components/skeleton-loading" />
+
+## API
+
+<ApiTable package="components" name="SkeletonProps" />
+
+`width` y `height` aceptan números (píxeles) o longitudes CSS. La animación de pulso se detiene con
+`prefers-reduced-motion: reduce`.
+
+## Accesibilidad
+
+Los skeletons son siempre `aria-hidden="true"`. Marca la región que se carga con `aria-busy="true"` y
+una etiqueta, y anuncia cuándo termina si es relevante.
+
+## Errores habituales
+
+- Esperar que un skeleton anuncie «cargando»: por diseño es invisible para las tecnologías de apoyo.

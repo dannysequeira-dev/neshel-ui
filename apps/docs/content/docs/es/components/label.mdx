@@ -1,0 +1,39 @@
+---
+title: Label
+description: Una etiqueta nativa con un indicador decorativo opcional de obligatorio.
+package: components
+exports: [Label, LabelProps]
+---
+
+<ComponentKind package="components" name="Label" />
+
+## Propósito
+
+`Label` da nombre a un control de formulario. Renderiza un `<label>` nativo.
+
+## Importación
+
+```tsx title="import.tsx"
+import { Label } from "@neshel-ui/components";
+```
+
+## Uso
+
+<Preview demo="components/label-field" />
+
+## API
+
+<ApiTable package="components" name="LabelProps" />
+
+`required` añade un `*` decorativo marcado con `aria-hidden`; lo que anuncian los navegadores y los
+lectores de pantalla es el atributo `required` del propio control.
+
+## Accesibilidad
+
+Conéctala con `htmlFor` (igual al `id` del control); así, además, pulsar la etiqueta enfoca el control.
+Los controles de selección (`Select`, `MultiSelect`, `Combobox`) se etiquetan del mismo modo mediante
+su `id`.
+
+## Errores habituales
+
+- `required` en la Label pero no en el control: el campo en realidad no es obligatorio.

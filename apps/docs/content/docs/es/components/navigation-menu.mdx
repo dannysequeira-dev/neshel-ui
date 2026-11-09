@@ -1,0 +1,65 @@
+---
+title: NavigationMenu
+description: Navegación del sitio con paneles desplegables de enlaces.
+package: components
+exports: [NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuTrigger, NavigationMenuContent, NavigationMenuLink, NavigationMenuProps, NavigationMenuListProps, NavigationMenuItemProps, NavigationMenuTriggerProps, NavigationMenuContentProps, NavigationMenuLinkProps]
+---
+
+<ComponentKind package="components" name="NavigationMenu" />
+
+## Propósito
+
+`NavigationMenu` organiza la navegación del sitio en enlaces de primer nivel y disparadores que
+despliegan paneles de enlaces. Conserva la semántica de **navegación** (`<nav>`, listas, enlaces), a
+diferencia de un menú de comandos.
+
+## Importación
+
+```tsx title="import.tsx"
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@neshel-ui/components";
+```
+
+## Uso
+
+<Preview demo="components/navigation-menu-basic" />
+
+## API
+
+<ApiTable package="components" name="NavigationMenuProps" />
+<ApiTable package="components" name="NavigationMenuListProps" />
+<ApiTable package="components" name="NavigationMenuItemProps" />
+<ApiTable package="components" name="NavigationMenuTriggerProps" />
+<ApiTable package="components" name="NavigationMenuContentProps" />
+<ApiTable package="components" name="NavigationMenuLinkProps" />
+
+`NavigationMenuLink` acepta `active` (`aria-current="page"`) y `asChild` para enlaces del router.
+
+## Accesibilidad
+
+Renderiza `<nav>`; dale un `aria-label`. Los disparadores son botones con `aria-expanded`; los paneles
+contienen enlaces normales. Los paneles se abren al pasar el puntero y al activarlos con el teclado.
+
+## Teclado
+
+| Tecla                    | Acción                                      |
+| ------------------------ | ------------------------------------------- |
+| Tab                      | Moverse entre los elementos de primer nivel |
+| Enter / Espacio / ↓      | Abrir un panel desde su disparador          |
+| Tab (en un panel)        | Recorrer los enlaces del panel              |
+| Escape                   | Cerrar el panel y enfocar su disparador     |
+
+## Limitaciones
+
+Los paneles se renderizan dentro de la navegación (no en un portal), así que coloca el menú donde los
+paneles tengan espacio. En pantallas pequeñas, prefiere un [MobileMenu](/es/docs/components/mobile-menu/).
+
+## Errores habituales
+
+- Comandos (cerrar sesión, eliminar) en un NavigationMenu: usa un DropdownMenu.

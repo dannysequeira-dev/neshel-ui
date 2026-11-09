@@ -1,0 +1,123 @@
+---
+title: "@neshel-ui/layout"
+description: Primitivas de layout con espaciado por tokens, alineación lógica, valores adaptables, as y asChild.
+package: layout
+exports: [Breakpoint, Responsive, CommonProps, PolymorphicProps, LayoutElement, SpaceValue, SpacingProps, MainAxisAlign, CrossAxisAlign, Justify]
+---
+
+Siete primitivas cubren el layout en una y dos dimensiones. Cada una renderiza un solo elemento, emite
+solo clases estáticas precompiladas (sin estilos en línea) y funciona en Server Components.
+
+<PackageInstall packages={["@neshel-ui/config", "@neshel-ui/layout"]} />
+
+```css title="src/index.css"
+@import "@neshel-ui/config/tokens.css";
+@import "@neshel-ui/layout/styles.css";
+```
+
+| Primitiva                                   | CSS                                                | Úsala para                                  |
+| ------------------------------------------- | -------------------------------------------------- | ------------------------------------------- |
+| [Box](/es/docs/layout/box/)                 | display del elemento, `display` adaptable opcional | Envoltorios semánticos, mostrar/ocultar     |
+| [Stack](/es/docs/layout/stack/)             | columna flex                                       | Grupos verticales                           |
+| [Inline](/es/docs/layout/inline/)           | fila flex                                          | Grupos horizontales, barras, etiquetas      |
+| [Flex](/es/docs/layout/flex/)               | flex con `direction` y `wrap` adaptables           | Layouts que cambian de dirección            |
+| [Grid](/es/docs/layout/grid/)               | grid con 1–12 columnas iguales                     | Layouts bidimensionales                     |
+| [Center](/es/docs/layout/center/)           | flex centrado en ambos ejes                        | Centrar contenido                           |
+| [Container](/es/docs/layout/container/)     | `max-width` centrado con margen interior lateral   | Limitar el ancho de la página               |
+
+## ¿Flexbox o Grid?
+
+Usa **Stack**, **Inline** o **Flex** cuando los elementos fluyen en un eje y se dimensionan solos
+(barras de herramientas, formularios, contenido de tarjetas). Usa **Grid** cuando los elementos deben
+alinearse en columnas a lo largo de las filas (rejillas de tarjetas, paneles). Ambos usan los mismos
+tokens de `space`.
+
+## Espaciado
+
+| Prop     | CSS          | Notas                                          |
+| -------- | ------------ | ---------------------------------------------- |
+| `space`  | `gap`        | No se puede combinar con `spaceX` / `spaceY`   |
+| `spaceX` | `column-gap` | Se puede combinar con `spaceY`                 |
+| `spaceY` | `row-gap`    | Se puede combinar con `spaceX`                 |
+
+Los valores son tokens `"0" "0.5" "1" "1.5" "2" "2.5" "3" "4" "5" "6" "8" "10" "12" "16" "20" "24"`,
+cada uno `calc(var(--neshel-spacing) * n)`. `<Stack space="4" spaceX="2">` es un error de TypeScript y
+lanza `NeshelLayoutError` en ejecución. Son props de `gap`, no las utilidades `space-x-*` de Tailwind
+basadas en márgenes.
+
+## Alineación
+
+X es el eje en línea (horizontal en escritura horizontal) e Y el eje de bloque.
+
+| Primitiva | X                                                | Y                                                |
+| --------- | ------------------------------------------------ | ------------------------------------------------ |
+| Stack     | `align-items`                                    | `justify-content`                                |
+| Inline    | `justify-content`                                | `align-items`                                    |
+| Center    | `justify-content` (centro por defecto)           | `align-items` (centro por defecto)               |
+| Grid      | `justify-items`                                  | `align-items`                                    |
+| Flex      | fila: `justify-content`, columna: `align-items`  | fila: `align-items`, columna: `justify-content`  |
+
+- `align` fija ambos ejes; `alignX` / `alignY` sustituyen uno de ellos.
+- `justify` (`start center end between around evenly`) distribuye el eje principal en Flex, Stack e
+  Inline.
+- Precedencia en cada breakpoint: `justify` > `alignX`/`alignY` > `align`.
+- Sin props de alineación no se emite nada, así que se conserva el comportamiento nativo
+  `stretch`/`normal`.
+
+## Valores adaptables
+
+Toda prop adaptable admite un valor o `{ base?, sm?, md?, lg?, xl?, "2xl"? }` (o tus nombres
+configurados). Los valores se heredan hacia arriba. Consulta
+[Breakpoints personalizados](/es/docs/guides/custom-breakpoints/).
+
+## `as` y `asChild`
+
+`as` elige el elemento de una lista cerrada; `asChild` aplica el layout a su único elemento hijo
+(Radix Slot): las clases se unen, los estilos se combinan (gana el hijo) y los manejadores y refs se
+componen. `as` junto con `asChild` lanza un error. El hijo debe pasar `className` y `ref` a un
+elemento del DOM.
+
+```tsx fragment
+<Stack asChild space="4">
+  <section aria-label="Settings">
+    <p>Profile</p>
+    <p>Preferences</p>
+  </section>
+</Stack>
+```
+
+## RTL y modos de escritura
+
+Las palabras clave son lógicas (`start`/`end`): en documentos de derecha a izquierda `alignX="start"`
+es el borde derecho. `row-reverse` no invierte X. Los modos de escritura vertical no son compatibles.
+
+## Sustituir estilos
+
+Las reglas de layout viven en la capa de cascada `components.neshel`; las utilidades de Tailwind y el
+CSS sin capa las sustituyen: `<Stack className="md:flex-row">` funciona. Para cambios adaptables,
+prefiere las props.
+
+## Tipos compartidos
+
+<ApiTable package="layout" name="Responsive" />
+<ApiTable package="layout" name="Breakpoint" />
+<ApiTable package="layout" name="SpaceValue" />
+<ApiTable package="layout" name="SpacingProps" />
+<ApiTable package="layout" name="MainAxisAlign" />
+<ApiTable package="layout" name="CrossAxisAlign" />
+<ApiTable package="layout" name="Justify" />
+<ApiTable package="layout" name="LayoutElement" />
+<ApiTable package="layout" name="PolymorphicProps" />
+<ApiTable package="layout" name="CommonProps" />
+
+## Errores
+
+Un uso incorrecto lanza `NeshelLayoutError` (`[@neshel-ui/layout] <Componente>: …`) en el servidor y en
+el cliente: espaciado incompatible, `as` + `asChild`, hijos inválidos de `asChild`, claves o valores de
+breakpoint mal formados, `stretch`/`baseline` en el eje principal de Flex, `separator` + `wrap`. La
+clase del error no se exporta; comprueba `error.name === "NeshelLayoutError"` si necesitas detectarlo.
+
+## No incluido
+
+Spacer (usa `justify` o un Inline anidado), props por elemento (`grow`, `span`), filas o áreas de grid
+y *container queries*. Usa utilidades de Tailwind o tu propio CSS para ello.

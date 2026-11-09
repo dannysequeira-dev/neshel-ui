@@ -1,0 +1,49 @@
+---
+title: Integración continua
+description: Mantén al día los resultados generados y la accesibilidad de los temas en integración continua.
+---
+
+## La comprobación
+
+```bash
+neshel generate --check --strict
+```
+
+- `--check` compara la hoja generada (y las declaraciones) con los archivos del disco sin escribir:
+  código **4** cuando falta un archivo o está desactualizado.
+- `--strict` falla ante problemas de contraste (código **1**).
+
+## GitHub Actions
+
+```yaml title=".github/workflows/theme.yml"
+name: Theme
+on: [push, pull_request]
+jobs:
+  theme:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec neshel generate --check --strict
+```
+
+## Versionar o no los archivos generados
+
+| Enfoque                                | Ventajas                                              | Inconvenientes                                   |
+| -------------------------------------- | ----------------------------------------------------- | ------------------------------------------------ |
+| Versionar resultados, `--check` en CI  | Tipos y editores funcionan antes de compilar          | Hay que acordarse de regenerar tras los cambios  |
+| Generar solo en `build`                | Sin archivos generados en el repositorio              | La comprobación de tipos debe ir tras la generación |
+
+Ambos son válidos. La salida es idéntica byte a byte entre sistemas operativos y versiones de Node,
+así que un commit hecho en Windows pasa la comprobación en Linux.
+
+## Monorepos
+
+Ejecuta la CLI desde el directorio de cada aplicación (el descubrimiento no busca hacia arriba) o pasa
+`--config apps/web/neshel.config.ts`: las rutas relativas `output`/`types` siguen resolviéndose
+respecto al directorio del archivo de configuración.

@@ -1,0 +1,96 @@
+---
+title: Dialog
+description: Un diálogo modal compuesto por disparador, contenido, cabecera, cuerpo, pie, título, descripción y cierre.
+package: components
+exports: [Dialog, DialogTrigger, DialogContent, DialogHeader, DialogBody, DialogFooter, DialogTitle, DialogDescription, DialogClose, DialogProps, DialogTriggerProps, DialogContentProps, DialogPartProps, DialogTitleProps, DialogDescriptionProps, DialogCloseProps, DialogSize]
+---
+
+<ComponentKind package="components" name="Dialog" />
+
+## Propósito
+
+`Dialog` muestra una ventana modal para una tarea concreta: editar, confirmar detalles, ajustes. El
+resto de la página queda inerte mientras está abierto.
+
+## Importación
+
+```tsx title="import.tsx"
+import {
+  Dialog,
+  DialogBody,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@neshel-ui/components";
+```
+
+## Uso
+
+<Preview demo="components/dialog-basic" />
+
+## API
+
+<ApiTable package="components" name="DialogProps" />
+<ApiTable package="components" name="DialogContentProps" />
+<ApiTable package="components" name="DialogSize" />
+<ApiTable package="components" name="DialogTriggerProps" />
+<ApiTable package="components" name="DialogCloseProps" />
+<ApiTable package="components" name="DialogTitleProps" />
+<ApiTable package="components" name="DialogDescriptionProps" />
+<ApiTable package="components" name="DialogPartProps" />
+
+| Parte               | Renderiza                                                      |
+| ------------------- | -------------------------------------------------------------- |
+| `Dialog`            | Raíz de estado (sin DOM)                                       |
+| `DialogTrigger`     | Botón que abre el diálogo (`asChild` para tu Button)           |
+| `DialogContent`     | Portal, fondo y panel del diálogo, con un botón de cierre      |
+| `DialogHeader` / `DialogBody` / `DialogFooter` | `div` estructurales                  |
+| `DialogTitle`       | El nombre accesible (`h2`)                                     |
+| `DialogDescription` | La descripción accesible (`p`)                                 |
+| `DialogClose`       | Botón que cierra el diálogo (`asChild`)                        |
+
+Tamaños de `DialogContent`: `sm`, `md` (predeterminado), `lg`, `xl`, `full`. `showClose={false}`
+elimina el botón de cierre incorporado; `closeLabel` cambia su nombre.
+
+## Controlado y no controlado
+
+No controlado: el disparador lo abre y los cierres lo cierran. Controlado: gestiona `open` y
+`onOpenChange`, por ejemplo para cerrarlo tras un envío correcto.
+
+<Preview demo="components/dialog-controlled" />
+
+## Composición
+
+Disparadores y cierres admiten `asChild` (usa tu `Button`). Los diálogos se pueden anidar; Escape
+cierra el más interno. Los desplegables de selección dentro de un diálogo se renderizan dentro de él.
+
+## Accesibilidad
+
+- Todo diálogo necesita un `DialogTitle` (un aviso en desarrollo señala si falta). Sin descripción,
+  pasa `aria-describedby={undefined}` a `DialogContent`.
+- El foco pasa al primer elemento enfocable, queda atrapado y vuelve al disparador al cerrar (en un
+  diálogo controlado, al elemento que lo abrió).
+- El contenido copia el `data-neshel-theme` del disparador a través del portal.
+
+## Teclado
+
+| Tecla              | Acción                                          |
+| ------------------ | ----------------------------------------------- |
+| Tab / Mayús+Tab    | Mover el foco dentro del diálogo (atrapado)     |
+| Escape             | Cerrar el diálogo (solo la capa más interna)    |
+
+## Estilos
+
+El panel usa `--neshel-surface` / `--neshel-surface-foreground`, el fondo `--neshel-overlay-backdrop`
+y la capa `--neshel-z-overlay`. Las propiedades personalizadas en línea de un ancestro necesitan
+`container`; consulta [contenedores de portal](/es/docs/guides/overlays-portals/#las-propiedades-personalizadas-en-línea-necesitan-un-contenedor-de-portal).
+
+## Errores habituales
+
+- No poner `DialogTitle`, o poner un `div` con estilo en su lugar.
+- Enviar un formulario y esperar que el diálogo se cierre solo: controla `open`.
+- Usar un Dialog para una confirmación destructiva; consulta [AlertDialog](/es/docs/components/alert-dialog/).

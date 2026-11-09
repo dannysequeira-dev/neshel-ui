@@ -1,0 +1,72 @@
+---
+title: Códigos de salida y diagnósticos
+description: Todos los códigos de salida y de diagnóstico de la CLI neshel, con sus causas y soluciones.
+package: cli
+exports: [unknown-key, invalid-type, invalid-version, invalid-theme-name, reserved-theme, missing-base, invalid-base, unexpected-base, invalid-length, invalid-font-stack, invalid-output, invalid-metrics, unsupported-color-syntax, invalid-color, alpha-not-allowed, out-of-gamut, contrast, reserved, invalid-breakpoint-name, reserved-breakpoint-name, duplicate-breakpoint-name, breakpoint-redefined, invalid-breakpoint-width, duplicate-breakpoint-width, too-many-breakpoints, empty-breakpoints, breakpoint-order, invalid-types-output, missing-metrics, invalid-fallbacks, no-component-packages]
+---
+
+## Códigos de salida
+
+| Código | Significado                                                                                                  |
+| ------ | ------------------------------------------------------------------------------------------------------------ |
+| 0      | Éxito (puede haber avisos); también «unchanged»                                                              |
+| 1      | Configuración inválida: errores estructurales o de color (incluidos `output`/`types` de la configuración), errores de contraste con `error` |
+| 2      | Uso: comando u opción desconocidos, valor que falta, ruta `--out`/`--types` rechazada                       |
+| 3      | Configuración no encontrada, ambigua, que no se pudo cargar o cuya exportación por defecto no es un objeto  |
+| 4      | `generate --check`: falta un resultado o está desactualizado                                                |
+| 5      | Error de E/S o interno inesperado (traza de pila con `--debug`)                                             |
+
+## Formato de los diagnósticos
+
+```text
+<severidad> <ruta> <código> <mensaje>
+error   themes.dark.colors.primary   unsupported-color-syntax  Expected #hex, rgb(), hsl() or oklch(); received "navy".
+```
+
+`ruta` es la ruta de la configuración separada por puntos (vacía para el propio archivo). Los mensajes
+de la CLI están en inglés.
+
+## Códigos
+
+| Código                       | Severidad      | Causa y solución                                                              |
+| ---------------------------- | -------------- | ----------------------------------------------------------------------------- |
+| `unknown-key`                | error          | Una clave que el esquema no define; el mensaje sugiere la más parecida        |
+| `invalid-type`               | error          | Tipo de valor incorrecto (por ejemplo un número donde se espera texto)        |
+| `invalid-version`            | error          | `version` distinta de `1`                                                     |
+| `invalid-theme-name`         | error          | Los nombres de tema deben ir en minúsculas kebab-case, de 1 a 32 caracteres   |
+| `reserved-theme`             | error          | `system` no se puede configurar como tema                                     |
+| `missing-base`               | error          | Un tema con nombre sin `extends`                                              |
+| `invalid-base`               | error          | `extends` distinto de `"light"` o `"dark"`                                    |
+| `unexpected-base`            | error          | `extends` en `light` o `dark`                                                 |
+| `invalid-length`             | error          | Las longitudes deben ser `0` o un número con `rem`, `em` o `px`               |
+| `invalid-font-stack`         | error          | Nombres de fuente vacíos o que contienen `;`, `{` o `}`                       |
+| `invalid-output`             | error          | `output` no es una ruta `.css`, está dentro de `node_modules`, es el archivo de configuración o un directorio |
+| `invalid-types-output`       | error          | Las mismas reglas para `types` (`.d.ts`)                                      |
+| `invalid-metrics`            | error          | Métricas de fuente sin los campos numéricos obligatorios                      |
+| `invalid-fallbacks`          | error          | Métricas de respaldo sin `familyName` o `xWidthAvg`                           |
+| `missing-metrics`            | aviso          | Una familia personalizada sin métricas; ese rol no se recorta                 |
+| `unsupported-color-syntax`   | error          | Colores con nombre, `var()`, `color-mix()`, `lab()`…: usa hex, rgb, hsl u oklch |
+| `invalid-color`              | error          | Un color que no se puede analizar (por ejemplo un `oklch(` mal formado)       |
+| `alpha-not-allowed`          | error          | Transparencia en un rol distinto de `border`                                  |
+| `out-of-gamut`               | aviso          | Fuera de sRGB; el contraste se calcula tras ajustar a la gama y el CSS conserva tu valor |
+| `contrast`                   | aviso/error    | Un par por debajo de su mínimo (4,5:1 en texto, 3:1 en bordes/foco)           |
+| `reserved`                   | —              | Forma parte de la lista de códigos pero esta versión no lo emite (marcaba claves reservadas para una versión futura) |
+| `invalid-breakpoint-name`    | error          | Los nombres deben ir en lower camelCase                                       |
+| `reserved-breakpoint-name`   | error          | `base`, prefijos de clase de Neshel o nombres de variante de Tailwind         |
+| `duplicate-breakpoint-name`  | error          | Los nombres deben ser únicos sin distinguir mayúsculas                        |
+| `breakpoint-redefined`       | error          | El modo `extend` no puede redefinir `sm`, `md`, `lg`, `xl` ni `2xl`           |
+| `invalid-breakpoint-width`   | error          | Los anchos deben ser valores `rem` positivos                                  |
+| `duplicate-breakpoint-width` | error          | Dos breakpoints con el mismo ancho (incluidos los predeterminados en modo `extend`) |
+| `too-many-breakpoints`       | error          | Como máximo 12 breakpoints                                                    |
+| `empty-breakpoints`          | error          | `values` está vacío                                                           |
+| `breakpoint-order`           | aviso          | Los valores no se escribieron en orden ascendente; la salida se ordena por ancho |
+| `no-component-packages`      | aviso          | Hay breakpoints configurados pero ningún paquete de Neshel con manifiesto de estilos instalado |
+
+## Errores habituales
+
+- **Código 3 «no configuration found»**: ejecuta el comando en el directorio que contiene
+  `neshel.config.ts` o pasa `--config`.
+- **Código 3 al cargar**: un error de sintaxis o un import que no se puede resolver desde el directorio
+  del archivo de configuración (instala `@neshel-ui/config` junto a la CLI).
+- **Código 4 en CI**: versiona el resultado regenerado o genéralo en la compilación antes de la
+  comprobación.

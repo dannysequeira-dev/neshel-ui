@@ -1,0 +1,41 @@
+---
+title: Un Stack sencillo
+description: Coloca elementos en vertical con un espaciado coherente basado en tokens.
+---
+
+`Stack` es una columna flex con una prop `space`. Los valores de espaciado son tokens: `"4"` es
+`calc(var(--neshel-spacing) * 4)`, es decir, 1rem con la unidad de espaciado predeterminada.
+
+Sustituye `src/App.tsx` del paso anterior:
+
+```tsx title="src/App.tsx"
+import { Button, Input, Label } from "@neshel-ui/components";
+import { Inline, Stack } from "@neshel-ui/layout";
+
+export default function App() {
+  return (
+    <main style={{ padding: "2rem", maxWidth: "28rem" }}>
+      <Stack space="6">
+        <Stack space="2">
+          <Label htmlFor="email">Email</Label>
+          <Input id="email" type="email" autoComplete="email" />
+        </Stack>
+        <Inline space="3" justify="end">
+          <Button variant="ghost">Cancel</Button>
+          <Button>Subscribe</Button>
+        </Inline>
+      </Stack>
+    </main>
+  );
+}
+```
+
+- `Stack` apila a sus hijos con un `gap` igual a `space`. `Inline` es su equivalente horizontal.
+- `justify="end"` lleva los botones al final de la fila (a la derecha en idiomas de izquierda a
+  derecha).
+- Sin márgenes: el `gap` es el único espaciado, así que es predecible.
+
+<Preview demo="layout/stack-basic" />
+
+Siguiente: [Heading y Paragraph](/es/docs/getting-started/typography/). Referencia:
+[Stack](/es/docs/layout/stack/), [Inline](/es/docs/layout/inline/).

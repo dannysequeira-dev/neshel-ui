@@ -1,0 +1,68 @@
+---
+title: MobileMenu
+description: Un sheet de navegación para pantallas pequeñas que se cierra tras navegar, con Escape y al alcanzar su breakpoint.
+package: components
+exports: [MobileMenu, MobileMenuTrigger, MobileMenuContent, MobileMenuNav, MobileMenuLink, MobileMenuProps, MobileMenuTriggerProps, MobileMenuContentProps, MobileMenuNavProps, MobileMenuLinkProps]
+---
+
+<ComponentKind package="components" name="MobileMenu" />
+
+## Propósito
+
+`MobileMenu` lleva los enlaces de navegación a un sheet por debajo de un breakpoint. Su disparador se
+oculta a partir del breakpoint, y un menú abierto se cierra solo cuando la ventana lo alcanza.
+
+## Importación
+
+```tsx title="import.tsx"
+import {
+  MobileMenu,
+  MobileMenuContent,
+  MobileMenuLink,
+  MobileMenuNav,
+  MobileMenuTrigger,
+} from "@neshel-ui/components";
+```
+
+## Uso
+
+La demo usa `breakpoint="2xl"` para que puedas abrirlo en casi cualquier ancho; en una barra real,
+combínalo con `NavbarNav hideBelow` (consulta [Navbar](/es/docs/components/navbar/#comportamiento-adaptable)).
+
+<Preview demo="components/mobile-menu-basic" />
+
+## API
+
+<ApiTable package="components" name="MobileMenuProps" />
+<ApiTable package="components" name="MobileMenuTriggerProps" />
+<ApiTable package="components" name="MobileMenuContentProps" />
+<ApiTable package="components" name="MobileMenuNavProps" />
+<ApiTable package="components" name="MobileMenuLinkProps" />
+
+- `MobileMenu`: `breakpoint` (`"md"` por defecto, cualquier nombre configurado), `open` /
+  `defaultOpen` / `onOpenChange`.
+- `MobileMenuTrigger`: un botón con un icono predeterminado y la etiqueta accesible `label` («Open
+  menu»).
+- `MobileMenuContent`: un sheet (`side` `"left"` por defecto) titulado con `title` («Menu»), oculto
+  visualmente por defecto (`titleHidden`).
+- `MobileMenuLink`: `active` (`aria-current="page"`), `asChild` para enlaces del router. Activar un
+  enlace cierra el menú.
+
+## Accesibilidad
+
+El contenido es un diálogo modal: el foco queda atrapado y vuelve al disparador. Traduce `label` y
+`title` en interfaces que no estén en inglés.
+
+## Teclado
+
+| Tecla                                  | Acción                    |
+| -------------------------------------- | ------------------------- |
+| Enter / Espacio en el disparador       | Abrir el menú             |
+| Tab                                    | Recorrer los enlaces      |
+| Escape                                 | Cerrar                    |
+
+## Errores habituales
+
+- Breakpoints distintos en `MobileMenu` y en `NavbarNav hideBelow`.
+- Poner toda la navegación solo en un MobileMenu con un breakpoint mayor que los escritorios
+  habituales: los usuarios de escritorio la perderían.

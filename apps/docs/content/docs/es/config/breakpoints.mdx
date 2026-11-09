@@ -1,0 +1,43 @@
+---
+title: Breakpoints
+description: El esquema de configuración de breakpoints y el tipo ampliable BreakpointRegistry que comparten todos los paquetes.
+package: config
+exports: [BreakpointsInput, BreakpointWidth, DefaultBreakpointName, BreakpointRegistry, BreakpointName]
+---
+
+```ts title="neshel.config.ts"
+import { defineConfig } from "@neshel-ui/config";
+
+export default defineConfig({
+  breakpoints: {
+    mode: "extend",
+    values: { phone: "30rem", tablet: "52rem" },
+    tailwind: true,
+  },
+});
+```
+
+<ApiTable package="config" name="BreakpointsInput" />
+<ApiTable package="config" name="BreakpointWidth" />
+<ApiTable package="config" name="DefaultBreakpointName" />
+
+## `BreakpointRegistry` y `BreakpointName`
+
+`BreakpointName` es la unión de nombres que aceptan las props adaptables (además de `base`). Se deriva
+de la interfaz ampliable `BreakpointRegistry`: vacía por defecto (así se aplican los nombres
+predeterminados `sm md lg xl 2xl`) y ampliada por las declaraciones que escribe `neshel generate`:
+
+```ts title="neshel.generated.d.ts" no-check="ampliación de módulo mostrada tal cual; cambiaría los tipos de breakpoint de todos los demás fragmentos"
+export {};
+declare module "@neshel-ui/config" {
+  interface BreakpointRegistry {
+    readonly names: "phone" | "tablet" | "sm" | "md" | "lg" | "xl" | "2xl";
+  }
+}
+```
+
+<ApiTable package="config" name="BreakpointName" />
+<ApiTable package="config" name="BreakpointRegistry" />
+
+Layout, tipografía y componentes declaran `@neshel-ui/config` como dependencia peer únicamente por
+este tipo. Flujo completo: [Breakpoints personalizados](/es/docs/guides/custom-breakpoints/).

@@ -1,0 +1,58 @@
+---
+title: Proyectos de inicio
+description: Proyectos listos para ejecutar con Vite + Tailwind CSS, Vite + CSS plano y Next.js App Router.
+---
+
+<ReleaseNotice />
+
+Hay tres proyectos de inicio en el directorio [`starters/`](https://github.com/dannysequeira-dev/neshel-ui/tree/main/starters)
+del repositorio. Cada uno es una aplicación completa con configuración real —sin alias del monorepo— y
+el CI de Neshel-UI los compila a partir de los paquetes empaquetados (`pnpm check:starters`).
+
+| Proyecto         | Tecnología                                          | Muestra                                            |
+| ---------------- | --------------------------------------------------- | -------------------------------------------------- |
+| `vite-tailwind`  | React 19, Vite 8, Tailwind CSS v4, TypeScript       | Integración con Tailwind, componentes, cambio de tema |
+| `vite-css`       | React 19, Vite 8, CSS plano, TypeScript             | Sin Tailwind en absoluto                           |
+| `next-app`       | Next.js 16 App Router, Tailwind CSS v4, TypeScript  | Server Components, breakpoints y tema propios      |
+
+## Obtener un proyecto de inicio
+
+Copia el directorio de un proyecto desde un clon del repositorio:
+
+```bash
+git clone --depth 1 https://github.com/dannysequeira-dev/neshel-ui.git
+cp -r neshel-ui/starters/vite-tailwind my-app
+cd my-app
+```
+
+En Windows PowerShell usa `Copy-Item -Recurse neshel-ui/starters/vite-tailwind my-app`.
+
+### Cuando los paquetes estén publicados
+
+```bash
+pnpm install
+pnpm dev
+```
+
+### Antes de la publicación (hoy)
+
+Los proyectos dependen de `^0.1.0` en npm, que todavía no existe. Compila y empaqueta los paquetes en
+el clon y apunta el proyecto a los tarballs:
+
+```bash
+cd neshel-ui
+pnpm install --frozen-lockfile
+pnpm build:packages
+node scripts/pack-local.mjs --out ../neshel-tarballs
+cd ../my-app
+node ../neshel-ui/scripts/pack-local.mjs --use ../neshel-tarballs
+pnpm install
+```
+
+`--use` reescribe las dependencias `@neshel-ui/*` del proyecto con rutas `file:` a los tarballs.
+
+## Descargas
+
+Los archivos ZIP de los proyectos se generan de forma determinista y se verifican en CI, pero solo se
+ofrecen para descarga cuando los paquetes estén publicados en npm; hasta entonces no se podrían
+instalar.

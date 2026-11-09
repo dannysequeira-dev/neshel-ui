@@ -1,0 +1,50 @@
+---
+title: Tooltip
+description: Una etiqueta de texto breve que aparece al pasar el puntero y al enfocar con el teclado.
+package: components
+exports: [Tooltip, TooltipTrigger, TooltipContent, TooltipProps, TooltipTriggerProps, TooltipContentProps]
+---
+
+<ComponentKind package="components" name="Tooltip" />
+
+## Propósito
+
+`Tooltip` muestra una etiqueta de texto breve y no esencial para su disparador al pasar el puntero y al
+enfocar con el teclado; normalmente para botones de solo icono.
+
+## Importación
+
+```tsx title="import.tsx"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@neshel-ui/components";
+```
+
+## Uso
+
+<Preview demo="components/tooltip-basic" />
+
+## API
+
+<ApiTable package="components" name="TooltipProps" />
+<ApiTable package="components" name="TooltipTriggerProps" />
+<ApiTable package="components" name="TooltipContentProps" />
+
+Cada tooltip incluye su propio proveedor; no hace falta un proveedor a nivel de aplicación.
+`delayDuration` controla el retraso al pasar el puntero.
+
+## Accesibilidad
+
+- El texto del tooltip describe al disparador; el disparador sigue necesitando su propio nombre
+  accesible (`aria-label` en un botón de solo icono).
+- Los tooltips no son accesibles en dispositivos táctiles sin puntero: nunca pongas en ellos
+  información esencial ni contenido interactivo.
+
+## Teclado
+
+| Tecla  | Acción                              |
+| ------ | ----------------------------------- |
+| Tab    | Enfocar el disparador → lo muestra  |
+| Escape | Ocultar el tooltip                  |
+
+## Errores habituales
+
+- Enlaces o botones dentro de un tooltip: usa un [Popover](/es/docs/components/popover/).

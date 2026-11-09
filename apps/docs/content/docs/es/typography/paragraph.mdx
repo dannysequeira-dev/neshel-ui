@@ -1,0 +1,37 @@
+---
+title: Paragraph
+description: Texto principal con longitud de línea, interlineado y ajuste legibles, recortado con Capsize.
+package: typography
+exports: [Paragraph, ParagraphProps, ParagraphElement]
+---
+
+## Propósito
+
+`Paragraph` renderiza texto principal (`p`, o `div` cuando el contenido incluye elementos de bloque)
+con la fuente `body` en tamaño `base`.
+
+## Importación
+
+```tsx title="import.tsx"
+import { Paragraph } from "@neshel-ui/typography";
+```
+
+## Uso
+
+<Preview demo="typography/paragraph-measure" />
+
+## API
+
+<ApiTable package="typography" name="ParagraphProps" />
+<ApiTable package="typography" name="ParagraphElement" />
+
+## Accesibilidad
+
+Usa `measure` (`comfortable` ≈ 65 caracteres) en textos largos: las líneas largas cuestan más de leer.
+Evita `truncate` en información esencial: el texto truncado solo está completo para quien puede verlo
+por otros medios.
+
+## Errores habituales
+
+- Poner un `div` o una lista dentro de `<Paragraph>` (un `p`): usa `as="div"`.
+- Fijar `line-height` con una clase de utilidad: usa `leading` para que el recorte siga siendo exacto.

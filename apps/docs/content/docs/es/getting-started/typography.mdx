@@ -1,0 +1,42 @@
+---
+title: Heading y Paragraph
+description: Añade texto semántico y recortado con precisión con el paquete de tipografía.
+---
+
+Los componentes de tipografía separan la **semántica** (`as`: qué elemento HTML) de la **apariencia**
+(`size`, `weight`, `tone`). Encabezados, párrafos y leyendas se recortan con Capsize, de modo que el
+espacio que fijas en un `Stack` es el que ves entre la altura de las mayúsculas y la línea base.
+
+```tsx title="src/App.tsx"
+import { Button } from "@neshel-ui/components";
+import { Stack } from "@neshel-ui/layout";
+import { Caption, Heading, Paragraph } from "@neshel-ui/typography";
+
+export default function App() {
+  return (
+    <main style={{ padding: "2rem" }}>
+      <Stack space="4" alignX="start">
+        <Caption>Welcome</Caption>
+        <Heading as="h1" size="3xl">
+          A calm place to start
+        </Heading>
+        <Paragraph tone="muted" measure="comfortable">
+          Neshel-UI keeps typography semantic, readable and precise. Headings choose their element
+          with <code>as</code> and their look with <code>size</code>.
+        </Paragraph>
+        <Button>Get started</Button>
+      </Stack>
+    </main>
+  );
+}
+```
+
+- Un `Heading` es `h2` por defecto; su **tamaño** predeterminado sigue su nivel (`h1` → `4xl`,
+  `h2` → `3xl`, …). Cambiar `size` nunca cambia el elemento.
+- `measure="comfortable"` limita las líneas a unos 65 caracteres.
+- Fuentes: la pila predeterminada empieza por Inter. Carga la fuente que use tu aplicación y configura
+  sus métricas; consulta [Tipografía y Capsize](/es/docs/guides/typography-capsize/).
+
+<Preview demo="typography/heading-scale" />
+
+Siguiente: [Añadir un Dialog](/es/docs/getting-started/dialog/).

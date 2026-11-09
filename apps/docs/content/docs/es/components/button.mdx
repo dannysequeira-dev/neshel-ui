@@ -1,0 +1,79 @@
+---
+title: Button
+description: Botones nativos con variantes, tamaños adaptables, estado de carga, modo de solo icono y enlaces con asChild.
+package: components
+exports: [Button, ButtonProps, ButtonSize, ButtonVariant]
+---
+
+<ComponentKind package="components" name="Button" />
+
+## Propósito
+
+`Button` desencadena una acción. Por defecto renderiza un `<button type="button">` nativo; con
+`asChild` da estilo a un enlace o a un enlace del router.
+
+## Importación
+
+```tsx title="import.tsx"
+import { Button } from "@neshel-ui/components";
+```
+
+## Uso
+
+<Preview demo="components/button-variants" />
+
+## API
+
+<ApiTable package="components" name="ButtonProps" />
+<ApiTable package="components" name="ButtonVariant" />
+<ApiTable package="components" name="ButtonSize" />
+
+Los atributos nativos del botón (`type`, `disabled`, `form`, `onClick`, …) se transmiten tal cual.
+
+## Variantes, tamaños y estados
+
+<Preview demo="components/button-sizes" />
+
+- `variant`: `primary` (predeterminada), `secondary`, `outline`, `ghost`, `destructive`, `link`.
+- `size`: `sm`, `md` (predeterminado), `lg`, **adaptable**: `size={{ base: "sm", md: "lg" }}`.
+- `iconOnly`: un botón cuadrado; requiere `aria-label` o `aria-labelledby` (aviso en desarrollo).
+- `fullWidth`: ocupa todo el ancho de su contenedor.
+- `loading`: mantiene el foco (`aria-disabled="true"`, `data-loading`), ignora los clics y el envío de
+  formularios y muestra un indicador decorativo. Anuncia el progreso con tu propia región *live*.
+
+## Composición y `asChild`
+
+```tsx fragment
+<Button asChild variant="ghost">
+  <a href="/docs">Documentation</a>
+</Button>
+```
+
+El hijo recibe las clases y los manejadores. `asChild` con `disabled` o `loading` lanza un error: los
+enlaces no se pueden deshabilitar; renderiza un `<button>` deshabilitado en su lugar.
+
+## Accesibilidad
+
+- Un botón nativo: enfocable, se activa con Enter y Espacio y se anuncia como «botón».
+- Usa `type="submit"` explícitamente dentro de formularios cuando deba enviar (el valor por defecto es
+  `type="button"`).
+- `loading` usa `aria-disabled` para que el foco no se pierda a mitad de una interacción.
+
+## Teclado
+
+| Tecla            | Acción            |
+| ---------------- | ----------------- |
+| Tab              | Enfocar el botón  |
+| Enter / Espacio  | Activar           |
+
+## Estilos
+
+Las variantes leen `--neshel-primary`, `--neshel-secondary`, `--neshel-destructive`, `--neshel-border`
+y sus primeros planos; el anillo de foco usa `--neshel-focus`. Añade utilidades con `className`.
+
+## Errores habituales
+
+- Navegar con `onClick` en un Button: usa `asChild` con un enlace para que el navegador sepa que es
+  navegación.
+- Un botón de solo icono sin `aria-label`.
+- Olvidar `type="submit"` y preguntarse por qué no se envía el formulario.

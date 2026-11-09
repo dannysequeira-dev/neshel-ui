@@ -1,0 +1,81 @@
+---
+title: Instalación
+description: Instala los paquetes de Neshel-UI que necesites con pnpm, npm o Yarn — desde npm tras la publicación o desde tarballs locales hoy.
+---
+
+Neshel-UI son cinco paquetes. Instala solo lo que uses: `@neshel-ui/config` siempre (aporta los
+tokens), más layout, tipografía o componentes, y la CLI cuando personalices temas, fuentes o
+breakpoints.
+
+## Dependencias peer
+
+| Paquete                 | También debes instalar                                     |
+| ----------------------- | ---------------------------------------------------------- |
+| `@neshel-ui/config`     | —                                                          |
+| `@neshel-ui/layout`     | `react@19`, `@neshel-ui/config`                            |
+| `@neshel-ui/typography` | `react@19`, `@neshel-ui/config`                            |
+| `@neshel-ui/components` | `react@19`, `react-dom@19`, `@neshel-ui/config`            |
+| `@neshel-ui/cli`        | `@neshel-ui/config` (como dependencia de desarrollo junto a la CLI) |
+
+Las dependencias en tiempo de ejecución (Radix, Base UI, tailwind-variants…) se instalan solas. pnpm
+y npm ≥ 7 instalan automáticamente las peers que falten; Yarn las indica para que las añadas tú.
+
+## Desde npm (tras la publicación de 0.1.0)
+
+<PackageInstall packages={["@neshel-ui/config", "@neshel-ui/layout", "@neshel-ui/typography", "@neshel-ui/components"]} />
+
+Y, para la configuración (opcional):
+
+<PackageInstall packages={["@neshel-ui/cli"]} dev />
+
+### Elegir pnpm, npm o Yarn
+
+Los tres funcionan: los paquetes son ESM estándar con `exports` normales. Las herramientas de
+Neshel-UI y sus pruebas automáticas de consumidores externos usan **pnpm**; el mismo `package.json`
+funciona con npm y con Yarn (Berry con el *linker* `node-modules` o con Plug'n'Play). Usa un solo
+gestor por proyecto y versiona su archivo de bloqueo.
+
+## Desde tarballs locales (antes de la publicación)
+
+Hasta que los paquetes estén en npm, compílalos desde el repositorio e instala los tarballs
+empaquetados. Así es exactamente como los instalan las pruebas automáticas de consumidores externos
+de Neshel-UI.
+
+<Steps>
+<Step>
+
+### Compilar y empaquetar (en un clon del repositorio de Neshel-UI)
+
+```bash
+pnpm install --frozen-lockfile
+pnpm build:packages
+node scripts/pack-local.mjs --out ../neshel-tarballs
+```
+
+`pack-local` ejecuta `pnpm pack` para los cinco paquetes públicos e imprime los nombres de los
+tarballs (`neshel-ui-config-0.1.0.tgz`, …).
+
+</Step>
+<Step>
+
+### Instalarlos en tu aplicación
+
+```bash
+pnpm add ../neshel-tarballs/neshel-ui-config-0.1.0.tgz ../neshel-tarballs/neshel-ui-layout-0.1.0.tgz ../neshel-tarballs/neshel-ui-typography-0.1.0.tgz ../neshel-tarballs/neshel-ui-components-0.1.0.tgz
+```
+
+npm: `npm install <rutas>`; Yarn: `yarn add <rutas>`. Las versiones de los nombres de archivo siguen
+las versiones actuales del repositorio.
+
+</Step>
+</Steps>
+
+<Callout type="warn" title="No uses enlaces del workspace en aplicaciones">
+  Enlazar los paquetes del monorepo (`link:` o `workspace:`) se salta el empaquetado y puede ocultar
+  problemas que verían los consumidores reales. Prueba siempre con tarballs empaquetados.
+</Callout>
+
+## Siguientes pasos
+
+Configura [TypeScript](/es/docs/getting-started/typescript/) y después añade los
+[imports de CSS](/es/docs/getting-started/css/).

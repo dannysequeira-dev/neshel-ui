@@ -1,0 +1,80 @@
+---
+title: Combobox
+description: Un campo de texto filtrable para selección simple o múltiple, con grupos y filtrado externo.
+package: components
+exports: [Combobox, ComboboxProps, ComboboxSingleProps, ComboboxMultipleProps, ComboboxItem, ComboboxItemGroup]
+---
+
+<ComponentKind package="components" name="Combobox" />
+
+## Propósito
+
+`Combobox` permite escribir para filtrar una lista y elegir un valor (por defecto) o varios
+(`multiple`). El valor siempre es uno de los elementos: no es un campo de texto libre.
+
+## Importación
+
+```tsx title="import.tsx"
+import { Combobox } from "@neshel-ui/components";
+```
+
+## Modo simple
+
+<Preview demo="components/combobox-single" />
+
+## Modo múltiple
+
+<Preview demo="components/combobox-multiple" />
+
+## Filtrado externo (búsqueda en el servidor)
+
+Pasa `filter={null}`, actualiza `items` desde `onInputValueChange` y establece `loading` mientras
+cargas. Los chips seleccionados conservan sus etiquetas aunque cambien los resultados.
+
+<Preview demo="components/combobox-async" />
+
+## API
+
+<ApiTable package="components" name="ComboboxProps" />
+<ApiTable package="components" name="ComboboxSingleProps" />
+<ApiTable package="components" name="ComboboxMultipleProps" />
+<ApiTable package="components" name="ComboboxItem" />
+<ApiTable package="components" name="ComboboxItemGroup" />
+
+`ComboboxProps` es la unión de las variantes simple y múltiple: con `multiple`, `value` es un
+`string[]`; sin ella, `string | null`.
+
+## Controlado y no controlado
+
+- Valor: `value` / `defaultValue` / `onValueChange`.
+- Texto del campo: `inputValue` / `defaultInputValue` / `onInputValueChange`.
+- Desplegable: `open` / `defaultOpen` / `onOpenChange`.
+
+## Formularios
+
+Con `name`, se envía el valor seleccionado (o cada valor en modo múltiple).
+
+## Accesibilidad
+
+- El campo es un `combobox` que controla un `listbox`; la opción activa se anuncia al moverte.
+- `emptyMessage` («No results») y `loadingMessage` («Loading…») se anuncian en el desplegable.
+- Escape cierra el desplegable y nunca borra el valor; para borrar se usa el botón de limpiar o
+  Retroceso sobre los chips.
+- Dentro de un Dialog o un Popover, el desplegable se renderiza dentro de esa superposición; Escape
+  cierra primero el desplegable.
+
+## Teclado
+
+| Tecla                                  | Acción                                     |
+| -------------------------------------- | ------------------------------------------ |
+| Escribir                               | Filtrar los elementos (abre el desplegable) |
+| ↓ / ↑                                  | Moverse entre elementos                    |
+| Enter                                  | Seleccionar el elemento activo             |
+| Escape                                 | Cerrar el desplegable                      |
+| Retroceso (campo vacío, modo múltiple) | Eliminar el último chip                    |
+
+## Errores habituales
+
+- Esperar texto libre: los valores deben ser elementos. Para sugerencias con texto libre, usa
+  `<Input list="…">` y un `<datalist>`.
+- Filtrar a la vez en local y en el servidor: pasa `filter={null}` cuando filtra la aplicación.

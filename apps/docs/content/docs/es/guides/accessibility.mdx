@@ -1,0 +1,54 @@
+---
+title: Accesibilidad
+description: Qué hace Neshel-UI por la accesibilidad, qué debe seguir haciendo tu aplicación y qué se ha verificado exactamente.
+---
+
+Neshel-UI usa la semántica HTML nativa siempre que existe y primitivas consolidadas (Radix y Base UI)
+para los patrones de interacción complejos. Cada página de componente tiene secciones de
+**Accesibilidad** y **Teclado**; esta página reúne las reglas comunes y el alcance de la verificación.
+
+## Incluido
+
+- **Semántica:** los botones son `<button>`, los enlaces siguen siendo `<a>` (mediante `asChild`), la
+  navegación usa `<nav>` y listas, los diálogos se nombran con su título y los controles de selección
+  exponen `combobox`/`listbox`.
+- **Teclado:** todos los componentes interactivos se manejan con el teclado; el orden del foco sigue el
+  DOM; las superposiciones capturan y restauran el foco; Escape cierra la capa más interna.
+- **Foco visible:** un anillo `--neshel-focus` con contraste 3:1 en los temas incorporados.
+- **Contraste:** los temas incorporados cumplen 4,5:1 en los pares de texto; la CLI comprueba tus
+  temas.
+- **Movimiento reducido:** con `prefers-reduced-motion: reduce` se eliminan las animaciones y
+  transiciones de superposiciones, barra lateral y skeleton; el indicador de carga del Button sigue
+  girando, más despacio, para que el estado ocupado siga siendo perceptible.
+- **Zoom:** los tamaños están en `rem`; los layouts usan flex y grid sin alturas fijas.
+- **Avisos de desarrollo:** botones de solo icono sin nombre accesible, diálogos sin título.
+
+## Tus responsabilidades
+
+- Da a cada control de formulario una etiqueta: `<Label htmlFor>` con un `id`, o
+  `aria-label`/`aria-labelledby`.
+- Describe los errores con `aria-describedby` y marca el control con `invalid`.
+- Da `aria-label` a los botones de solo icono y marca los iconos decorativos con
+  `aria-hidden="true"`.
+- Elige los niveles de encabezado según el esquema del documento (`as`), con independencia del
+  `size` visual.
+- Anuncia los resultados asíncronos (guardado, carga) con tu propia región *live*; `loading` en un
+  Button solo lo marca como ocupado.
+- Ofrece un enlace para saltar a `AppShellContent` (renderiza `<main>`; dale un `id`).
+- Carga las fuentes y mantén los temas personalizados por encima de los mínimos de contraste.
+
+## Compatibilidad con navegadores y tecnologías de apoyo
+
+| Área                                   | Estado                                                                                                     |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| Chromium (Chrome)                      | Batería automática completa de interacción con teclado y puntero reales, más axe-core, en Linux, Windows y macOS. |
+| Firefox y WebKit                       | Flujos automáticos de humo para los componentes interactivos (motores de Playwright en Linux y macOS).     |
+| Safari (el navegador)                  | No se automatiza por separado; la cobertura de WebKit es la señal automática más cercana.                  |
+| Lectores de pantalla                   | Consulta la página de estado de la versión para ver las evaluaciones manuales realizadas y su alcance.    |
+
+<Callout type="warn" title="Las comprobaciones automáticas no son una declaración de conformidad">
+  axe-core y las pruebas de teclado detectan muchos problemas, pero no pueden demostrar que una
+  interfaz sea accesible. Prueba tu aplicación con tecnologías de apoyo reales y con personas reales.
+</Callout>
+
+Detalles y evidencias: [Estado de la versión](/es/docs/project/release-status/).

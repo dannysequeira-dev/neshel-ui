@@ -1,0 +1,48 @@
+---
+title: neshel validate
+description: Comprueba estructura, colores, contraste, breakpoints, fuentes y rutas de salida sin escribir nada.
+package: cli
+exports: [neshel validate, --strict]
+---
+
+```bash
+neshel validate [--config <path>] [--strict] [--debug]
+```
+
+`validate` ejecuta el descubrimiento, la carga y toda la validación, y aplica las reglas de salida al
+valor `output` de la configuración. **Nunca escribe.**
+
+## Etapas
+
+1. **Estructura**: solo claves conocidas (con sugerencias «¿quisiste decir…?»), tipos, `version`,
+   nombres de tema, `extends`, longitudes, pilas de fuentes, `output`/`types`, breakpoints, métricas.
+2. **Lista de sintaxis de color** permitida: hexadecimal, `rgb()`, `rgba()`, `hsl()`, `hsla()`,
+   `oklch()`.
+3. **Análisis** de cada color.
+4. **Transparencia**: transparencia por debajo de 1 solo en `border`.
+5. **Gama**: fuera de sRGB → aviso; el contraste se calcula tras ajustar a la gama.
+6. **Contraste**: cada par del contrato de tokens, para cada tema personalizado.
+
+Todos los diagnósticos de una ejecución se recogen (sin detenerse en el primero) y se ordenan por ruta
+y después por código.
+
+## `--strict`
+
+Convierte la política de contraste efectiva en `error`: los fallos de contraste pasan a ser errores
+(código 1). El `contrast: "warn"` de la configuración no puede rebajar `--strict`.
+
+| Política                                     | Fallo de contraste   |
+| -------------------------------------------- | -------------------- |
+| predeterminada (`contrast` sin definir)      | aviso, código 0      |
+| `contrast: "error"`                          | error, código 1      |
+| `--strict` (con cualquier `contrast`)        | error, código 1      |
+
+## Ejemplo de salida
+
+```text
+error   themes.light.colors.primay   unknown-key               Unknown key "primay". Did you mean "primary"?
+warning themes.light                 contrast                  accentForeground on accent is 3.12:1; minimum 4.5:1 (WCAG 1.4.3).
+neshel: 1 error — nothing written.
+```
+
+Los diagnósticos nunca afirman la conformidad con WCAG. Códigos: [Códigos de salida y diagnósticos](/es/docs/cli/diagnostics/).

@@ -1,0 +1,114 @@
+---
+title: Tipografía y Capsize
+description: Configura tus fuentes y sus métricas, entiende el recorte de Capsize, las fuentes de respaldo, el zoom y las limitaciones.
+---
+
+Las cajas de texto incluyen normalmente el ascendente, el descendente y la mitad del interlineado de
+una fuente, así que 16px entre un encabezado y un párrafo parecen más de 16px. `Heading`, `Paragraph`
+y `Caption` eliminan ese espacio con la técnica de [Capsize](https://seek-oss.github.io/capsize/):
+cada caja empieza en la **altura de las mayúsculas** de la primera línea y termina en la **línea
+base** de la última. Los espacios del layout pasan a ser los espacios visuales.
+
+<Preview demo="typography/capsize-trim" />
+
+## Cómo funciona
+
+Con un interlineado sin unidades, los recortes de Capsize no dependen del tamaño de fuente en `em`.
+`neshel generate` escribe constantes por fuente junto a cada token de familia
+(`--neshel-font-<rol>-cap-trim`, `-baseline-trim`, `-scale`, `-trim`), y los pseudoelementos de recorte
+de los componentes las combinan con el `leading` activo, así que cada tamaño y breakpoint es exacto
+sin CSS adicional.
+
+**Tamaño por altura de mayúsculas:** `font-size = token × --neshel-font-<rol>-scale`. La escala hace
+que cualquier fuente tenga la misma altura de mayúsculas que Inter (la predeterminada) en un mismo
+token de tamaño, de modo que cambiar de fuente conserva la escala visual. Las fuentes predeterminadas
+tienen escala 1.
+
+## Familias y métricas de fuentes
+
+La biblioteca no distribuye ni descarga **ningún archivo de fuente**. Tu aplicación carga sus fuentes
+(alojadas por ti, `@fontsource/*`, `next/font`, …) e indica a Neshel sus métricas:
+
+```ts title="neshel.config.ts"
+import arial from "@capsizecss/metrics/arial";
+import inter from "@capsizecss/metrics/inter";
+import { defineConfig } from "@neshel-ui/config";
+
+export default defineConfig({
+  typography: {
+    families: {
+      body: ["Inter", "system-ui", "sans-serif"],
+      display: ["Inter", "system-ui", "sans-serif"],
+    },
+    metrics: { body: inter, display: inter },
+    // Local fallback fonts adjusted to Inter's metrics while the web font loads (or if it fails).
+    fallbacks: { body: [arial], display: [arial] },
+  },
+});
+```
+
+- Roles de fuente: `body`, `display` (encabezados) y `mono`. Cada uno se convierte en
+  `--neshel-font-<rol>`.
+- `metrics[rol]` acepta cualquier objeto con el formato de Capsize (`capHeight`, `ascent`, `descent`,
+  `lineGap`, `unitsPerEm`, …): de `@capsizecss/metrics` (instálalo como dependencia de desarrollo) o
+  medido a partir de tu propio archivo de fuente con las herramientas de Capsize.
+- Una familia personalizada **sin** métricas muestra `missing-metrics`; ese rol se renderiza sin
+  recorte y con escala 1 (un comportamiento seguro).
+- Valores predeterminados: `body` y `display` usan las métricas de Inter (Inter es la primera de la
+  pila predeterminada); `mono` no tiene métricas y nunca se recorta.
+
+### Usar un paquete de fuente variable
+
+`@fontsource-variable/inter` registra la familia **«Inter Variable»** (no «Inter»). Pon primero el
+nombre que realmente cargas, con las métricas correspondientes; este sitio hace exactamente eso:
+
+```ts title="neshel.config.ts"
+import inter from "@capsizecss/metrics/inter";
+import { defineConfig } from "@neshel-ui/config";
+
+export default defineConfig({
+  typography: {
+    families: { body: ["Inter Variable", "Inter", "system-ui", "sans-serif"] },
+    metrics: { body: inter },
+  },
+});
+```
+
+## Fuentes de respaldo
+
+`fallbacks[rol]` genera reglas `@font-face` de respaldo de Capsize (`size-adjust`, `ascent-override`,
+`descent-override`, `line-gap-override`) y las inserta tras la familia principal. Así el texto conserva
+la caja de línea de la fuente principal mientras la fuente web se carga o si falla. La altura de las
+mayúsculas de la fuente de respaldo puede variar ligeramente: Capsize iguala anchos y cajas de línea,
+no cada glifo.
+
+## Accesibilidad y zoom
+
+- Los tamaños están en `rem`, así que siguen el tamaño de letra configurado en el navegador; el zoom
+  de la página también los escala.
+- El recorte usa márgenes negativos, nunca recorta el contenido: acentos y descendentes se pintan
+  fuera de la caja recortada. Deja un espacio (`space`) entre bloques recortados.
+- La semántica nunca cambia con el tamaño: `<Heading as="h2" size="5xl">` sigue siendo un `h2`.
+
+## Limitaciones
+
+- El recorte solo es exacto cuando las métricas configuradas describen la fuente que realmente se
+  renderiza. Con las métricas de Inter y sin Inter cargada, el navegador usa la siguiente familia y el
+  recorte se desvía en la diferencia de altura de mayúsculas.
+- Los elementos recortados usan `::before`/`::after`; pasa `trim={false}` para usar tus propios
+  pseudoelementos.
+- El recorte necesita una caja de bloque: se elimina automáticamente en elementos en línea (`a`,
+  `span`, `small`, incluidos los hijos DOM con `asChild`) y con `truncate`.
+- Un `line-height` establecido por otro CSS (por ejemplo una utilidad `leading-*` de Tailwind) no lo ve
+  el cálculo del recorte; usa la prop `leading`.
+- CSS `text-box-trim` (que lee la fuente renderizada) todavía no se usa porque no está disponible en
+  todos los motores.
+
+## Diagnosticar desajustes de métricas
+
+Dibuja el contorno de un elemento recortado. Si el contorno no toca la parte superior de las
+mayúsculas y la línea base, la fuente renderizada no coincide con las métricas configuradas: comprueba
+`document.fonts.check("16px Inter")`, la carga de la fuente y `typography.metrics`.
+
+Referencia: [Heading](/es/docs/typography/heading/), [Paragraph](/es/docs/typography/paragraph/),
+[tipos de tipografía de config](/es/docs/config/typography/).
