@@ -2,6 +2,10 @@
 
 Brief § → requirement → implementation → verification. Evidence details: [evidence.md](evidence.md).
 
+**Closure commit `3d86273`: CI run 42632460159, 13/13 jobs green** (validate ×5, docs ×3 OS, Next.js +
+starters + bundle budgets + release rehearsal ×3 OS, Chromium/Firefox/WebKit on Linux and macOS).
+Previous: 42631486037 (`df96f64`, 13/13), 42630400156 (`3182326`, 13/13).
+
 ## Success criteria
 
 | SC     | Criterion                                                                         | Result                                                                                                                                                                   |
