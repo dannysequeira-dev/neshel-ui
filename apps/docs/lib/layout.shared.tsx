@@ -12,7 +12,7 @@ export function baseOptions(locale: Locale): BaseLayoutProps {
     links: [
       { text: t.navDocs, url: `/${locale}/docs/`, active: "nested-url" },
       { text: t.navComponents, url: `/${locale}/docs/components/`, active: "nested-url" },
-      { text: t.navExamples, url: `/${locale}/examples/`, active: "nested-url" },
+      { text: t.navExamples, url: `/${locale}/docs/examples/`, active: "nested-url" },
     ],
   };
 }

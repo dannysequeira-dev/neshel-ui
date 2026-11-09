@@ -10,7 +10,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const entries: MetadataRoute.Sitemap = [];
   for (const locale of locales) {
     entries.push({ url: absoluteUrl(`/${locale}/`) });
-    entries.push({ url: absoluteUrl(`/${locale}/examples/`) });
     for (const slug of exampleSlugs)
       entries.push({ url: absoluteUrl(`/${locale}/examples/${slug}/`) });
     for (const page of source.getPages(locale)) {

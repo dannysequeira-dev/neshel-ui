@@ -250,7 +250,6 @@ function checkLinks(problems, pages) {
   for (const page of pages) routes.set(pageUrl(page.locale, page.slug), headingSlugs(page.body));
   for (const locale of LOCALES) {
     routes.set(`/${locale}/`, new Set());
-    routes.set(`/${locale}/examples/`, new Set());
     for (const slug of ["dashboard", "form", "landing"])
       routes.set(`/${locale}/examples/${slug}/`, new Set());
   }

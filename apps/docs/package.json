@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "neshel generate && next dev",
     "build": "neshel generate && next build",
-    "typecheck": "neshel generate && next typegen && tsc -p tsconfig.json --noEmit"
+    "typecheck": "next typegen && tsc -p tsconfig.typecheck.json --noEmit"
   },
   "dependencies": {
     "@fontsource-variable/inter": "5.2.8",
