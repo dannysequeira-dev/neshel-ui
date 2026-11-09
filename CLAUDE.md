@@ -62,7 +62,10 @@ install without monorepo internals. **Do not implement the entire library in one
 - `pnpm build:packages` — clean `packages/*/dist`, build TS package exports and copy styles.
 - `pnpm check:exports` — check exported paths exist (requires build).
 - `pnpm check:pack` — validate real `pnpm pack` tarballs (publint, attw, external import/type checks).
-- `pnpm check:consumer` — packed `@neshel-ui/config` in a generated external Vite + Tailwind app (network).
+- `pnpm check:consumer` — packed packages in generated external Vite apps (Tailwind, plain, configured,
+  custom breakpoints, component labs with SSR; network). `--artifacts <dir>` keeps the builds.
+- `pnpm check:browser` / `pnpm check:browser:components --consumers <dir>` — computed styles and
+  real-input interaction + axe checks in headless Chrome against those builds.
 - `pnpm check` — doctor, lint, typecheck, test, build, check:exports, check:pack (offline).
 - `pnpm test` — `node:test` suites (scripts, tarball reader, validators, portability).
 - `pnpm typecheck` — workspace typecheck.

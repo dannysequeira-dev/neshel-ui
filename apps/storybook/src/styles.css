@@ -3,6 +3,7 @@
 /* The same distributable stylesheets external applications import (FR-080, feature 004 FR-054). */
 @import "@neshel-ui/layout/styles.css";
 @import "@neshel-ui/typography/styles.css";
-/* `neshel generate` output: custom breakpoints for layout + typography, Tailwind @theme. */
+@import "@neshel-ui/components/styles.css";
+/* `neshel generate` output: custom breakpoints for layout, typography and components, Tailwind @theme. */
 @import "./neshel.generated.css";
 @import "./themes.css";

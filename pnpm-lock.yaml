@@ -335,6 +335,9 @@ importers:
 
   apps/storybook:
     dependencies:
+      '@neshel-ui/components':
+        specifier: workspace:*
+        version: link:../../packages/components
       '@neshel-ui/config':
         specifier: workspace:*
         version: link:../../packages/config

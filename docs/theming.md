@@ -127,6 +127,21 @@ layer sets `color-scheme` under the canonical order.
   [Custom breakpoints](layout.md#custom-breakpoints). With configured breakpoints the generated file
   is imported **after** the package stylesheets (contracts/breakpoints.md §5).
 
+## Status colour roles (feature 005)
+
+`success`/`successForeground` and `warning`/`warningForeground` join the contract (25 roles; ADR
+0013) for Badge and other status presentation. Defaults: light `#1d6b3e`/`#ffffff` (6.51:1) and
+`#f2c14e`/`#2b1d00` (9.78:1); dark `#6fd09a`/`#04170b` (9.85:1) and `#f2c35b`/`#231800` (10.59:1).
+Theme inputs are partial, so configurations written before feature 005 inherit them. Tailwind
+consumers get `bg-neshel-success`, `text-neshel-warning-foreground`, …
+
+Components consume component-level custom properties with fallbacks that applications may set:
+`--neshel-sidebar-width`, `--neshel-sidebar-rail-width`, `--neshel-navbar-height`,
+`--neshel-z-overlay`, `--neshel-z-popover`, `--neshel-overlay-backdrop`,
+`--neshel-shell-content-padding` ([components guide](components.md)). Overlays rendered in
+portals copy the trigger's `data-neshel-theme`, so nested themes apply to dialogs, menus and
+selection popups.
+
 ## Accessibility
 
 Built-in themes meet 4.5:1 for text pairs and 3:1 for focus and input boundaries (WCAG 2.1

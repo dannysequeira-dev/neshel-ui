@@ -1242,6 +1242,10 @@ const rail = '.neshel-sidebar[data-collapsed][data-collapsible="icon"]';
 rule([`${rail} .neshel-sidebar-item-label`, `${rail} .neshel-sidebar-group-label`], visuallyHidden);
 rule(`${rail} .neshel-sidebar-item`, { "justify-content": "center", "padding-inline": "0" });
 rule([`${rail} .neshel-sidebar-sub-list`, `${rail} .neshel-chevron`], { display: "none" });
+rule([`${rail} .neshel-sidebar-header`, `${rail} .neshel-sidebar-footer`], {
+  overflow: "hidden",
+  "white-space": "nowrap",
+});
 rule(".neshel-sidebar", { transition: "none" }, REDUCED_MOTION);
 
 // ---------------------------------------------------------------------------------------------

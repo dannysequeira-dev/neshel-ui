@@ -4897,6 +4897,19 @@
       ]
     },
     {
+      "selector": ".neshel-sidebar[data-collapsed][data-collapsible=\"icon\"] .neshel-sidebar-header, .neshel-sidebar[data-collapsed][data-collapsible=\"icon\"] .neshel-sidebar-footer",
+      "declarations": [
+        [
+          "overflow",
+          "hidden"
+        ],
+        [
+          "white-space",
+          "nowrap"
+        ]
+      ]
+    },
+    {
       "selector": ".neshel-sidebar",
       "declarations": [
         [

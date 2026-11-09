@@ -236,6 +236,7 @@
   .neshel-sidebar[data-collapsed][data-collapsible="icon"] .neshel-sidebar-item-label, .neshel-sidebar[data-collapsed][data-collapsible="icon"] .neshel-sidebar-group-label { position: absolute; inline-size: 1px; block-size: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); clip-path: inset(50%); white-space: nowrap; border: 0; }
   .neshel-sidebar[data-collapsed][data-collapsible="icon"] .neshel-sidebar-item { justify-content: center; padding-inline: 0; }
   .neshel-sidebar[data-collapsed][data-collapsible="icon"] .neshel-sidebar-sub-list, .neshel-sidebar[data-collapsed][data-collapsible="icon"] .neshel-chevron { display: none; }
+  .neshel-sidebar[data-collapsed][data-collapsible="icon"] .neshel-sidebar-header, .neshel-sidebar[data-collapsed][data-collapsible="icon"] .neshel-sidebar-footer { overflow: hidden; white-space: nowrap; }
   @media (prefers-reduced-motion: reduce) {
     .neshel-sidebar { transition: none; }
     .neshel-overlay[data-state], .neshel-dialog-content[data-state], .neshel-sheet-content[data-state], .neshel-popover-content[data-state], .neshel-menu-content[data-state], .neshel-tooltip, .neshel-navigation-menu-content, .neshel-sidebar-sheet { animation: none; }

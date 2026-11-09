@@ -31,7 +31,9 @@ properties and depend at runtime on `@radix-ui/react-slot` and `tailwind-variant
 0008/0009/0011). Since feature 004 both declare `@neshel-ui/config` as a peer for one type-only
 import (`BreakpointName`, the augmentable breakpoint registry, ADR 0010); neither imports the other.
 The CLI reads their `style-manifest.json` (data) to generate component CSS for custom breakpoints;
-it never imports React packages.
+it never imports React packages. Since feature 005 `components` follows the same pattern (type-only
+`@neshel-ui/config` peer, schema-2 manifest) and depends at runtime only on Radix, Base UI,
+`@radix-ui/react-slot` and `tailwind-variants`.
 The workspace apps use Vite 8 with `@vitejs/plugin-react` 5 since milestone 001.4
 ([ADR 0005](decisions/0005-vite-8.md)); published packages do not depend on Vite.
 
@@ -144,9 +146,24 @@ Status of each decision (implemented / locally verified / CI-verified) is tracke
   active leading; cap-height-normalised sizes; Capsize fallback fonts
   ([ADR 0011](decisions/0011-typography-capsize.md)).
 
+## Feature 005 decisions (2026-11-08)
+
+- Headless engines: Radix for dialogs, sheets, popovers, menus, navigation menu and tooltips;
+  Base UI (select/combobox subpaths only) for Select, MultiSelect and Combobox
+  ([ADR 0012](decisions/0012-headless-primitives.md)).
+- Components reuse the style-table → manifest → renderer pipeline; manifest schema 2 adds keyframes
+  and media-wrapped rules; four status colour roles join the token contract
+  ([ADR 0013](decisions/0013-components-styling-and-tokens.md)).
+- The shell's desktop/mobile mode is decided by CSS at a configurable breakpoint and read after
+  hydration; sidebar content renders once; portals copy the trigger's theme
+  ([ADR 0014](decisions/0014-app-shell-responsive-navigation-and-portals.md)).
+- `components` depends on no other Neshel runtime package (`config` is a type-only peer);
+  `layout` and `typography` still never import `components`.
+
 ## Open decisions
 
-- Whether the components package (feature 005) reuses the same pipeline.
 - `text-box-trim` as a progressive enhancement once cross-browser.
+- Per-component subpath exports (evaluated in feature 005 research R2; not needed while
+  tree-shaking of the single entry is verified).
 
 See [`docs/decisions/`](decisions/0001-architecture.md).
