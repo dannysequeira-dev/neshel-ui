@@ -101,8 +101,7 @@ pnpm docs:build     # static export to apps/docs/out
 pnpm docs:preview   # serve the export
 ```
 
-It is deployed on Vercel from `main` once the owner imports the project — see
-[docs/deployment.md](docs/deployment.md); no public URL exists yet. Maintainer
+Live: **https://neshel-ui.vercel.app** (Vercel, deployed from `main`; see [docs/deployment.md](docs/deployment.md)). Maintainer
 and contract documentation stays in [`docs/`](docs) and [`specs/`](specs).
 
 ## Development

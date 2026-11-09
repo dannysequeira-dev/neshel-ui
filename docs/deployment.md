@@ -2,8 +2,10 @@
 
 **Decision (owner, 2026-11-09):** the official documentation website (`apps/docs`) is hosted on
 **Vercel**, not GitHub Pages. The static export architecture is unchanged (ADR 0015, amended): Vercel
-serves `apps/docs/out` as static files. Status: **prepared and verified locally and in CI with
-`vercel build`; not deployed** — the first deployment needs the owner's Vercel account.
+serves `apps/docs/out` as static files. Status: **deployed** — production: **https://neshel-ui.vercel.app** (Vercel project created by the owner on
+2026-11-09, production branch `main`; first successful production deployment from commit
+`31d58e8`). Preview and branch URLs are protected by Vercel Authentication and sent with
+`X-Robots-Tag: noindex`.
 
 ## How the build works on Vercel
 
@@ -66,8 +68,8 @@ These require the owner's Vercel account (nothing here can be done from the repo
 7. Optional, later: a custom domain (**Settings → Domains**) — this involves DNS and is an owner
    decision; then set `NESHEL_DOCS_SITE_URL` to it for the Production environment and redeploy.
 
-Report the production URL back so the repository (README, repository metadata, release status page)
-can reference it. Until then no document claims a deployed site.
+The production URL is recorded in the README, the repository metadata suggestions and the release
+status page.
 
 ## Verification performed
 
@@ -76,6 +78,11 @@ can reference it. Until then no document claims a deployed site.
 | Simulated production build (`VERCEL_ENV=production`, domain under the reserved `.invalid` TLD) — 14/14 site checks: canonical, `hreflang`, `og:image`, sitemap and robots use the production origin; indexable | local (`pnpm check:docs-site --expect-origin … --expect-indexable`) |
 | Simulated preview build — origin = `VERCEL_URL`, `noindex`, `Disallow: /`, assets at the root                                                                                                                  | local                                                               |
 | `vercel build --prod` with `apps/docs/vercel.json` (Vercel CLI 65.12.1, no account, no deployment) and the same smoke on `.vercel/output/static`                                                               | CI job `vercel build (local, no deployment)` on Linux               |
+
+| **Live production** https://neshel-ui.vercel.app: `pnpm check:docs-site --url https://neshel-ui.vercel.app --expect-origin https://neshel-ui.vercel.app --expect-indexable` — 14/14 (languages, canonical/hreflang/og:image/sitemap/robots on the production origin, language switch, theme, Ctrl+K search EN/ES, live preview, examples, 404 with status 404, axe WCAG A/AA light and dark); `/en/docs` → 308 → `/en/docs/`; 156 sitemap URLs | owner's Vercel project, verified 2026-11-09 |
+
+Deployment lesson: a dashboard _Output Directory_ of `out` made Vercel's Next.js builder look for
+`routes-manifest.json` in the export folder; `vercel.json` now pins `.next`.
 
 `vercel build` could not run on the Windows maintainer machine (the CLI needs symbolic-link
 permission for its builder cache); the CI job covers it.

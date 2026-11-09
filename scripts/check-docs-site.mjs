@@ -29,7 +29,9 @@ async function main() {
   const out = resolve(
     outIndex === -1 ? join(repoRoot, "apps", "docs", "out") : process.argv[outIndex + 1],
   );
-  if (!existsSync(join(out, "index.html")))
+  const urlIndex = process.argv.indexOf("--url");
+  const remote = urlIndex === -1 ? undefined : process.argv[urlIndex + 1].replace(/\/+$/, "");
+  if (!remote && !existsSync(join(out, "index.html")))
     throw new Error(`${out} has no export — run pnpm docs:build`);
   const executable = findBrowser();
   if (!executable) {
@@ -39,7 +41,10 @@ async function main() {
     return;
   }
   const axeSource = readFileSync(require.resolve("axe-core/axe.min.js"), "utf8");
-  const server = await startStaticServer(out);
+  // --url <origin>: check a deployed site (e.g. the Vercel production URL) instead of the local export.
+  const server = remote
+    ? { url: (path = "/") => `${remote}${path}`, close: async () => {} }
+    : await startStaticServer(out);
   const browser = await launchBrowser(executable);
   const results = [];
   const record = (name, ok, detail = "") => {
@@ -69,7 +74,9 @@ async function main() {
     };
 
     await attempt("root redirects to /en/ (meta refresh) and links both languages", async () => {
-      const html = readFileSync(join(out, "index.html"), "utf8");
+      const html = remote
+        ? await (await fetch(server.url("/"))).text()
+        : readFileSync(join(out, "index.html"), "utf8");
       return /http-equiv="refresh"[^>]+\/en\//.test(html) && html.includes('href="/es/"')
         ? true
         : "missing refresh or language links";

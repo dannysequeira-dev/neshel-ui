@@ -64,7 +64,8 @@ Previous: 42631486037 (`df96f64`, 13/13), 42630400156 (`3182326`, 13/13).
 - [ ] Bootstrap credential chosen (short-lived granular token secret, or manual publish)
 - [ ] Tag `v0.1.0` pushed; environment approved; registry verification green
 - [ ] Trusted publishers configured; tokens disallowed; bootstrap token revoked
-- [ ] Vercel project imported (Root Directory `apps/docs`) and production deployed; `release.published = true` only after npm publication
+- [x] Vercel project imported and production deployed: https://neshel-ui.vercel.app (verified 14/14, 2026-11-09)
+- [ ] `release.published = true` only after the npm publication is verified
 - [ ] Repository metadata applied (optional)
 
 ## Recommendation

@@ -60,8 +60,8 @@ registry (a failed run can be repeated) and then verifies `npm view` and a clean
    repository `dannysequeira-dev/neshel-ui`, workflow `release.yml`, environment `npm-release`. Then
    Publishing access → "Require two-factor authentication and disallow tokens", and delete the
    bootstrap token and secret. Later releases publish with OIDC and automatic provenance.
-8. **Documentation site (Vercel).** Import the repository in Vercel with Root Directory `apps/docs`
-   and deploy (exact settings: [deployment.md](deployment.md)). Production deploys from `main`,
+8. **Documentation site (Vercel).** ✅ Done (2026-11-09): https://neshel-ui.vercel.app — settings in
+   [deployment.md](deployment.md). Production deploys from `main`,
    previews for pull requests. Custom domains (DNS) are an owner decision. Only after the npm
    publication is verified, set `release.published = true` in `apps/docs/lib/release.ts` to switch
    the site from tarball to npm instructions and enable starter downloads.

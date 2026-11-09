@@ -236,7 +236,8 @@ const FLOWS = {
       }, OPEN_LIST);
       check(violations.length === 0, `${control} open listbox axe: ${violations.join(", ")}`);
       await page.keyboard.press("Escape");
-      await page.waitForTimeout(150);
+      // Wait until this popup is really gone, so the next control's listbox is not confused with it.
+      await page.waitForFunction((sel) => !document.querySelector(sel), OPEN_LIST);
     }
   },
   async "theme-inheritance-across-portals"({ page, base, params, check }) {
