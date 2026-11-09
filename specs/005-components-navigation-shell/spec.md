@@ -4,9 +4,9 @@
 
 **Created**: 2026-11-08
 
-**Status**: Specified (005.0). Implementation status per milestone: [tasks.md](tasks.md);
-evidence: [evidence.md](evidence.md); traceability: [traceability.md](traceability.md).
-No package is published.
+**Status**: Implemented — milestones 005.0–005.7 complete; CI-verified in run 42543517738 (5/5).
+Evidence: [evidence.md](evidence.md), [traceability.md](traceability.md). Closed pending owner
+review. No package is published.
 
 **Input**: Owner brief "Neshel-UI — Phase 005: Complete Component Library, Navigation &
 Application Shell" (2026-11-08), summarised in [brief.md](brief.md). The brief is authoritative

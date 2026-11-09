@@ -70,4 +70,4 @@ Dependency-ordered. `[P]` = can run in parallel with the previous task. Status: 
 - [x] T072 Negative controls: broken CSS, missing export, removed a11y attribute (FR-124)
 - [x] T073 Docs: components.md, package README, architecture, package-contracts, theming, roadmap, CLAUDE.md (FR-131)
 - [x] T074 Changeset
-- [ ] T075 CI green on three OSes; evidence.md; traceability.md; closure
+- [x] T075 CI green on three OSes (run 42543517738); evidence.md; traceability.md; closure

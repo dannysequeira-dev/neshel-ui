@@ -1,7 +1,7 @@
 # Claude Code — Neshel-UI Project Contract
 
-**Current phase:** feature 005 (component library, navigation and application shell) in progress
-under the owner's Phase 005 brief; see `specs/005-components-navigation-shell/`. Features 001–004
+**Current phase:** feature 005 (component library, navigation and application shell) implemented
+and closed pending owner review; see `specs/005-components-navigation-shell/`. Features 001–004
 are closed (PASS). Do not start feature 006 without approval.
 All npm packages are private placeholders with validated distribution tooling.
 **Mission:** build a small, modular, accessible React design system that consumers can

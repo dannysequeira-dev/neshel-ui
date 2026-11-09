@@ -1,6 +1,7 @@
 # ADR 0012 — Headless primitives: Radix for overlays and navigation, Base UI for selection
 
-- Status: **Accepted** (2026-11-08, within the owner's Phase 005 brief)
+- Status: **Accepted** (2026-11-08, within the owner's Phase 005 brief); implemented and
+  CI-verified in feature 005 (run 42543517738, 5/5 jobs; details in the feature evidence)
 - Date: 2026-11-08
 - Feature: [005](../../specs/005-components-navigation-shell/spec.md); evaluation in
   [research.md](../../specs/005-components-navigation-shell/research.md) R1, R12, R13
