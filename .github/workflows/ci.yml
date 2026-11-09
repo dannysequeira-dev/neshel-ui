@@ -260,7 +260,7 @@ jobs:
         # On failure the log tail becomes annotations (readable without credentials).
         run: |
           npx --yes vercel@65.12.1 build --prod --yes > vercel-build.log 2>&1 || {
-            tail -n 40 vercel-build.log | grep -v '^\s*$' | while IFS= read -r line; do echo "::error title=vercel build::${line}"; done
+            echo "::error title=vercel build (last lines)::$(tail -n 12 vercel-build.log | tr '\n' ' ' | cut -c1-3000)"
             exit 1
           }
           tail -n 15 vercel-build.log
