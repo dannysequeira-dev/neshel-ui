@@ -88,6 +88,13 @@ export function driver(page) {
     },
     /** Click the option with this text in the open selection popup. */
     async clickOption(text) {
+      // Wait until the popup's opening transition has finished, so the option does not move
+      // under the pointer between measuring and clicking.
+      await api.waitFor(
+        `(() => { const p = document.querySelector('.neshel-select-positioner:not([hidden]) [role="listbox"]'); return p && p.getAnimations().length === 0 && !p.hasAttribute("data-starting-style"); })()`,
+        "stable popup",
+      );
+      await sleep(120);
       const box = await evaluate(`(() => {
         const option = [...document.querySelectorAll('.neshel-select-positioner:not([hidden]) [role="option"]')].find((o) => o.textContent.trim() === ${json(text)});
         if (!option) return null;
@@ -285,7 +292,7 @@ export async function runComponentSuite(page, { name, labUrl, shellUrl, params, 
         await d.evaluate(`!!${LIST}.closest('[role="dialog"]')`),
         "select popup is not inside the dialog",
       );
-      await d.click(`${OPEN_LIST} [role="option"]:nth-of-type(2)`);
+      await d.clickOption("Spain");
       await d.waitFor(`!${LIST}`, "listbox closed after choice");
       check(
         (await d.text("#dialog-select")).includes("Spain"),
