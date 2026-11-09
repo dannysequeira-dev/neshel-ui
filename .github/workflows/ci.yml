@@ -113,3 +113,120 @@ jobs:
       # The Storybook build regenerates its committed breakpoint declarations; they must not change.
       - name: Storybook generated declarations are committed and fresh
         run: git diff --exit-code -- apps/storybook/src/neshel.generated.d.ts
+
+  # Feature 006: documentation website (ADR 0015). Builds the static export on every OS, checks API
+  # freshness, export coverage, translations, links and type-checked snippets, then smoke-tests the
+  # exported site in Chrome. The Linux export is uploaded as the preview artefact.
+  docs:
+    name: docs / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 25
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Set up pnpm
+        uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+        with:
+          run_install: false
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "26"
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Build packages
+        run: pnpm build:packages
+      - name: Generated API data is fresh
+        run: pnpm docs:api --check
+      - name: Documentation checks (coverage, translations, links, snippets, configurations)
+        run: pnpm check:docs
+      - name: Build the documentation site (static export)
+        run: pnpm docs:build
+      - name: Exported site smoke (navigation, search, i18n, theme, axe)
+        run: pnpm check:docs-site
+      - name: Upload preview artefact
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v7
+        with:
+          name: docs-preview
+          path: apps/docs/out
+          retention-days: 14
+
+  # Feature 006: isolated Next.js App Router consumer from packed packages (R8) and the starters,
+  # built from their deterministic ZIP archives with the packed packages (FR-032).
+  integration:
+    name: next + starters / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Set up pnpm
+        uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+        with:
+          run_install: false
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "26"
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Build packages
+        run: pnpm build:packages
+      - name: Next.js App Router consumer (packed packages, SSR, hydration, portals, breakpoints)
+        run: pnpm check:next
+      - name: Starters (deterministic ZIPs, tarball install, build)
+        run: pnpm check:starters --zip-out "${{ runner.temp }}/neshel-starters"
+
+  # Feature 006 (R3, ADR 0016): Chromium, Firefox and WebKit smoke flows with Playwright against the
+  # packed component consumers. WebKit is Playwright's WebKit build, not Safari.
+  browsers:
+    name: browsers / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Set up pnpm
+        uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
+        with:
+          run_install: false
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "26"
+          cache: pnpm
+          cache-dependency-path: pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Install Playwright engines
+        run: pnpm exec playwright install --with-deps chromium firefox webkit
+      - name: Build packages
+        run: pnpm build:packages
+      - name: Build component consumers from tarballs
+        run: pnpm check:consumer --no-build --artifacts "${{ runner.temp }}/neshel-consumers"
+      - name: Chromium, Firefox and WebKit smoke flows + axe
+        run: pnpm check:browsers --consumers "${{ runner.temp }}/neshel-consumers" --report "${{ runner.temp }}/browsers-report.json"
+      - name: Upload browser report (accessibility-tree evidence)
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: browsers-report-${{ matrix.os }}
+          path: ${{ runner.temp }}/browsers-report.json
+          if-no-files-found: ignore
