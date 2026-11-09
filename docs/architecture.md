@@ -3,7 +3,7 @@
 ## Dependency direction
 
 ```text
-apps/storybook              apps/playground-vite          apps/playground-next (planned)
+apps/storybook   apps/docs   apps/playground-vite   check:next (isolated Next.js)
        |                              |                           |
        +---------- consumer packages / CSS -----------------------+
                                       |

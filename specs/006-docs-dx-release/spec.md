@@ -4,8 +4,9 @@
 
 **Created**: 2026-11-08
 
-**Status**: **In progress** — milestone 006.0 (specification). No package is published; this
-feature ends at the manual publication gate (brief §25).
+**Status**: **Complete — CONDITIONAL PASS recommended** (milestones 006.0–006.7). Awaiting the owner's
+review. No package is published, no guard lifted, no tag or release created. Evidence:
+[evidence.md](evidence.md), [traceability.md](traceability.md).
 
 **Input**: Owner brief "Neshel-UI — Phase 006: Official Documentation, Developer Experience &
 Release Readiness" (2026-11-08), summarised in [brief.md](brief.md). The brief is authoritative

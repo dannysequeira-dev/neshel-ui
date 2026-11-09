@@ -1,0 +1,107 @@
+{
+  "layout (all primitives)": {
+    "kind": "js",
+    "minified": 33633,
+    "gzip": 10068
+  },
+  "typography (all components)": {
+    "kind": "js",
+    "minified": 27871,
+    "gzip": 8739
+  },
+  "components: Button": {
+    "kind": "js",
+    "minified": 25002,
+    "gzip": 7569
+  },
+  "components: Card + Badge + Input + Label + Separator + Skeleton + VisuallyHidden": {
+    "kind": "js",
+    "minified": 25854,
+    "gzip": 7636
+  },
+  "components: Dialog": {
+    "kind": "js",
+    "minified": 76753,
+    "gzip": 21730
+  },
+  "components: AlertDialog": {
+    "kind": "js",
+    "minified": 78309,
+    "gzip": 21777
+  },
+  "components: Sheet": {
+    "kind": "js",
+    "minified": 76963,
+    "gzip": 21819
+  },
+  "components: Popover + Tooltip": {
+    "kind": "js",
+    "minified": 103703,
+    "gzip": 30208
+  },
+  "components: Select": {
+    "kind": "js",
+    "minified": 202585,
+    "gzip": 56482
+  },
+  "components: MultiSelect": {
+    "kind": "js",
+    "minified": 204512,
+    "gzip": 57102
+  },
+  "components: Combobox": {
+    "kind": "js",
+    "minified": 235470,
+    "gzip": 64832
+  },
+  "components: Navbar": {
+    "kind": "js",
+    "minified": 8606,
+    "gzip": 3020
+  },
+  "components: NavigationMenu": {
+    "kind": "js",
+    "minified": 51890,
+    "gzip": 14280
+  },
+  "components: DropdownMenu": {
+    "kind": "js",
+    "minified": 129520,
+    "gzip": 36011
+  },
+  "components: MobileMenu": {
+    "kind": "js",
+    "minified": 79199,
+    "gzip": 22555
+  },
+  "components: AppShell + Sidebar": {
+    "kind": "js",
+    "minified": 130564,
+    "gzip": 37975
+  },
+  "components (entire library)": {
+    "kind": "js",
+    "minified": 449445,
+    "gzip": 119703
+  },
+  "config/tokens.css": {
+    "kind": "css",
+    "minified": 4263,
+    "gzip": 945
+  },
+  "layout/styles.css": {
+    "kind": "css",
+    "minified": 48847,
+    "gzip": 3687
+  },
+  "typography/styles.css": {
+    "kind": "css",
+    "minified": 15440,
+    "gzip": 1481
+  },
+  "components/styles.css": {
+    "kind": "css",
+    "minified": 44336,
+    "gzip": 5568
+  }
+}

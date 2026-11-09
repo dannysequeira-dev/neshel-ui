@@ -1,8 +1,8 @@
 # Claude Code — Neshel-UI Project Contract
 
 **Current phase:** features 001–005 are closed (PASS). Feature 006 (documentation website, DX,
-release hardening R1–R9 and the 0.1.0 release candidate) is in progress under the owner brief of
-2026-11-08: `specs/006-docs-dx-release/`. It ends at the manual publication gate: no publish, tags,
+release hardening R1–R9 and the 0.1.0 release candidate) is complete and awaits the owner's review
+(CONDITIONAL PASS recommended): `specs/006-docs-dx-release/`. It ends at the manual publication gate: no publish, tags,
 releases or removal of `private: true` without explicit owner authorisation.
 **Mission:** build a small, modular, accessible React design system that consumers can
 install without monorepo internals. **Do not implement the entire library in one pass.**

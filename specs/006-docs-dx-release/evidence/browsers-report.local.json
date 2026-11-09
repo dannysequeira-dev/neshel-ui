@@ -1,0 +1,681 @@
+{
+  "engines": {
+    "chromium": {
+      "version": "158.0.8127.18",
+      "variants": {
+        "components-tailwind": [
+          {
+            "id": "dialog-focus-escape",
+            "ok": true
+          },
+          {
+            "id": "nested-overlays-escape-order",
+            "ok": true
+          },
+          {
+            "id": "select-in-dialog-escape-layering",
+            "ok": true
+          },
+          {
+            "id": "select-keyboard-and-serialisation",
+            "ok": true
+          },
+          {
+            "id": "multiselect-chips",
+            "ok": true
+          },
+          {
+            "id": "combobox-filter-select",
+            "ok": true
+          },
+          {
+            "id": "combobox-in-popover",
+            "ok": true
+          },
+          {
+            "id": "selection-popups-named-and-axe-clean",
+            "ok": true
+          },
+          {
+            "id": "theme-inheritance-across-portals",
+            "ok": true
+          },
+          {
+            "id": "mobile-navigation",
+            "ok": true
+          },
+          {
+            "id": "sidebar-desktop-and-drawer",
+            "ok": true
+          },
+          {
+            "id": "axe-light",
+            "ok": true
+          },
+          {
+            "id": "axe-dark",
+            "ok": true
+          }
+        ],
+        "components-plain": [
+          {
+            "id": "dialog-focus-escape",
+            "ok": true
+          },
+          {
+            "id": "nested-overlays-escape-order",
+            "ok": true
+          },
+          {
+            "id": "select-in-dialog-escape-layering",
+            "ok": true
+          },
+          {
+            "id": "select-keyboard-and-serialisation",
+            "ok": true
+          },
+          {
+            "id": "multiselect-chips",
+            "ok": true
+          },
+          {
+            "id": "combobox-filter-select",
+            "ok": true
+          },
+          {
+            "id": "combobox-in-popover",
+            "ok": true
+          },
+          {
+            "id": "selection-popups-named-and-axe-clean",
+            "ok": true
+          },
+          {
+            "id": "theme-inheritance-across-portals",
+            "ok": true
+          },
+          {
+            "id": "mobile-navigation",
+            "ok": true
+          },
+          {
+            "id": "sidebar-desktop-and-drawer",
+            "ok": true
+          },
+          {
+            "id": "axe-light",
+            "ok": true
+          },
+          {
+            "id": "axe-dark",
+            "ok": true
+          }
+        ],
+        "components-extend": [
+          {
+            "id": "dialog-focus-escape",
+            "ok": true
+          },
+          {
+            "id": "nested-overlays-escape-order",
+            "ok": true
+          },
+          {
+            "id": "select-in-dialog-escape-layering",
+            "ok": true
+          },
+          {
+            "id": "select-keyboard-and-serialisation",
+            "ok": true
+          },
+          {
+            "id": "multiselect-chips",
+            "ok": true
+          },
+          {
+            "id": "combobox-filter-select",
+            "ok": true
+          },
+          {
+            "id": "combobox-in-popover",
+            "ok": true
+          },
+          {
+            "id": "selection-popups-named-and-axe-clean",
+            "ok": true
+          },
+          {
+            "id": "theme-inheritance-across-portals",
+            "ok": true
+          },
+          {
+            "id": "mobile-navigation",
+            "ok": true
+          },
+          {
+            "id": "sidebar-desktop-and-drawer",
+            "ok": true
+          },
+          {
+            "id": "axe-light",
+            "ok": true
+          },
+          {
+            "id": "axe-dark",
+            "ok": true
+          }
+        ],
+        "components-replace": [
+          {
+            "id": "dialog-focus-escape",
+            "ok": true
+          },
+          {
+            "id": "nested-overlays-escape-order",
+            "ok": true
+          },
+          {
+            "id": "select-in-dialog-escape-layering",
+            "ok": true
+          },
+          {
+            "id": "select-keyboard-and-serialisation",
+            "ok": true
+          },
+          {
+            "id": "multiselect-chips",
+            "ok": true
+          },
+          {
+            "id": "combobox-filter-select",
+            "ok": true
+          },
+          {
+            "id": "combobox-in-popover",
+            "ok": true
+          },
+          {
+            "id": "selection-popups-named-and-axe-clean",
+            "ok": true
+          },
+          {
+            "id": "theme-inheritance-across-portals",
+            "ok": true
+          },
+          {
+            "id": "mobile-navigation",
+            "ok": true
+          },
+          {
+            "id": "sidebar-desktop-and-drawer",
+            "ok": true
+          },
+          {
+            "id": "axe-light",
+            "ok": true
+          },
+          {
+            "id": "axe-dark",
+            "ok": true
+          }
+        ]
+      }
+    },
+    "firefox": {
+      "version": "159.0",
+      "variants": {
+        "components-tailwind": [
+          {
+            "id": "dialog-focus-escape",
+            "ok": true
+          },
+          {
+            "id": "nested-overlays-escape-order",
+            "ok": true
+          },
+          {
+            "id": "select-in-dialog-escape-layering",
+            "ok": true
+          },
+          {
+            "id": "select-keyboard-and-serialisation",
+            "ok": true
+          },
+          {
+            "id": "multiselect-chips",
+            "ok": true
+          },
+          {
+            "id": "combobox-filter-select",
+            "ok": true
+          },
+          {
+            "id": "combobox-in-popover",
+            "ok": true
+          },
+          {
+            "id": "selection-popups-named-and-axe-clean",
+            "ok": true
+          },
+          {
+            "id": "theme-inheritance-across-portals",
+            "ok": true
+          },
+          {
+            "id": "mobile-navigation",
+            "ok": true
+          },
+          {
+            "id": "sidebar-desktop-and-drawer",
+            "ok": true
+          },
+          {
+            "id": "axe-light",
+            "ok": true
+          },
+          {
+            "id": "axe-dark",
+            "ok": true
+          }
+        ],
+        "components-plain": [
+          {
+            "id": "dialog-focus-escape",
+            "ok": true
+          },
+          {
+            "id": "nested-overlays-escape-order",
+            "ok": true
+          },
+          {
+            "id": "select-in-dialog-escape-layering",
+            "ok": true
+          },
+          {
+            "id": "select-keyboard-and-serialisation",
+            "ok": true
+          },
+          {
+            "id": "multiselect-chips",
+            "ok": true
+          },
+          {
+            "id": "combobox-filter-select",
+            "ok": true
+          },
+          {
+            "id": "combobox-in-popover",
+            "ok": true
+          },
+          {
+            "id": "selection-popups-named-and-axe-clean",
+            "ok": true
+          },
+          {
+            "id": "theme-inheritance-across-portals",
+            "ok": true
+          },
+          {
+            "id": "mobile-navigation",
+            "ok": true
+          },
+          {
+            "id": "sidebar-desktop-and-drawer",
+            "ok": true
+          },
+          {
+            "id": "axe-light",
+            "ok": true
+          },
+          {
+            "id": "axe-dark",
+            "ok": true
+          }
+        ],
+        "components-extend": [
+          {
+            "id": "dialog-focus-escape",
+            "ok": true
+          },
+          {
+            "id": "nested-overlays-escape-order",
+            "ok": true
+          },
+          {
+            "id": "select-in-dialog-escape-layering",
+            "ok": true
+          },
+          {
+            "id": "select-keyboard-and-serialisation",
+            "ok": true
+          },
+          {
+            "id": "multiselect-chips",
+            "ok": true
+          },
+          {
+            "id": "combobox-filter-select",
+            "ok": true
+          },
+          {
+            "id": "combobox-in-popover",
+            "ok": true
+          },
+          {
+            "id": "selection-popups-named-and-axe-clean",
+            "ok": true
+          },
+          {
+            "id": "theme-inheritance-across-portals",
+            "ok": true
+          },
+          {
+            "id": "mobile-navigation",
+            "ok": true
+          },
+          {
+            "id": "sidebar-desktop-and-drawer",
+            "ok": true
+          },
+          {
+            "id": "axe-light",
+            "ok": true
+          },
+          {
+            "id": "axe-dark",
+            "ok": true
+          }
+        ],
+        "components-replace": [
+          {
+            "id": "dialog-focus-escape",
+            "ok": true
+          },
+          {
+            "id": "nested-overlays-escape-order",
+            "ok": true
+          },
+          {
+            "id": "select-in-dialog-escape-layering",
+            "ok": true
+          },
+          {
+            "id": "select-keyboard-and-serialisation",
+            "ok": true
+          },
+          {
+            "id": "multiselect-chips",
+            "ok": true
+          },
+          {
+            "id": "combobox-filter-select",
+            "ok": true
+          },
+          {
+            "id": "combobox-in-popover",
+            "ok": true
+          },
+          {
+            "id": "selection-popups-named-and-axe-clean",
+            "ok": true
+          },
+          {
+            "id": "theme-inheritance-across-portals",
+            "ok": true
+          },
+          {
+            "id": "mobile-navigation",
+            "ok": true
+          },
+          {
+            "id": "sidebar-desktop-and-drawer",
+            "ok": true
+          },
+          {
+            "id": "axe-light",
+            "ok": true
+          },
+          {
+            "id": "axe-dark",
+            "ok": true
+          }
+        ]
+      }
+    },
+    "webkit": {
+      "version": "27.2",
+      "variants": {
+        "components-tailwind": [
+          {
+            "id": "dialog-focus-escape",
+            "ok": true
+          },
+          {
+            "id": "nested-overlays-escape-order",
+            "ok": true
+          },
+          {
+            "id": "select-in-dialog-escape-layering",
+            "ok": true
+          },
+          {
+            "id": "select-keyboard-and-serialisation",
+            "ok": true
+          },
+          {
+            "id": "multiselect-chips",
+            "ok": true
+          },
+          {
+            "id": "combobox-filter-select",
+            "ok": true
+          },
+          {
+            "id": "combobox-in-popover",
+            "ok": true
+          },
+          {
+            "id": "selection-popups-named-and-axe-clean",
+            "ok": true
+          },
+          {
+            "id": "theme-inheritance-across-portals",
+            "ok": true
+          },
+          {
+            "id": "mobile-navigation",
+            "ok": true
+          },
+          {
+            "id": "sidebar-desktop-and-drawer",
+            "ok": true
+          },
+          {
+            "id": "axe-light",
+            "ok": true
+          },
+          {
+            "id": "axe-dark",
+            "ok": true
+          }
+        ],
+        "components-plain": [
+          {
+            "id": "dialog-focus-escape",
+            "ok": true
+          },
+          {
+            "id": "nested-overlays-escape-order",
+            "ok": true
+          },
+          {
+            "id": "select-in-dialog-escape-layering",
+            "ok": true
+          },
+          {
+            "id": "select-keyboard-and-serialisation",
+            "ok": true
+          },
+          {
+            "id": "multiselect-chips",
+            "ok": true
+          },
+          {
+            "id": "combobox-filter-select",
+            "ok": true
+          },
+          {
+            "id": "combobox-in-popover",
+            "ok": true
+          },
+          {
+            "id": "selection-popups-named-and-axe-clean",
+            "ok": true
+          },
+          {
+            "id": "theme-inheritance-across-portals",
+            "ok": true
+          },
+          {
+            "id": "mobile-navigation",
+            "ok": true
+          },
+          {
+            "id": "sidebar-desktop-and-drawer",
+            "ok": true
+          },
+          {
+            "id": "axe-light",
+            "ok": true
+          },
+          {
+            "id": "axe-dark",
+            "ok": true
+          }
+        ],
+        "components-extend": [
+          {
+            "id": "dialog-focus-escape",
+            "ok": true
+          },
+          {
+            "id": "nested-overlays-escape-order",
+            "ok": true
+          },
+          {
+            "id": "select-in-dialog-escape-layering",
+            "ok": true
+          },
+          {
+            "id": "select-keyboard-and-serialisation",
+            "ok": true
+          },
+          {
+            "id": "multiselect-chips",
+            "ok": true
+          },
+          {
+            "id": "combobox-filter-select",
+            "ok": true
+          },
+          {
+            "id": "combobox-in-popover",
+            "ok": true
+          },
+          {
+            "id": "selection-popups-named-and-axe-clean",
+            "ok": true
+          },
+          {
+            "id": "theme-inheritance-across-portals",
+            "ok": true
+          },
+          {
+            "id": "mobile-navigation",
+            "ok": true
+          },
+          {
+            "id": "sidebar-desktop-and-drawer",
+            "ok": true
+          },
+          {
+            "id": "axe-light",
+            "ok": true
+          },
+          {
+            "id": "axe-dark",
+            "ok": true
+          }
+        ],
+        "components-replace": [
+          {
+            "id": "dialog-focus-escape",
+            "ok": true
+          },
+          {
+            "id": "nested-overlays-escape-order",
+            "ok": true
+          },
+          {
+            "id": "select-in-dialog-escape-layering",
+            "ok": true
+          },
+          {
+            "id": "select-keyboard-and-serialisation",
+            "ok": true
+          },
+          {
+            "id": "multiselect-chips",
+            "ok": true
+          },
+          {
+            "id": "combobox-filter-select",
+            "ok": true
+          },
+          {
+            "id": "combobox-in-popover",
+            "ok": true
+          },
+          {
+            "id": "selection-popups-named-and-axe-clean",
+            "ok": true
+          },
+          {
+            "id": "theme-inheritance-across-portals",
+            "ok": true
+          },
+          {
+            "id": "mobile-navigation",
+            "ok": true
+          },
+          {
+            "id": "sidebar-desktop-and-drawer",
+            "ok": true
+          },
+          {
+            "id": "axe-light",
+            "ok": true
+          },
+          {
+            "id": "axe-dark",
+            "ok": true
+          }
+        ]
+      }
+    }
+  },
+  "accessibilityTree": {
+    "chromium": {
+      "dialog": "- dialog \"Edit profile\":\n  - heading \"Edit profile\" [level=2]\n  - paragraph: Update your account information.\n  - text: Name\n  - textbox \"Name\": Ana\n  - text: Country\n  - combobox \"Country\": Choose a country\n  - button \"Nested\"\n  - button \"Cancel\"\n  - button \"Close\"",
+      "multiSelectListbox": "- listbox \"Languages\":\n  - group \"European\":\n    - option \"Spanish\"\n    - option \"French\"\n  - group \"Asian\":\n    - option \"Japanese\""
+    },
+    "firefox": {
+      "dialog": "- dialog \"Edit profile\":\n  - heading \"Edit profile\" [level=2]\n  - paragraph: Update your account information.\n  - text: Name\n  - textbox \"Name\": Ana\n  - text: Country\n  - combobox \"Country\": Choose a country\n  - button \"Nested\"\n  - button \"Cancel\"\n  - button \"Close\"",
+      "multiSelectListbox": "- listbox \"Languages\":\n  - group \"European\":\n    - option \"Spanish\"\n    - option \"French\"\n  - group \"Asian\":\n    - option \"Japanese\""
+    },
+    "webkit": {
+      "dialog": "- dialog \"Edit profile\":\n  - heading \"Edit profile\" [level=2]\n  - paragraph: Update your account information.\n  - text: Name\n  - textbox \"Name\": Ana\n  - text: Country\n  - combobox \"Country\": Choose a country\n  - button \"Nested\"\n  - button \"Cancel\"\n  - button \"Close\"",
+      "multiSelectListbox": "- listbox \"Languages\":\n  - group \"European\":\n    - option \"Spanish\"\n    - option \"French\"\n  - group \"Asian\":\n    - option \"Japanese\""
+    }
+  }
+}

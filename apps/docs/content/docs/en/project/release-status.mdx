@@ -25,15 +25,22 @@ and 24) for every change:
 - Chrome: computed styles, breakpoint sweeps, Capsize geometry, real keyboard and pointer interaction
   for every interactive component, nested themes across portals, reduced motion and axe-core.
 - Documentation: export coverage in both languages, type-checked snippets, links and translations.
+- An isolated **Next.js 16 App Router** application built from the packed packages: production
+  build, server rendering, preserved `"use client"`, hydration, client state, portalled overlays in
+  nested named themes, custom breakpoints and Capsize trimming.
+- **Chromium, Firefox and WebKit** smoke flows of the interactive components with axe-core (Linux
+  and macOS).
+- Bundle-size budgets per component family, measured from the packed packages.
+- The three starters, installed from deterministic ZIP archives and built outside the repository.
+- A rehearsal of the 0.1.0 versioning transition with `npm publish --dry-run`.
 
-The release-candidate checks added for 0.1.0 (Next.js App Router consumer, Firefox and WebKit,
-bundle budgets, starters) are listed with their results in the repository's
+Full evidence: the repository's
 [release readiness record](https://github.com/dannysequeira-dev/neshel-ui/blob/main/docs/release-readiness.md).
 
 ## Known limitations
 
-- Screen-reader behaviour has not been verified comprehensively; see the readiness record for what
-  was evaluated manually.
+- **No manual screen-reader session has been performed yet.** Accessibility-tree snapshots and axe
+  checks are automated; a manual protocol (NVDA, VoiceOver, Narrator) is ready for the maintainers.
 - Safari itself is not automated; WebKit (Playwright) is the closest automated engine.
 - Unknown well-formed breakpoint keys warn in the browser instead of throwing (the runtime has no
   configuration).
