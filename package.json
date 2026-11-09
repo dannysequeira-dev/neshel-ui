@@ -42,7 +42,10 @@
     "docs:build": "pnpm --filter @neshel-ui/docs build",
     "docs:preview": "node scripts/docs/serve.mjs apps/docs/out",
     "docs:api": "node scripts/docs/extract-api.mjs",
-    "check:docs": "node scripts/check-docs.mjs"
+    "check:docs": "node scripts/check-docs.mjs",
+    "check:starters": "node scripts/check-starters.mjs",
+    "pack:local": "node scripts/pack-local.mjs",
+    "check:next": "node scripts/check-next.mjs"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "catalog:",

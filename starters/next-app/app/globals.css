@@ -1,0 +1,14 @@
+@import "tailwindcss";
+@import "@neshel-ui/config/tailwind.css";
+@import "@neshel-ui/layout/styles.css";
+@import "@neshel-ui/typography/styles.css";
+@import "@neshel-ui/components/styles.css";
+/* Written by `neshel generate`: theme, custom breakpoints and component rules, Tailwind @theme. */
+@import "./neshel.generated.css";
+
+body {
+  margin: 0;
+  background-color: var(--neshel-background);
+  color: var(--neshel-foreground);
+  font-family: var(--neshel-font-body);
+}

@@ -442,9 +442,15 @@ function checkConfigs(problems, snippetConfigs) {
   const targets = [join(docsRoot, "neshel.config.ts")];
   const startersDir = join(repoRoot, "starters");
   if (existsSync(startersDir)) {
+    // Starters are not installed in the workspace: validate a copy where @neshel-ui/config
+    // resolves (the docs app). check:starters also runs `neshel generate` from tarballs.
     for (const entry of readdirSync(startersDir)) {
       const config = join(startersDir, entry, "neshel.config.ts");
-      if (existsSync(config)) targets.push(config);
+      if (!existsSync(config)) continue;
+      const dir = join(docsRoot, ".snippets", `starter-${entry}`);
+      mkdirSync(dir, { recursive: true });
+      writeFileSync(join(dir, "neshel.config.ts"), readFileSync(config, "utf8"));
+      targets.push(join(dir, "neshel.config.ts"));
     }
   }
   snippetConfigs.forEach((snippet, i) => {

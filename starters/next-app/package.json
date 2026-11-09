@@ -1,0 +1,31 @@
+{
+  "name": "neshel-starter-next-app",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "neshel generate && next dev",
+    "build": "neshel generate && next build",
+    "start": "next start",
+    "check:theme": "neshel generate --check --strict"
+  },
+  "dependencies": {
+    "@neshel-ui/components": "^0.1.0",
+    "@neshel-ui/config": "^0.1.0",
+    "@neshel-ui/layout": "^0.1.0",
+    "@neshel-ui/typography": "^0.1.0",
+    "next": "^16.4.5",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@neshel-ui/cli": "^0.1.0",
+    "@tailwindcss/postcss": "^4.1.0",
+    "@types/node": "^22.15.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "postcss": "^8.5.0",
+    "tailwindcss": "^4.1.0",
+    "typescript": "^5.9.3"
+  }
+}

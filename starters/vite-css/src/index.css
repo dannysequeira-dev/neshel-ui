@@ -1,0 +1,20 @@
+/* Plain CSS: no Tailwind, no PostCSS plugin, no generated file. */
+@import "@neshel-ui/config/tokens.css";
+@import "@neshel-ui/layout/styles.css";
+@import "@neshel-ui/typography/styles.css";
+@import "@neshel-ui/components/styles.css";
+
+body {
+  margin: 0;
+  background-color: var(--neshel-background);
+  color: var(--neshel-foreground);
+  font-family: var(--neshel-font-body);
+}
+
+.page {
+  padding-block: 3rem;
+}
+
+.email-field {
+  max-inline-size: 24rem;
+}
