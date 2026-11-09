@@ -1,0 +1,26 @@
+{
+  "$comment": "Gzip byte budgets per bundle (measured from packed packages + ~10% headroom, rounded up to 512 B). Regenerate with pnpm check:bundles --update and review the diff.",
+  "budgets": {
+    "layout (all primitives)": 11264,
+    "typography (all components)": 9728,
+    "components: Button": 8704,
+    "components: Card + Badge + Input + Label + Separator + Skeleton + VisuallyHidden": 8704,
+    "components: Dialog": 24064,
+    "components: AlertDialog": 24064,
+    "components: Sheet": 24064,
+    "components: Popover + Tooltip": 33280,
+    "components: Select": 62464,
+    "components: MultiSelect": 62976,
+    "components: Combobox": 71680,
+    "components: Navbar": 3584,
+    "components: NavigationMenu": 15872,
+    "components: DropdownMenu": 39936,
+    "components: MobileMenu": 25088,
+    "components: AppShell + Sidebar": 41984,
+    "components (entire library)": 132096,
+    "config/tokens.css": 1536,
+    "layout/styles.css": 4096,
+    "typography/styles.css": 2048,
+    "components/styles.css": 6144
+  }
+}

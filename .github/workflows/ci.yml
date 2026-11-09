@@ -187,6 +187,8 @@ jobs:
         run: pnpm build:packages
       - name: Next.js App Router consumer (packed packages, SSR, hydration, portals, breakpoints)
         run: pnpm check:next
+      - name: Bundle budgets (packed packages; Button-only bundle free of Radix/Base UI)
+        run: pnpm check:bundles
       - name: Starters (deterministic ZIPs, tarball install, build)
         run: pnpm check:starters --zip-out "${{ runner.temp }}/neshel-starters"
 

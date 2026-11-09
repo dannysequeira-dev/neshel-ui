@@ -47,7 +47,8 @@
     "pack:local": "node scripts/pack-local.mjs",
     "check:next": "node scripts/check-next.mjs",
     "check:browsers": "node scripts/check-browsers.mjs",
-    "check:docs-site": "node scripts/check-docs-site.mjs"
+    "check:docs-site": "node scripts/check-docs-site.mjs",
+    "check:bundles": "node scripts/check-bundles.mjs"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "catalog:",
