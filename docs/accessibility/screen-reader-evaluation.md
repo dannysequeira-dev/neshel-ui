@@ -1,8 +1,8 @@
 # Screen-reader evaluation (release requirement R3)
 
-Feature 006 — honest scope statement and a ready-to-run manual protocol.
+Feature 006 — automated evidence, the manual protocol, and the owner-reported manual evaluation.
 
-## What has been done
+## Automated evidence (verified in CI)
 
 | Evidence                                                                                  | Engines / tools                               | Result                                                                                                                                                                                                                                                                                              |
 | ----------------------------------------------------------------------------------------- | --------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -10,16 +10,46 @@ Feature 006 — honest scope statement and a ready-to-run manual protocol.
 | axe-core (light, dark, and with open listboxes)                                           | Chromium, Firefox, WebKit; Chrome (CDP suite) | No violations                                                                                                                                                                                                                                                                                       |
 | Defect found and fixed through this evidence                                              | —                                             | Selection listboxes had **no accessible name**; they now take the name of their control                                                                                                                                                                                                             |
 
-## What has NOT been done
+## Manual evaluation — owner-reported (2026-11-09)
 
-**No human has yet operated the components with a real screen reader** for this release
-candidate. Accessibility-tree snapshots show what assistive technology receives; they do not show
-how NVDA, JAWS, VoiceOver or Narrator announce it, nor verbosity, focus-following or live-region
-timing. Neshel-UI therefore makes **no claim of screen-reader conformance**.
+The project owner ran the manual protocol below and reported the results. This is
+**owner-reported manual testing**, not automated verification: no announcement transcripts were
+recorded in the repository, and the exact screen-reader and browser versions were not reported, so
+none are stated here.
+
+| Item    | Reported                                                        |
+| ------- | --------------------------------------------------------------- |
+| Tester  | Project owner                                                   |
+| Pairing | NVDA + Firefox on Windows                                       |
+| Target  | Live documentation website, https://neshel-ui.vercel.app        |
+| Steps   | All 10 protocol steps (Button through Typography, listed below) |
+| Result  | **10/10 passed**                                                |
+| Issues  | **None reported**                                               |
+
+| Step | Area                    | Result (owner-reported) |
+| ---- | ----------------------- | ----------------------- |
+| 1    | Button                  | Pass                    |
+| 2    | Dialog                  | Pass                    |
+| 3    | AlertDialog             | Pass                    |
+| 4    | Select                  | Pass                    |
+| 5    | MultiSelect             | Pass                    |
+| 6    | Combobox                | Pass                    |
+| 7    | DropdownMenu            | Pass                    |
+| 8    | NavigationMenu / Navbar | Pass                    |
+| 9    | AppShell / Sidebar      | Pass                    |
+| 10   | Typography              | Pass                    |
+
+### Scope and limits
+
+- One pairing was evaluated (NVDA + Firefox, Windows). **VoiceOver + Safari (macOS), Narrator + Edge
+  and JAWS were not evaluated.**
+- The protocol covers the ten areas above, not every component or every variant.
+- This is a practical evaluation, not a formal WCAG conformance audit; Neshel-UI makes no claim of
+  full screen-reader conformance.
 
 ## Manual protocol (≈ 45 minutes per pairing)
 
-Recommended pairings (at least one before 0.1.0, ideally two):
+Recommended pairings (at least one before 0.1.0, ideally two; the first was executed on 2026-11-09):
 
 | Platform   | Screen reader      | Browser |
 | ---------- | ------------------ | ------- |
@@ -46,7 +76,7 @@ starter. For each step record _what was announced_ and _pass / issue_.
    `mobileTitle`; activating a link closes it.
 10. **Typography** — heading levels navigable with the screen reader's heading list.
 
-Record results in a copy of the table below and attach it to the release PR.
+For later sessions, record results in a copy of the table below (attach it to the release PR).
 
 | Step | Announcement | Result | Notes |
 | ---- | ------------ | ------ | ----- |
@@ -55,5 +85,6 @@ Record results in a copy of the table below and attach it to the release PR.
 ## Status
 
 R3 automated browser coverage: **met** (Chromium, Firefox, WebKit on Linux and macOS CI).
-R3 manual screen-reader workflow: **protocol ready, execution pending** — an owner/maintainer action
-before (or explicitly accepted for) the 0.1.0 publication.
+R3 manual screen-reader workflow: **met — owner-reported** (NVDA + Firefox on Windows, live
+documentation site, 10/10 steps passed, no issues reported, 2026-11-09). Other pairings remain
+recommended for later releases.

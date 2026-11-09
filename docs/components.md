@@ -162,5 +162,7 @@ keyboard and pointer input: focus entry, trapping and restoration, Escape layeri
 dismissal rules, menu and listbox keyboard navigation, typeahead, multi-selection, chip removal,
 combobox filtering, form serialisation, nested-theme portals (computed tokens), shell and mobile
 menu transitions at the configured thresholds, reduced motion, SSR hydration, and axe-core with no
-violations in light and dark. Automated checks do not prove full accessibility; screen-reader and
-Firefox/Safari testing have **not** been performed.
+violations in light and dark. Firefox and WebKit are covered by `pnpm check:browsers` (feature 006).
+A manual NVDA + Firefox evaluation was owner-reported as passing (see
+[screen-reader-evaluation.md](accessibility/screen-reader-evaluation.md)); automated checks do not
+prove full accessibility, and Safari/VoiceOver has not been tested manually.

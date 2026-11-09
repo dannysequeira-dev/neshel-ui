@@ -4,8 +4,8 @@
 
 **Created**: 2026-11-08
 
-**Status**: **Complete — CONDITIONAL PASS recommended** (milestones 006.0–006.7). Awaiting the owner's
-review. No package is published, no guard lifted, no tag or release created. Evidence:
+**Status**: **Closed — PASS** (2026-11-09; milestones 006.0–006.7). R3 manual screen-reader evaluation
+owner-reported, npm organisation owner-confirmed. No package is published, no guard lifted, no tag or release created. Evidence:
 [evidence.md](evidence.md), [traceability.md](traceability.md).
 
 **Input**: Owner brief "Neshel-UI — Phase 006: Official Documentation, Developer Experience &

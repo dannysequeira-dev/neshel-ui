@@ -13,6 +13,7 @@ no guard was lifted; no tag or release was created.
 | 42566411086 | `f526122` | 5/5                    | R1 backdrop fallback, R2 Combobox-in-Popover (CDP suite on three OSes)                                          |
 | 42629953416 | `0e53ae3` | cancelled              | superseded by the next push                                                                                     |
 | 42630400156 | `3182326` | **13/13**              | validate ×5, docs ×3 OS, next + starters + bundles ×3 OS, browsers (Chromium/Firefox/WebKit) on Linux and macOS |
+| 42711217374 | `8f13a20` | **14/14**              | latest before closure (adds the Vercel build job); brand policy approved                                        |
 
 The final run for the closure commit is recorded in [traceability.md](traceability.md).
 
@@ -36,14 +37,14 @@ The final run for the closure commit is recorded in [traceability.md](traceabili
 
 ## Browsers and accessibility (R1–R3)
 
-| Item                  | Result                                                                                                                                |
-| --------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| CDP component suite   | 37 cases × 4 variants + backdrop 6/6 (R1, raw stylesheets, negative control)                                                          |
-| `check:browsers` (R3) | 156/156: 13 flows + 2 axe runs × 4 variants × Chromium 158 / Firefox 159 / WebKit 27.2 — local; CI Linux and macOS                    |
-| Accessibility tree    | Identical roles/names across engines ([browsers-report.local.json](evidence/browsers-report.local.json))                              |
-| Defect fixed          | Unnamed selection listboxes (axe `aria-input-field-name` with open popups)                                                            |
-| Finding (accepted)    | Escape within ~50 ms of opening a nested dialog closes both layers in Chromium/WebKit; ≥ 50 ms correct in all engines                 |
-| Manual screen reader  | **Not performed**; protocol in [docs/accessibility/screen-reader-evaluation.md](../../docs/accessibility/screen-reader-evaluation.md) |
+| Item                  | Result                                                                                                                                                                                                                                        |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| CDP component suite   | 37 cases × 4 variants + backdrop 6/6 (R1, raw stylesheets, negative control)                                                                                                                                                                  |
+| `check:browsers` (R3) | 156/156: 13 flows + 2 axe runs × 4 variants × Chromium 158 / Firefox 159 / WebKit 27.2 — local; CI Linux and macOS                                                                                                                            |
+| Accessibility tree    | Identical roles/names across engines ([browsers-report.local.json](evidence/browsers-report.local.json))                                                                                                                                      |
+| Defect fixed          | Unnamed selection listboxes (axe `aria-input-field-name` with open popups)                                                                                                                                                                    |
+| Finding (accepted)    | Escape within ~50 ms of opening a nested dialog closes both layers in Chromium/WebKit; ≥ 50 ms correct in all engines                                                                                                                         |
+| Manual screen reader  | **Owner-reported, 2026-11-09**: NVDA + Firefox on Windows, live docs site, 10/10 steps passed, no issues reported (no transcripts or versions recorded) — [screen-reader-evaluation.md](../../docs/accessibility/screen-reader-evaluation.md) |
 
 ## Bundles (R6)
 
@@ -54,9 +55,9 @@ components 5.4 KiB.
 
 ## Release candidate (006.6)
 
-| Item               | Result                                                                                                                                                                                                                      |
-| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `check:pack`       | 5 packages, release metadata enforced                                                                                                                                                                                       |
-| `release:simulate` | five packages → 0.1.0, peers `^0.1.0`, `npm publish --dry-run` ok; inventory: [release-inventory.simulated.json](evidence/release-inventory.simulated.json) (simulated tarballs; final checksums come from the release run) |
-| Release guards     | refuse `v0.1.0` today (versions 0.0.0, packages private) — verified locally                                                                                                                                                 |
-| npm scope          | 404 for the five names and the organisation listing (anonymous, 2026-11-08); ownership unverified                                                                                                                           |
+| Item               | Result                                                                                                                                                                                                                                               |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `check:pack`       | 5 packages, release metadata enforced                                                                                                                                                                                                                |
+| `release:simulate` | five packages → 0.1.0, peers `^0.1.0`, `npm publish --dry-run` ok; inventory: [release-inventory.simulated.json](evidence/release-inventory.simulated.json) (simulated tarballs; final checksums come from the release run)                          |
+| Release guards     | refuse `v0.1.0` today (versions 0.0.0, packages private) — verified locally                                                                                                                                                                          |
+| npm scope          | 2026-11-08: 404 for the five names and the organisation listing. 2026-11-09: owner confirms the `neshel-ui` organisation exists and personal 2FA is on; organisation listing now 200 (empty), names still 404; org-wide 2FA enforcement not verified |

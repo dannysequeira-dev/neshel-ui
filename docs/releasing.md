@@ -37,9 +37,9 @@ registry (a failed run can be repeated) and then verifies `npm view` and a clean
 
 ## Owner actions — first publication (0.1.0)
 
-1. **npm organisation.** Sign in to npmjs.com, create (or confirm you own) the organisation
-   `neshel-ui`, enforce 2FA for members. A 404 for the package names only shows they are unused; it
-   does not prove you can own the scope.
+1. **npm organisation.** ✅ Organisation `neshel-ui` exists and the owner's personal npm account
+   has 2FA enabled (owner-confirmed, 2026-11-09). Still to do (not verified): enforce 2FA for all
+   organisation members in the organisation settings.
 2. **Brand policy.** ✅ Done (2026-11-09): [BRAND-POLICY.md](BRAND-POLICY.md) is owner-approved.
 3. **GitHub environment.** Settings → Environments → `npm-release`: required reviewers (you),
    deployment branches/tags limited to `v*.*.*`.

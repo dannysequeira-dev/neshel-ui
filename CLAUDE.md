@@ -1,9 +1,8 @@
 # Claude Code — Neshel-UI Project Contract
 
-**Current phase:** features 001–005 are closed (PASS). Feature 006 (documentation website, DX,
-release hardening R1–R9 and the 0.1.0 release candidate) is complete and awaits the owner's review
-(CONDITIONAL PASS recommended): `specs/006-docs-dx-release/`. It ends at the manual publication gate: no publish, tags,
-releases or removal of `private: true` without explicit owner authorisation.
+**Current phase:** features 001–006 are closed (PASS; 006 closed 2026-11-09, R1–R9 met:
+`specs/006-docs-dx-release/`). Feature 007 (first npm publication) has NOT started and requires
+explicit owner authorisation: no publish, tags, releases or removal of `private: true` without it.
 **Mission:** build a small, modular, accessible React design system that consumers can
 install without monorepo internals. **Do not implement the entire library in one pass.**
 
@@ -23,7 +22,8 @@ install without monorepo internals. **Do not implement the entire library in one
 - Documentation and public APIs are in **English**. Communicate with the maintainer in Spanish.
 - Project tagline: **Rooted in faith. Built with hope.** Do not assume or publish
   private personal stories, identities, or relationships behind the project name.
-- The package scope `@neshel-ui` has **not** been verified on npm. Do not claim otherwise.
+- The npm organisation `neshel-ui` exists (owner-confirmed 2026-11-09). Org-wide 2FA enforcement is
+  not verified; no package is published. Do not claim otherwise.
 
 ## Technology / architecture
 

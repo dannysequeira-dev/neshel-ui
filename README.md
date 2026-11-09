@@ -134,14 +134,14 @@ Working agreements: [constitution](.specify/memory/constitution.md), [architectu
 
 ## Project status
 
-| Phase   | Focus                                                                | Status      |
-| ------- | -------------------------------------------------------------------- | ----------- |
-| 001–005 | Foundation, tokens and CLI, layout, typography, components and shell | Done        |
-| 006     | Documentation website, developer experience, release candidate       | In progress |
-| 007     | First npm publication (owner-authorised)                             | Planned     |
+| Phase   | Focus                                                                | Status  |
+| ------- | -------------------------------------------------------------------- | ------- |
+| 001–005 | Foundation, tokens and CLI, layout, typography, components and shell | Done    |
+| 006     | Documentation website, developer experience, release candidate       | Done    |
+| 007     | First npm publication (owner-authorised)                             | Planned |
 
 Release readiness and its evidence: [docs/release-readiness.md](docs/release-readiness.md). The
-`@neshel-ui` npm organisation has not yet been confirmed.
+`neshel-ui` npm organisation exists (owner-confirmed); no package is published yet.
 
 ## Brand identity
 

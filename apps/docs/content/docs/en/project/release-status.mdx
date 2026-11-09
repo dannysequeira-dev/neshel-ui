@@ -9,7 +9,7 @@ description: What is published, what is verified, and what remains before Neshel
 | ---------------------------- | -------------------------------------------------------------------------------------------- |
 | npm publication              | **Not published.** All packages keep `private: true` until the owner authorises the release. |
 | Intended version             | `0.1.0` for the five public packages, released together.                                   |
-| npm scope `@neshel-ui`       | Package names are unclaimed on the public registry; organisation ownership is **not yet confirmed**. |
+| npm scope `@neshel-ui`       | The `neshel-ui` npm organisation exists (confirmed by the owner); no package is published yet. |
 | Documentation website        | Live at https://neshel-ui.vercel.app (Vercel, deployed from `main`).                  |
 
 ## What is verified
@@ -39,8 +39,9 @@ Full evidence: the repository's
 
 ## Known limitations
 
-- **No manual screen-reader session has been performed yet.** Accessibility-tree snapshots and axe
-  checks are automated; a manual protocol (NVDA, VoiceOver, Narrator) is ready for the maintainers.
+- **Screen readers: one manual pairing.** The owner evaluated NVDA with Firefox on Windows against
+  this site and reported all ten protocol steps as passing. VoiceOver, Narrator and JAWS have not
+  been evaluated; accessibility-tree snapshots and axe checks are automated.
 - Safari itself is not automated; WebKit (Playwright) is the closest automated engine.
 - Unknown well-formed breakpoint keys warn in the browser instead of throwing (the runtime has no
   configuration).

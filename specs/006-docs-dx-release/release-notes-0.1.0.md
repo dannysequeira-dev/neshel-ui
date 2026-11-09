@@ -35,7 +35,8 @@ React and React DOM 19 (peer dependencies). ESM only. The CLI requires Node.js 2
 
 ## Known limitations
 
-- Manual screen-reader testing: see the release status page for what was evaluated.
+- Manual screen-reader testing: NVDA + Firefox on Windows (owner-reported, 10/10); VoiceOver,
+  Narrator and JAWS not evaluated.
 - Safari is not separately automated (WebKit is).
 - Unknown well-formed breakpoint keys warn in the browser instead of throwing.
 - Capsize trimming is exact only when the configured metrics match the rendered font.

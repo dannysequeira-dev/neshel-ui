@@ -2,7 +2,8 @@
 
 Brief § → requirement → implementation → verification. Evidence details: [evidence.md](evidence.md).
 
-**Closure commit `3d86273`: CI run 42632460159, 13/13 jobs green** (validate ×5, docs ×3 OS, Next.js +
+**Owner closure (2026-11-09): PASS.** Latest CI before closure: run 42711217374 (`8f13a20`, 14/14).
+Implementation closure commit `3d86273`: CI run 42632460159, 13/13 jobs green (validate ×5, docs ×3 OS, Next.js +
 starters + bundle budgets + release rehearsal ×3 OS, Chromium/Firefox/WebKit on Linux and macOS).
 Previous: 42631486037 (`df96f64`, 13/13), 42630400156 (`3182326`, 13/13).
 
@@ -37,11 +38,11 @@ Previous: 42631486037 (`df96f64`, 13/13), 42630400156 (`3182326`, 13/13).
 | 18    | Docs code verification                                                              | `check:docs` (imports, props via tsc, links, translations, configs, coverage)                                                              | CI                                                                |
 | 19    | R1–R9                                                                               | see release-readiness                                                                                                                      | —                                                                 |
 | 20    | Packed Next.js consumer                                                             | `check:next`                                                                                                                               | CI ×3                                                             |
-| 21    | Chromium/Firefox/WebKit, axe, SR evaluation                                         | `check:browsers` (ADR 0016); SR protocol                                                                                                   | CI Linux/macOS; manual SR pending                                 |
+| 21    | Chromium/Firefox/WebKit, axe, SR evaluation                                         | `check:browsers` (ADR 0016); SR protocol                                                                                                   | CI Linux/macOS; manual SR owner-reported 10/10 (NVDA + Firefox)   |
 | 22    | Package audit, no leaks, tree shaking                                               | metadata rule in `check:pack`; existing leak/allowlist checks; `check:bundles`                                                             | CI                                                                |
 | 23    | Versioning transition without lifting guards                                        | fixed group, repaired changesets, `release:simulate`                                                                                       | local + CI                                                        |
 | 24–25 | Secure publishing pipeline, manual gate                                             | `release.yml` (tag + environment + OIDC), guards, idempotent publish                                                                       | guard tests; not executed                                         |
-| 27    | Open-source presentation                                                            | README, package READMEs, SECURITY, CONTRIBUTING, brand policy draft, release notes draft, repo metadata suggestions                        | review                                                            |
+| 27    | Open-source presentation                                                            | README, package READMEs, SECURITY, CONTRIBUTING, brand policy (owner-approved), release notes draft, repo metadata suggestions             | review                                                            |
 | 28    | Documentation maintenance                                                           | "Contributing to the documentation" page (EN/ES), CONTRIBUTING, CI docs job                                                                | —                                                                 |
 
 ## Deviations from the plan
@@ -56,8 +57,9 @@ Previous: 42631486037 (`df96f64`, 13/13), 42630400156 (`3182326`, 13/13).
 
 ## Release checklist (owner gate)
 
-- [ ] Manual screen-reader session (protocol ready) or explicit acceptance of the gap
-- [ ] npm organisation `neshel-ui` created/confirmed, 2FA enforced
+- [x] Manual screen-reader session — NVDA + Firefox, 10/10, owner-reported (2026-11-09)
+- [x] npm organisation `neshel-ui` exists; owner's personal 2FA on (owner-confirmed, 2026-11-09)
+- [ ] Organisation-wide 2FA enforcement for members (not verified)
 - [x] Brand policy reviewed and approved (owner, 2026-11-09)
 - [ ] GitHub environment `npm-release` with required reviewers and tag rule
 - [ ] Release PR: remove `private`, `changeset version`, review changelogs, green CI
@@ -70,7 +72,9 @@ Previous: 42631486037 (`df96f64`, 13/13), 42630400156 (`3182326`, 13/13).
 
 ## Recommendation
 
-**CONDITIONAL PASS.** All development, documentation, verification and release-preparation work of
-the brief is implemented and verified on three operating systems, with nothing published and every
-guard intact. The conditions are owner actions, not defects: a manual screen-reader evaluation (R3)
-and confirmation of npm organisation ownership (R9), followed by the publication gate steps above.
+**PASS (closed 2026-11-09).** All development, documentation, verification and release-preparation
+work of the brief is implemented and verified on three operating systems, with nothing published and
+every guard intact. The two former conditions are satisfied: the manual screen-reader evaluation (R3)
+was performed and reported by the owner (NVDA + Firefox, 10/10, no issues), and the owner confirmed
+the `neshel-ui` npm organisation (R9). The remaining unchecked items above are feature 007
+publication steps and require explicit owner authorisation.
