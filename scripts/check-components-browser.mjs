@@ -62,7 +62,14 @@ async function main() {
       console.info(
         `${result.failures.length ? "FAIL" : "ok  "} ${name} — ${result.passed}/${result.cases.length} cases`,
       );
-      for (const failure of result.failures) console.error(`  ${failure}`);
+      for (const failure of result.failures) {
+        console.error(`  ${failure}`);
+        // GitHub annotations are readable without credentials (logs are not).
+        if (process.env.GITHUB_ACTIONS === "true")
+          console.log(
+            `::error title=check:browser:components::${failure.replace(/[\r\n]+/g, " ")}`,
+          );
+      }
     }
   } finally {
     await browser.close();
