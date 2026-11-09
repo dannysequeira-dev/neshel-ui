@@ -11,6 +11,7 @@ import {
   composeRefs,
   SELECTION_POPUP_ATTRIBUTE,
   TriggerContext,
+  usePopupName,
   useTriggerRegistry,
 } from "./internal/layer.js";
 import { cx, flag } from "./internal/validate.js";
@@ -154,6 +155,7 @@ export function Combobox(props: ComboboxProps) {
   const registry = useTriggerRegistry();
   const anchorRef = useRef<HTMLDivElement>(null);
   const positionMethod = usePositionMethod(container);
+  const popupName = usePopupName(registry);
 
   // Labels of every item seen, so selected values keep their label when external filtering
   // removes them from `items` (FR-080).
@@ -311,7 +313,7 @@ export function Combobox(props: ComboboxProps) {
                   {emptyMessage}
                 </BaseCombobox.Empty>
               )}
-              <BaseCombobox.List>
+              <BaseCombobox.List {...popupName}>
                 {(entry: ComboboxItem | ComboboxItemGroup) =>
                   isGroup(entry) ? (
                     <BaseCombobox.Group

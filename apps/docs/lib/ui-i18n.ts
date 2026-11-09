@@ -3,12 +3,16 @@ import { i18n } from "./i18n";
 
 /** Fumadocs interface strings. English uses Fumadocs' defaults; Spanish is translated in full. */
 export const i18nUI = defineI18nUI(i18n, {
-  en: { displayName: "English" },
+  en: {
+    displayName: "English",
+    // The visible text (the current language) must be part of the accessible name (WCAG 2.5.3).
+    "Choose a language(language switcher)(aria-label)": "English (choose a language)",
+  },
   es: {
     displayName: "Español",
     "Back to Home(404 not found page)": "Volver al inicio",
     "Choose a language(language switcher)": "Elige un idioma",
-    "Choose a language(language switcher)(aria-label)": "Elige un idioma",
+    "Choose a language(language switcher)(aria-label)": "Español (elige un idioma)",
     "Close Banner(banner)(aria-label)": "Cerrar aviso",
     "Close Search(search dialog)(aria-label)": "Cerrar búsqueda",
     "Close Sidebar(aria-label)": "Cerrar barra lateral",

@@ -13,6 +13,7 @@ import {
   SELECTION_POPUP_ATTRIBUTE,
   TriggerContext,
   useLivePortalTheme,
+  usePopupName,
   useTriggerRegistry,
 } from "./internal/layer.js";
 import { cx, flag } from "./internal/validate.js";
@@ -213,6 +214,7 @@ function Popup({
   container: HTMLElement | null | undefined;
 }) {
   const positionMethod = usePositionMethod(container);
+  const name = usePopupName();
   return (
     <SelectionPortal container={container} Portal={BaseSelect.Portal}>
       <BaseSelect.Positioner
@@ -222,7 +224,11 @@ function Popup({
         alignItemWithTrigger={false}
         positionMethod={positionMethod}
       >
-        <BaseSelect.Popup className="neshel-select-popup" {...{ [SELECTION_POPUP_ATTRIBUTE]: "" }}>
+        <BaseSelect.Popup
+          className="neshel-select-popup"
+          {...name}
+          {...{ [SELECTION_POPUP_ATTRIBUTE]: "" }}
+        >
           <OptionList options={options} />
         </BaseSelect.Popup>
       </BaseSelect.Positioner>

@@ -49,7 +49,7 @@ export function HomeDemo({
     >
       <Card>
         <CardHeader>
-          <CardTitle>{labels.title}</CardTitle>
+          <CardTitle as="h2">{labels.title}</CardTitle>
           <CardDescription>{labels.description}</CardDescription>
         </CardHeader>
         <CardContent>

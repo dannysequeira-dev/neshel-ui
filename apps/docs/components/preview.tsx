@@ -36,14 +36,14 @@ export async function Preview({
           preview: t.previewLabel,
           theme: t.previewTheme,
         }}
-        title={title}
+        title={title ?? `${t.previewLabel}: ${demo.split("/").pop()}`}
       >
         <Demo />
       </PreviewFrame>
       <ServerCodeBlock
         code={code.trimEnd()}
         lang="tsx"
-        themes={{ light: "github-light", dark: "github-dark" }}
+        themes={{ light: "github-light-high-contrast", dark: "github-dark-high-contrast" }}
         codeblock={{
           title: `${demo.split("/").pop()}.tsx`,
           className: "my-0 rounded-none border-0 border-t",

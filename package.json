@@ -45,7 +45,9 @@
     "check:docs": "node scripts/check-docs.mjs",
     "check:starters": "node scripts/check-starters.mjs",
     "pack:local": "node scripts/pack-local.mjs",
-    "check:next": "node scripts/check-next.mjs"
+    "check:next": "node scripts/check-next.mjs",
+    "check:browsers": "node scripts/check-browsers.mjs",
+    "check:docs-site": "node scripts/check-docs-site.mjs"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "catalog:",
@@ -56,6 +58,7 @@
     "@types/react-dom": "catalog:",
     "axe-core": "catalog:",
     "jsdom": "catalog:",
+    "playwright": "catalog:",
     "publint": "catalog:",
     "react": "catalog:",
     "react-dom": "catalog:",

@@ -37,7 +37,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
   ];
 
   return (
-    <main className="py-12 md:py-20">
+    <div className="py-12 md:py-20">
       <Container size="xl" gutter={{ base: "4", md: "8" }}>
         <Stack space={{ base: "16", md: "24" }}>
           {/* Hero */}
@@ -81,7 +81,10 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
                 <ServerCodeBlock
                   code="pnpm add @neshel-ui/config @neshel-ui/layout @neshel-ui/typography @neshel-ui/components"
                   lang="bash"
-                  themes={{ light: "github-light", dark: "github-dark" }}
+                  themes={{
+                    light: "github-light-high-contrast",
+                    dark: "github-dark-high-contrast",
+                  }}
                   codeblock={{ className: "my-0" }}
                 />
               </Stack>
@@ -113,7 +116,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
               <ServerCodeBlock
                 code={`<section data-neshel-theme="evergreen">\n  <Button>Primary</Button>\n</section>`}
                 lang="tsx"
-                themes={{ light: "github-light", dark: "github-dark" }}
+                themes={{ light: "github-light-high-contrast", dark: "github-dark-high-contrast" }}
                 codeblock={{ className: "my-0" }}
               />
             </Stack>
@@ -156,6 +159,6 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
           </Grid>
         </Stack>
       </Container>
-    </main>
+    </div>
   );
 }

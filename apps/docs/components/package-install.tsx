@@ -5,7 +5,7 @@ import { dictionary } from "@/lib/dictionary";
 import type { Locale } from "@/lib/i18n";
 import { release } from "@/lib/release";
 
-const themes = { light: "github-light", dark: "github-dark" } as const;
+const themes = { light: "github-light-high-contrast", dark: "github-dark-high-contrast" } as const;
 
 /** Install commands for pnpm, npm and Yarn, with the release status from lib/release.ts. */
 export function PackageInstall({

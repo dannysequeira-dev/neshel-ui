@@ -62,7 +62,7 @@ export default async function ExamplePage({ params }: { params: Promise<Params> 
   const files = await sources(slug);
 
   return (
-    <main className="py-10">
+    <div className="py-10">
       <Container size="xl" gutter={{ base: "4", md: "8" }}>
         <Stack space="8">
           <Stack space="3">
@@ -93,7 +93,10 @@ export default async function ExamplePage({ params }: { params: Promise<Params> 
                     <ServerCodeBlock
                       code={f.code}
                       lang={f.file.endsWith(".tsx") ? "tsx" : "ts"}
-                      themes={{ light: "github-light", dark: "github-dark" }}
+                      themes={{
+                        light: "github-light-high-contrast",
+                        dark: "github-dark-high-contrast",
+                      }}
                       codeblock={{ title: f.file }}
                     />
                   </Tab>
@@ -103,6 +106,6 @@ export default async function ExamplePage({ params }: { params: Promise<Params> 
           </section>
         </Stack>
       </Container>
-    </main>
+    </div>
   );
 }

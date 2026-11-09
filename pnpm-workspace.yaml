@@ -32,6 +32,7 @@ catalog:
   "@radix-ui/react-navigation-menu": ^1.4.1
   "@radix-ui/react-tooltip": ^1.4.1
   axe-core: ^4.14.0
+  playwright: 1.65.0
 
 # Vite 8 adopted after the 001.4 spike (ADR 0005); @vitejs/plugin-react stays on 5.x.
 

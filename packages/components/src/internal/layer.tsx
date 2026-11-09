@@ -16,6 +16,7 @@ import {
   type RefCallback,
   type RefObject,
   useContext,
+  useEffect,
   useRef,
   useState,
 } from "react";
@@ -25,6 +26,51 @@ export const TriggerContext = createContext<RefObject<HTMLElement | null> | null
 /** A ref object for a root to provide through `TriggerContext`. */
 export function useTriggerRegistry(): RefObject<HTMLElement | null> {
   return useRef<HTMLElement | null>(null);
+}
+
+type PopupName = { "aria-label"?: string; "aria-labelledby"?: string };
+
+/** Visible text of a label without decorative content (e.g. Label's aria-hidden "*"). */
+function labelText(label: HTMLElement): string {
+  const clone = label.cloneNode(true) as HTMLElement;
+  for (const hidden of clone.querySelectorAll('[aria-hidden="true"]')) hidden.remove();
+  return (clone.textContent ?? "").replace(/\s+/g, " ").trim();
+}
+
+/**
+ * Accessible name for a selection popup (listbox) taken from its control (feature 006, R3): the
+ * control's aria-labelledby, else its aria-label, else the text of its <label> elements.
+ */
+export function popupNameFrom(element: HTMLElement | null): PopupName {
+  if (!element) return {};
+  const control = element.matches("input, button")
+    ? element
+    : (element.querySelector<HTMLElement>("input") ?? element.querySelector<HTMLElement>("button"));
+  if (!control) return {};
+  const labelledBy = control.getAttribute("aria-labelledby");
+  if (labelledBy) return { "aria-labelledby": labelledBy };
+  const label = control.getAttribute("aria-label");
+  if (label) return { "aria-label": label };
+  const labels = (control as HTMLInputElement).labels;
+  const text = labels ? Array.from(labels, labelText).filter(Boolean).join(" ") : "";
+  return text ? { "aria-label": text } : {};
+}
+
+/** The popup's accessible name, read from the registered control after each render (client only). */
+export function usePopupName(explicit?: RefObject<HTMLElement | null>): PopupName {
+  const context = useContext(TriggerContext);
+  const registry = explicit ?? context;
+  const [name, setName] = useState<PopupName>({});
+  useEffect(() => {
+    const next = popupNameFrom(registry?.current ?? null);
+    setName((previous) =>
+      previous["aria-label"] === next["aria-label"] &&
+      previous["aria-labelledby"] === next["aria-labelledby"]
+        ? previous
+        : next,
+    );
+  });
+  return name;
 }
 
 /** Compose refs (objects and callbacks) into one callback ref. */

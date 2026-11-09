@@ -1,5 +1,6 @@
 import { loader } from "fumadocs-core/source";
 import { metaSchema, pageSchema } from "fumadocs-core/source/schema";
+import { applyMdxPreset } from "fumadocs-mdx/config";
 import { defineDocs } from "fumadocs-mdx/macro";
 import { z } from "zod";
 import { i18n } from "./i18n";
@@ -14,6 +15,12 @@ const docs = defineDocs({
       exports: z.array(z.string()).optional(),
     }),
     postprocess: { includeProcessedMarkdown: true },
+    // High-contrast syntax themes: token colours meet WCAG AA on the Neshel backgrounds.
+    mdxOptions: applyMdxPreset({
+      rehypeCodeOptions: {
+        themes: { light: "github-light-high-contrast", dark: "github-dark-high-contrast" },
+      },
+    }),
   },
   meta: { schema: metaSchema },
 });
