@@ -91,6 +91,15 @@ consumer `tablet` 52rem / `phone` 30rem with a named `sepia` theme; replace cons
 | 42542011929 | `53e2549` | failure — Lint (unformatted traceability table)                                                                                                                             |
 | 42543517738 | `55a3ed1` | **success — 5/5 jobs** (Node 26 on Linux, Windows, macOS; Node 22 and 24 on Linux), including `check:consumer` (9 variants), `check:browser` and `check:browser:components` |
 
+## Owner review (2026-11-09)
+
+Phase 005 was approved as **PASS** by the owner after reviewing the completion report, the public
+GitHub Actions results, this evidence and the accepted limitations. The final closure commit
+`f66afe4` passed run 42544327073 (5/5). The approval does **not** authorise npm publication.
+The owner recorded nine pre-publication requirements (R1–R9) in
+[docs/release-readiness.md](../../docs/release-readiness.md); the risks below remain accepted, not
+resolved.
+
 ## Phase 004 limitations (brief §37) — status
 
 | Limitation                                                          | Status in 005                                                                                    |
