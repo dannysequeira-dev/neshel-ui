@@ -1,0 +1,61 @@
+---
+title: MultiSelect
+description: Multiple selection with removable chips, a clear-all button and announced removals.
+package: components
+exports: [MultiSelect, MultiSelectProps]
+---
+
+<ComponentKind package="components" name="MultiSelect" />
+
+## Purpose
+
+`MultiSelect` chooses several values from a list. Selected values appear as removable chips beside
+the trigger.
+
+## Import
+
+```tsx title="import.tsx"
+import { MultiSelect } from "@neshel-ui/components";
+```
+
+## Usage
+
+<Preview demo="components/multi-select-basic" />
+
+## API
+
+<ApiTable package="components" name="MultiSelectProps" />
+
+Options use the same `SelectOption` / `SelectOptionGroup` shapes as [Select](/en/docs/components/select/#api).
+
+## Controlled and uncontrolled
+
+`defaultValue` / `value` (`string[]`) with `onValueChange`.
+
+## Forms
+
+With `name`, each selected value becomes a form entry (`formData.getAll(name)`).
+
+## Accessibility
+
+- Chips sit **beside** the trigger — never inside it — so there is no interactive content inside a
+  button. Each chip has a remove button labelled by `removeLabel` ("Remove Spanish").
+- Removals are announced in a polite live region (`removedMessage`), and focus moves to the next chip.
+- `chips={false}` shows only a summary in the trigger (`summary`, "2 selected").
+- All labels are props, so you can translate them.
+
+## Keyboard
+
+| Key                       | Action                                   |
+| ------------------------- | ---------------------------------------- |
+| Enter / Space / ↓         | Open the listbox                         |
+| ↓ / ↑, Home / End         | Move between options                     |
+| Enter / Space             | Toggle the option (popup stays open)     |
+| Escape                    | Close; the selection is kept             |
+| Tab to a chip's remove button, Enter | Remove that value            |
+
+## Common mistakes
+
+- Untranslated labels in non-English interfaces: pass `removeLabel`, `removedMessage`, `summary` and
+  `clearLabel`.
+- Long lists without search: use [Combobox](/en/docs/components/combobox/) with `multiple`.

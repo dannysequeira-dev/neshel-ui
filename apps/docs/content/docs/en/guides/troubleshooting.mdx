@@ -1,0 +1,60 @@
+---
+title: Troubleshooting
+description: Common integration mistakes and how to fix them.
+---
+
+## Components render unstyled
+
+- A package stylesheet is not imported. Each package (`layout`, `typography`, `components`) has its own
+  `styles.css`; import the ones you use.
+- Neither `@neshel-ui/config/tokens.css` nor `tailwind.css` is imported, so tokens are undefined.
+
+## Container margins or spacing disappear with Tailwind
+
+The package stylesheets were imported **before** `@import "tailwindcss"`. Tailwind's preflight is
+then ordered after the package layer. Import Tailwind first — see [CSS imports](/en/docs/getting-started/css/).
+
+## My token override does not apply in dark mode (or applies everywhere)
+
+An unlayered `:root { --neshel-primary: … }` beats every theme layer, including dark. Use
+`neshel.config.ts`, or write the override inside `@layer neshel.config` per theme selector — see
+[Theming → The cascade](/en/docs/guides/theming/#the-cascade).
+
+## A dialog or menu ignores my inline CSS variables
+
+Portals render outside your element. Themes are copied, inline custom properties are not. Pass
+`container` — see [Overlays and portals](/en/docs/guides/overlays-portals/#inline-custom-properties-need-a-portal-container).
+
+## Custom breakpoint names are type errors
+
+The generated `neshel.generated.d.ts` is not part of your TypeScript program. Add it to `include` and
+run `neshel generate`.
+
+## "Unknown breakpoint" warnings in the browser console
+
+A responsive key is not declared by the loaded stylesheet: a typo, a stale generated file, or the
+generated stylesheet is not imported (or imported before the package stylesheets).
+
+## Headings look misaligned or the spacing feels off
+
+The configured font metrics do not match the rendered font (for example Inter metrics while Inter is
+not loaded). Load the font and configure its metrics — [Typography and Capsize](/en/docs/guides/typography-capsize/#limitations).
+
+## `NeshelComponentsError`, `NeshelLayoutError` or `NeshelTypographyError`
+
+Invalid usage throws during render, on the server and the client, with a message naming the
+component, for example `as` together with `asChild`, `space` together with `spaceX`, a disabled
+`Button` with `asChild`, or an `asChild` child that is not a single element. The message explains the
+fix.
+
+## The sidebar loses state when resizing
+
+On mobile the sidebar content moves into a drawer; moving between the two hosts **remounts** the
+children. Keep state that must survive (form drafts, expanded sections) in the parent or in your
+store — see [Sidebar → Limitations](/en/docs/components/sidebar/#limitations).
+
+## Two React copies
+
+`react` and `react-dom` are peer dependencies. If your setup installs Neshel-UI packages from a
+different place than your app (for example linked folders), you may end up with two Reacts and
+"Invalid hook call" errors. Install packed tarballs or the npm packages instead of links.

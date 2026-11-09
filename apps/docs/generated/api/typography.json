@@ -38,13 +38,13 @@
         },
         {
           "name": "as",
-          "type": "never | E",
+          "type": "E",
           "optional": true,
           "description": ""
         },
         {
           "name": "asChild",
-          "type": "true | false",
+          "type": "boolean",
           "optional": false,
           "description": ""
         },
@@ -116,7 +116,9 @@
           "description": "Line wrapping strategy (`balance` suits headings, `pretty` paragraphs)."
         }
       ],
-      "inherits": ["React DOM attributes"],
+      "inherits": [
+        "React DOM attributes"
+      ],
       "definition": "TypographyProps & Trimmable & Polymorphic<CaptionElement>"
     },
     {
@@ -156,13 +158,13 @@
         },
         {
           "name": "as",
-          "type": "never | E",
+          "type": "E",
           "optional": true,
           "description": ""
         },
         {
           "name": "asChild",
-          "type": "true | false",
+          "type": "boolean",
           "optional": false,
           "description": ""
         },
@@ -234,7 +236,9 @@
           "description": "Line wrapping strategy (`balance` suits headings, `pretty` paragraphs)."
         }
       ],
-      "inherits": ["React DOM attributes"],
+      "inherits": [
+        "React DOM attributes"
+      ],
       "definition": "TypographyProps & Trimmable & Polymorphic<HeadingElement>"
     },
     {
@@ -273,13 +277,13 @@
         },
         {
           "name": "as",
-          "type": "never | E",
+          "type": "E",
           "optional": true,
           "description": ""
         },
         {
           "name": "asChild",
-          "type": "true | false",
+          "type": "boolean",
           "optional": false,
           "description": ""
         },
@@ -351,7 +355,9 @@
           "description": "Line wrapping strategy (`balance` suits headings, `pretty` paragraphs)."
         }
       ],
-      "inherits": ["React DOM attributes"],
+      "inherits": [
+        "React DOM attributes"
+      ],
       "definition": "TypographyProps & Trimmable & Polymorphic<ParagraphElement>"
     },
     {
@@ -412,13 +418,13 @@
         },
         {
           "name": "as",
-          "type": "never | E",
+          "type": "E",
           "optional": true,
           "description": ""
         },
         {
           "name": "asChild",
-          "type": "true | false",
+          "type": "boolean",
           "optional": false,
           "description": ""
         },
@@ -483,7 +489,9 @@
           "description": "Line wrapping strategy (`balance` suits headings, `pretty` paragraphs)."
         }
       ],
-      "inherits": ["React DOM attributes"],
+      "inherits": [
+        "React DOM attributes"
+      ],
       "definition": "TypographyProps & Polymorphic<TextElement>"
     },
     {
@@ -594,7 +602,9 @@
           "description": "Line wrapping strategy (`balance` suits headings, `pretty` paragraphs)."
         }
       ],
-      "inherits": ["React DOM attributes"]
+      "inherits": [
+        "React DOM attributes"
+      ]
     }
   ]
 }

@@ -1,0 +1,65 @@
+---
+title: Using the CLI
+description: Add neshel.config.ts, validate it and generate a stylesheet with neshel generate.
+---
+
+The default stylesheets need no configuration. When you want your own colours, fonts, radii or
+breakpoints, add `@neshel-ui/cli` and a configuration file. The CLI runs in Node at build time and
+writes a static stylesheet; nothing runs in the browser.
+
+## 1. Install
+
+<PackageInstall packages={["@neshel-ui/cli"]} dev />
+
+## 2. Create `neshel.config.ts`
+
+```ts title="neshel.config.ts"
+import { defineConfig } from "@neshel-ui/config";
+
+export default defineConfig({
+  themes: {
+    light: { colors: { primary: "#1f5136", primaryForeground: "#ffffff" } },
+    dark: { colors: { primary: "#8fd3a9", primaryForeground: "#04170b" } },
+  },
+  output: "./src/neshel.generated.css",
+});
+```
+
+The configuration file is executable, trusted project code (like `vite.config.ts`).
+
+## 3. Validate and generate
+
+```bash
+pnpm exec neshel validate
+pnpm exec neshel generate
+```
+
+`validate` checks structure, colours and contrast and never writes. `generate` validates, then writes
+`src/neshel.generated.css` (only when the content changed).
+
+## 4. Import the generated stylesheet
+
+```css title="src/index.css"
+@import "tailwindcss";
+@import "@neshel-ui/config/tailwind.css";
+@import "@neshel-ui/layout/styles.css";
+@import "@neshel-ui/typography/styles.css";
+@import "@neshel-ui/components/styles.css";
+@import "./neshel.generated.css";
+```
+
+## 5. Run it on every build
+
+```jsonc title="package.json (excerpt)"
+{
+  "scripts": {
+    "dev": "neshel generate && vite",
+    "build": "neshel generate && vite build",
+    "check:theme": "neshel generate --check --strict"
+  }
+}
+```
+
+Chain the command explicitly; `predev`/`prebuild` hooks are skipped by pnpm unless enabled. In CI,
+`neshel generate --check` fails (exit 4) when the committed output is stale. Full reference:
+[CLI](/en/docs/cli/). Next: [Customising tokens](/en/docs/getting-started/tokens/).

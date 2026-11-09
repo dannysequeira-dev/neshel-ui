@@ -1,0 +1,54 @@
+---
+title: CSS imports
+description: Which Neshel-UI stylesheets to import, with and without Tailwind CSS, and why the order matters.
+---
+
+Installing a package never injects CSS. Your application imports the stylesheets it needs once, in
+its global CSS file. All package styles live in CSS cascade layers, so your own CSS — and Tailwind
+utilities — always win over them.
+
+## With Tailwind CSS v4
+
+```css title="src/index.css"
+@import "tailwindcss";
+@import "@neshel-ui/config/tailwind.css";
+@import "@neshel-ui/layout/styles.css";
+@import "@neshel-ui/typography/styles.css";
+@import "@neshel-ui/components/styles.css";
+/* your application CSS below */
+```
+
+`@neshel-ui/config/tailwind.css` contains the tokens **and** a Tailwind `@theme inline` mapping, so
+utilities such as `bg-neshel-primary` or `text-neshel-muted-foreground` follow the active theme.
+
+## Without Tailwind (plain CSS)
+
+```css title="src/index.css"
+@import "@neshel-ui/config/tokens.css";
+@import "@neshel-ui/layout/styles.css";
+@import "@neshel-ui/typography/styles.css";
+@import "@neshel-ui/components/styles.css";
+```
+
+Import `tokens.css` **or** `tailwind.css`, never both. (`@neshel-ui/config/styles.css` is a 0.x alias
+of `tailwind.css`.)
+
+## Canonical order
+
+```text
+Tailwind  →  config stylesheet  →  package stylesheets  →  generated stylesheet  →  your CSS
+```
+
+- Import package stylesheets **after** Tailwind: imported before it, Tailwind's preflight is ordered
+  after the package layer and removes, for example, `Container`'s automatic margins.
+- With a [generated stylesheet](/en/docs/getting-started/cli/) (`neshel generate`), import it
+  **after** the package stylesheets — with custom breakpoints it contains the component rules for
+  your breakpoints and must come later.
+- Import only the packages you use; each stylesheet is independent.
+
+## What you do not need
+
+- No `@source` entry for `node_modules`: the CSS is precompiled; Tailwind does not need to scan
+  Neshel's sources.
+- No PostCSS plugin of our own, no runtime provider, no global reset beyond what you import.
+- No font files: load your fonts yourself (see [Typography and Capsize](/en/docs/guides/typography-capsize/)).

@@ -1,6 +1,54 @@
 ---
 title: Introduction
-description: What Neshel-UI is and how its packages fit together.
+description: What Neshel-UI is, what it contains, and how its packages fit together.
 ---
 
-Neshel-UI is a modular React design system.
+<ReleaseNotice />
+
+Neshel-UI is a small, modular, accessible React design system. It gives an application **semantic
+design tokens**, **layout primitives**, **metrics-aware typography**, **accessible components** and a
+**build-time CLI** — as five independent npm packages that you install only when you need them.
+
+Its tagline is *Rooted in faith. Built with hope.* The default appearance (midnight navy, ivory and
+restrained gold) belongs to Neshel; your application owns its own identity through configuration.
+
+## Packages
+
+| Package                 | What it gives you                                                                 | Runtime dependencies          |
+| ----------------------- | --------------------------------------------------------------------------------- | ----------------------------- |
+| `@neshel-ui/config`     | Design tokens as CSS custom properties, light/dark/system and named themes, `defineConfig` | none                          |
+| `@neshel-ui/layout`     | `Box`, `Flex`, `Stack`, `Inline`, `Grid`, `Center`, `Container`                  | Radix Slot, tailwind-variants |
+| `@neshel-ui/typography` | `Heading`, `Text`, `Paragraph`, `Caption` with Capsize trimming                   | Radix Slot, tailwind-variants |
+| `@neshel-ui/components` | Buttons, cards, form controls, overlays, selection, navigation, application shell | Radix, Base UI (subpaths)     |
+| `@neshel-ui/cli`        | `neshel validate` and `neshel generate` for custom themes, fonts and breakpoints  | jiti, Color.js, Capsize core  |
+
+`react` and `react-dom` 19 are **peer dependencies**: your application provides them. The layout,
+typography and components packages also declare `@neshel-ui/config` as a peer (for types).
+
+## Principles
+
+- **CSS first.** Every package ships precompiled CSS in a cascade layer. Tailwind CSS v4 is optional;
+  plain CSS applications work the same way. No `@source` scanning of `node_modules` is needed.
+- **No runtime provider for theming.** Themes are CSS custom properties selected with the
+  `data-neshel-theme` attribute, on the root or on any element.
+- **Semantic HTML and accessibility by default.** Native elements where possible; Radix and Base UI
+  for complex interaction patterns; keyboard, focus and contrast rules verified in browsers.
+- **Configuration at build time.** `neshel.config.ts` is evaluated by the CLI in Node, never in the
+  browser. It generates a static stylesheet and TypeScript declarations.
+- **Server-friendly.** Presentational components have no `"use client"` directive and render in
+  React Server Components; interactive modules carry the directive.
+
+## Where to start
+
+<Cards>
+  <Card title="Getting started" href="/en/docs/getting-started/" description="Requirements, installation and your first components." />
+  <Card title="Components" href="/en/docs/components/" description="The complete catalogue with live previews and generated API tables." />
+  <Card title="Theming" href="/en/docs/guides/theming/" description="Make the design system yours: colours, fonts, radii, breakpoints." />
+  <Card title="CLI" href="/en/docs/cli/" description="Validate and generate configuration outputs." />
+</Cards>
+
+## Project status
+
+Neshel-UI is preparing its first public release, **0.1.0**. The packages are verified from packed
+tarballs in external applications on Linux, Windows and macOS, but **they are not on npm yet**. See [Release status](/en/docs/project/release-status/) for exactly what is verified and
+what remains.

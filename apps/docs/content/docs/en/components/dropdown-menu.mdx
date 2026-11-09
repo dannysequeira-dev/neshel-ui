@@ -1,0 +1,77 @@
+---
+title: DropdownMenu
+description: A menu of commands with items, checkbox and radio items, labels, groups, shortcuts and submenus.
+package: components
+exports: [DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuCheckboxItem, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuLabel, DropdownMenuGroup, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuSubContent, DropdownMenuProps, DropdownMenuTriggerProps, DropdownMenuContentProps, DropdownMenuItemProps, DropdownMenuCheckboxItemProps, DropdownMenuRadioGroupProps, DropdownMenuRadioItemProps, DropdownMenuLabelProps, DropdownMenuGroupProps, DropdownMenuSeparatorProps, DropdownMenuShortcutProps, DropdownMenuSubProps, DropdownMenuSubTriggerProps, DropdownMenuSubContentProps]
+---
+
+<ComponentKind package="components" name="DropdownMenu" />
+
+## Purpose
+
+`DropdownMenu` shows a list of **commands** from a trigger: account menus, row actions, toolbar
+overflow. It uses menu semantics (`menu`, `menuitem`, `menuitemcheckbox`, `menuitemradio`).
+
+## Import
+
+```tsx title="import.tsx"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@neshel-ui/components";
+```
+
+## Usage
+
+<Preview demo="components/dropdown-menu-commands" />
+
+## API
+
+<ApiTable package="components" name="DropdownMenuProps" />
+<ApiTable package="components" name="DropdownMenuTriggerProps" />
+<ApiTable package="components" name="DropdownMenuContentProps" />
+<ApiTable package="components" name="DropdownMenuItemProps" />
+<ApiTable package="components" name="DropdownMenuCheckboxItemProps" />
+<ApiTable package="components" name="DropdownMenuRadioGroupProps" />
+<ApiTable package="components" name="DropdownMenuRadioItemProps" />
+<ApiTable package="components" name="DropdownMenuLabelProps" />
+<ApiTable package="components" name="DropdownMenuGroupProps" />
+<ApiTable package="components" name="DropdownMenuSeparatorProps" />
+<ApiTable package="components" name="DropdownMenuShortcutProps" />
+<ApiTable package="components" name="DropdownMenuSubProps" />
+<ApiTable package="components" name="DropdownMenuSubTriggerProps" />
+<ApiTable package="components" name="DropdownMenuSubContentProps" />
+
+- Run commands in `onSelect` (keyboard and pointer). The menu closes after a selection; call
+  `event.preventDefault()` in `onSelect` to keep it open.
+- `DropdownMenuItem variant="destructive"` styles dangerous commands.
+- `DropdownMenuShortcut` only **displays** a shortcut; register the key binding yourself.
+
+## Controlled and uncontrolled
+
+Menu: `open` / `defaultOpen` / `onOpenChange`. Checkbox items: `checked` / `onCheckedChange`. Radio
+groups: `value` / `onValueChange`.
+
+## Accessibility
+
+Focus moves into the menu on open and returns to the trigger on close. Items are announced with their
+role and checked state. Labels (`DropdownMenuLabel`) and separators structure long menus.
+
+## Keyboard
+
+| Key                 | Action                                  |
+| ------------------- | --------------------------------------- |
+| Enter / Space / ↓   | Open from the trigger                   |
+| ↓ / ↑, Home / End   | Move between items                      |
+| Type letters        | Jump to a matching item                 |
+| → / ←               | Open / close a submenu                  |
+| Enter / Space       | Activate the item                       |
+| Escape              | Close the menu (innermost first)        |
+
+## Common mistakes
+
+- Navigation links in a DropdownMenu: users of screen readers expect commands. Use a
+  [NavigationMenu](/en/docs/components/navigation-menu/) or plain links.
+- Using `onClick` instead of `onSelect` — keyboard activation would be missed.

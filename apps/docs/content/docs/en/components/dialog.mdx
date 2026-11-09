@@ -1,0 +1,96 @@
+---
+title: Dialog
+description: A modal dialog composed of trigger, content, header, body, footer, title, description and close parts.
+package: components
+exports: [Dialog, DialogTrigger, DialogContent, DialogHeader, DialogBody, DialogFooter, DialogTitle, DialogDescription, DialogClose, DialogProps, DialogTriggerProps, DialogContentProps, DialogPartProps, DialogTitleProps, DialogDescriptionProps, DialogCloseProps, DialogSize]
+---
+
+<ComponentKind package="components" name="Dialog" />
+
+## Purpose
+
+`Dialog` shows a modal window for a focused task — editing, confirming details, settings. The rest of
+the page becomes inert while it is open.
+
+## Import
+
+```tsx title="import.tsx"
+import {
+  Dialog,
+  DialogBody,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@neshel-ui/components";
+```
+
+## Usage
+
+<Preview demo="components/dialog-basic" />
+
+## API
+
+<ApiTable package="components" name="DialogProps" />
+<ApiTable package="components" name="DialogContentProps" />
+<ApiTable package="components" name="DialogSize" />
+<ApiTable package="components" name="DialogTriggerProps" />
+<ApiTable package="components" name="DialogCloseProps" />
+<ApiTable package="components" name="DialogTitleProps" />
+<ApiTable package="components" name="DialogDescriptionProps" />
+<ApiTable package="components" name="DialogPartProps" />
+
+| Part                | Renders                                                     |
+| ------------------- | ----------------------------------------------------------- |
+| `Dialog`            | State root (no DOM)                                         |
+| `DialogTrigger`     | Button that opens the dialog (`asChild` for your Button)    |
+| `DialogContent`     | Portal, backdrop and the dialog panel, with a close button  |
+| `DialogHeader` / `DialogBody` / `DialogFooter` | Structural `div`s                 |
+| `DialogTitle`       | The accessible name (`h2`)                                  |
+| `DialogDescription` | The accessible description (`p`)                            |
+| `DialogClose`       | Button that closes the dialog (`asChild`)                   |
+
+`DialogContent` sizes: `sm`, `md` (default), `lg`, `xl`, `full`. `showClose={false}` removes the
+built-in close button; `closeLabel` renames it.
+
+## Controlled and uncontrolled
+
+Uncontrolled: the trigger opens it and closes close it. Controlled: own `open` and `onOpenChange` —
+for example to close after a successful submit.
+
+<Preview demo="components/dialog-controlled" />
+
+## Composition
+
+Triggers and closes support `asChild` (use your `Button`). Dialogs can be nested; Escape closes the
+innermost one. Selection popups inside a dialog render inside it.
+
+## Accessibility
+
+- Every dialog needs a `DialogTitle` (a development warning reports a missing one). Without a
+  description, pass `aria-describedby={undefined}` on `DialogContent`.
+- Focus moves to the first focusable element, is trapped, and returns to the trigger on close (for a
+  controlled dialog, to the element that opened it).
+- The content copies the trigger's `data-neshel-theme` across the portal.
+
+## Keyboard
+
+| Key         | Action                                  |
+| ----------- | --------------------------------------- |
+| Tab / Shift+Tab | Move focus within the dialog (trapped) |
+| Escape      | Close the dialog (innermost layer only) |
+
+## Styling
+
+The panel uses `--neshel-surface` / `--neshel-surface-foreground`, the backdrop
+`--neshel-overlay-backdrop`, the layer `--neshel-z-overlay`. Inline custom properties on an ancestor
+need `container` — see [portal containers](/en/docs/guides/overlays-portals/#inline-custom-properties-need-a-portal-container).
+
+## Common mistakes
+
+- No `DialogTitle`, or a visually styled `div` instead of it.
+- Submitting a form and expecting the dialog to close by itself: control `open`.
+- Using a Dialog for a destructive confirmation — see [AlertDialog](/en/docs/components/alert-dialog/).

@@ -1,0 +1,70 @@
+---
+title: Exit codes and diagnostics
+description: Every exit code and diagnostic code of the neshel CLI, with causes and fixes.
+package: cli
+exports: [unknown-key, invalid-type, invalid-version, invalid-theme-name, reserved-theme, missing-base, invalid-base, unexpected-base, invalid-length, invalid-font-stack, invalid-output, invalid-metrics, unsupported-color-syntax, invalid-color, alpha-not-allowed, out-of-gamut, contrast, reserved, invalid-breakpoint-name, reserved-breakpoint-name, duplicate-breakpoint-name, breakpoint-redefined, invalid-breakpoint-width, duplicate-breakpoint-width, too-many-breakpoints, empty-breakpoints, breakpoint-order, invalid-types-output, missing-metrics, invalid-fallbacks, no-component-packages]
+---
+
+## Exit codes
+
+| Code | Meaning                                                                                                    |
+| ---- | ---------------------------------------------------------------------------------------------------------- |
+| 0    | Success (warnings may be printed); also "unchanged"                                                        |
+| 1    | Invalid configuration: structural or colour errors (including config `output`/`types`), contrast errors under `error` |
+| 2    | Usage: unknown command or option, missing value, rejected `--out`/`--types` path                          |
+| 3    | Configuration not found, ambiguous, failed to load, or default export not an object                       |
+| 4    | `generate --check`: an output is missing or out of date                                                   |
+| 5    | I/O or unexpected internal error (stack trace with `--debug`)                                             |
+
+## Diagnostic format
+
+```text
+<severity> <path> <code> <message>
+error   themes.dark.colors.primary   unsupported-color-syntax  Expected #hex, rgb(), hsl() or oklch(); received "navy".
+```
+
+`path` is the dotted configuration path (empty for the file itself).
+
+## Codes
+
+| Code                         | Severity       | Cause and fix                                                                 |
+| ---------------------------- | -------------- | ----------------------------------------------------------------------------- |
+| `unknown-key`                | error          | A key that the schema does not define; the message suggests the closest key   |
+| `invalid-type`               | error          | Wrong value type (for example a number where a string is expected)            |
+| `invalid-version`            | error          | `version` other than `1`                                                      |
+| `invalid-theme-name`         | error          | Theme names must be lower-case kebab-case, 1–32 characters                    |
+| `reserved-theme`             | error          | `system` cannot be configured as a theme                                     |
+| `missing-base`               | error          | A named theme without `extends`                                               |
+| `invalid-base`               | error          | `extends` other than `"light"` or `"dark"`                                    |
+| `unexpected-base`            | error          | `extends` on `light` or `dark`                                                |
+| `invalid-length`             | error          | Lengths must be `0` or a number with `rem`, `em` or `px`                      |
+| `invalid-font-stack`         | error          | Empty font names or names containing `;`, `{` or `}`                          |
+| `invalid-output`             | error          | `output` is not a `.css` path, is inside `node_modules`, is the config file or a directory |
+| `invalid-types-output`       | error          | Same rules for `types` (`.d.ts`)                                              |
+| `invalid-metrics`            | error          | Font metrics missing required numeric fields                                  |
+| `invalid-fallbacks`          | error          | Fallback metrics without `familyName` or `xWidthAvg`                          |
+| `missing-metrics`            | warning        | A customised font family without metrics; that role is not trimmed            |
+| `unsupported-color-syntax`   | error          | Named colours, `var()`, `color-mix()`, `lab()`… — use hex, rgb, hsl or oklch  |
+| `invalid-color`              | error          | A colour that cannot be parsed (for example a malformed `oklch(`)             |
+| `alpha-not-allowed`          | error          | Transparency on a role other than `border`                                    |
+| `out-of-gamut`               | warning        | Outside sRGB; contrast computed after gamut mapping, CSS keeps your value     |
+| `contrast`                   | warning/error  | A pair below its minimum (4.5:1 text, 3:1 boundaries/focus)                   |
+| `reserved`                   | —              | Part of the code list but not emitted by this version (it marked keys reserved for a future release) |
+| `invalid-breakpoint-name`    | error          | Names must be lower camelCase                                                 |
+| `reserved-breakpoint-name`   | error          | `base`, Neshel class prefixes or Tailwind variant names                       |
+| `duplicate-breakpoint-name`  | error          | Names must be unique ignoring case                                            |
+| `breakpoint-redefined`       | error          | `extend` mode cannot redefine `sm`, `md`, `lg`, `xl` or `2xl`                 |
+| `invalid-breakpoint-width`   | error          | Widths must be positive `rem` values                                          |
+| `duplicate-breakpoint-width` | error          | Two breakpoints with the same width (including defaults in `extend` mode)     |
+| `too-many-breakpoints`       | error          | At most 12 breakpoints                                                        |
+| `empty-breakpoints`          | error          | `values` is empty                                                             |
+| `breakpoint-order`           | warning        | Values were not written in ascending order; output is sorted by width         |
+| `no-component-packages`      | warning        | Breakpoints configured but no Neshel package with a style manifest installed  |
+
+## Common errors
+
+- **Exit 3 "no configuration found"** — run the command in the directory that contains
+  `neshel.config.ts`, or pass `--config`.
+- **Exit 3 when loading** — a syntax error or an import that cannot be resolved from the
+  configuration file's directory (install `@neshel-ui/config` next to the CLI).
+- **Exit 4 in CI** — commit the regenerated output or generate it in the build before the check.

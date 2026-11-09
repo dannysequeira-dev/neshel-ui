@@ -1,0 +1,84 @@
+---
+title: Forms
+description: Labels, validation, native submission, controlled and uncontrolled fields with Input, Select, MultiSelect and Combobox.
+---
+
+Neshel-UI form controls are designed for **native forms**: every control has a `name`, takes part in
+`FormData`, and works without a form library. Use React state when you need it, not by default.
+
+## Labels and descriptions
+
+```tsx fragment
+<Stack space="2">
+  <Label htmlFor="email" required>Email</Label>
+  <Input id="email" name="email" type="email" required aria-describedby="email-hint" />
+  <Caption id="email-hint">We never share your address.</Caption>
+</Stack>
+```
+
+`Label`'s `required` adds a decorative asterisk (hidden from assistive technology); the control's
+own `required` attribute is what browsers and screen readers use.
+
+## Native submission
+
+Selection controls serialise like native fields: one `FormData` entry per selected value.
+
+```tsx title="signup-form.tsx"
+"use client";
+import { Button, Combobox, Input, Label, MultiSelect, Select } from "@neshel-ui/components";
+import { Stack } from "@neshel-ui/layout";
+
+const countries = [
+  { value: "cr", label: "Costa Rica" },
+  { value: "es", label: "Spain" },
+];
+const topics = [
+  { value: "design", label: "Design" },
+  { value: "react", label: "React" },
+];
+
+export function SignupForm() {
+  return (
+    <form
+      onSubmit={(event) => {
+        event.preventDefault();
+        const data = new FormData(event.currentTarget);
+        console.log(data.get("email"), data.get("country"), data.getAll("topics"), data.get("city"));
+      }}
+    >
+      <Stack space="4">
+        <Label htmlFor="signup-email">Email</Label>
+        <Input id="signup-email" name="email" type="email" required />
+        <Label htmlFor="signup-country">Country</Label>
+        <Select id="signup-country" name="country" options={countries} required />
+        <Label htmlFor="signup-topics">Topics</Label>
+        <MultiSelect id="signup-topics" name="topics" options={topics} />
+        <Label htmlFor="signup-city">City</Label>
+        <Combobox id="signup-city" name="city" items={[{ value: "sjo", label: "San José" }]} />
+        <Button type="submit">Sign up</Button>
+      </Stack>
+    </form>
+  );
+}
+```
+
+## Controlled and uncontrolled
+
+| Pattern      | Props                                            | When                                              |
+| ------------ | ------------------------------------------------ | ------------------------------------------------- |
+| Uncontrolled | `defaultValue` (and `name`)                      | Native forms, read values on submit               |
+| Controlled   | `value` + `onValueChange`                        | Values drive other UI, validation as you type     |
+
+`Input` follows React's native rules (`defaultValue` or `value` + `onChange`). `Select`,
+`MultiSelect` and `Combobox` use `value`/`defaultValue`/`onValueChange` with **string** values
+(`string | null` for single selection, `string[]` for multiple).
+
+## Validation
+
+- Use native constraints (`required`, `type`, `pattern`) for browser validation.
+- For custom validation, set `invalid` on the control (it sets `aria-invalid`) and reference the
+  message with `aria-describedby`.
+- Escape closes a selection popup and never clears the value; clearing uses the clear button or
+  Backspace on chips.
+
+The [advanced form example](/en/examples/form/) combines all of these.

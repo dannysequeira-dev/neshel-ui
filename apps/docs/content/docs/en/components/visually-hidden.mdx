@@ -1,0 +1,36 @@
+---
+title: VisuallyHidden
+description: Content for assistive technology that is hidden visually.
+package: components
+exports: [VisuallyHidden, VisuallyHiddenProps]
+---
+
+<ComponentKind package="components" name="VisuallyHidden" />
+
+## Purpose
+
+`VisuallyHidden` hides content visually while keeping it available to screen readers — extra
+context for icons, counts or abbreviated text.
+
+## Import
+
+```tsx title="import.tsx"
+import { VisuallyHidden } from "@neshel-ui/components";
+```
+
+## Usage
+
+<Preview demo="components/visually-hidden-icon" />
+
+## API
+
+<ApiTable package="components" name="VisuallyHiddenProps" />
+
+## Accessibility
+
+Hidden content is still read and still focusable if it contains focusable elements. Do not hide
+interactive controls with it. For an icon-only button, an `aria-label` is usually simpler.
+
+## Common mistakes
+
+- Using it to hide content from everyone: use `hidden` or `display: none` instead.

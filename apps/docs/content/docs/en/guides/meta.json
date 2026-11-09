@@ -1,0 +1,14 @@
+{
+  "title": "Guides",
+  "pages": [
+    "theming",
+    "custom-breakpoints",
+    "typography-capsize",
+    "overlays-portals",
+    "forms",
+    "choosing-components",
+    "accessibility",
+    "nextjs",
+    "troubleshooting"
+  ]
+}

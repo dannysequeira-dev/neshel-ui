@@ -1,0 +1,62 @@
+---
+title: "@neshel-ui/cli"
+description: The neshel command — installation, discovery, global options and the trust model.
+package: cli
+exports: [--config, --debug]
+---
+
+`@neshel-ui/cli` provides the `neshel` executable. It validates `neshel.config.ts` and generates a
+stylesheet (and, with custom breakpoints, TypeScript declarations). It runs in Node **≥ 22.13** at
+build time; nothing it does reaches the browser.
+
+<PackageInstall packages={["@neshel-ui/cli", "@neshel-ui/config"]} dev />
+
+## Usage
+
+```text
+neshel validate [--config <path>] [--strict] [--debug]
+neshel generate [--config <path>] [--out <path>] [--types <path>] [--check] [--strict] [--debug]
+neshel --help | --version
+```
+
+| Command                                | Purpose                                                              |
+| -------------------------------------- | -------------------------------------------------------------------- |
+| [`neshel validate`](/en/docs/cli/validate/) | Check the configuration; never writes                           |
+| [`neshel generate`](/en/docs/cli/generate/) | Validate, then write (or compare with `--check`) the outputs    |
+
+These are the only commands. A `neshel init` scaffolding command is **not implemented**; it is a
+proposal for a future release.
+
+## Global options
+
+| Option            | Meaning                                                                         |
+| ----------------- | ------------------------------------------------------------------------------- |
+| `--config <path>` | Use this file instead of discovery (relative to the working directory)          |
+| `--debug`         | Print stack traces for load and internal errors                                 |
+
+## Configuration discovery
+
+In the working directory only (no upward search), in this order: `neshel.config.ts`,
+`neshel.config.mts`, `neshel.config.js`, `neshel.config.mjs`. None or more than one → exit 3.
+`--config` bypasses discovery; the file must exist and have one of those extensions. CommonJS configs
+(`.cts`, `.cjs`) are not supported.
+
+TypeScript is transformed in memory with `jiti`; no cache files are written. Relative imports and
+`@neshel-ui/config` resolve from the configuration file's directory. The default export must be a
+plain object.
+
+## Trust model
+
+The configuration file is **executable project code** and runs with your privileges, like
+`vite.config.ts`. The CLI never fetches remote configurations or loads them from `node_modules`, and
+provides no sandbox. Do not run it on configuration files you do not trust.
+
+## Output and messages
+
+Diagnostics go to stderr, the summary line to stdout. Paths in messages are relative to the working
+directory and use `/`. Colours are disabled when `NO_COLOR` is set or the stream is not a terminal.
+
+Programmatic API: none in 0.x. The package's import entry is intentionally empty and side-effect
+free.
+
+See [Exit codes and diagnostics](/en/docs/cli/diagnostics/) and [CI integration](/en/docs/cli/ci/).

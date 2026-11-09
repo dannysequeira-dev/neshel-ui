@@ -1,0 +1,73 @@
+---
+title: AlertDialog
+description: A modal confirmation that requires an explicit decision; it never closes on outside press.
+package: components
+exports: [AlertDialog, AlertDialogTrigger, AlertDialogContent, AlertDialogHeader, AlertDialogFooter, AlertDialogTitle, AlertDialogDescription, AlertDialogCancel, AlertDialogAction, AlertDialogProps, AlertDialogTriggerProps, AlertDialogContentProps, AlertDialogPartProps, AlertDialogTitleProps, AlertDialogDescriptionProps, AlertDialogCancelProps, AlertDialogActionProps]
+---
+
+<ComponentKind package="components" name="AlertDialog" />
+
+## Purpose
+
+`AlertDialog` interrupts the user to confirm an important, usually destructive, action. Unlike a
+Dialog it cannot be dismissed by pressing outside.
+
+## Import
+
+```tsx title="import.tsx"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@neshel-ui/components";
+```
+
+## Usage
+
+<Preview demo="components/alert-dialog-basic" />
+
+## API
+
+<ApiTable package="components" name="AlertDialogProps" />
+<ApiTable package="components" name="AlertDialogContentProps" />
+<ApiTable package="components" name="AlertDialogActionProps" />
+<ApiTable package="components" name="AlertDialogCancelProps" />
+<ApiTable package="components" name="AlertDialogTriggerProps" />
+<ApiTable package="components" name="AlertDialogTitleProps" />
+<ApiTable package="components" name="AlertDialogDescriptionProps" />
+<ApiTable package="components" name="AlertDialogPartProps" />
+
+`AlertDialogAction` and `AlertDialogCancel` take Button `variant` and `size` (Action defaults to
+`primary`, Cancel to `outline`) and support `asChild`. Both close the dialog; run your action in
+Action's `onClick`.
+
+## Controlled and uncontrolled
+
+Like Dialog: `open`, `defaultOpen`, `onOpenChange`. For an asynchronous action, control `open`,
+render a regular `Button` (with `loading`) instead of `AlertDialogAction`, and close the dialog
+yourself when the action completes.
+
+## Accessibility
+
+- Role `alertdialog`, named by the title and described by the description (both required).
+- **Cancel receives initial focus**, so an accidental Enter does not confirm.
+- Escape cancels; outside presses are ignored.
+
+## Keyboard
+
+| Key             | Action                         |
+| --------------- | ------------------------------ |
+| Tab / Shift+Tab | Move between Cancel and Action |
+| Enter / Space   | Activate the focused button    |
+| Escape          | Cancel                         |
+
+## Common mistakes
+
+- Using AlertDialog for information that needs no decision — use a Dialog or inline message.
+- Labels like "Yes"/"No": name the action ("Delete project").

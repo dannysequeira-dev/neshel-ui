@@ -1,0 +1,40 @@
+---
+title: A simple Stack
+description: Arrange elements vertically with consistent, token-based spacing.
+---
+
+`Stack` is a flex column with a `space` prop. Spacing values are tokens: `"4"` is
+`calc(var(--neshel-spacing) * 4)`, 1rem with the default spacing unit.
+
+Replace `src/App.tsx` from the previous step:
+
+```tsx title="src/App.tsx"
+import { Button, Input, Label } from "@neshel-ui/components";
+import { Inline, Stack } from "@neshel-ui/layout";
+
+export default function App() {
+  return (
+    <main style={{ padding: "2rem", maxWidth: "28rem" }}>
+      <Stack space="6">
+        <Stack space="2">
+          <Label htmlFor="email">Email</Label>
+          <Input id="email" type="email" autoComplete="email" />
+        </Stack>
+        <Inline space="3" justify="end">
+          <Button variant="ghost">Cancel</Button>
+          <Button>Subscribe</Button>
+        </Inline>
+      </Stack>
+    </main>
+  );
+}
+```
+
+- `Stack` stacks its children with a `gap` of `space`. `Inline` is the horizontal counterpart.
+- `justify="end"` pushes the buttons to the end of the row (the right in left-to-right languages).
+- No margins: the gap is the only spacing, so it is predictable.
+
+<Preview demo="layout/stack-basic" />
+
+Next: [Heading and Paragraph](/en/docs/getting-started/typography/). Reference:
+[Stack](/en/docs/layout/stack/), [Inline](/en/docs/layout/inline/).

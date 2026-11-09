@@ -1,0 +1,78 @@
+---
+title: AppShell
+description: A responsive application layout with a sidebar that becomes a drawer below a breakpoint.
+package: components
+exports: [AppShell, AppShellMain, AppShellContent, AppShellProps, AppShellPartProps, AppShellState, useAppShell]
+---
+
+<ComponentKind package="components" name="AppShell" />
+
+## Purpose
+
+`AppShell` lays out an application: a [Sidebar](/en/docs/components/sidebar/) and a main column
+(`AppShellMain`) containing a header and the page content (`AppShellContent`, a `<main>`). At and
+above its `breakpoint` the sidebar sits beside the content (expanded or as an icon rail); below it,
+the sidebar content moves into a modal drawer.
+
+## Import
+
+```tsx title="import.tsx"
+import { AppShell, AppShellContent, AppShellMain } from "@neshel-ui/components";
+```
+
+## Usage
+
+<Preview demo="components/app-shell-basic" />
+
+## API
+
+<ApiTable package="components" name="AppShellProps" />
+<ApiTable package="components" name="AppShellPartProps" />
+<ApiTable package="components" name="AppShellState" />
+
+- `breakpoint`: default `"lg"`, any configured name, or `"base"` for always-desktop.
+- `collapsed` / `defaultCollapsed` / `onCollapsedChange`: the desktop collapse state.
+- `mobileOpen` / `defaultMobileOpen` / `onMobileOpenChange`: the mobile drawer.
+
+## `useAppShell`
+
+```tsx title="custom-trigger.tsx"
+"use client";
+import { Button, useAppShell } from "@neshel-ui/components";
+
+export function CollapseButton() {
+  const { mode, collapsed, toggle } = useAppShell();
+  return (
+    <Button variant="ghost" onClick={toggle}>
+      {mode === "mobile" ? "Menu" : collapsed ? "Expand" : "Collapse"}
+    </Button>
+  );
+}
+```
+
+Returns `{ mode, collapsed, setCollapsed, mobileOpen, setMobileOpen, toggle }`; throws outside an
+AppShell. `mode` is `undefined` during server rendering and before hydration, then `"desktop"` or
+`"mobile"`.
+
+## How the mode is decided
+
+CSS decides the mode at the breakpoint (so it follows `neshel generate` and custom breakpoints);
+JavaScript reads it after hydration and on resize. Server and client markup never depend on the mode,
+so there are no hydration mismatches. When the viewport becomes desktop while the drawer is open, the
+shell requests `onMobileOpenChange(false)`.
+
+## Persistence
+
+The library never reads storage. Persist `collapsed` yourself — for example a cookie read on the
+server and passed as `defaultCollapsed`, written in `onCollapsedChange`.
+
+## Accessibility
+
+Give `AppShellContent` an `id` and add a skip link to it. The drawer is a modal dialog titled by the
+Sidebar's `mobileTitle`; it closes after navigation, on Escape and on overlay press.
+
+## Common mistakes
+
+- Expecting `mode` during server rendering: render the same markup for both modes.
+- Storing component state inside sidebar children: see
+  [Sidebar → Limitations](/en/docs/components/sidebar/#limitations).

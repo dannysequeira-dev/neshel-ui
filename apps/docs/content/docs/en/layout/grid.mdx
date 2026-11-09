@@ -1,0 +1,40 @@
+---
+title: Grid
+description: A CSS grid with 1–12 equal columns, responsive column counts and item alignment.
+package: layout
+exports: [Grid, GridProps, GridColumns, GridAlign]
+---
+
+## Purpose
+
+`Grid` lays items out in equal columns that line up across rows: card grids, dashboards, galleries.
+
+## Import
+
+```tsx title="import.tsx"
+import { Grid } from "@neshel-ui/layout";
+```
+
+## Usage
+
+<Preview demo="layout/grid-columns" />
+
+## API
+
+<ApiTable package="layout" name="GridProps" />
+<ApiTable package="layout" name="GridColumns" />
+<ApiTable package="layout" name="GridAlign" />
+
+- `columns`: 1–12 (responsive), each column `minmax(0, 1fr)`.
+- `alignX` → `justify-items`, `alignY` → `align-items` (`start center end stretch`).
+- `spaceX`/`spaceY` set column and row gaps separately.
+
+## Spanning and areas
+
+Item spans, rows and template areas are not props. Use utilities (`className="lg:col-span-2"`) or your
+own CSS on the children — see the [dashboard recipe](/en/docs/layout/recipes/#dashboard-grid).
+
+## Common mistakes
+
+- Using `Grid` for a single row of items of different widths: `Inline` fits better.
+- Expecting auto-fit columns: the column count is explicit by design; make it responsive instead.

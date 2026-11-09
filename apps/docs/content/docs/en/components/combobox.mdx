@@ -1,0 +1,79 @@
+---
+title: Combobox
+description: A filterable text input for single or multiple selection, with groups and external filtering.
+package: components
+exports: [Combobox, ComboboxProps, ComboboxSingleProps, ComboboxMultipleProps, ComboboxItem, ComboboxItemGroup]
+---
+
+<ComponentKind package="components" name="Combobox" />
+
+## Purpose
+
+`Combobox` lets users type to filter a list and pick one value (default) or several (`multiple`).
+The value is always one of the items — it is not a free-text input.
+
+## Import
+
+```tsx title="import.tsx"
+import { Combobox } from "@neshel-ui/components";
+```
+
+## Single mode
+
+<Preview demo="components/combobox-single" />
+
+## Multiple mode
+
+<Preview demo="components/combobox-multiple" />
+
+## External filtering (server search)
+
+Pass `filter={null}`, update `items` from `onInputValueChange`, and set `loading` while fetching.
+Selected chips keep their labels when the results change.
+
+<Preview demo="components/combobox-async" />
+
+## API
+
+<ApiTable package="components" name="ComboboxProps" />
+<ApiTable package="components" name="ComboboxSingleProps" />
+<ApiTable package="components" name="ComboboxMultipleProps" />
+<ApiTable package="components" name="ComboboxItem" />
+<ApiTable package="components" name="ComboboxItemGroup" />
+
+`ComboboxProps` is the union of the single and multiple variants: with `multiple`, `value` is a
+`string[]`; without it, `string | null`.
+
+## Controlled and uncontrolled
+
+- Value: `value` / `defaultValue` / `onValueChange`.
+- Input text: `inputValue` / `defaultInputValue` / `onInputValueChange`.
+- Popup: `open` / `defaultOpen` / `onOpenChange`.
+
+## Forms
+
+With `name`, the selected value (or each value in multiple mode) is submitted.
+
+## Accessibility
+
+- The input is a `combobox` controlling a `listbox`; the active option is announced as you move.
+- `emptyMessage` ("No results") and `loadingMessage` ("Loading…") are announced in the popup.
+- Escape closes the popup and never clears the value; clear with the clear button or Backspace on
+  chips.
+- Inside a Dialog or Popover, the popup renders inside that overlay; Escape closes the popup first.
+
+## Keyboard
+
+| Key               | Action                                               |
+| ----------------- | ---------------------------------------------------- |
+| Type              | Filter the items (opens the popup)                   |
+| ↓ / ↑             | Move between items                                   |
+| Enter             | Select the active item                               |
+| Escape            | Close the popup                                      |
+| Backspace (empty input, multiple) | Remove the last chip                  |
+
+## Common mistakes
+
+- Expecting free text: values must be items. For suggestions with free text, use
+  `<Input list="…">` and a `<datalist>`.
+- Filtering both locally and on the server: pass `filter={null}` when the application filters.

@@ -1,0 +1,40 @@
+---
+title: Separator
+description: A horizontal or vertical rule, semantic or decorative.
+package: components
+exports: [Separator, SeparatorProps]
+---
+
+<ComponentKind package="components" name="Separator" />
+
+## Purpose
+
+`Separator` visually divides content. Semantic separators are announced as a thematic break;
+decorative ones are hidden from assistive technology.
+
+## Import
+
+```tsx title="import.tsx"
+import { Separator } from "@neshel-ui/components";
+```
+
+## Usage
+
+<Preview demo="components/separator-basic" />
+
+## API
+
+<ApiTable package="components" name="SeparatorProps" />
+
+- Semantic (default): `role="separator"`, plus `aria-orientation="vertical"` when vertical.
+- `decorative`: `role="none"`.
+
+## Accessibility
+
+Use the semantic form only when the division has meaning (between groups of content). Between items in
+a toolbar or breadcrumb, use `decorative`.
+
+## Common mistakes
+
+- A vertical separator in a container without height: give the row a height or `alignY="stretch"`.
+- For separators between Stack/Inline items, the layout `separator` prop is often simpler.

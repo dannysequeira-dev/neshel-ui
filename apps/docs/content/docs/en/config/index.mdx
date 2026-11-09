@@ -1,0 +1,71 @@
+---
+title: "@neshel-ui/config"
+description: Design tokens as CSS, the typed configuration schema and defineConfig.
+package: config
+exports: [defineConfig, NeshelConfig, ExactConfig, LengthValue, ContrastPolicy]
+---
+
+`@neshel-ui/config` owns the design tokens. It ships two stylesheets and a small, browser-safe
+JavaScript entry with types and frozen contract data. It has **no runtime dependencies** and
+installing it injects nothing.
+
+<PackageInstall packages={["@neshel-ui/config"]} />
+
+## Stylesheets
+
+| Export                           | Contents                                                       |
+| -------------------------------- | -------------------------------------------------------------- |
+| `@neshel-ui/config/tokens.css`   | Plain CSS custom properties for every theme                    |
+| `@neshel-ui/config/tailwind.css` | The same tokens plus a Tailwind v4 `@theme inline` mapping     |
+| `@neshel-ui/config/styles.css`   | 0.x alias of `tailwind.css`                                     |
+
+Import one of `tokens.css` or `tailwind.css`. See [CSS imports](/en/docs/getting-started/css/).
+
+## `defineConfig`
+
+`defineConfig` is an identity function that gives `neshel.config.ts` full type checking — including
+**exactness**: unknown keys at any level, named themes without `extends`, or `extends` on `light`
+are compile-time errors (`ExactConfig`). The CLI validates the same rules at runtime.
+
+```ts title="neshel.config.ts"
+import { defineConfig } from "@neshel-ui/config";
+
+export default defineConfig({
+  version: 1,
+  contrast: "warn",
+  radius: { base: "0.75rem" },
+  spacing: { unit: "0.25rem" },
+  focus: { width: "2px", offset: "2px" },
+  themes: {
+    light: { colors: { primary: "#193767" } },
+  },
+  output: "./neshel.generated.css",
+});
+```
+
+The file is **executable, trusted project code** evaluated by the CLI in Node — never in the browser,
+never fetched remotely.
+
+## Options
+
+<ApiTable package="config" name="NeshelConfig" />
+
+| Key           | Meaning                                                                                       |
+| ------------- | --------------------------------------------------------------------------------------------- |
+| `themes`      | Overrides for `light`/`dark` and named themes — [Themes](/en/docs/config/themes/)            |
+| `breakpoints` | Custom responsive breakpoints — [Breakpoints](/en/docs/config/breakpoints/)                 |
+| `typography`  | Font families, metrics and fallbacks — [Typography](/en/docs/config/typography/)            |
+| `radius`, `spacing`, `focus` | Shape and spacing scale, focus ring                                           |
+| `contrast`    | `"warn"` (default) or `"error"` for custom-theme contrast diagnostics                       |
+| `output`, `types` | Generated stylesheet and declarations, relative to the config file                      |
+
+<ApiTable package="config" name="ExactConfig" />
+<ApiTable package="config" name="LengthValue" />
+<ApiTable package="config" name="ContrastPolicy" />
+
+## Validation
+
+Configuration is validated by [`neshel validate`](/en/docs/cli/validate/) and before every
+`neshel generate`: known keys only (with "did you mean" suggestions), colour syntax, alpha, gamut,
+contrast, lengths, font stacks, breakpoints, metrics and output paths. All diagnostics of a run are
+reported together — see [Diagnostics](/en/docs/cli/diagnostics/).

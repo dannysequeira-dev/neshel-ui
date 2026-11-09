@@ -1,0 +1,63 @@
+---
+title: Card
+description: A surface with header, title, description, content, footer and action parts.
+package: components
+exports: [Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter, CardAction, CardProps, CardPartProps, CardTitleProps, CardDescriptionProps, CardVariant, CardPadding, CardElement, CardTitleElement]
+---
+
+<ComponentKind package="components" name="Card" />
+
+## Purpose
+
+`Card` groups related content on a surface. Its parts are context-free and composable; use only the
+ones you need.
+
+## Import
+
+```tsx title="import.tsx"
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@neshel-ui/components";
+```
+
+## Usage
+
+<Preview demo="components/card-basic" />
+
+## API
+
+<ApiTable package="components" name="CardProps" />
+<ApiTable package="components" name="CardVariant" />
+<ApiTable package="components" name="CardPadding" />
+<ApiTable package="components" name="CardElement" />
+<ApiTable package="components" name="CardTitleProps" />
+<ApiTable package="components" name="CardTitleElement" />
+<ApiTable package="components" name="CardDescriptionProps" />
+<ApiTable package="components" name="CardPartProps" />
+
+| Part              | Element          | Notes                                         |
+| ----------------- | ---------------- | --------------------------------------------- |
+| `Card`            | `div` (or `as`)  | `variant`, `padding`, `as`, `asChild`         |
+| `CardHeader`      | `div`            | Title, description and an optional action      |
+| `CardTitle`       | `h3` (or `as`)   | `h1`–`h6`, `p`, `div`; `asChild`              |
+| `CardDescription` | `p`              | Muted supporting text                         |
+| `CardContent`     | `div`            | Main content                                  |
+| `CardFooter`      | `div`            | Actions                                       |
+| `CardAction`      | `div`            | Placed at the end of the header               |
+
+## Accessibility
+
+- Choose `CardTitle`'s level (`as`) from the page outline.
+- For a card in a list of articles, use `as="article"` and `aria-labelledby` pointing to the title.
+- Cards are not interactive: put buttons or links inside; never wrap a whole card in a link or button.
+
+## Common mistakes
+
+- Making the entire card clickable with `onClick`: keyboard and screen-reader users cannot discover it.
+- Several `CardTitle`s with the default `h3` breaking the heading outline.

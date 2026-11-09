@@ -1,0 +1,67 @@
+---
+title: MobileMenu
+description: A navigation sheet for small screens that closes after navigation, on Escape and at its breakpoint.
+package: components
+exports: [MobileMenu, MobileMenuTrigger, MobileMenuContent, MobileMenuNav, MobileMenuLink, MobileMenuProps, MobileMenuTriggerProps, MobileMenuContentProps, MobileMenuNavProps, MobileMenuLinkProps]
+---
+
+<ComponentKind package="components" name="MobileMenu" />
+
+## Purpose
+
+`MobileMenu` puts navigation links into a sheet below a breakpoint. Its trigger is hidden at and above
+the breakpoint, and an open menu closes automatically when the viewport reaches it.
+
+## Import
+
+```tsx title="import.tsx"
+import {
+  MobileMenu,
+  MobileMenuContent,
+  MobileMenuLink,
+  MobileMenuNav,
+  MobileMenuTrigger,
+} from "@neshel-ui/components";
+```
+
+## Usage
+
+The demo uses `breakpoint="2xl"` so you can open it at most widths; in a real navbar pair it with
+`NavbarNav hideBelow` (see [Navbar](/en/docs/components/navbar/#responsive-behaviour)).
+
+<Preview demo="components/mobile-menu-basic" />
+
+## API
+
+<ApiTable package="components" name="MobileMenuProps" />
+<ApiTable package="components" name="MobileMenuTriggerProps" />
+<ApiTable package="components" name="MobileMenuContentProps" />
+<ApiTable package="components" name="MobileMenuNavProps" />
+<ApiTable package="components" name="MobileMenuLinkProps" />
+
+- `MobileMenu`: `breakpoint` (default `"md"`, any configured name), `open` / `defaultOpen` /
+  `onOpenChange`.
+- `MobileMenuTrigger`: a button with a default icon and the accessible `label` ("Open menu").
+- `MobileMenuContent`: a sheet (`side` default `"left"`) titled by `title` ("Menu"), visually hidden
+  by default (`titleHidden`).
+- `MobileMenuLink`: `active` (`aria-current="page"`), `asChild` for router links. Activating a link
+  closes the menu.
+
+## Accessibility
+
+The content is a modal dialog: focus is trapped and returns to the trigger. Translate `label` and
+`title` for non-English interfaces.
+
+## Keyboard
+
+| Key       | Action                          |
+| --------- | ------------------------------- |
+| Enter / Space on the trigger | Open the menu    |
+| Tab       | Move through the links          |
+| Escape    | Close                           |
+
+## Common mistakes
+
+- Different breakpoints on `MobileMenu` and `NavbarNav hideBelow`.
+- Putting the whole page navigation only in a MobileMenu with a breakpoint larger than common
+  desktops: desktop users would lose it.

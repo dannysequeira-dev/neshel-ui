@@ -1,0 +1,77 @@
+---
+title: Button
+description: Native buttons with variants, responsive sizes, a loading state, icon-only mode and asChild links.
+package: components
+exports: [Button, ButtonProps, ButtonSize, ButtonVariant]
+---
+
+<ComponentKind package="components" name="Button" />
+
+## Purpose
+
+`Button` triggers an action. It renders a native `<button type="button">` by default; with `asChild`
+it styles a link or router link instead.
+
+## Import
+
+```tsx title="import.tsx"
+import { Button } from "@neshel-ui/components";
+```
+
+## Usage
+
+<Preview demo="components/button-variants" />
+
+## API
+
+<ApiTable package="components" name="ButtonProps" />
+<ApiTable package="components" name="ButtonVariant" />
+<ApiTable package="components" name="ButtonSize" />
+
+Native button attributes (`type`, `disabled`, `form`, `onClick`, …) pass through.
+
+## Variants, sizes and states
+
+<Preview demo="components/button-sizes" />
+
+- `variant`: `primary` (default), `secondary`, `outline`, `ghost`, `destructive`, `link`.
+- `size`: `sm`, `md` (default), `lg` — **responsive**: `size={{ base: "sm", md: "lg" }}`.
+- `iconOnly`: a square button; requires `aria-label` or `aria-labelledby` (development warning).
+- `fullWidth`: fills the inline size of its container.
+- `loading`: keeps focus (`aria-disabled="true"`, `data-loading`), ignores clicks and form
+  submission, shows a decorative spinner. Announce progress with your own live region.
+
+## Composition and `asChild`
+
+```tsx fragment
+<Button asChild variant="ghost">
+  <a href="/docs">Documentation</a>
+</Button>
+```
+
+The child receives the classes and handlers. `asChild` with `disabled` or `loading` throws: links
+cannot be disabled — render a disabled `<button>` instead.
+
+## Accessibility
+
+- A native button: focusable, activated with Enter and Space, announced as "button".
+- Use `type="submit"` explicitly inside forms when it submits (the default is `type="button"`).
+- `loading` uses `aria-disabled` so focus is not lost mid-interaction.
+
+## Keyboard
+
+| Key           | Action           |
+| ------------- | ---------------- |
+| Tab           | Focus the button |
+| Enter / Space | Activate         |
+
+## Styling
+
+Variants read `--neshel-primary`, `--neshel-secondary`, `--neshel-destructive`, `--neshel-border`
+and their foregrounds; the focus ring uses `--neshel-focus`. Add utilities with `className`.
+
+## Common mistakes
+
+- `onClick` navigation on a Button: use `asChild` with a link so the browser knows it is navigation.
+- An icon-only button without `aria-label`.
+- Forgetting `type="submit"` and wondering why the form does not submit.

@@ -1,0 +1,96 @@
+---
+title: Sidebar
+description: Application navigation with groups, items, collapsible sections, an icon rail and a mobile drawer.
+package: components
+exports: [Sidebar, SidebarHeader, SidebarContent, SidebarFooter, SidebarGroup, SidebarItem, SidebarSub, SidebarSeparator, SidebarTrigger, SidebarProps, SidebarPartProps, SidebarGroupProps, SidebarItemProps, SidebarSubProps, SidebarTriggerProps, SidebarCollapsible]
+---
+
+<ComponentKind package="components" name="Sidebar" />
+
+## Purpose
+
+`Sidebar` holds application navigation. Inside an [AppShell](/en/docs/components/app-shell/) it
+collapses on desktop and becomes a drawer on mobile; on its own it renders statically expanded.
+
+## Import
+
+```tsx title="import.tsx"
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarGroup,
+  SidebarHeader,
+  SidebarItem,
+  SidebarSeparator,
+  SidebarSub,
+  SidebarTrigger,
+} from "@neshel-ui/components";
+```
+
+## Usage
+
+Inside an AppShell (see the full demo on [AppShell](/en/docs/components/app-shell/#usage)); on its own:
+
+<Preview demo="components/sidebar-static" />
+
+## API
+
+<ApiTable package="components" name="SidebarProps" />
+<ApiTable package="components" name="SidebarCollapsible" />
+<ApiTable package="components" name="SidebarPartProps" />
+<ApiTable package="components" name="SidebarGroupProps" />
+<ApiTable package="components" name="SidebarItemProps" />
+<ApiTable package="components" name="SidebarSubProps" />
+<ApiTable package="components" name="SidebarTriggerProps" />
+
+| Part               | Renders                                                                       |
+| ------------------ | ----------------------------------------------------------------------------- |
+| `Sidebar`          | `<aside>` (`aria-label` "Sidebar"); `collapsible`, `mobileTitle`              |
+| `SidebarHeader` / `SidebarFooter` | `div`s at the top and bottom                                   |
+| `SidebarContent`   | `<nav aria-label="Main navigation">`                                          |
+| `SidebarGroup`     | A labelled list (`label`)                                                     |
+| `SidebarItem`      | `<button>` by default, or your link with `asChild`; `icon`, `active`, `tooltip` |
+| `SidebarSub`       | A collapsible group of items (`label`, `icon`, `open`/`defaultOpen`/`onOpenChange`) |
+| `SidebarSeparator` | A divider                                                                     |
+| `SidebarTrigger`   | Toggles collapse on desktop and the drawer on mobile (`label` "Toggle sidebar") |
+
+## Full and collapsed
+
+- `collapsible="icon"` (default): collapsing shows an icon rail. Labels remain the accessible names
+  and appear as tooltips on hover and focus.
+- `collapsible="offcanvas"`: collapsing hides the sidebar on desktop.
+- `collapsible="none"`: always expanded on desktop.
+
+Widths: `--neshel-sidebar-width` (default `16rem`) and `--neshel-sidebar-rail-width` (`3.5rem`).
+
+## Accessibility
+
+- `active` sets `aria-current="page"` on the current item.
+- `SidebarTrigger` exposes `aria-expanded` and `aria-controls` for the current mode.
+- In the drawer, focus is trapped and returns to the trigger; activating a link closes the drawer.
+
+## Keyboard
+
+| Key             | Action                                    |
+| --------------- | ----------------------------------------- |
+| Tab             | Move through items                         |
+| Enter / Space   | Activate an item, expand a `SidebarSub`    |
+| Escape (drawer) | Close the drawer                           |
+
+## Limitations
+
+- **Children remount between desktop and mobile.** The sidebar content renders exactly once — inline
+  on desktop, inside the drawer on mobile — never both. When the mode changes (resizing across the
+  breakpoint, or opening the drawer on mobile), React unmounts the children from one host and mounts
+  them in the other. **Component-local state inside the sidebar is reset** (an uncontrolled
+  `SidebarSub` returns to `defaultOpen`, a text field loses its draft, effects run again). Keep state
+  that must survive in a parent (controlled `open` on `SidebarSub`, values in your store) and make
+  effects idempotent.
+- The drawer is not rendered during server rendering; mobile users see the trigger first.
+
+## Common mistakes
+
+- Persisting the collapsed state in localStorage read during render (hydration mismatch): use a
+  cookie and `defaultCollapsed`.
+- Icon-only content in items without text: the rail needs the text as the accessible name.

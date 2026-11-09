@@ -1,0 +1,71 @@
+---
+title: Choosing components
+description: Dialog or AlertDialog, Dialog or Sheet, NavigationMenu or DropdownMenu, Select, MultiSelect or Combobox, and more.
+---
+
+## Dialog vs AlertDialog
+
+| | Dialog | AlertDialog |
+| --- | --- | --- |
+| Purpose | Any modal task: forms, details, settings | An interruption that needs an explicit decision (destructive confirmation) |
+| Role | `dialog` | `alertdialog` |
+| Outside press | Closes | **Ignored** |
+| Initial focus | First focusable element | **Cancel** |
+| Escape | Closes | Cancels |
+
+Use AlertDialog sparingly; prefer undo over confirmation when possible.
+
+## Dialog vs Sheet
+
+Both are modal dialogs with the same focus management. A **Sheet** slides from an edge (`side`:
+left, right, top, bottom) and suits secondary content tied to the current page — filters, details,
+navigation drawers. A **Dialog** is centred and suits self-contained tasks. `Sheet` was called
+"Drawer" in earlier proposals; there is no separate Drawer component.
+
+## NavigationMenu vs DropdownMenu
+
+| | NavigationMenu | DropdownMenu |
+| --- | --- | --- |
+| Contains | **Links** to pages | **Commands** (actions, toggles, radio choices) |
+| Semantics | `<nav>` with lists and disclosure panels | `menu` / `menuitem` roles |
+| Typical place | Site header | Account menu, row actions, toolbars |
+
+Do not put navigation links in a DropdownMenu only because it looks right: screen readers announce a
+menu of commands.
+
+## Select vs Combobox
+
+| | Select | Combobox |
+| --- | --- | --- |
+| Input | A button that opens a listbox | A text input that filters a listbox |
+| Best for | Short lists (up to ~15 options) | Long lists, search, server results |
+| Typeahead | Jump by first letters | Free typing filters items |
+| Value | Always one of the options | Always one of the items (no free text) |
+
+For free text with suggestions, use a native `<Input list="…">` with a `<datalist>`.
+
+## Select vs MultiSelect
+
+`MultiSelect` is the multiple-value counterpart of `Select`: removable **chips** beside the trigger
+(never inside it), a clear-all button, and announcements when values are removed. For searchable
+multiple selection use `Combobox` with `multiple`.
+
+## Controlled vs uncontrolled inputs
+
+Uncontrolled (`defaultValue`) is simpler and works with native forms; controlled (`value` +
+`onValueChange`) lets your state drive the UI. Don't switch a component between the two during its
+lifetime. See [Forms](/en/docs/guides/forms/).
+
+## Desktop vs mobile navigation
+
+- **Navbar + NavbarNav + MobileMenu:** a top bar whose links collapse into a sheet below a
+  breakpoint. `NavbarNav hideBelow="md"` with `MobileMenu breakpoint="md"` guarantees exactly one is
+  visible.
+- **AppShell + Sidebar:** application navigation. Desktop shows a sidebar (expanded or icon rail);
+  below the shell's `breakpoint` the same sidebar content moves into a modal drawer.
+
+## Full vs collapsed Sidebar
+
+`collapsible="icon"` (default) collapses to an icon rail on desktop: labels stay as accessible names
+and appear as tooltips on hover and focus. `collapsible="offcanvas"` hides the sidebar completely when
+collapsed. `collapsible="none"` keeps it expanded. On mobile, the sidebar is always a drawer.

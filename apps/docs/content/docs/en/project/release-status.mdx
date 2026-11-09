@@ -1,0 +1,48 @@
+---
+title: Release status
+description: What is published, what is verified, and what remains before Neshel-UI 0.1.0 reaches npm.
+---
+
+<ReleaseNotice />
+
+| Item                         | Status                                                                                       |
+| ---------------------------- | -------------------------------------------------------------------------------------------- |
+| npm publication              | **Not published.** All packages keep `private: true` until the owner authorises the release. |
+| Intended version             | `0.1.0` for the five public packages, released together.                                   |
+| npm scope `@neshel-ui`       | Package names are unclaimed on the public registry; organisation ownership is **not yet confirmed**. |
+| Documentation website        | Built and verified in CI; production deployment awaits the owner.                           |
+
+## What is verified
+
+Automated checks run on GitHub Actions (Linux, Windows and macOS, Node 26; Linux also Node 22
+and 24) for every change:
+
+- Lint, type checks, unit and integration tests, package builds and declarations.
+- Packed tarballs: manifests, exports, declarations, source maps, `publint`, `arethetypeswrong`,
+  external import and type resolution; the private `core` package is never required.
+- External Vite applications installed from the tarballs: Tailwind and plain CSS, configured themes,
+  custom breakpoints (`extend` and `replace`), server rendering and hydration, tree-shaking.
+- Chrome: computed styles, breakpoint sweeps, Capsize geometry, real keyboard and pointer interaction
+  for every interactive component, nested themes across portals, reduced motion and axe-core.
+- Documentation: export coverage in both languages, type-checked snippets, links and translations.
+
+The release-candidate checks added for 0.1.0 (Next.js App Router consumer, Firefox and WebKit,
+bundle budgets, starters) are listed with their results in the repository's
+[release readiness record](https://github.com/dannysequeira-dev/neshel-ui/blob/main/docs/release-readiness.md).
+
+## Known limitations
+
+- Screen-reader behaviour has not been verified comprehensively; see the readiness record for what
+  was evaluated manually.
+- Safari itself is not automated; WebKit (Playwright) is the closest automated engine.
+- Unknown well-formed breakpoint keys warn in the browser instead of throwing (the runtime has no
+  configuration).
+- Capsize trimming is approximate when the configured metrics do not match the rendered font.
+- Sidebar children remount when moving between the desktop sidebar and the mobile drawer.
+- Inline custom properties do not cross portals; pass `container`.
+
+## Versioning policy
+
+Neshel-UI follows semantic versioning. Before 1.0, a **minor** release (0.x → 0.y) may contain
+breaking changes, always documented in the changelog; **patch** releases are fixes only. The five
+public packages share one version number during 0.x.

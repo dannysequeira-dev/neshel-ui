@@ -1,0 +1,31 @@
+---
+title: Text
+description: Inline text that changes only what you set and inherits everything else.
+package: typography
+exports: [Text, TextProps, TextElement]
+---
+
+## Purpose
+
+`Text` styles a phrase inside other text — emphasis, inline code, a muted note, a styled link via
+`asChild`. It inherits size, font, weight and colour unless you set them, and it is never trimmed.
+
+## Import
+
+```tsx title="import.tsx"
+import { Text } from "@neshel-ui/typography";
+```
+
+## Usage
+
+<Preview demo="typography/text-inline" />
+
+## API
+
+<ApiTable package="typography" name="TextProps" />
+<ApiTable package="typography" name="TextElement" />
+
+## Common mistakes
+
+- Using `Text as="p"` for paragraphs: use `Paragraph` (trimmed, block spacing).
+- Passing `trim` to `Text`: it throws — inline text cannot be trimmed.

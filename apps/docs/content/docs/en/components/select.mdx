@@ -1,0 +1,72 @@
+---
+title: Select
+description: Single selection from a list of options, with groups, typeahead and native form serialisation.
+package: components
+exports: [Select, SelectProps, SelectFieldProps, SelectOption, SelectOptionGroup, SelectOptions]
+---
+
+<ComponentKind package="components" name="Select" />
+
+## Purpose
+
+`Select` chooses one value from a short list. It renders a button that opens a listbox, and submits
+its value with forms through `name`.
+
+## Import
+
+```tsx title="import.tsx"
+import { Select } from "@neshel-ui/components";
+```
+
+## Usage
+
+<Preview demo="components/select-basic" />
+
+## API
+
+<ApiTable package="components" name="SelectProps" />
+<ApiTable package="components" name="SelectFieldProps" />
+<ApiTable package="components" name="SelectOption" />
+<ApiTable package="components" name="SelectOptionGroup" />
+<ApiTable package="components" name="SelectOptions" />
+
+`SelectFieldProps` are shared by Select, MultiSelect and Combobox.
+
+## Controlled and uncontrolled
+
+<Preview demo="components/select-controlled" />
+
+- Uncontrolled: `defaultValue` (or nothing, showing `placeholder`).
+- Controlled: `value` (`string | null`) + `onValueChange`.
+- `open` / `defaultOpen` / `onOpenChange` control the popup.
+
+## Forms
+
+With `name`, the selected value is submitted as one form entry. `required`, `disabled`, `readOnly` and
+`form` behave like native attributes. `invalid` marks the control (`aria-invalid`).
+
+## Accessibility
+
+- Label it with `<Label htmlFor={id}>`, or `aria-label` / `aria-labelledby`.
+- The trigger is a `combobox` that controls a `listbox`; options announce their selected state.
+- Describe errors with `aria-describedby`.
+
+## Keyboard
+
+| Key                | Action                                         |
+| ------------------ | ---------------------------------------------- |
+| Enter / Space / ↓ / ↑ | Open the listbox                            |
+| ↓ / ↑, Home / End  | Move between options                           |
+| Type letters       | Jump to the matching option (typeahead)        |
+| Enter / Space      | Select and close                               |
+| Escape             | Close without changing the value               |
+
+## Styling
+
+`uiSize` (`sm md lg`) matches Input heights. The popup layer is `--neshel-z-popover`; selected options
+use `--neshel-selected`.
+
+## Common mistakes
+
+- More than ~15 options: users need search — use [Combobox](/en/docs/components/combobox/).
+- Non-string values: values are strings; map your objects to ids.

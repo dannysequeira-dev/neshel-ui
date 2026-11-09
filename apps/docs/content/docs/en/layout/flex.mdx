@@ -1,0 +1,44 @@
+---
+title: Flex
+description: A flex layout whose direction and wrapping change per breakpoint, with direction-aware alignment.
+package: layout
+exports: [Flex, FlexProps, FlexDirection]
+---
+
+## Purpose
+
+`Flex` is for layouts that change direction — a column on phones, a row on larger screens. Its
+alignment props follow the current direction, so `alignX` always means "horizontal".
+
+## Import
+
+```tsx title="import.tsx"
+import { Flex } from "@neshel-ui/layout";
+```
+
+## Usage
+
+<Preview demo="layout/flex-direction" />
+
+## API
+
+<ApiTable package="layout" name="FlexProps" />
+<ApiTable package="layout" name="FlexDirection" />
+
+## Direction changes and alignment
+
+In a row, X is the main axis (`justify-content`); in a column, X is the cross axis (`align-items`).
+The main axis accepts `start center end`; the cross axis adds `stretch` (and `baseline` in rows).
+`Flex` validates this at runtime because the axes move with `direction`; when a direction change
+vacates a property it is reset to `normal`.
+
+## Limitations
+
+Main-axis `stretch`/`baseline` validation is exact for a static `direction` and at the breakpoints
+where `direction` is written. A value inherited from a smaller breakpoint across a direction change
+that is not written is not validated at runtime (known limitation carried from feature 004).
+
+## Common mistakes
+
+- Using `Flex` with a fixed `direction="column"` — that is a `Stack`.
+- `alignX="stretch"` in a row: stretch is not valid on the main axis and throws.

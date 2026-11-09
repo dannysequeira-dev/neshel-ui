@@ -1,0 +1,69 @@
+---
+title: "@neshel-ui/components"
+description: Accessible components, overlays, selection controls, navigation and an application shell.
+package: components
+exports: [Breakpoint, FieldSize, Responsive, NeshelComponentsError]
+---
+
+<PackageInstall packages={["@neshel-ui/config", "@neshel-ui/components"]} />
+
+```css title="src/index.css"
+@import "@neshel-ui/config/tokens.css"; /* or tailwind.css after @import "tailwindcss" */
+@import "@neshel-ui/components/styles.css";
+```
+
+Peers: `react` and `react-dom` 19, `@neshel-ui/config` (types). No Tailwind, `@source` or provider is
+required. Interactive parts use Radix (dialogs, sheets, popovers, menus, navigation menu, tooltips)
+and Base UI (Select, MultiSelect, Combobox) internally; you only use Neshel's API.
+
+## Catalogue
+
+| Family      | Components                                                                                                           |
+| ----------- | -------------------------------------------------------------------------------------------------------------------- |
+| Foundation  | [Button](/en/docs/components/button/), [Card](/en/docs/components/card/), [Badge](/en/docs/components/badge/), [Input](/en/docs/components/input/), [Label](/en/docs/components/label/), [Separator](/en/docs/components/separator/), [Skeleton](/en/docs/components/skeleton/), [VisuallyHidden](/en/docs/components/visually-hidden/) |
+| Overlays    | [Dialog](/en/docs/components/dialog/), [AlertDialog](/en/docs/components/alert-dialog/), [Sheet](/en/docs/components/sheet/), [Popover](/en/docs/components/popover/), [Tooltip](/en/docs/components/tooltip/) |
+| Selection   | [Select](/en/docs/components/select/), [MultiSelect](/en/docs/components/multi-select/), [Combobox](/en/docs/components/combobox/) (single and multiple) |
+| Navigation  | [Navbar](/en/docs/components/navbar/), [NavigationMenu](/en/docs/components/navigation-menu/), [DropdownMenu](/en/docs/components/dropdown-menu/), [MobileMenu](/en/docs/components/mobile-menu/) |
+| Application | [AppShell](/en/docs/components/app-shell/), [Sidebar](/en/docs/components/sidebar/) (with SidebarTrigger and `useAppShell`) |
+
+Not sure which one to use? See [Choosing components](/en/docs/guides/choosing-components/).
+
+## Conventions
+
+- **Flat names**: `DialogContent`, `NavbarBrand` (no `Dialog.Content`), so client references work in
+  React Server Components.
+- **`asChild`**: render your element (links, router links) with the component's styles and behaviour —
+  exactly one element child; classes join, styles merge, handlers compose (child first), refs compose.
+- **State**: stateful components offer `value` / `defaultValue` / `onValueChange` (or `open` /
+  `defaultOpen` / `onOpenChange`).
+- **Portals**: overlay contents accept `container`; themes are copied across portals.
+- **Responsive props**: Button `size`, AppShell `breakpoint`, NavbarNav `hideBelow`, MobileMenu
+  `breakpoint` accept your configured breakpoint names.
+- **Icons**: bring your own React nodes (the examples use `lucide-react`). Icon-only buttons need an
+  `aria-label`.
+
+## Shared types
+
+<ApiTable package="components" name="Responsive" />
+<ApiTable package="components" name="Breakpoint" />
+<ApiTable package="components" name="FieldSize" />
+
+## Errors
+
+Invalid usage throws `NeshelComponentsError` during render on the server and the client, with a
+message naming the component and the fix (for example `<Button asChild disabled>` — links cannot be
+disabled).
+
+```tsx title="error-boundary-check.tsx"
+import { NeshelComponentsError } from "@neshel-ui/components";
+
+export function describeError(error: unknown): string {
+  return error instanceof NeshelComponentsError ? `Neshel usage error: ${error.message}` : String(error);
+}
+```
+
+## Styling
+
+Component rules live in the `components.neshel` cascade layer and read only semantic tokens. Override
+with tokens (preferred), component custom properties, Tailwind utilities or your own CSS through
+`className`. See [Theming](/en/docs/guides/theming/#component-level-custom-properties).

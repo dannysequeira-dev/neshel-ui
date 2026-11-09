@@ -1,0 +1,69 @@
+---
+title: A responsive layout
+description: Use responsive prop objects to change columns, spacing and direction per breakpoint.
+---
+
+Every responsive prop accepts either a value or an object keyed by breakpoint. Values cascade
+upwards (mobile first): `{ base: 1, md: 2, lg: 4 }` means one column below `md`, two from `md`, four
+from `lg`.
+
+```tsx title="src/App.tsx"
+import { Button, Card, CardContent, CardHeader, CardTitle } from "@neshel-ui/components";
+import { Container, Flex, Grid, Stack } from "@neshel-ui/layout";
+import { Heading, Paragraph } from "@neshel-ui/typography";
+
+const features = ["Tokens", "Layout", "Typography", "Components"];
+
+export default function App() {
+  return (
+    <Container size="lg" gutter={{ base: "4", md: "8" }}>
+      <Stack space={{ base: "6", md: "10" }} className="py-10">
+        <Flex
+          direction={{ base: "column", md: "row" }}
+          justify="between"
+          alignY="center"
+          space="4"
+        >
+          <Heading as="h1" size={{ base: "2xl", md: "4xl" }}>
+            Features
+          </Heading>
+          <Button>Start now</Button>
+        </Flex>
+        <Grid columns={{ base: 1, sm: 2, lg: 4 }} space={{ base: "3", md: "6" }}>
+          {features.map((feature) => (
+            <Card key={feature} as="article">
+              <CardHeader>
+                <CardTitle>{feature}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Paragraph size="sm" tone="muted">
+                  A short description of {feature.toLowerCase()}.
+                </Paragraph>
+              </CardContent>
+            </Card>
+          ))}
+        </Grid>
+      </Stack>
+    </Container>
+  );
+}
+```
+
+## Default breakpoints
+
+| Key    | Minimum width |
+| ------ | ------------- |
+| `base` | 0 (no media query) |
+| `sm`   | 40rem         |
+| `md`   | 48rem         |
+| `lg`   | 64rem         |
+| `xl`   | 80rem         |
+| `2xl`  | 96rem         |
+
+They equal Tailwind v4's defaults, so `md:` utilities and `{ md: … }` props switch together. Each key
+you write becomes one precompiled class; nothing is computed in the browser.
+
+<Preview demo="layout/grid-columns" />
+
+Want names such as `phone`, `tablet` and `desktop`? Define them in `neshel.config.ts` — see
+[Custom breakpoints](/en/docs/guides/custom-breakpoints/). Next: [Using the CLI](/en/docs/getting-started/cli/).

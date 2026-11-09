@@ -1,0 +1,43 @@
+---
+title: Themes
+description: Built-in and named theme inputs, colour values and the theme selection attribute.
+package: config
+exports: [BuiltInThemeInput, NamedThemeInput, ThemeColors, ColorValue]
+---
+
+The `themes` key of `neshel.config.ts` overrides the built-in `light` and `dark` themes and adds
+**named themes**. Theme colour inputs are partial: unspecified roles keep the values of the base.
+
+```ts title="neshel.config.ts"
+import { defineConfig } from "@neshel-ui/config";
+
+export default defineConfig({
+  themes: {
+    light: { colors: { primary: "#1d3f73" } },
+    dark: { colors: { primary: "#9fb8e6" } },
+    sepia: {
+      extends: "light",
+      colors: { background: "#f4ecd8", foreground: "#2b2118", surface: "#fbf5e6", surfaceForeground: "#2b2118" },
+    },
+  },
+});
+```
+
+- Theme names: lower-case kebab-case, 1–32 characters; `system` is reserved.
+- `extends` is required on named themes (`"light"` or `"dark"`) and also sets their `color-scheme`.
+  It is not allowed on `light` and `dark`.
+- Apply a theme with `data-neshel-theme="sepia"` on any element.
+
+<ApiTable package="config" name="BuiltInThemeInput" />
+<ApiTable package="config" name="NamedThemeInput" />
+<ApiTable package="config" name="ThemeColors" />
+<ApiTable package="config" name="ColorValue" />
+
+## Colour syntax
+
+Accepted: hex (`#rgb`, `#rgba`, `#rrggbb`, `#rrggbbaa`), `rgb()`, `rgba()`, `hsl()`, `hsla()`,
+`oklch()`. Named colours (`navy`), `var()`, `color-mix()` and `lab()` are rejected
+(`unsupported-color-syntax`). Alpha below 1 is only allowed on `border`. Out-of-sRGB `oklch()` values
+produce a warning and are gamut-mapped for the contrast check only (the CSS keeps your value).
+
+See the [Theming guide](/en/docs/guides/theming/) for roles, contrast and the cascade.

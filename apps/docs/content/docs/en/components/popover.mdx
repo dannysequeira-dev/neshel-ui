@@ -1,0 +1,65 @@
+---
+title: Popover
+description: Anchored, non-modal floating content with collision handling.
+package: components
+exports: [Popover, PopoverTrigger, PopoverAnchor, PopoverContent, PopoverClose, PopoverProps, PopoverTriggerProps, PopoverAnchorProps, PopoverContentProps, PopoverCloseProps]
+---
+
+<ComponentKind package="components" name="Popover" />
+
+## Purpose
+
+`Popover` shows rich content next to a trigger — details, small forms, pickers. It is non-modal: the
+page stays interactive.
+
+## Import
+
+```tsx title="import.tsx"
+import {
+  Popover,
+  PopoverAnchor,
+  PopoverClose,
+  PopoverContent,
+  PopoverTrigger,
+} from "@neshel-ui/components";
+```
+
+## Usage
+
+<Preview demo="components/popover-basic" />
+
+## API
+
+<ApiTable package="components" name="PopoverProps" />
+<ApiTable package="components" name="PopoverContentProps" />
+<ApiTable package="components" name="PopoverTriggerProps" />
+<ApiTable package="components" name="PopoverAnchorProps" />
+<ApiTable package="components" name="PopoverCloseProps" />
+
+`PopoverContent` positioning: `side`, `align`, `sideOffset` (default 6) and the collision props.
+`PopoverAnchor` positions the content against another element than the trigger.
+
+## Selection inside a Popover
+
+A `Combobox` (or `Select`) inside a Popover renders its listbox inside the popover. Escape closes the
+listbox first, then the popover; choosing an option keeps the popover open.
+
+<Preview demo="components/popover-combobox" />
+
+## Accessibility
+
+The trigger exposes `aria-expanded` and `aria-controls`. Focus moves into the content on open and
+returns to the trigger on close. Give the content a heading or label when it is more than a sentence.
+
+## Keyboard
+
+| Key             | Action                     |
+| --------------- | -------------------------- |
+| Enter / Space   | Open from the trigger      |
+| Tab             | Move through the content   |
+| Escape          | Close (innermost layer)    |
+
+## Common mistakes
+
+- Using a Popover for a short hint on hover: use a [Tooltip](/en/docs/components/tooltip/).
+- Using it for a menu of commands: use a [DropdownMenu](/en/docs/components/dropdown-menu/).

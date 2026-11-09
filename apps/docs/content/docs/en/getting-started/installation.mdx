@@ -1,0 +1,79 @@
+---
+title: Installation
+description: Install the Neshel-UI packages you need with pnpm, npm or Yarn — from npm after publication, or from local tarballs today.
+---
+
+Neshel-UI is five packages. Install only what you use: `@neshel-ui/config` always (it provides the
+tokens), plus any of layout, typography and components, plus the CLI when you customise themes,
+fonts or breakpoints.
+
+## Peer dependencies
+
+| Package                 | You must also install                               |
+| ----------------------- | --------------------------------------------------- |
+| `@neshel-ui/config`     | —                                                   |
+| `@neshel-ui/layout`     | `react@19`, `@neshel-ui/config`                     |
+| `@neshel-ui/typography` | `react@19`, `@neshel-ui/config`                     |
+| `@neshel-ui/components` | `react@19`, `react-dom@19`, `@neshel-ui/config`     |
+| `@neshel-ui/cli`        | `@neshel-ui/config` (as a dev dependency next to the CLI) |
+
+Runtime dependencies (Radix, Base UI, tailwind-variants…) are installed automatically. pnpm and
+npm ≥ 7 install missing peers automatically; Yarn reports them so that you add them yourself.
+
+## From npm (after the 0.1.0 publication)
+
+<PackageInstall packages={["@neshel-ui/config", "@neshel-ui/layout", "@neshel-ui/typography", "@neshel-ui/components"]} />
+
+And, for configuration (optional):
+
+<PackageInstall packages={["@neshel-ui/cli"]} dev />
+
+### Choosing pnpm, npm or Yarn
+
+All three work; the packages are plain ESM with standard `exports`. Neshel-UI's own tooling and
+automated consumer tests use **pnpm**; the same `package.json` works with npm and Yarn (Berry with the
+`node-modules` linker or Plug'n'Play). Use one package manager per project and commit its lockfile.
+
+## From local tarballs (before publication)
+
+Until the packages are on npm, build them from the repository and install the packed tarballs. This
+is exactly how Neshel-UI's automated external-consumer tests install them.
+
+<Steps>
+<Step>
+
+### Build and pack (in a clone of the Neshel-UI repository)
+
+```bash
+pnpm install --frozen-lockfile
+pnpm build:packages
+node scripts/pack-local.mjs --out ../neshel-tarballs
+```
+
+`pack-local` runs `pnpm pack` for the five public packages and prints the tarball names
+(`neshel-ui-config-0.1.0.tgz`, …).
+
+</Step>
+<Step>
+
+### Install them in your application
+
+```bash
+pnpm add ../neshel-tarballs/neshel-ui-config-0.1.0.tgz ../neshel-tarballs/neshel-ui-layout-0.1.0.tgz ../neshel-tarballs/neshel-ui-typography-0.1.0.tgz ../neshel-tarballs/neshel-ui-components-0.1.0.tgz
+```
+
+npm: `npm install <paths>`; Yarn: `yarn add <paths>`. The versions in the file names follow the
+repository's current versions.
+
+</Step>
+</Steps>
+
+<Callout type="warn" title="Do not use workspace links in applications">
+  Linking the monorepo packages (`link:` or `workspace:`) skips the packaging step and can hide
+  problems that real consumers would see. Always test with packed tarballs.
+</Callout>
+
+## Next steps
+
+Configure [TypeScript](/en/docs/getting-started/typescript/), then add the
+[CSS imports](/en/docs/getting-started/css/).

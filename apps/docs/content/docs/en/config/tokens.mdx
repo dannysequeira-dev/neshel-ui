@@ -1,0 +1,37 @@
+---
+title: Tokens and defaults
+description: The colour roles, contrast pairs and default values exported as frozen data.
+package: config
+exports: [colorRoles, ColorRole, contrastPairs, ContrastPair, defaults, Defaults]
+---
+
+The JavaScript entry exports the token contract as frozen data, useful for tooling, documentation and
+tests. It is side-effect free and browser-safe.
+
+```ts title="list-roles.ts"
+import { colorRoles, contrastPairs, defaults } from "@neshel-ui/config";
+
+console.log(colorRoles.length); // 25
+for (const pair of contrastPairs) {
+  console.log(`${pair.foreground} on ${pair.background}: ≥ ${pair.minimum}:1`);
+}
+console.log(defaults.themes.light.primary); // "#193767"
+```
+
+<ApiTable package="config" name="ColorRole" />
+<ApiTable package="config" name="ContrastPair" />
+<ApiTable package="config" name="Defaults" />
+
+## CSS custom properties
+
+| Token                              | Example (light default)                       |
+| ---------------------------------- | --------------------------------------------- |
+| `--neshel-<role>`                  | `--neshel-primary: #193767`                   |
+| `--neshel-radius-base` (`-sm` … `-xl`, `-full`) | `0.75rem`                         |
+| `--neshel-spacing`                 | `0.25rem` (layout spacing unit)               |
+| `--neshel-font-body` / `-display` / `-mono` | font stacks                          |
+| `--neshel-font-<role>-scale`, `-cap-trim`, `-baseline-trim`, `-trim` | Capsize constants |
+| `--neshel-focus-width`, `--neshel-focus-offset` | `2px`, `2px`                     |
+
+Tailwind consumers (`tailwind.css`) also get utilities such as `bg-neshel-primary`,
+`text-neshel-muted-foreground`, `border-neshel-border` and `rounded-neshel-md`.

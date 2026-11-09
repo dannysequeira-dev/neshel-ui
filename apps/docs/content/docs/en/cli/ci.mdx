@@ -1,0 +1,49 @@
+---
+title: CI integration
+description: Keep generated outputs fresh and themes accessible in continuous integration.
+---
+
+## The check
+
+```bash
+neshel generate --check --strict
+```
+
+- `--check` compares the generated stylesheet (and declarations) with the files on disk without
+  writing: exit **4** when a file is missing or stale.
+- `--strict` fails on contrast problems (exit **1**).
+
+## GitHub Actions
+
+```yaml title=".github/workflows/theme.yml"
+name: Theme
+on: [push, pull_request]
+jobs:
+  theme:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec neshel generate --check --strict
+```
+
+## Committing generated files or not
+
+| Approach                          | Pros                                               | Cons                                   |
+| --------------------------------- | -------------------------------------------------- | -------------------------------------- |
+| Commit outputs, `--check` in CI   | Type checking and editors work before any build    | Remember to regenerate after edits     |
+| Generate in `build` only          | No generated files in the repository               | Type checking must run after generation |
+
+Both are supported. Output is byte-identical across operating systems and Node versions, so a commit
+made on Windows passes the check on Linux.
+
+## Monorepos
+
+Run the CLI from each application's directory (discovery does not search upwards), or pass
+`--config apps/web/neshel.config.ts` — relative `output`/`types` paths still resolve against the
+configuration file's directory.

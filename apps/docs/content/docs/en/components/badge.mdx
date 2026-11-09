@@ -1,0 +1,42 @@
+---
+title: Badge
+description: Small status and category labels using the semantic colour roles.
+package: components
+exports: [Badge, BadgeProps, BadgeVariant, BadgeSize]
+---
+
+<ComponentKind package="components" name="Badge" />
+
+## Purpose
+
+`Badge` labels a status or category with a short text. It renders a non-interactive `<span>`.
+
+## Import
+
+```tsx title="import.tsx"
+import { Badge } from "@neshel-ui/components";
+```
+
+## Usage
+
+<Preview demo="components/badge-variants" />
+
+## API
+
+<ApiTable package="components" name="BadgeProps" />
+<ApiTable package="components" name="BadgeVariant" />
+<ApiTable package="components" name="BadgeSize" />
+
+## Accessibility
+
+A Badge has no role and is read as text in context. Do not rely on colour alone: the text itself must
+say "Failed", "Active", etc. For a changing status, announce it with a live region.
+
+## Styling
+
+`success`, `warning`, `destructive` and `accent` use the corresponding colour roles (with their
+paired foregrounds), so custom themes keep contrast.
+
+## Common mistakes
+
+- Making badges interactive: use a `Button` with `size="sm"` instead.

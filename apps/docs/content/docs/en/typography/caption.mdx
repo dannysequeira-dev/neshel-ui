@@ -1,0 +1,35 @@
+---
+title: Caption
+description: Small, muted supporting text for figures, metadata and hints.
+package: typography
+exports: [Caption, CaptionProps, CaptionElement]
+---
+
+## Purpose
+
+`Caption` renders small supporting text (size `sm`, tone `muted`): figure captions, metadata,
+field hints and error messages.
+
+## Import
+
+```tsx title="import.tsx"
+import { Caption } from "@neshel-ui/typography";
+```
+
+## Usage
+
+<Preview demo="typography/caption-figure" />
+
+## API
+
+<ApiTable package="typography" name="CaptionProps" />
+<ApiTable package="typography" name="CaptionElement" />
+
+## Accessibility
+
+For a field hint or error, give the Caption an `id` and reference it from the control with
+`aria-describedby`. Use `tone="destructive"` for errors, but never colour alone: say what is wrong.
+
+## Common mistakes
+
+- Using Caption for headings of small sections: use `Heading` with a small `size`.

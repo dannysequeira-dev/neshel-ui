@@ -1,0 +1,59 @@
+---
+title: Sheet
+description: A modal panel that slides from an edge — filters, details and navigation drawers.
+package: components
+exports: [Sheet, SheetTrigger, SheetContent, SheetHeader, SheetBody, SheetFooter, SheetTitle, SheetDescription, SheetClose, SheetProps, SheetTriggerProps, SheetContentProps, SheetTitleProps, SheetDescriptionProps, SheetCloseProps, SheetSide]
+---
+
+<ComponentKind package="components" name="Sheet" />
+
+## Purpose
+
+`Sheet` is a modal dialog anchored to an edge of the viewport. It shares Dialog's behaviour; only its
+placement differs. ("Drawer" in other libraries.)
+
+## Import
+
+```tsx title="import.tsx"
+import {
+  Sheet,
+  SheetBody,
+  SheetClose,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@neshel-ui/components";
+```
+
+## Usage
+
+<Preview demo="components/sheet-sides" />
+
+## API
+
+<ApiTable package="components" name="SheetProps" />
+<ApiTable package="components" name="SheetContentProps" />
+<ApiTable package="components" name="SheetSide" />
+<ApiTable package="components" name="SheetTriggerProps" />
+<ApiTable package="components" name="SheetCloseProps" />
+<ApiTable package="components" name="SheetTitleProps" />
+<ApiTable package="components" name="SheetDescriptionProps" />
+
+`SheetHeader`, `SheetBody` and `SheetFooter` take the same props as `DialogPartProps`.
+
+## Controlled and uncontrolled
+
+`open` / `defaultOpen` / `onOpenChange`, as Dialog.
+
+## Accessibility and keyboard
+
+Identical to [Dialog](/en/docs/components/dialog/#accessibility): a title is required, focus is
+trapped and restored, Escape closes. Swipe gestures are not provided.
+
+## Common mistakes
+
+- Building a mobile navigation drawer by hand: [MobileMenu](/en/docs/components/mobile-menu/) and the
+  [Sidebar](/en/docs/components/sidebar/) drawer already handle closing after navigation.

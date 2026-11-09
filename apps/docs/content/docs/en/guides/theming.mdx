@@ -1,0 +1,175 @@
+---
+title: Theming
+description: Semantic colour roles, contrast pairs, light/dark/system and named themes, nested scopes and the cascade.
+---
+
+Neshel-UI themes are sets of CSS custom properties. Components only read **semantic** tokens
+(`--neshel-primary`, `--neshel-surface-foreground`, …), never literal colours, so a theme can change
+the whole interface — including replacing Neshel's navy and gold with your own identity.
+
+## Default theme behaviour
+
+Importing `@neshel-ui/config/tokens.css` (or `tailwind.css`) defines:
+
+- the **light** theme on `:root` and on `[data-neshel-theme="light"]`;
+- the **dark** theme on `[data-neshel-theme="dark"]`;
+- **system** on `[data-neshel-theme="system"]`: light, or dark under `prefers-color-scheme: dark`;
+- radius, spacing, focus-ring and font tokens.
+
+Every theme block declares **all** colour roles and its `color-scheme`, so nested scopes are fully
+isolated: a light card inside a dark page is entirely light.
+
+## Colour roles
+
+There are 25 roles, defined as foreground/background pairs with a documented contrast minimum:
+
+| Role (background)                    | Paired foreground              | Used for                                   |
+| ------------------------------------ | ------------------------------ | ------------------------------------------ |
+| `background`                         | `foreground`                   | Page canvas and body text                  |
+| `surface`                            | `surfaceForeground`            | Cards, popovers, menus, dialogs            |
+| `muted`                              | `mutedForeground`              | Subtle areas and secondary text            |
+| `primary`                            | `primaryForeground`            | Primary actions, active states             |
+| `secondary`                          | `secondaryForeground`          | Secondary actions                          |
+| `accent`                             | `accentForeground`             | Highlights (Neshel's restrained gold)      |
+| `destructive`                        | `destructiveForeground`        | Dangerous actions and errors               |
+| `success`                            | `successForeground`            | Positive status                            |
+| `warning`                            | `warningForeground`            | Cautionary status                          |
+| `selected`                           | `selectedForeground`           | Selected options and items                 |
+| `disabled`                           | `disabledForeground`           | Disabled controls                          |
+| `border`, `input`, `focus`           | —                              | Separators, field boundaries, focus rings  |
+
+The exact list and the minimum ratio of each pair are exported as data: see
+[`colorRoles` and `contrastPairs`](/en/docs/config/tokens/).
+
+## Contrast requirements
+
+Built-in themes meet **4.5:1** for text pairs and **3:1** for focus rings and input boundaries
+(WCAG 2.1 relative luminance), pinned by tests. For your themes, `neshel validate` computes every
+pair you affect:
+
+```text
+warning themes.light  contrast  accentForeground on accent is 3.12:1; minimum 4.5:1 (WCAG 1.4.3).
+```
+
+Warnings by default; errors (exit 1, nothing written) with `contrast: "error"` or `--strict`. Passing
+these checks does not by itself make an interface WCAG conformant.
+
+## Changing the visual identity
+
+```ts title="neshel.config.ts"
+import { defineConfig } from "@neshel-ui/config";
+
+// A teal-and-coral identity for an application that does not use Neshel's navy and gold.
+export default defineConfig({
+  radius: { base: "0.375rem" },
+  themes: {
+    light: {
+      colors: {
+        background: "#f7fafa",
+        foreground: "#0f2a2e",
+        surface: "#ffffff",
+        surfaceForeground: "#0f2a2e",
+        primary: "#0f6e6e",
+        primaryForeground: "#ffffff",
+        accent: "#b84a2e",
+        accentForeground: "#ffffff",
+        focus: "#0f6e6e",
+      },
+    },
+    dark: {
+      colors: {
+        background: "#071a1c",
+        foreground: "#e5f4f2",
+        surface: "#0d2a2d",
+        surfaceForeground: "#e5f4f2",
+        primary: "#6fd1c9",
+        primaryForeground: "#04211f",
+        accent: "#f0a58f",
+        accentForeground: "#2a0d05",
+        focus: "#6fd1c9",
+      },
+    },
+  },
+});
+```
+
+Theme inputs are partial: unspecified roles keep the defaults of their base.
+
+## Named and nested themes
+
+Named themes extend `light` or `dark` (which also sets their `color-scheme`):
+
+```ts title="neshel.config.ts"
+import { defineConfig } from "@neshel-ui/config";
+
+export default defineConfig({
+  themes: {
+    evergreen: { extends: "light", colors: { primary: "#1f5136", primaryForeground: "#ffffff" } },
+    aurora: { extends: "dark", colors: { primary: "#b9a6ff", primaryForeground: "#160d3b" } },
+  },
+});
+```
+
+Apply a theme with `data-neshel-theme` on any element; scopes nest:
+
+<Preview demo="theming/theme-scopes" />
+
+Overlays rendered in portals (dialogs, menus, selection popups) copy the trigger's nearest
+`data-neshel-theme`, so they keep nested themes. See [Overlays and portals](/en/docs/guides/overlays-portals/).
+
+## The cascade
+
+Every Neshel stylesheet declares `@layer neshel.defaults, neshel.config;`. Generated tokens live in
+`neshel.config`, so they override the defaults regardless of import order. Component styles live in
+`components.neshel`. Your unlayered CSS and Tailwind utilities beat all of them.
+
+<Callout type="warn" title="Unlayered token overrides beat every theme">
+  `:root { --neshel-primary: red }` written without a layer also overrides the **dark** theme. To
+  override tokens by hand, write them inside `@layer neshel.config` and per theme selector, or —
+  better — use `neshel.config.ts`.
+</Callout>
+
+## Switching themes at runtime
+
+No provider is involved: set the attribute.
+
+```tsx title="theme-toggle.tsx"
+"use client";
+import { Button } from "@neshel-ui/components";
+
+export function ThemeToggle() {
+  return (
+    <Button
+      variant="outline"
+      onClick={() => {
+        const root = document.documentElement;
+        const next = root.dataset.neshelTheme === "dark" ? "light" : "dark";
+        root.dataset.neshelTheme = next;
+        document.cookie = `theme=${next}; path=/; max-age=31536000; samesite=lax`;
+      }}
+    >
+      Toggle theme
+    </Button>
+  );
+}
+```
+
+Read the cookie on the server and render `<html data-neshel-theme={theme}>` to avoid a flash of the
+wrong theme. Persistence is the application's responsibility.
+
+## Component-level custom properties
+
+Some components read optional properties you may set on any ancestor:
+
+| Property                          | Default        | Affects                                   |
+| --------------------------------- | -------------- | ----------------------------------------- |
+| `--neshel-sidebar-width`          | `16rem`        | Expanded sidebar                          |
+| `--neshel-sidebar-rail-width`     | `3.5rem`       | Collapsed icon rail                       |
+| `--neshel-navbar-height`          | `3.5rem`       | Navbar block size                         |
+| `--neshel-shell-content-padding`  | spacing × 6    | AppShellContent padding                   |
+| `--neshel-z-overlay`              | `50`           | Dialog, sheet and backdrop layers         |
+| `--neshel-z-popover`              | `60`           | Popovers, menus, selection popups, tooltips |
+| `--neshel-overlay-backdrop`       | theme-derived  | Modal backdrop colour                     |
+
+Set them on an element **inside** the portal target when the content is portalled — see
+[portal containers](/en/docs/guides/overlays-portals/#inline-custom-properties-need-a-portal-container).

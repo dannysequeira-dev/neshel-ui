@@ -46,7 +46,10 @@
           "default": "\"primary\""
         }
       ],
-      "inherits": ["@radix-ui/react-primitive", "React DOM attributes"],
+      "inherits": [
+        "@radix-ui/react-primitive",
+        "React DOM attributes"
+      ],
       "definition": "RadixAlert.AlertDialogActionProps & ButtonLike"
     },
     {
@@ -85,7 +88,10 @@
           "default": "\"primary\""
         }
       ],
-      "inherits": ["@radix-ui/react-primitive", "React DOM attributes"],
+      "inherits": [
+        "@radix-ui/react-primitive",
+        "React DOM attributes"
+      ],
       "definition": "RadixAlert.AlertDialogCancelProps & ButtonLike"
     },
     {
@@ -153,7 +159,10 @@
           "description": ""
         }
       ],
-      "inherits": ["@radix-ui/react-primitive", "React DOM attributes"],
+      "inherits": [
+        "@radix-ui/react-primitive",
+        "React DOM attributes"
+      ],
       "definition": "RadixAlert.AlertDialogDescriptionProps & { ref?: Ref<HTMLParagraphElement>; }"
     },
     {
@@ -187,7 +196,9 @@
           "description": ""
         }
       ],
-      "inherits": ["React DOM attributes"]
+      "inherits": [
+        "React DOM attributes"
+      ]
     },
     {
       "name": "AlertDialogProps",
@@ -195,7 +206,9 @@
       "module": "alert-dialog",
       "kind": "type",
       "props": [],
-      "inherits": ["@radix-ui/react-dialog"],
+      "inherits": [
+        "@radix-ui/react-dialog"
+      ],
       "definition": "RadixAlert.AlertDialogProps"
     },
     {
@@ -220,7 +233,10 @@
           "description": ""
         }
       ],
-      "inherits": ["@radix-ui/react-primitive", "React DOM attributes"],
+      "inherits": [
+        "@radix-ui/react-primitive",
+        "React DOM attributes"
+      ],
       "definition": "RadixAlert.AlertDialogTitleProps & { ref?: Ref<HTMLHeadingElement>; }"
     },
     {
@@ -245,7 +261,10 @@
           "description": ""
         }
       ],
-      "inherits": ["@radix-ui/react-primitive", "React DOM attributes"],
+      "inherits": [
+        "@radix-ui/react-primitive",
+        "React DOM attributes"
+      ],
       "definition": "RadixAlert.AlertDialogTriggerProps & { ref?: Ref<HTMLButtonElement>; }"
     },
     {
@@ -288,7 +307,9 @@
           "description": ""
         }
       ],
-      "inherits": ["React DOM attributes"]
+      "inherits": [
+        "React DOM attributes"
+      ]
     },
     {
       "name": "AppShellProps",
@@ -347,7 +368,9 @@
           "description": ""
         }
       ],
-      "inherits": ["React DOM attributes"]
+      "inherits": [
+        "React DOM attributes"
+      ]
     },
     {
       "name": "AppShellState",
@@ -430,7 +453,9 @@
           "default": "\"default\""
         }
       ],
-      "inherits": ["React DOM attributes"]
+      "inherits": [
+        "React DOM attributes"
+      ]
     },
     {
       "name": "BadgeSize",
@@ -513,7 +538,9 @@
           "default": "\"primary\""
         }
       ],
-      "inherits": ["React DOM attributes"]
+      "inherits": [
+        "React DOM attributes"
+      ]
     },
     {
       "name": "ButtonSize",
@@ -578,7 +605,9 @@
           "description": ""
         }
       ],
-      "inherits": ["React DOM attributes"]
+      "inherits": [
+        "React DOM attributes"
+      ]
     },
     {
       "name": "CardElement",
@@ -625,7 +654,9 @@
           "description": ""
         }
       ],
-      "inherits": ["React DOM attributes"]
+      "inherits": [
+        "React DOM attributes"
+      ]
     },
     {
       "name": "CardProps",
@@ -635,13 +666,13 @@
       "props": [
         {
           "name": "as",
-          "type": "never | E",
+          "type": "E",
           "optional": true,
           "description": ""
         },
         {
           "name": "asChild",
-          "type": "true | false",
+          "type": "boolean",
           "optional": false,
           "description": ""
         },
@@ -665,7 +696,9 @@
           "default": "\"default\""
         }
       ],
-      "inherits": ["React DOM attributes"],
+      "inherits": [
+        "React DOM attributes"
+      ],
       "definition": "Omit<HTMLAttributes<HTMLElement>, \"color\"> & { /** Surface style (default `\"default\"`). */ variant?: CardVariant; padding?: CardPadding; ref?: Ref<HTMLElement>; } & Polymorphic<CardElement>"
     },
     {
@@ -692,13 +725,13 @@
       "props": [
         {
           "name": "as",
-          "type": "never | E",
+          "type": "E",
           "optional": true,
           "description": ""
         },
         {
           "name": "asChild",
-          "type": "true | false",
+          "type": "boolean",
           "optional": false,
           "description": ""
         },
@@ -709,7 +742,9 @@
           "description": ""
         }
       ],
-      "inherits": ["React DOM attributes"],
+      "inherits": [
+        "React DOM attributes"
+      ],
       "definition": "HTMLAttributes<HTMLHeadingElement> & { ref?: Ref<HTMLHeadingElement>; } & Polymorphic<CardTitleElement>"
     },
     {
@@ -1129,7 +1164,7 @@
         },
         {
           "name": "multiple",
-          "type": "false | true",
+          "type": "boolean",
           "optional": true,
           "description": "Single selection (default)."
         },
@@ -1472,7 +1507,10 @@
           "description": ""
         }
       ],
-      "inherits": ["@radix-ui/react-primitive", "React DOM attributes"],
+      "inherits": [
+        "@radix-ui/react-primitive",
+        "React DOM attributes"
+      ],
       "definition": "RadixDialog.DialogCloseProps & { ref?: Ref<HTMLButtonElement>; }"
     },
     {
@@ -1555,7 +1593,10 @@
           "description": ""
         }
       ],
-      "inherits": ["@radix-ui/react-primitive", "React DOM attributes"],
+      "inherits": [
+        "@radix-ui/react-primitive",
+        "React DOM attributes"
+      ],
       "definition": "RadixDialog.DialogDescriptionProps & { ref?: Ref<HTMLParagraphElement>; }"
     },
     {
@@ -1589,7 +1630,9 @@
           "description": ""
         }
       ],
-      "inherits": ["React DOM attributes"]
+      "inherits": [
+        "React DOM attributes"
+      ]
     },
     {
       "name": "DialogProps",
@@ -1597,7 +1640,9 @@
       "module": "dialog",
       "kind": "type",
       "props": [],
-      "inherits": ["@radix-ui/react-dialog"],
+      "inherits": [
+        "@radix-ui/react-dialog"
+      ],
       "definition": "RootProps"
     },
     {
@@ -1629,7 +1674,10 @@
           "description": ""
         }
       ],
-      "inherits": ["@radix-ui/react-primitive", "React DOM attributes"],
+      "inherits": [
+        "@radix-ui/react-primitive",
+        "React DOM attributes"
+      ],
       "definition": "RadixDialog.DialogTitleProps & { ref?: Ref<HTMLHeadingElement>; }"
     },
     {
@@ -1654,7 +1702,10 @@
           "description": ""
         }
       ],
-      "inherits": ["@radix-ui/react-primitive", "React DOM attributes"],
+      "inherits": [
+        "@radix-ui/react-primitive",
+        "React DOM attributes"
+      ],
       "definition": "RadixDialog.DialogTriggerProps & { ref?: Ref<HTMLButtonElement>; }"
     },
     {
@@ -1688,7 +1739,11 @@
           "description": ""
         }
       ],
-      "inherits": ["@radix-ui/react-menu", "@radix-ui/react-primitive", "React DOM attributes"],
+      "inherits": [
+        "@radix-ui/react-menu",
+        "@radix-ui/react-primitive",
+        "React DOM attributes"
+      ],
       "definition": "RadixMenu.DropdownMenuCheckboxItemProps & { ref?: Ref<HTMLDivElement>; }"
     },
     {
@@ -1743,7 +1798,10 @@
       "module": "menus",
       "kind": "type",
       "props": [],
-      "inherits": ["@radix-ui/react-primitive", "React DOM attributes"],
+      "inherits": [
+        "@radix-ui/react-primitive",
+        "React DOM attributes"
+      ],
       "definition": "RadixMenu.DropdownMenuGroupProps"
     },
     {
@@ -1781,7 +1839,11 @@
           "default": "\"default\""
         }
       ],
-      "inherits": ["@radix-ui/react-menu", "@radix-ui/react-primitive", "React DOM attributes"]
+      "inherits": [
+        "@radix-ui/react-menu",
+        "@radix-ui/react-primitive",
+        "React DOM attributes"
+      ]
     },
     {
       "name": "DropdownMenuLabel",
@@ -1811,7 +1873,10 @@
           "description": ""
         }
       ],
-      "inherits": ["@radix-ui/react-primitive", "React DOM attributes"],
+      "inherits": [
+        "@radix-ui/react-primitive",
+        "React DOM attributes"
+      ],
       "definition": "RadixMenu.DropdownMenuLabelProps & { /** Indent to align with items that have an indicator or icon. */ inset?: boolean; ref?: Ref<HTMLDivElement>; }"
     },
     {
@@ -1820,7 +1885,9 @@
       "module": "menus",
       "kind": "type",
       "props": [],
-      "inherits": ["@radix-ui/react-dropdown-menu"],
+      "inherits": [
+        "@radix-ui/react-dropdown-menu"
+      ],
       "definition": "RadixMenu.DropdownMenuProps"
     },
     {
@@ -1838,7 +1905,11 @@
       "module": "menus",
       "kind": "type",
       "props": [],
-      "inherits": ["@radix-ui/react-menu", "@radix-ui/react-primitive", "React DOM attributes"],
+      "inherits": [
+        "@radix-ui/react-menu",
+        "@radix-ui/react-primitive",
+        "React DOM attributes"
+      ],
       "definition": "RadixMenu.DropdownMenuRadioGroupProps"
     },
     {
@@ -1863,7 +1934,11 @@
           "description": ""
         }
       ],
-      "inherits": ["@radix-ui/react-menu", "@radix-ui/react-primitive", "React DOM attributes"],
+      "inherits": [
+        "@radix-ui/react-menu",
+        "@radix-ui/react-primitive",
+        "React DOM attributes"
+      ],
       "definition": "RadixMenu.DropdownMenuRadioItemProps & { ref?: Ref<HTMLDivElement>; }"
     },
     {
@@ -1881,7 +1956,10 @@
       "module": "menus",
       "kind": "type",
       "props": [],
-      "inherits": ["@radix-ui/react-primitive", "React DOM attributes"],
+      "inherits": [
+        "@radix-ui/react-primitive",
+        "React DOM attributes"
+      ],
       "definition": "RadixMenu.DropdownMenuSeparatorProps"
     },
     {
@@ -1906,7 +1984,9 @@
           "description": ""
         }
       ],
-      "inherits": ["React DOM attributes"]
+      "inherits": [
+        "React DOM attributes"
+      ]
     },
     {
       "name": "DropdownMenuSub",
@@ -1960,7 +2040,9 @@
       "module": "menus",
       "kind": "type",
       "props": [],
-      "inherits": ["@radix-ui/react-dropdown-menu"],
+      "inherits": [
+        "@radix-ui/react-dropdown-menu"
+      ],
       "definition": "RadixMenu.DropdownMenuSubProps"
     },
     {
@@ -1991,7 +2073,11 @@
           "description": ""
         }
       ],
-      "inherits": ["@radix-ui/react-menu", "@radix-ui/react-primitive", "React DOM attributes"],
+      "inherits": [
+        "@radix-ui/react-menu",
+        "@radix-ui/react-primitive",
+        "React DOM attributes"
+      ],
       "definition": "RadixMenu.DropdownMenuSubTriggerProps & { /** Indent to align with items that have an indicator or icon. */ inset?: boolean; ref?: Ref<HTMLDivElement>; }"
     },
     {
@@ -2016,7 +2102,10 @@
           "description": ""
         }
       ],
-      "inherits": ["@radix-ui/react-primitive", "React DOM attributes"],
+      "inherits": [
+        "@radix-ui/react-primitive",
+        "React DOM attributes"
+      ],
       "definition": "RadixMenu.DropdownMenuTriggerProps & { ref?: Ref<HTMLButtonElement>; }"
     },
     {
@@ -2060,7 +2149,9 @@
           "description": "Styling size; the native numeric `size` attribute keeps its HTML meaning."
         }
       ],
-      "inherits": ["React DOM attributes"]
+      "inherits": [
+        "React DOM attributes"
+      ]
     },
     {
       "name": "Label",
@@ -2090,7 +2181,9 @@
           "description": "Shows a decorative \"*\" (hidden from assistive technology; use `required` on the control)."
         }
       ],
-      "inherits": ["React DOM attributes"]
+      "inherits": [
+        "React DOM attributes"
+      ]
     },
     {
       "name": "MobileMenu",
@@ -2213,7 +2306,9 @@
           "description": ""
         }
       ],
-      "inherits": ["React DOM attributes"]
+      "inherits": [
+        "React DOM attributes"
+      ]
     },
     {
       "name": "MobileMenuNav",
@@ -2237,7 +2332,9 @@
           "description": ""
         }
       ],
-      "inherits": ["React DOM attributes"]
+      "inherits": [
+        "React DOM attributes"
+      ]
     },
     {
       "name": "MobileMenuProps",
@@ -2308,7 +2405,9 @@
           "description": ""
         }
       ],
-      "inherits": ["React DOM attributes"]
+      "inherits": [
+        "React DOM attributes"
+      ]
     },
     {
       "name": "MultiSelect",
@@ -2534,7 +2633,9 @@
           "description": ""
         }
       ],
-      "inherits": ["React DOM attributes"]
+      "inherits": [
+        "React DOM attributes"
+      ]
     },
     {
       "name": "NavbarBrand",
@@ -2564,7 +2665,9 @@
           "description": ""
         }
       ],
-      "inherits": ["React DOM attributes"]
+      "inherits": [
+        "React DOM attributes"
+      ]
     },
     {
       "name": "NavbarLink",
@@ -2600,7 +2703,9 @@
           "description": ""
         }
       ],
-      "inherits": ["React DOM attributes"]
+      "inherits": [
+        "React DOM attributes"
+      ]
     },
     {
       "name": "NavbarNav",
@@ -2630,7 +2735,9 @@
           "description": ""
         }
       ],
-      "inherits": ["React DOM attributes"]
+      "inherits": [
+        "React DOM attributes"
+      ]
     },
     {
       "name": "NavbarProps",
@@ -2651,7 +2758,9 @@
           "description": "Stick to the top of the scroll container."
         }
       ],
-      "inherits": ["React DOM attributes"]
+      "inherits": [
+        "React DOM attributes"
+      ]
     },
     {
       "name": "NavigationMenu",
@@ -2772,7 +2881,10 @@
           "description": ""
         }
       ],
-      "inherits": ["@radix-ui/react-primitive", "React DOM attributes"],
+      "inherits": [
+        "@radix-ui/react-primitive",
+        "React DOM attributes"
+      ],
       "definition": "RadixNav.NavigationMenuListProps & { ref?: Ref<HTMLUListElement>; }"
     },
     {
@@ -2817,7 +2929,10 @@
           "description": ""
         }
       ],
-      "inherits": ["@radix-ui/react-primitive", "React DOM attributes"],
+      "inherits": [
+        "@radix-ui/react-primitive",
+        "React DOM attributes"
+      ],
       "definition": "RadixNav.NavigationMenuTriggerProps & { ref?: Ref<HTMLButtonElement>; }"
     },
     {
@@ -2857,7 +2972,11 @@
           "description": ""
         }
       ],
-      "inherits": ["@radix-ui/react-popper", "@radix-ui/react-primitive", "React DOM attributes"],
+      "inherits": [
+        "@radix-ui/react-popper",
+        "@radix-ui/react-primitive",
+        "React DOM attributes"
+      ],
       "definition": "RadixPopover.PopoverAnchorProps & { ref?: Ref<HTMLDivElement>; }"
     },
     {
@@ -2882,7 +3001,10 @@
           "description": ""
         }
       ],
-      "inherits": ["@radix-ui/react-primitive", "React DOM attributes"],
+      "inherits": [
+        "@radix-ui/react-primitive",
+        "React DOM attributes"
+      ],
       "definition": "RadixPopover.PopoverCloseProps & { ref?: Ref<HTMLButtonElement>; }"
     },
     {
@@ -2929,7 +3051,9 @@
       "module": "popover",
       "kind": "type",
       "props": [],
-      "inherits": ["@radix-ui/react-popover"],
+      "inherits": [
+        "@radix-ui/react-popover"
+      ],
       "definition": "RadixPopover.PopoverProps"
     },
     {
@@ -2954,7 +3078,10 @@
           "description": ""
         }
       ],
-      "inherits": ["@radix-ui/react-primitive", "React DOM attributes"],
+      "inherits": [
+        "@radix-ui/react-primitive",
+        "React DOM attributes"
+      ],
       "definition": "RadixPopover.PopoverTriggerProps & { ref?: Ref<HTMLButtonElement>; }"
     },
     {
@@ -3140,7 +3267,9 @@
       "module": "select",
       "kind": "type",
       "props": [],
-      "inherits": ["typescript"],
+      "inherits": [
+        "typescript"
+      ],
       "definition": "readonly (SelectOption | SelectOptionGroup)[]"
     },
     {
@@ -3320,7 +3449,9 @@
           "description": ""
         }
       ],
-      "inherits": ["React DOM attributes"]
+      "inherits": [
+        "React DOM attributes"
+      ]
     },
     {
       "name": "Sheet",
@@ -3360,7 +3491,10 @@
           "description": ""
         }
       ],
-      "inherits": ["@radix-ui/react-primitive", "React DOM attributes"],
+      "inherits": [
+        "@radix-ui/react-primitive",
+        "React DOM attributes"
+      ],
       "definition": "DialogCloseProps"
     },
     {
@@ -3450,7 +3584,10 @@
           "description": ""
         }
       ],
-      "inherits": ["@radix-ui/react-primitive", "React DOM attributes"],
+      "inherits": [
+        "@radix-ui/react-primitive",
+        "React DOM attributes"
+      ],
       "definition": "DialogDescriptionProps"
     },
     {
@@ -3473,7 +3610,9 @@
       "module": "dialog",
       "kind": "type",
       "props": [],
-      "inherits": ["@radix-ui/react-dialog"],
+      "inherits": [
+        "@radix-ui/react-dialog"
+      ],
       "definition": "DialogProps"
     },
     {
@@ -3505,7 +3644,10 @@
           "description": ""
         }
       ],
-      "inherits": ["@radix-ui/react-primitive", "React DOM attributes"],
+      "inherits": [
+        "@radix-ui/react-primitive",
+        "React DOM attributes"
+      ],
       "definition": "DialogTitleProps"
     },
     {
@@ -3530,7 +3672,10 @@
           "description": ""
         }
       ],
-      "inherits": ["@radix-ui/react-primitive", "React DOM attributes"],
+      "inherits": [
+        "@radix-ui/react-primitive",
+        "React DOM attributes"
+      ],
       "definition": "DialogTriggerProps"
     },
     {
@@ -3595,7 +3740,9 @@
           "description": ""
         }
       ],
-      "inherits": ["React DOM attributes"]
+      "inherits": [
+        "React DOM attributes"
+      ]
     },
     {
       "name": "SidebarHeader",
@@ -3659,7 +3806,9 @@
           "default": "\"button\""
         }
       ],
-      "inherits": ["React DOM attributes"]
+      "inherits": [
+        "React DOM attributes"
+      ]
     },
     {
       "name": "SidebarPartProps",
@@ -3674,7 +3823,9 @@
           "description": ""
         }
       ],
-      "inherits": ["React DOM attributes"]
+      "inherits": [
+        "React DOM attributes"
+      ]
     },
     {
       "name": "SidebarProps",
@@ -3715,7 +3866,9 @@
           "description": ""
         }
       ],
-      "inherits": ["React DOM attributes"]
+      "inherits": [
+        "React DOM attributes"
+      ]
     },
     {
       "name": "SidebarSeparator",
@@ -3815,7 +3968,9 @@
           "description": ""
         }
       ],
-      "inherits": ["React DOM attributes"]
+      "inherits": [
+        "React DOM attributes"
+      ]
     },
     {
       "name": "Skeleton",
@@ -3858,7 +4013,9 @@
           "description": "Inline size; numbers are pixels."
         }
       ],
-      "inherits": ["React DOM attributes"]
+      "inherits": [
+        "React DOM attributes"
+      ]
     },
     {
       "name": "Tooltip",
@@ -3920,7 +4077,9 @@
           "default": "700"
         }
       ],
-      "inherits": ["@radix-ui/react-tooltip"],
+      "inherits": [
+        "@radix-ui/react-tooltip"
+      ],
       "definition": "RadixTooltip.TooltipProps & { /** Hover delay in ms (default 300). */ delayDuration?: number; }"
     },
     {
@@ -3945,7 +4104,10 @@
           "description": ""
         }
       ],
-      "inherits": ["@radix-ui/react-primitive", "React DOM attributes"],
+      "inherits": [
+        "@radix-ui/react-primitive",
+        "React DOM attributes"
+      ],
       "definition": "RadixTooltip.TooltipTriggerProps & { ref?: Ref<HTMLButtonElement>; }"
     },
     {
@@ -3976,7 +4138,9 @@
           "description": ""
         }
       ],
-      "inherits": ["React DOM attributes"]
+      "inherits": [
+        "React DOM attributes"
+      ]
     },
     {
       "name": "useAppShell",

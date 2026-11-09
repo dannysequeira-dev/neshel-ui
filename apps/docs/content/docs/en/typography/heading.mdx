@@ -1,0 +1,39 @@
+---
+title: Heading
+description: Section headings h1–h6 whose visual size is independent of their level.
+package: typography
+exports: [Heading, HeadingProps, HeadingElement]
+---
+
+## Purpose
+
+`Heading` renders a heading element (`h2` by default) with the display font, `semibold` weight and a
+size that follows its level unless you set one. It is trimmed with Capsize.
+
+## Import
+
+```tsx title="import.tsx"
+import { Heading } from "@neshel-ui/typography";
+```
+
+## Usage
+
+<Preview demo="typography/heading-scale" />
+
+## API
+
+<ApiTable package="typography" name="HeadingProps" />
+<ApiTable package="typography" name="HeadingElement" />
+
+Default size by level: h1 `4xl`, h2 `3xl`, h3 `2xl`, h4 `xl`, h5 `lg`, h6 `base`.
+
+## Accessibility
+
+Choose `as` from the document outline (one `h1`, no skipped levels), then choose `size` for the
+design. Screen-reader users navigate by heading level, not by size.
+
+## Common mistakes
+
+- Using `size` to "make an h3 look like an h1" while also changing the level for looks: keep the
+  level semantic.
+- Wrapping a Heading in a link: use `asChild` on the link's text or put the link inside the heading.

@@ -1,0 +1,66 @@
+---
+title: Contributing to the documentation
+description: How the documentation is organised, verified and translated, and the checklist for new components.
+---
+
+The documentation is code: MDX files in the repository (`apps/docs/content/docs/{en,es}`), live demos
+in `apps/docs/demos`, and API data generated from the packages' declarations. Every change goes
+through review and CI like any other code.
+
+## Local workflow
+
+```bash
+pnpm install --frozen-lockfile
+pnpm docs:dev        # builds the packages, starts the site at http://localhost:3000
+pnpm docs:api        # regenerate API data after changing a package's public types
+pnpm check:docs      # coverage, translations, links, snippets, demos, configurations
+pnpm docs:build      # static export to apps/docs/out
+pnpm docs:preview    # serve the export locally
+```
+
+## Rules
+
+- **Facts come from code.** Props, types and defaults are rendered from generated data
+  (`<ApiTable>`); never copy them by hand. Improve the JSDoc in the package instead.
+- **Previews are real modules.** Add a file under `apps/docs/demos/`, register it in
+  `demos/registry.ts` and use `<Preview demo="…" />`. The page shows that file's source.
+- **Snippets compile.** `tsx`/`ts` blocks are type-checked. Use `tsx fragment` for JSX excerpts and
+  `no-check="reason"` only when a block cannot compile (for example generated declarations).
+- **Links** are absolute (`/en/docs/…`, `/es/docs/…`) and stay within their language.
+- **Coverage.** Reference pages list the exports they document in the `exports` frontmatter; every
+  public export must appear exactly once per language.
+
+## Translations
+
+English is the canonical source; Spanish mirrors it file for file.
+
+1. Change the English page.
+2. Make the same change in the Spanish page in the same pull request. `check:docs` compares the page
+   sets, `exports`, previews and API tables of both languages.
+3. Translate new API descriptions in `apps/docs/i18n/api.es.json` (the check lists missing ones).
+4. If a translation genuinely cannot be done in the same change, declare the page in
+   `apps/docs/translations.json` with a reason. The site then shows the English page under `/es/` with a
+   visible "not translated yet" notice — it is never presented as translated.
+
+## New component checklist
+
+- [ ] JSDoc on every public prop, including `(default \`…\`)`.
+- [ ] `pnpm build:packages && pnpm docs:api`.
+- [ ] Demo module(s) and registry entry.
+- [ ] English page following the component model (purpose, import, usage, API, variants, responsive,
+      controlled/uncontrolled, composition, accessibility, keyboard, styling, limitations, mistakes).
+- [ ] Spanish page and API description translations.
+- [ ] `exports` frontmatter covering every new export.
+- [ ] `pnpm check:docs` and `pnpm docs:build` pass.
+
+## API changes
+
+A pull request that changes a public API must update the generated API data (CI fails otherwise),
+the affected pages in both languages, and include a changeset. Reviewers check the docs diff together
+with the code diff.
+
+## Ownership and releases
+
+The maintainers own the documentation. The site documents the version on `main`; at each release the
+release status page and version information are updated together with the changelog. Preview builds
+are attached to every CI run; production deployment is a manual, maintainer-approved step.

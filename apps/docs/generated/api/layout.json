@@ -25,13 +25,13 @@
       "props": [
         {
           "name": "as",
-          "type": "LayoutElement | never",
+          "type": "LayoutElement",
           "optional": true,
           "description": ""
         },
         {
           "name": "asChild",
-          "type": "false | true",
+          "type": "boolean",
           "optional": true,
           "description": ""
         },
@@ -48,7 +48,9 @@
           "description": ""
         }
       ],
-      "inherits": ["React DOM attributes"],
+      "inherits": [
+        "React DOM attributes"
+      ],
       "definition": "CommonProps & PolymorphicProps & { display?: Responsive<BoxDisplay>; }"
     },
     {
@@ -93,13 +95,13 @@
         },
         {
           "name": "as",
-          "type": "LayoutElement | never",
+          "type": "LayoutElement",
           "optional": true,
           "description": ""
         },
         {
           "name": "asChild",
-          "type": "false | true",
+          "type": "boolean",
           "optional": true,
           "description": ""
         },
@@ -111,24 +113,26 @@
         },
         {
           "name": "space",
-          "type": "Responsive<SpaceValue> | never",
+          "type": "Responsive<SpaceValue>",
           "optional": true,
           "description": ""
         },
         {
           "name": "spaceX",
-          "type": "never | Responsive<SpaceValue>",
+          "type": "Responsive<SpaceValue>",
           "optional": true,
           "description": ""
         },
         {
           "name": "spaceY",
-          "type": "never | Responsive<SpaceValue>",
+          "type": "Responsive<SpaceValue>",
           "optional": true,
           "description": ""
         }
       ],
-      "inherits": ["React DOM attributes"],
+      "inherits": [
+        "React DOM attributes"
+      ],
       "definition": "CommonProps & PolymorphicProps & SpacingProps & { align?: Responsive<MainAxisAlign>; alignX?: Responsive<MainAxisAlign>; alignY?: Responsive<CrossAxisAlign>; }"
     },
     {
@@ -144,7 +148,9 @@
           "description": ""
         }
       ],
-      "inherits": ["React DOM attributes"],
+      "inherits": [
+        "React DOM attributes"
+      ],
       "definition": "Omit<HTMLAttributes<HTMLElement>, LayoutPropNames> & { ref?: Ref<HTMLElement>; }"
     },
     {
@@ -164,13 +170,13 @@
       "props": [
         {
           "name": "as",
-          "type": "LayoutElement | never",
+          "type": "LayoutElement",
           "optional": true,
           "description": ""
         },
         {
           "name": "asChild",
-          "type": "false | true",
+          "type": "boolean",
           "optional": true,
           "description": ""
         },
@@ -193,7 +199,9 @@
           "description": ""
         }
       ],
-      "inherits": ["React DOM attributes"],
+      "inherits": [
+        "React DOM attributes"
+      ],
       "definition": "CommonProps & PolymorphicProps & { size?: Responsive<ContainerSize>; gutter?: Responsive<SpaceValue>; }"
     },
     {
@@ -252,13 +260,13 @@
         },
         {
           "name": "as",
-          "type": "LayoutElement | never",
+          "type": "LayoutElement",
           "optional": true,
           "description": ""
         },
         {
           "name": "asChild",
-          "type": "false | true",
+          "type": "boolean",
           "optional": true,
           "description": ""
         },
@@ -282,19 +290,19 @@
         },
         {
           "name": "space",
-          "type": "Responsive<SpaceValue> | never",
+          "type": "Responsive<SpaceValue>",
           "optional": true,
           "description": ""
         },
         {
           "name": "spaceX",
-          "type": "never | Responsive<SpaceValue>",
+          "type": "Responsive<SpaceValue>",
           "optional": true,
           "description": ""
         },
         {
           "name": "spaceY",
-          "type": "never | Responsive<SpaceValue>",
+          "type": "Responsive<SpaceValue>",
           "optional": true,
           "description": ""
         },
@@ -305,7 +313,9 @@
           "description": ""
         }
       ],
-      "inherits": ["React DOM attributes"]
+      "inherits": [
+        "React DOM attributes"
+      ]
     },
     {
       "name": "Grid",
@@ -356,13 +366,13 @@
         },
         {
           "name": "as",
-          "type": "LayoutElement | never",
+          "type": "LayoutElement",
           "optional": true,
           "description": ""
         },
         {
           "name": "asChild",
-          "type": "false | true",
+          "type": "boolean",
           "optional": true,
           "description": ""
         },
@@ -380,24 +390,26 @@
         },
         {
           "name": "space",
-          "type": "Responsive<SpaceValue> | never",
+          "type": "Responsive<SpaceValue>",
           "optional": true,
           "description": ""
         },
         {
           "name": "spaceX",
-          "type": "never | Responsive<SpaceValue>",
+          "type": "Responsive<SpaceValue>",
           "optional": true,
           "description": ""
         },
         {
           "name": "spaceY",
-          "type": "never | Responsive<SpaceValue>",
+          "type": "Responsive<SpaceValue>",
           "optional": true,
           "description": ""
         }
       ],
-      "inherits": ["React DOM attributes"],
+      "inherits": [
+        "React DOM attributes"
+      ],
       "definition": "CommonProps & PolymorphicProps & SpacingProps & { columns?: Responsive<GridColumns>; align?: Responsive<GridAlign>; alignX?: Responsive<GridAlign>; alignY?: Responsive<GridAlign>; }"
     },
     {
@@ -435,13 +447,13 @@
         },
         {
           "name": "as",
-          "type": "LayoutElement | never",
+          "type": "LayoutElement",
           "optional": true,
           "description": ""
         },
         {
           "name": "asChild",
-          "type": "false | true",
+          "type": "boolean",
           "optional": true,
           "description": ""
         },
@@ -465,19 +477,19 @@
         },
         {
           "name": "space",
-          "type": "Responsive<SpaceValue> | never",
+          "type": "Responsive<SpaceValue>",
           "optional": true,
           "description": ""
         },
         {
           "name": "spaceX",
-          "type": "never | Responsive<SpaceValue>",
+          "type": "Responsive<SpaceValue>",
           "optional": true,
           "description": ""
         },
         {
           "name": "spaceY",
-          "type": "never | Responsive<SpaceValue>",
+          "type": "Responsive<SpaceValue>",
           "optional": true,
           "description": ""
         },
@@ -488,7 +500,9 @@
           "description": ""
         }
       ],
-      "inherits": ["React DOM attributes"]
+      "inherits": [
+        "React DOM attributes"
+      ]
     },
     {
       "name": "Justify",
@@ -519,13 +533,13 @@
       "props": [
         {
           "name": "as",
-          "type": "LayoutElement | never",
+          "type": "LayoutElement",
           "optional": true,
           "description": ""
         },
         {
           "name": "asChild",
-          "type": "false | true",
+          "type": "boolean",
           "optional": true,
           "description": ""
         }
@@ -562,19 +576,19 @@
       "props": [
         {
           "name": "space",
-          "type": "Responsive<SpaceValue> | never",
+          "type": "Responsive<SpaceValue>",
           "optional": true,
           "description": ""
         },
         {
           "name": "spaceX",
-          "type": "never | Responsive<SpaceValue>",
+          "type": "Responsive<SpaceValue>",
           "optional": true,
           "description": ""
         },
         {
           "name": "spaceY",
-          "type": "never | Responsive<SpaceValue>",
+          "type": "Responsive<SpaceValue>",
           "optional": true,
           "description": ""
         }
@@ -617,13 +631,13 @@
         },
         {
           "name": "as",
-          "type": "LayoutElement | never",
+          "type": "LayoutElement",
           "optional": true,
           "description": ""
         },
         {
           "name": "asChild",
-          "type": "false | true",
+          "type": "boolean",
           "optional": true,
           "description": ""
         },
@@ -647,24 +661,26 @@
         },
         {
           "name": "space",
-          "type": "Responsive<SpaceValue> | never",
+          "type": "Responsive<SpaceValue>",
           "optional": true,
           "description": ""
         },
         {
           "name": "spaceX",
-          "type": "never | Responsive<SpaceValue>",
+          "type": "Responsive<SpaceValue>",
           "optional": true,
           "description": ""
         },
         {
           "name": "spaceY",
-          "type": "never | Responsive<SpaceValue>",
+          "type": "Responsive<SpaceValue>",
           "optional": true,
           "description": ""
         }
       ],
-      "inherits": ["React DOM attributes"]
+      "inherits": [
+        "React DOM attributes"
+      ]
     }
   ]
 }

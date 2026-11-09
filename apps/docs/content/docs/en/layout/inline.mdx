@@ -1,0 +1,36 @@
+---
+title: Inline
+description: A horizontal flex layout for toolbars, tags and button groups, with wrapping and separators.
+package: layout
+exports: [Inline, InlineProps]
+---
+
+## Purpose
+
+`Inline` places children in a row: toolbars, tag lists, button groups, breadcrumbs.
+
+## Import
+
+```tsx title="import.tsx"
+import { Inline } from "@neshel-ui/layout";
+```
+
+## Usage
+
+<Preview demo="layout/inline-toolbar" />
+
+## API
+
+<ApiTable package="layout" name="InlineProps" />
+
+- `alignX` maps to `justify-content` (`start center end`), `alignY` to `align-items` (`start center
+  end stretch baseline`).
+- `justify="between"` spreads groups to the edges.
+- `wrap` (responsive) lets items wrap onto new lines; it cannot be combined with `separator`.
+
+## Common mistakes
+
+- Forgetting `wrap` for content that can overflow on small screens.
+- Using `alignX="between"`: distribution is `justify`, not an alignment value.
+
+See also [Stack separators](/en/docs/layout/stack/#separators), which work the same way on Inline.

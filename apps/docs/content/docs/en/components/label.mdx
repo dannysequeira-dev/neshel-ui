@@ -1,0 +1,39 @@
+---
+title: Label
+description: A native label with an optional decorative required marker.
+package: components
+exports: [Label, LabelProps]
+---
+
+<ComponentKind package="components" name="Label" />
+
+## Purpose
+
+`Label` names a form control. It renders a native `<label>`.
+
+## Import
+
+```tsx title="import.tsx"
+import { Label } from "@neshel-ui/components";
+```
+
+## Usage
+
+<Preview demo="components/label-field" />
+
+## API
+
+<ApiTable package="components" name="LabelProps" />
+
+`required` adds a decorative `*` marked `aria-hidden`; the control's own `required` attribute is what
+browsers and screen readers announce.
+
+## Accessibility
+
+Connect it with `htmlFor` (matching the control's `id`) — this also makes clicking the label focus the
+control. Selection controls (`Select`, `MultiSelect`, `Combobox`) are labelled the same way through
+their `id`.
+
+## Common mistakes
+
+- `required` on the Label but not on the control: the field is not actually required.

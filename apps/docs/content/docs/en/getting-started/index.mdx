@@ -1,0 +1,39 @@
+---
+title: Requirements
+description: Supported React, Node.js, TypeScript and browser versions, and the path through the tutorials.
+---
+
+## Supported versions
+
+| Requirement   | Supported                                                                                     |
+| ------------- | --------------------------------------------------------------------------------------------- |
+| React         | `react` and `react-dom` **19** (peer dependencies `^19.0.0`). React 18 is not supported.      |
+| Node.js       | Any version your bundler supports for the React packages. The CLI requires Node **≥ 22.13**. |
+| TypeScript    | Optional. Declarations are tested with TypeScript 5.9, `moduleResolution` `Bundler` and `NodeNext`. |
+| Module format | ESM only (`"type": "module"` packages, `exports` with `types` first). No CommonJS build.     |
+| Tailwind CSS  | Optional. Tested with Tailwind CSS v4 (`@tailwindcss/vite`, `@tailwindcss/postcss`).         |
+| Browsers      | Current Chromium, Firefox and WebKit (Safari) engines; see [Browser support](/en/docs/guides/accessibility/#browser-and-assistive-technology-support). |
+
+The packages are verified with Vite 8 and Next.js 16 (App Router) applications built from the packed
+packages, on Linux, Windows and macOS.
+
+## The tutorial path
+
+Each page below builds on the previous one, using complete files you can copy into a fresh project:
+
+1. [Installation](/en/docs/getting-started/installation/) — install the packages with pnpm, npm or Yarn.
+2. [TypeScript](/en/docs/getting-started/typescript/) — compiler settings that work with the packages.
+3. [CSS imports](/en/docs/getting-started/css/) — which stylesheets to import, and in which order.
+4. [Your first Button](/en/docs/getting-started/first-button/).
+5. [A simple Stack](/en/docs/getting-started/stack/).
+6. [Heading and Paragraph](/en/docs/getting-started/typography/).
+7. [Adding a Dialog](/en/docs/getting-started/dialog/).
+8. [A responsive layout](/en/docs/getting-started/responsive-layout/).
+9. [Using the CLI](/en/docs/getting-started/cli/).
+10. [Customising tokens](/en/docs/getting-started/tokens/).
+11. [Deploying an application](/en/docs/getting-started/deploy/).
+
+<Callout type="info" title="Consumers and maintainers">
+  These pages are for **applications that use** Neshel-UI. If you want to work on Neshel-UI itself
+  (the monorepo, its tests and release tooling), read the repository's `CONTRIBUTING.md` instead.
+</Callout>

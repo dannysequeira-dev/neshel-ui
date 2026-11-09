@@ -1,0 +1,141 @@
+---
+title: Your first Button
+description: A complete React + Vite project that renders a Neshel-UI Button — every file included.
+---
+
+This tutorial creates a new React 19 + Vite application with Tailwind CSS v4 and renders a Button.
+Every file is complete; copy them into an empty folder.
+
+## 1. Project files
+
+```json title="package.json"
+{
+  "name": "my-neshel-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@neshel-ui/components": "^0.1.0",
+    "@neshel-ui/config": "^0.1.0",
+    "@neshel-ui/layout": "^0.1.0",
+    "@neshel-ui/typography": "^0.1.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.1.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^5.2.0",
+    "tailwindcss": "^4.1.0",
+    "typescript": "^5.9.3",
+    "vite": "^8.3.0"
+  }
+}
+```
+
+<Callout type="warn">
+  The `^0.1.0` ranges resolve only after the packages are published. Until then, install the local
+  tarballs as described in [Installation](/en/docs/getting-started/installation/#from-local-tarballs-before-publication).
+</Callout>
+
+```ts title="vite.config.ts" no-check="Vite configuration; the same file is built by pnpm check:starters"
+import tailwindcss from "@tailwindcss/vite";
+import react from "@vitejs/plugin-react";
+import { defineConfig } from "vite";
+
+export default defineConfig({
+  plugins: [react(), tailwindcss()],
+});
+```
+
+```html title="index.html"
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Neshel app</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
+```
+
+```css title="src/index.css"
+@import "tailwindcss";
+@import "@neshel-ui/config/tailwind.css";
+@import "@neshel-ui/layout/styles.css";
+@import "@neshel-ui/typography/styles.css";
+@import "@neshel-ui/components/styles.css";
+
+body {
+  margin: 0;
+  background: var(--neshel-background);
+  color: var(--neshel-foreground);
+  font-family: var(--neshel-font-body);
+}
+```
+
+```tsx title="src/main.tsx"
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import App from "./App";
+import "./index.css";
+
+const root = document.getElementById("root");
+if (!root) throw new Error("#root not found");
+
+createRoot(root).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+);
+```
+
+```tsx title="src/App.tsx"
+import { Button } from "@neshel-ui/components";
+import { useState } from "react";
+
+export default function App() {
+  const [count, setCount] = useState(0);
+  return (
+    <main style={{ padding: "2rem" }}>
+      <Button onClick={() => setCount((value) => value + 1)}>Clicked {count} times</Button>
+    </main>
+  );
+}
+```
+
+Add the `tsconfig.json` from the [TypeScript](/en/docs/getting-started/typescript/) page.
+
+## 2. Run it
+
+```bash
+pnpm install
+pnpm dev
+```
+
+Open the printed URL. The button is a native `<button type="button">` with Neshel's primary style;
+Tab focuses it with a visible focus ring, Enter and Space activate it.
+
+## 3. Try the variants
+
+```tsx fragment
+<Inline space="3" wrap>
+  <Button>Primary</Button>
+  <Button variant="secondary">Secondary</Button>
+  <Button variant="outline">Outline</Button>
+  <Button variant="ghost">Ghost</Button>
+  <Button variant="destructive">Delete</Button>
+</Inline>
+```
+
+Read the full [Button reference](/en/docs/components/button/), then continue with
+[a simple Stack](/en/docs/getting-started/stack/).

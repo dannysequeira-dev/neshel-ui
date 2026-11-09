@@ -1,0 +1,86 @@
+---
+title: Overlays and portals
+description: How dialogs, sheets, popovers, menus and selection popups layer, keep themes across portals, and when you need a container.
+---
+
+Overlay contents — `DialogContent`, `AlertDialogContent`, `SheetContent`, `PopoverContent`,
+`DropdownMenuContent`, `TooltipContent` and the popups of `Select`, `MultiSelect` and `Combobox` —
+render through a **portal** into `document.body` by default, so they escape `overflow: hidden` and
+stacking contexts.
+
+## Themes survive portals
+
+A portal leaves the DOM subtree of its trigger, and with it any `data-neshel-theme` scope. Neshel
+fixes this: the content is wrapped in `<div data-neshel-portal data-neshel-theme="…">` (with
+`display: contents`) carrying the theme of the trigger's nearest `data-neshel-theme` ancestor. A
+dialog opened from a dark sidebar inside a light page is dark.
+
+## Inline custom properties need a portal container
+
+The theme attribute is copied — **inline custom properties are not**. If you override tokens or
+component properties inline on an ancestor, a portalled overlay does not see them:
+
+```tsx fragment
+<section style={{ "--neshel-primary": "#b42318" } as React.CSSProperties}>
+  {/* The Button sees the override; a portalled dialog would not. */}
+  <Button>Red primary</Button>
+</section>
+```
+
+Pass `container` so the portal renders **inside** the element that carries the properties:
+
+```tsx title="branded-section.tsx"
+"use client";
+import {
+  Button,
+  Dialog,
+  DialogContent,
+  DialogTitle,
+  DialogTrigger,
+} from "@neshel-ui/components";
+import { type CSSProperties, useState } from "react";
+
+export function BrandedSection() {
+  const [container, setContainer] = useState<HTMLElement | null>(null);
+  return (
+    <section ref={setContainer} style={{ "--neshel-primary": "#b42318" } as CSSProperties}>
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button>Open</Button>
+        </DialogTrigger>
+        <DialogContent container={container} aria-describedby={undefined}>
+          <DialogTitle>Uses the section's red primary</DialogTitle>
+        </DialogContent>
+      </Dialog>
+    </section>
+  );
+}
+```
+
+Every overlay content and every selection control accepts `container`. Prefer named themes in
+`neshel.config.ts` (copied automatically) over inline overrides when you can.
+
+## Layering and Escape
+
+- z-index: dialogs, sheets and backdrops use `var(--neshel-z-overlay, 50)`; popovers, menus,
+  tooltips and selection popups use `var(--neshel-z-popover, 60)`.
+- Escape closes the **innermost** layer only. A selection popup inside a dialog closes first; the
+  next Escape closes the dialog. The same applies to a `Combobox` inside a `Popover`.
+- Selection popups opened inside a dialog, sheet or popover render inside that overlay (so focus
+  trapping and outside-press detection treat them as part of it).
+
+<Preview demo="components/popover-combobox" />
+
+## Backdrop
+
+The modal backdrop colour is `var(--neshel-overlay-backdrop)` when you set it, otherwise a mix of the
+theme's colours: the foreground at 45 % in light contexts, the background at 75 % in dark contexts
+(via CSS `light-dark()`). Browsers without `light-dark()` get an equivalent fallback for the built-in
+light, dark and system themes; for a named **dark** theme in those browsers set
+`--neshel-overlay-backdrop` explicitly.
+
+## Focus
+
+Focus moves into an opened dialog or sheet, is trapped while it is open, and returns to the trigger
+(or to the element that opened a controlled dialog) when it closes. Popovers and menus return focus
+to their trigger. See each component's **Keyboard** section.

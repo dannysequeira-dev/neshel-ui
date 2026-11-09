@@ -1,0 +1,74 @@
+---
+title: neshel generate
+description: Write the generated stylesheet and declarations, or check that they are up to date.
+package: cli
+exports: [neshel generate, --out, --types, --check]
+---
+
+```bash
+neshel generate [--config <path>] [--out <path>] [--types <path>] [--check] [--strict] [--debug]
+```
+
+`generate` validates exactly like [`validate`](/en/docs/cli/validate/), then writes the outputs. On
+any error nothing is written.
+
+## Options
+
+| Option           | Meaning                                                                          |
+| ---------------- | -------------------------------------------------------------------------------- |
+| `--out <path>`   | Stylesheet path relative to the working directory (overrides `output`)           |
+| `--types <path>` | Declarations path relative to the working directory (overrides `types`)          |
+| `--check`        | Generate in memory and compare with the existing files; never write; exit 4 when missing or stale |
+| `--strict`       | Contrast failures are errors                                                     |
+
+## Expected files
+
+| File                       | When                                    | Contents                                                                 |
+| -------------------------- | --------------------------------------- | ------------------------------------------------------------------------ |
+| `neshel.generated.css`     | always                                  | The complete token set for every theme (`@layer neshel.config`), Capsize font constants and fallback `@font-face` rules; with breakpoints, the layout/typography/components rules of the installed packages for your breakpoints and an optional Tailwind `@theme` block |
+| `neshel.generated.d.ts`    | only when `breakpoints` is configured   | `BreakpointRegistry` augmentation with your names                        |
+
+Default locations: next to the configuration file. Paths from `output`/`types` resolve against the
+configuration file's directory; `--out`/`--types` against the working directory.
+
+The generated stylesheet also works **on its own** (instead of the package stylesheets) for
+plain-CSS consumers, because it contains complete theme blocks and package rules.
+
+## Output rules
+
+Rejected (nothing written): an extension other than `.css` (`.d.ts` for types), any path segment named
+`node_modules`, the configuration file itself, an existing directory. From `--out`/`--types` → exit 2;
+from the configuration → exit 1 with `invalid-output` / `invalid-types-output`.
+
+## Write procedure and lifecycle
+
+1. Generate in memory.
+2. If the target exists and is byte-identical → do nothing ("unchanged", exit 0). File watchers are
+   not triggered.
+3. Otherwise write to a temporary file in the same directory and rename it over the target (retried
+   on Windows when the file is briefly locked). A failure leaves the previous file intact (exit 5).
+
+Output is deterministic: LF line endings, no timestamps, versions of packages only in comments, no
+absolute paths — byte-identical on Windows, Linux and macOS. Commit the outputs or generate them in
+your build; either way run `neshel generate --check` in CI.
+
+## Component stylesheets for custom breakpoints
+
+With `breakpoints`, the CLI reads the `style-manifest.json` of each installed Neshel package
+(`layout`, `typography`, `components`) next to the configuration and renders their rules for your
+breakpoints. Installing or removing a package changes the output — regenerate afterwards. With
+breakpoints but no component packages installed, a `no-component-packages` warning is printed.
+
+## Recommended scripts
+
+```jsonc title="package.json (excerpt)"
+{
+  "scripts": {
+    "dev": "neshel generate && vite",
+    "build": "neshel generate && vite build",
+    "check:theme": "neshel generate --check --strict"
+  }
+}
+```
+
+Do not use `postinstall`/`prepare` hooks for generation.

@@ -1,0 +1,49 @@
+---
+title: Accessibility
+description: What Neshel-UI does for accessibility, what your application must still do, and exactly what has been verified.
+---
+
+Neshel-UI uses native HTML semantics wherever they exist and established primitives (Radix and
+Base UI) for complex interaction patterns. Every component page has **Accessibility** and
+**Keyboard** sections; this page collects the shared rules and the verification scope.
+
+## Built in
+
+- **Semantics:** buttons are `<button>`, links stay `<a>` (through `asChild`), navigation uses `<nav>`
+  and lists, dialogs are labelled by their title, selection controls expose `combobox`/`listbox`.
+- **Keyboard:** every interactive component is operable with the keyboard; focus order follows the
+  DOM; overlays trap and restore focus; Escape closes the innermost layer.
+- **Visible focus:** a `--neshel-focus` ring with 3:1 contrast in the built-in themes.
+- **Contrast:** built-in themes meet 4.5:1 for text pairs; the CLI checks your themes.
+- **Reduced motion:** under `prefers-reduced-motion: reduce`, overlay, sidebar and skeleton
+  animations and transitions are removed; the Button loading spinner keeps turning, more slowly, so
+  the busy state stays perceivable.
+- **Zoom:** sizes are in `rem`; layouts use flex and grid without fixed heights.
+- **Development warnings:** icon-only buttons without an accessible name, dialogs without a title.
+
+## Your responsibilities
+
+- Give every form control a label: `<Label htmlFor>` with an `id`, or `aria-label`/`aria-labelledby`.
+- Describe errors with `aria-describedby` and set `invalid` on the control.
+- Give icon-only buttons an `aria-label` and mark decorative icons `aria-hidden="true"`.
+- Choose heading levels for the document outline (`as`), independently of the visual `size`.
+- Announce asynchronous results (saving, loading) with your own live region; `loading` on a Button
+  only marks it busy.
+- Provide a skip link to `AppShellContent` (it renders `<main>`; give it an `id`).
+- Load fonts and keep custom themes above the contrast minimums.
+
+## Browser and assistive technology support
+
+| Area                                   | Status                                                                                                   |
+| -------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| Chromium (Chrome)                      | Deep automated interaction suite with real keyboard and pointer input, plus axe-core, on Linux, Windows and macOS. |
+| Firefox and WebKit                     | Automated smoke flows for the interactive components (Playwright engines on Linux and macOS).            |
+| Safari (the browser)                   | Not separately automated; WebKit coverage is the closest automated signal.                               |
+| Screen readers                         | See the release status page for the manual evaluations performed and their scope.                       |
+
+<Callout type="warn" title="Automated checks are not a conformance claim">
+  axe-core and keyboard tests catch many problems but cannot prove that an interface is accessible.
+  Test your application with real assistive technology and real users.
+</Callout>
+
+Details and evidence: [Release status](/en/docs/project/release-status/).

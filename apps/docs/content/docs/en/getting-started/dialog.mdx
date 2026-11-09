@@ -1,0 +1,79 @@
+---
+title: Adding a Dialog
+description: Compose an accessible modal dialog from its parts, with focus management and a form.
+---
+
+Dialogs are compositions of parts: a root, a trigger, the content (rendered in a portal) and
+structural parts for the title, description and footer.
+
+```tsx title="src/App.tsx"
+import {
+  Button,
+  Dialog,
+  DialogBody,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  Input,
+  Label,
+} from "@neshel-ui/components";
+import { Stack } from "@neshel-ui/layout";
+import { useState } from "react";
+
+export default function App() {
+  const [name, setName] = useState("Ana");
+  return (
+    <main style={{ padding: "2rem" }}>
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button>Edit profile ({name})</Button>
+        </DialogTrigger>
+        <DialogContent>
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+              const data = new FormData(event.currentTarget);
+              setName(String(data.get("name") ?? ""));
+            }}
+          >
+            <DialogHeader>
+              <DialogTitle>Edit profile</DialogTitle>
+              <DialogDescription>Change how your name appears.</DialogDescription>
+            </DialogHeader>
+            <DialogBody>
+              <Stack space="2">
+                <Label htmlFor="profile-name">Name</Label>
+                <Input id="profile-name" name="name" defaultValue={name} required />
+              </Stack>
+            </DialogBody>
+            <DialogFooter>
+              <DialogClose asChild>
+                <Button variant="outline">Cancel</Button>
+              </DialogClose>
+              <Button type="submit">Save</Button>
+            </DialogFooter>
+          </form>
+        </DialogContent>
+      </Dialog>
+    </main>
+  );
+}
+```
+
+What you get without extra code:
+
+- Focus moves into the dialog, is trapped while it is open, and returns to the trigger on close.
+- Escape and a press on the backdrop close it; the page behind is inert and does not scroll.
+- `DialogTitle` names the dialog and `DialogDescription` describes it for assistive technology.
+- The content renders in a portal but keeps the theme of the trigger (`data-neshel-theme`).
+
+<Callout type="info">
+  Submitting the form above does not close the dialog. Close it from your submit handler by
+  controlling `open` — see [Dialog → Controlled](/en/docs/components/dialog/#controlled-and-uncontrolled).
+</Callout>
+
+Next: [A responsive layout](/en/docs/getting-started/responsive-layout/).

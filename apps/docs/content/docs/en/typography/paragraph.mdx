@@ -1,0 +1,37 @@
+---
+title: Paragraph
+description: Body text with readable measure, leading and wrapping, trimmed with Capsize.
+package: typography
+exports: [Paragraph, ParagraphProps, ParagraphElement]
+---
+
+## Purpose
+
+`Paragraph` renders body text (`p`, or `div` when the content contains block elements) with the body
+font at size `base`.
+
+## Import
+
+```tsx title="import.tsx"
+import { Paragraph } from "@neshel-ui/typography";
+```
+
+## Usage
+
+<Preview demo="typography/paragraph-measure" />
+
+## API
+
+<ApiTable package="typography" name="ParagraphProps" />
+<ApiTable package="typography" name="ParagraphElement" />
+
+## Accessibility
+
+Use `measure` (`comfortable` ≈ 65 characters) for long text; long lines are harder to read. Avoid
+`truncate` on essential information — truncated text is only fully available to sighted users through
+other means.
+
+## Common mistakes
+
+- Putting a `div` or list inside `<Paragraph>` (a `p`): use `as="div"`.
+- Setting `line-height` with a utility class: use `leading` so trimming stays exact.

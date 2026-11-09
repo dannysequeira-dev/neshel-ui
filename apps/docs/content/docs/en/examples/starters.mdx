@@ -1,0 +1,57 @@
+---
+title: Starters
+description: Ready-to-run starter projects for Vite + Tailwind CSS, Vite + plain CSS and Next.js App Router.
+---
+
+<ReleaseNotice />
+
+Three starter projects live in the repository's [`starters/`](https://github.com/dannysequeira-dev/neshel-ui/tree/main/starters)
+directory. Each is a complete application with real configuration — no monorepo aliases — and is
+built from the packed packages by Neshel-UI's CI (`pnpm check:starters`).
+
+| Starter          | Stack                                              | Shows                                             |
+| ---------------- | -------------------------------------------------- | ------------------------------------------------- |
+| `vite-tailwind`  | React 19, Vite 8, Tailwind CSS v4, TypeScript      | Tailwind integration, components, theme switch    |
+| `vite-css`       | React 19, Vite 8, plain CSS, TypeScript            | No Tailwind at all                                |
+| `next-app`       | Next.js 16 App Router, Tailwind CSS v4, TypeScript | Server Components, custom breakpoints and theme   |
+
+## Get a starter
+
+Copy a starter directory out of a clone of the repository:
+
+```bash
+git clone --depth 1 https://github.com/dannysequeira-dev/neshel-ui.git
+cp -r neshel-ui/starters/vite-tailwind my-app
+cd my-app
+```
+
+On Windows PowerShell use `Copy-Item -Recurse neshel-ui/starters/vite-tailwind my-app`.
+
+### After the packages are published
+
+```bash
+pnpm install
+pnpm dev
+```
+
+### Before publication (today)
+
+The starters depend on `^0.1.0` from npm, which does not exist yet. Build and pack the packages in
+the clone and point the starter at the tarballs:
+
+```bash
+cd neshel-ui
+pnpm install --frozen-lockfile
+pnpm build:packages
+node scripts/pack-local.mjs --out ../neshel-tarballs
+cd ../my-app
+node ../neshel-ui/scripts/pack-local.mjs --use ../neshel-tarballs
+pnpm install
+```
+
+`--use` rewrites the starter's `@neshel-ui/*` dependencies to `file:` tarball paths.
+
+## Downloads
+
+ZIP archives of the starters are generated deterministically and verified in CI, but they are only
+offered for download after the packages are published to npm — until then they would not install.

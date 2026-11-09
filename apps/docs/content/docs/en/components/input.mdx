@@ -1,0 +1,47 @@
+---
+title: Input
+description: A native text input with field sizes and an invalid state.
+package: components
+exports: [Input, InputProps]
+---
+
+<ComponentKind package="components" name="Input" />
+
+## Purpose
+
+`Input` is a styled native `<input>`. Every native attribute works: `type`, `name`, `autoComplete`,
+`required`, `pattern`, `list`, …
+
+## Import
+
+```tsx title="import.tsx"
+import { Input } from "@neshel-ui/components";
+```
+
+## Usage
+
+<Preview demo="components/input-states" />
+
+## API
+
+<ApiTable package="components" name="InputProps" />
+
+- `uiSize` (`sm md lg`) is the visual size; the native numeric `size` attribute keeps its HTML meaning.
+- `invalid` sets `aria-invalid="true"` unless you pass `aria-invalid` yourself.
+
+## Controlled and uncontrolled
+
+React's native rules apply: `defaultValue` (uncontrolled) or `value` + `onChange` (controlled).
+
+## Accessibility
+
+Always label the input (`<Label htmlFor>`, `aria-label` or `aria-labelledby`). Reference hints and
+errors with `aria-describedby`. Use the right `type` and `autoComplete` so browsers and assistive
+technology can help users.
+
+## Common mistakes
+
+- Using `size="lg"` for styling: that sets the native character width. Use `uiSize`.
+- A placeholder instead of a label.
+
+See [Forms](/en/docs/guides/forms/).

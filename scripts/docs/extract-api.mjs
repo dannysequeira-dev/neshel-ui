@@ -90,7 +90,12 @@ function propertiesOf(type, checker) {
   }
   const list = [...props.values()].map((prop) => {
     const { variants, types, ...rest } = prop;
-    rest.type = types.join(" | ");
+    const meaningful = types.filter((t) => t !== "never");
+    const merged = meaningful.length ? meaningful : types;
+    rest.type =
+      merged.length === 2 && merged.includes("true") && merged.includes("false")
+        ? "boolean"
+        : merged.join(" | ");
     const ordered = { name: rest.name, type: rest.type, ...rest };
     return members.length > 1 && (variants ?? 1) !== members.length
       ? { ...ordered, variantOnly: true }

@@ -1,0 +1,80 @@
+---
+title: "@neshel-ui/typography"
+description: Semantic, metrics-aware text components with a shared prop vocabulary.
+package: typography
+exports: [TypographyProps, TextSize, TextWeight, TextAlign, TextLeading, TextTone, TextTracking, TextMeasure, TextWrap, FontRole, Breakpoint, Responsive, NeshelTypographyError]
+---
+
+<PackageInstall packages={["@neshel-ui/config", "@neshel-ui/typography"]} />
+
+```css title="src/index.css"
+@import "@neshel-ui/config/tokens.css";
+@import "@neshel-ui/typography/styles.css";
+```
+
+| Component                                       | Default element | `as`                                      | Defaults                                          |
+| ----------------------------------------------- | --------------- | ----------------------------------------- | ------------------------------------------------- |
+| [Heading](/en/docs/typography/heading/)         | `h2`            | `h1`–`h6`                                 | size by level, `semibold`, `display` font, trimmed |
+| [Paragraph](/en/docs/typography/paragraph/)     | `p`             | `p`, `div`                                | size `base`, `body` font, trimmed                 |
+| [Caption](/en/docs/typography/caption/)         | `p`             | `p`, `span`, `div`, `small`, `figcaption` | size `sm`, tone `muted`, trimmed                  |
+| [Text](/en/docs/typography/text/)               | `span`          | phrasing elements                         | inherits everything; never trimmed                |
+
+## Shared props
+
+| Prop       | Values                                                        | Responsive |
+| ---------- | ------------------------------------------------------------- | ---------- |
+| `size`     | `xs sm base lg xl 2xl 3xl 4xl 5xl 6xl`                        | yes        |
+| `weight`   | `light regular medium semibold bold`                          | yes        |
+| `align`    | `start center end justify`                                    | yes        |
+| `leading`  | `none tight snug normal relaxed loose` (unitless)             | yes        |
+| `tone`     | `default muted primary destructive` (contrast-paired)         | no         |
+| `family`   | `body display mono`                                           | no         |
+| `tracking` | `tight normal wide`                                           | no         |
+| `measure`  | `narrow` 45ch, `comfortable` 65ch, `wide` 80ch, `none`        | no         |
+| `wrap`     | `wrap nowrap balance pretty`                                  | no         |
+| `truncate` | one line with an ellipsis                                     | no         |
+| `trim`     | Capsize trimming, default `true` (not on `Text`)              | no         |
+
+Size scale (rem / default leading): xs 0.75/1.5 · sm 0.875/1.5 · base 1/1.5 · lg 1.125/1.5 ·
+xl 1.25/1.4 · 2xl 1.5/1.3 · 3xl 1.875/1.25 · 4xl 2.25/1.2 · 5xl 3/1.1 · 6xl 3.75/1.1.
+
+<Preview demo="typography/typography-responsive" />
+
+<ApiTable package="typography" name="TypographyProps" />
+<ApiTable package="typography" name="TextSize" />
+<ApiTable package="typography" name="TextWeight" />
+<ApiTable package="typography" name="TextAlign" />
+<ApiTable package="typography" name="TextLeading" />
+<ApiTable package="typography" name="TextTone" />
+<ApiTable package="typography" name="TextTracking" />
+<ApiTable package="typography" name="TextMeasure" />
+<ApiTable package="typography" name="TextWrap" />
+<ApiTable package="typography" name="FontRole" />
+<ApiTable package="typography" name="Responsive" />
+<ApiTable package="typography" name="Breakpoint" />
+
+## Semantics first
+
+`as` sets the element, `size` the scale: `<Heading as="h2" size="5xl">` is an `h2`. Levels are never
+changed automatically. There is no `Title`, `Subtitle` or `Code` component: use Heading/Paragraph
+sizes and `<Text as="code" family="mono">`.
+
+## Errors
+
+Invalid usage throws `NeshelTypographyError` (`[@neshel-ui/typography] <Component>: …`) on the
+server and the client — invalid values, malformed breakpoint keys, `as` + `asChild`, an invalid `as`,
+invalid `asChild` children, `trim` on `Text`.
+
+```tsx title="detect-error.tsx"
+import { NeshelTypographyError } from "@neshel-ui/typography";
+
+export function isTypographyError(error: unknown): boolean {
+  return error instanceof NeshelTypographyError;
+}
+```
+
+## Layout composition
+
+Typography sets `margin: 0` and nothing else; spacing comes from layout gaps. With trimming, a
+`Stack space="4"` between a heading and a paragraph is exactly 1rem from baseline to cap height.
+See [Typography and Capsize](/en/docs/guides/typography-capsize/).

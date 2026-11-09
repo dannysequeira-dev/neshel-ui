@@ -1,0 +1,14 @@
+{
+  "pages": [
+    "index",
+    "getting-started",
+    "guides",
+    "config",
+    "layout",
+    "typography",
+    "components",
+    "cli",
+    "examples",
+    "project"
+  ]
+}

@@ -1,0 +1,38 @@
+---
+title: Skeleton
+description: Placeholder shapes for content that is loading.
+package: components
+exports: [Skeleton, SkeletonProps]
+---
+
+<ComponentKind package="components" name="Skeleton" />
+
+## Purpose
+
+`Skeleton` shows the approximate shape of content while it loads.
+
+## Import
+
+```tsx title="import.tsx"
+import { Skeleton } from "@neshel-ui/components";
+```
+
+## Usage
+
+<Preview demo="components/skeleton-loading" />
+
+## API
+
+<ApiTable package="components" name="SkeletonProps" />
+
+`width` and `height` accept numbers (pixels) or CSS lengths. The pulse animation stops under
+`prefers-reduced-motion: reduce`.
+
+## Accessibility
+
+Skeletons are always `aria-hidden="true"`. Mark the loading region with `aria-busy="true"` and a
+label, and announce completion if it matters.
+
+## Common mistakes
+
+- Expecting a skeleton to announce "loading": it is invisible to assistive technology by design.

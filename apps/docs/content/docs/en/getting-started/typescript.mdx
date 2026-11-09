@@ -1,0 +1,60 @@
+---
+title: TypeScript
+description: Compiler settings that work with Neshel-UI's ESM declarations, and how generated breakpoint types join your program.
+---
+
+TypeScript is optional, but every package ships `.d.ts` declarations (with declaration maps) and
+the props are strictly typed: invalid variants, unknown breakpoint names and conflicting props such
+as `space` together with `spaceX` are compile-time errors.
+
+## Recommended `tsconfig.json`
+
+```json title="tsconfig.json"
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "skipLibCheck": true,
+    "noEmit": true
+  },
+  "include": ["src"]
+}
+```
+
+- `moduleResolution`: `Bundler` (Vite, Next.js, webpack) or `NodeNext`. Both are tested. The legacy
+  `node`/`node10` resolution does not read `exports` and is **not supported**.
+- `jsx: "react-jsx"` (React 19 automatic runtime).
+- `@types/react` and `@types/react-dom` 19 must be installed in the application.
+
+## Refs and polymorphism
+
+Components use React 19's `ref` as a prop — no `forwardRef`. `as` accepts a closed list of elements
+per component, and `asChild` renders your element instead (exactly one child element):
+
+```tsx fragment
+<Stack as="section" aria-label="Settings" space="4">
+  <Button asChild variant="ghost">
+    <a href="/docs">Documentation</a>
+  </Button>
+</Stack>
+```
+
+`as` and `asChild` together are rejected by the types and at runtime.
+
+## Generated breakpoint types
+
+When `neshel.config.ts` defines custom breakpoints, `neshel generate` writes
+`neshel.generated.d.ts`. Add it to your program so responsive props accept your names:
+
+```jsonc title="tsconfig.json (excerpt)"
+{
+  "include": ["src", "neshel.generated.d.ts"]
+}
+```
+
+Without the generated declarations the defaults (`sm`, `md`, `lg`, `xl`, `2xl`) apply. See
+[Custom breakpoints](/en/docs/guides/custom-breakpoints/).

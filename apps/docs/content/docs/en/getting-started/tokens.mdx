@@ -1,0 +1,69 @@
+---
+title: Customising tokens
+description: Change colours, radius, spacing and fonts, add a named theme, and switch themes without a provider.
+---
+
+Design tokens are CSS custom properties such as `--neshel-primary` and `--neshel-radius-base`.
+Components only read tokens, so changing a token restyles everything that uses it.
+
+## Change the built-in themes
+
+```ts title="neshel.config.ts"
+import { defineConfig } from "@neshel-ui/config";
+
+export default defineConfig({
+  radius: { base: "0.5rem" },
+  spacing: { unit: "0.25rem" },
+  themes: {
+    light: {
+      colors: {
+        primary: "#5b2a86",
+        primaryForeground: "#ffffff",
+        accent: "#e0a526",
+        accentForeground: "#1f1300",
+      },
+    },
+    dark: {
+      colors: { primary: "#cfb3ff", primaryForeground: "#1b0a33" },
+    },
+    // A named theme for a marketing section, based on the light theme.
+    sunrise: {
+      extends: "light",
+      colors: { background: "#fff7ed", foreground: "#3b1d00", primary: "#c2410c" },
+    },
+  },
+  output: "./src/neshel.generated.css",
+});
+```
+
+Run `neshel generate`. Contrast is checked for every foreground/background pair you change; failures
+are warnings by default and errors with `--strict` or `contrast: "error"`.
+
+## Switch themes
+
+Themes are selected with the `data-neshel-theme` attribute — no React provider:
+
+```tsx fragment
+<div data-neshel-theme="dark">
+  <Button>Dark button</Button>
+  <section data-neshel-theme="sunrise">
+    <Button>Sunrise button inside a dark page</Button>
+  </section>
+</div>
+```
+
+| Attribute value     | Result                                  |
+| ------------------- | --------------------------------------- |
+| absent              | light                                   |
+| `light` / `dark`    | forced, whatever the OS preference      |
+| `system`            | follows `prefers-color-scheme`          |
+| a named theme       | your theme from `neshel.config.ts`      |
+
+To let users choose, set the attribute on `<html>` from your own state and persist it (a cookie read
+on the server avoids a flash of the wrong theme).
+
+<Preview demo="theming/theme-scopes" />
+
+Neshel's navy and gold are only the defaults. See the [Theming guide](/en/docs/guides/theming/) for
+the 25 colour roles, contrast pairs, fonts and the cascade. Next:
+[Deploying an application](/en/docs/getting-started/deploy/).

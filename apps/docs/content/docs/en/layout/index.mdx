@@ -1,0 +1,116 @@
+---
+title: "@neshel-ui/layout"
+description: Layout primitives with token spacing, logical alignment, responsive values, as and asChild.
+package: layout
+exports: [Breakpoint, Responsive, CommonProps, PolymorphicProps, LayoutElement, SpaceValue, SpacingProps, MainAxisAlign, CrossAxisAlign, Justify]
+---
+
+Seven primitives cover one- and two-dimensional layout. They render one element each, emit only
+precompiled static classes (no inline styles) and work in Server Components.
+
+<PackageInstall packages={["@neshel-ui/config", "@neshel-ui/layout"]} />
+
+```css title="src/index.css"
+@import "@neshel-ui/config/tokens.css";
+@import "@neshel-ui/layout/styles.css";
+```
+
+| Primitive                                   | CSS                                           | Use it for                                  |
+| ------------------------------------------- | --------------------------------------------- | ------------------------------------------- |
+| [Box](/en/docs/layout/box/)                 | element default, optional responsive `display` | Semantic wrappers, responsive show/hide    |
+| [Stack](/en/docs/layout/stack/)             | flex column                                   | Vertical groups                             |
+| [Inline](/en/docs/layout/inline/)           | flex row                                      | Horizontal groups, toolbars, tags           |
+| [Flex](/en/docs/layout/flex/)               | flex with responsive `direction` and `wrap`   | Layouts that change direction               |
+| [Grid](/en/docs/layout/grid/)               | grid with 1–12 equal columns                  | Two-dimensional layouts                     |
+| [Center](/en/docs/layout/center/)           | flex centred on both axes                     | Centring content                            |
+| [Container](/en/docs/layout/container/)     | centred `max-width` with an inline gutter     | Page-width constraints                      |
+
+## Flexbox or Grid?
+
+Use **Stack**, **Inline** or **Flex** when items flow along one axis and size themselves (toolbars,
+forms, card contents). Use **Grid** when items must line up in columns across rows (card grids,
+dashboards). Both use the same `space` tokens.
+
+## Spacing
+
+| Prop     | CSS          | Notes                                       |
+| -------- | ------------ | ------------------------------------------- |
+| `space`  | `gap`        | Cannot be combined with `spaceX` / `spaceY` |
+| `spaceX` | `column-gap` | May be combined with `spaceY`               |
+| `spaceY` | `row-gap`    | May be combined with `spaceX`               |
+
+Values are tokens `"0" "0.5" "1" "1.5" "2" "2.5" "3" "4" "5" "6" "8" "10" "12" "16" "20" "24"`, each
+`calc(var(--neshel-spacing) * n)`. `<Stack space="4" spaceX="2">` is a TypeScript error and throws
+`NeshelLayoutError` at runtime. These are gap props, not Tailwind's margin-based `space-x-*`.
+
+## Alignment
+
+X is the inline axis (horizontal in horizontal writing), Y the block axis.
+
+| Primitive | X                                             | Y                                             |
+| --------- | --------------------------------------------- | --------------------------------------------- |
+| Stack     | `align-items`                                 | `justify-content`                             |
+| Inline    | `justify-content`                             | `align-items`                                 |
+| Center    | `justify-content` (default centre)            | `align-items` (default centre)                |
+| Grid      | `justify-items`                               | `align-items`                                 |
+| Flex      | row: `justify-content`, column: `align-items` | row: `align-items`, column: `justify-content` |
+
+- `align` sets both axes; `alignX` / `alignY` override one axis.
+- `justify` (`start center end between around evenly`) distributes the main axis on Flex, Stack, Inline.
+- Precedence per breakpoint: `justify` > `alignX`/`alignY` > `align`.
+- Without alignment props nothing is emitted, so native `stretch`/`normal` behaviour stays.
+
+## Responsive values
+
+Every responsive prop takes a value or `{ base?, sm?, md?, lg?, xl?, "2xl"? }` (or your configured
+names). Values cascade upwards. See [Custom breakpoints](/en/docs/guides/custom-breakpoints/).
+
+## `as` and `asChild`
+
+`as` picks the element from a closed list; `asChild` applies the layout to its single child element
+(Radix Slot): classes join, styles merge (child wins), handlers and refs compose. `as` together with
+`asChild` throws. The child must forward `className` and `ref` to a DOM element.
+
+```tsx fragment
+<Stack asChild space="4">
+  <section aria-label="Settings">
+    <p>Profile</p>
+    <p>Preferences</p>
+  </section>
+</Stack>
+```
+
+## RTL and writing modes
+
+Keywords are logical (`start`/`end`): in right-to-left documents `alignX="start"` is the right edge.
+`row-reverse` does not flip X. Vertical writing modes are not supported.
+
+## Overriding styles
+
+Layout rules live in the `components.neshel` cascade layer; Tailwind utilities and unlayered CSS
+override them: `<Stack className="md:flex-row">` works. Prefer the props for responsive changes.
+
+## Shared types
+
+<ApiTable package="layout" name="Responsive" />
+<ApiTable package="layout" name="Breakpoint" />
+<ApiTable package="layout" name="SpaceValue" />
+<ApiTable package="layout" name="SpacingProps" />
+<ApiTable package="layout" name="MainAxisAlign" />
+<ApiTable package="layout" name="CrossAxisAlign" />
+<ApiTable package="layout" name="Justify" />
+<ApiTable package="layout" name="LayoutElement" />
+<ApiTable package="layout" name="PolymorphicProps" />
+<ApiTable package="layout" name="CommonProps" />
+
+## Errors
+
+Invalid usage throws `NeshelLayoutError` (`[@neshel-ui/layout] <Component>: …`) on the server and
+the client: conflicting spacing, `as` + `asChild`, invalid `asChild` children, malformed breakpoint
+keys or values, a Flex main-axis `stretch`/`baseline`, `separator` + `wrap`. The error class is not
+exported; check `error.name === "NeshelLayoutError"` if you need to detect it.
+
+## Not included
+
+Spacer (use `justify` or nested Inline), item-level props (`grow`, `span`), grid rows or areas and
+container queries. Use Tailwind utilities or your own CSS for those.

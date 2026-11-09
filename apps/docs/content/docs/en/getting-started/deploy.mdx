@@ -1,0 +1,58 @@
+---
+title: Deploying an application
+description: Build for production, keep generated files fresh in CI, and deploy to any static or Node host.
+---
+
+Neshel-UI adds nothing special to deployment: the packages are regular ESM and CSS, compiled by your
+bundler. A few habits keep production builds reliable.
+
+## Build
+
+```bash
+pnpm build
+```
+
+With the CLI, your `build` script runs `neshel generate` first (see [Using the CLI](/en/docs/getting-started/cli/)),
+so the generated stylesheet always matches `neshel.config.ts`.
+
+## Continuous integration
+
+```yaml title=".github/workflows/ci.yml"
+name: CI
+on: [push, pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec neshel generate --check --strict
+      - run: pnpm build
+```
+
+- `--check` fails when the committed generated files are stale (exit code 4); `--strict` turns
+  contrast warnings into errors.
+- Commit the generated `.d.ts` if your type checking runs before `neshel generate`.
+
+## Hosting
+
+| Application type                | Typical host                                                       |
+| ------------------------------- | ------------------------------------------------------------------ |
+| Vite single-page application    | Any static host (GitHub Pages, Cloudflare Pages, Netlify, S3…).    |
+| Next.js static export           | Any static host.                                                   |
+| Next.js with server rendering   | A Node.js host or a platform that supports Next.js.                |
+
+## Production checklist
+
+- Load your fonts (self-hosted or via your framework) and configure their metrics for exact trimming.
+- Set `data-neshel-theme` on the server when users can choose a theme, to avoid a flash.
+- Tree-shaking works with a single import entry: importing `Button` does not pull in Radix or Base UI.
+- Keep `react` and `react-dom` on one version (peer dependencies — never two copies).
+
+That completes the tutorial path. Explore the [guides](/en/docs/guides/theming/) and the
+[component catalogue](/en/docs/components/).

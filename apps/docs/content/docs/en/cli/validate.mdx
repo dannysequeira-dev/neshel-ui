@@ -1,0 +1,46 @@
+---
+title: neshel validate
+description: Check structure, colours, contrast, breakpoints, fonts and output paths without writing anything.
+package: cli
+exports: [neshel validate, --strict]
+---
+
+```bash
+neshel validate [--config <path>] [--strict] [--debug]
+```
+
+`validate` runs discovery, loading and the full validation pipeline, and applies the output rules to
+the configuration's `output` value. It **never writes**.
+
+## Pipeline
+
+1. **Structure**: known keys only (with "did you mean" suggestions), types, `version`, theme names,
+   `extends`, lengths, font stacks, `output`/`types`, breakpoints, metrics.
+2. **Colour syntax** allowlist: hex, `rgb()`, `rgba()`, `hsl()`, `hsla()`, `oklch()`.
+3. **Parsing** of each colour.
+4. **Alpha**: alpha below 1 only on `border`.
+5. **Gamut**: out of sRGB → warning; contrast is computed after gamut mapping.
+6. **Contrast**: every pair of the token contract, for every customised theme.
+
+All diagnostics of a run are collected (no fail-fast) and sorted by path, then code.
+
+## `--strict`
+
+Makes the effective contrast policy `error`: contrast failures become errors (exit 1). The
+configuration's `contrast: "warn"` cannot weaken `--strict`.
+
+| Policy                                      | Contrast failure |
+| ------------------------------------------- | ---------------- |
+| default (`contrast` unset)                  | warning, exit 0  |
+| `contrast: "error"`                         | error, exit 1    |
+| `--strict` (with any `contrast`)            | error, exit 1    |
+
+## Example output
+
+```text
+error   themes.light.colors.primay   unknown-key               Unknown key "primay". Did you mean "primary"?
+warning themes.light                 contrast                  accentForeground on accent is 3.12:1; minimum 4.5:1 (WCAG 1.4.3).
+neshel: 1 error — nothing written.
+```
+
+Diagnostics never claim WCAG conformance. Codes: [Exit codes and diagnostics](/en/docs/cli/diagnostics/).

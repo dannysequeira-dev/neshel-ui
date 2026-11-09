@@ -1,0 +1,107 @@
+---
+title: Typography and Capsize
+description: Configure your fonts and their metrics, understand Capsize trimming, fallbacks, zoom and the limitations.
+---
+
+Text boxes normally include a font's ascent, descent and half-leading, so a 16px gap between a
+heading and a paragraph looks larger than 16px. `Heading`, `Paragraph` and `Caption` remove that
+space with [Capsize](https://seek-oss.github.io/capsize/)'s technique: each box starts at the first
+line's **cap height** and ends at the last line's **baseline**. Layout gaps become the visual gaps.
+
+<Preview demo="typography/capsize-trim" />
+
+## How it works
+
+With a unitless line height, Capsize's trims are font-size independent in `em`. `neshel generate`
+writes per-font constants next to each font family token (`--neshel-font-<role>-cap-trim`,
+`-baseline-trim`, `-scale`, `-trim`), and the components' trim pseudo-elements combine them with the
+active `leading`, so every size and breakpoint is exact without extra CSS.
+
+**Cap-height sizing:** `font-size = token × --neshel-font-<role>-scale`. The scale makes every font
+render the same cap height as Inter (the default) at a given size token, so swapping fonts keeps the
+visual scale. Default fonts have scale 1.
+
+## Font families and metrics
+
+The library ships and fetches **no font files**. Your application loads its fonts (self-hosted,
+`@fontsource/*`, `next/font`, …) and tells Neshel their metrics:
+
+```ts title="neshel.config.ts"
+import arial from "@capsizecss/metrics/arial";
+import inter from "@capsizecss/metrics/inter";
+import { defineConfig } from "@neshel-ui/config";
+
+export default defineConfig({
+  typography: {
+    families: {
+      body: ["Inter", "system-ui", "sans-serif"],
+      display: ["Inter", "system-ui", "sans-serif"],
+    },
+    metrics: { body: inter, display: inter },
+    // Local fallback fonts adjusted to Inter's metrics while the web font loads (or if it fails).
+    fallbacks: { body: [arial], display: [arial] },
+  },
+});
+```
+
+- Font roles: `body`, `display` (headings) and `mono`. Each becomes `--neshel-font-<role>`.
+- `metrics[role]` accepts any Capsize-format object (`capHeight`, `ascent`, `descent`, `lineGap`,
+  `unitsPerEm`, …) — from `@capsizecss/metrics` (install it as a dev dependency) or measured from
+  your own font file with Capsize's tools.
+- A customised family **without** metrics prints `missing-metrics`; that role is rendered without
+  trimming at scale 1 (a safe fallback).
+- Defaults: `body` and `display` use Inter's metrics (Inter is first in the default stack); `mono`
+  has none and is never trimmed.
+
+### Using a variable font package
+
+`@fontsource-variable/inter` registers the family **"Inter Variable"** (not "Inter"). Put the name
+you actually load first, with matching metrics — this site does exactly that:
+
+```ts title="neshel.config.ts"
+import inter from "@capsizecss/metrics/inter";
+import { defineConfig } from "@neshel-ui/config";
+
+export default defineConfig({
+  typography: {
+    families: { body: ["Inter Variable", "Inter", "system-ui", "sans-serif"] },
+    metrics: { body: inter },
+  },
+});
+```
+
+## Fallback fonts
+
+`fallbacks[role]` generates Capsize `@font-face` fallbacks (`size-adjust`, `ascent-override`,
+`descent-override`, `line-gap-override`) and inserts them after the primary family. Text then keeps
+the primary font's line box while the web font loads or if it fails. Fallback cap heights can still
+differ slightly: Capsize fallbacks match widths and line boxes, not every glyph.
+
+## Accessibility and zoom
+
+- Sizes are in `rem`, so they follow the user's browser font-size setting; page zoom scales them too.
+- Trimming uses negative margins, never clipping: accents and descenders paint outside the trimmed
+  box. Keep a gap (`space`) between trimmed blocks.
+- Semantics never change with size: `<Heading as="h2" size="5xl">` is still an `h2`.
+
+## Limitations
+
+- Trimming is accurate only when the configured metrics describe the font actually rendered. With
+  the default Inter metrics and no Inter loaded, the browser renders the next family and trims are
+  off by the cap-height difference.
+- Trimmed elements use `::before`/`::after`; pass `trim={false}` to use your own pseudo-elements.
+- Trimming needs a block box: it is removed automatically for inline host elements (`a`, `span`,
+  `small`, including `asChild` DOM children) and with `truncate`.
+- A `line-height` set by other CSS (for example a Tailwind `leading-*` utility) is not seen by the
+  trim calculation; use the `leading` prop.
+- CSS `text-box-trim` (which reads the rendered font) is not used yet because it is not available in
+  every engine.
+
+## Diagnosing metric mismatches
+
+Outline a trimmed element. If the outline does not touch the top of the capitals and the baseline,
+the rendered font does not match the configured metrics: check `document.fonts.check("16px Inter")`,
+the font loading and `typography.metrics`.
+
+Reference: [Heading](/en/docs/typography/heading/), [Paragraph](/en/docs/typography/paragraph/),
+[config typography types](/en/docs/config/typography/).

@@ -1,0 +1,33 @@
+---
+title: Typography configuration
+description: Font roles, font stacks and Capsize font metrics in neshel.config.ts.
+package: config
+exports: [FontRole, FontStack, FontMetrics]
+---
+
+```ts title="neshel.config.ts"
+import arial from "@capsizecss/metrics/arial";
+import sourceSerif from "@capsizecss/metrics/sourceSerif4";
+import { defineConfig } from "@neshel-ui/config";
+
+export default defineConfig({
+  typography: {
+    families: {
+      display: ["Source Serif 4", "Georgia", "serif"],
+      mono: ["JetBrains Mono", "ui-monospace", "monospace"],
+    },
+    metrics: { display: sourceSerif },
+    fallbacks: { display: [arial] },
+  },
+});
+```
+
+<ApiTable package="config" name="FontRole" />
+<ApiTable package="config" name="FontStack" />
+<ApiTable package="config" name="FontMetrics" />
+
+- Families become `--neshel-font-<role>`; names with spaces are quoted on output.
+- Metrics drive cap-height scaling and trimming; fallbacks generate Capsize `@font-face` rules.
+- Families without metrics produce a `missing-metrics` diagnostic and are not trimmed.
+
+Guide: [Typography and Capsize](/en/docs/guides/typography-capsize/).

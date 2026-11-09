@@ -1,0 +1,50 @@
+---
+title: Tooltip
+description: A short text label shown on hover and keyboard focus.
+package: components
+exports: [Tooltip, TooltipTrigger, TooltipContent, TooltipProps, TooltipTriggerProps, TooltipContentProps]
+---
+
+<ComponentKind package="components" name="Tooltip" />
+
+## Purpose
+
+`Tooltip` shows a short, non-essential text label for its trigger on hover and on keyboard focus —
+typically for icon-only buttons.
+
+## Import
+
+```tsx title="import.tsx"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@neshel-ui/components";
+```
+
+## Usage
+
+<Preview demo="components/tooltip-basic" />
+
+## API
+
+<ApiTable package="components" name="TooltipProps" />
+<ApiTable package="components" name="TooltipTriggerProps" />
+<ApiTable package="components" name="TooltipContentProps" />
+
+A provider is included per tooltip; no application-level provider is required. `delayDuration`
+controls the hover delay.
+
+## Accessibility
+
+- The tooltip text describes the trigger; the trigger still needs its own accessible name
+  (`aria-label` on an icon-only button).
+- Tooltips are not reachable on touch devices without hover: never put essential information or
+  interactive content in them.
+
+## Keyboard
+
+| Key    | Action                        |
+| ------ | ----------------------------- |
+| Tab    | Focus the trigger → shows it  |
+| Escape | Hide the tooltip              |
+
+## Common mistakes
+
+- Links or buttons inside a tooltip — use a [Popover](/en/docs/components/popover/).

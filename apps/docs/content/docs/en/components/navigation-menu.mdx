@@ -1,0 +1,64 @@
+---
+title: NavigationMenu
+description: Site navigation with disclosure panels of links.
+package: components
+exports: [NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuTrigger, NavigationMenuContent, NavigationMenuLink, NavigationMenuProps, NavigationMenuListProps, NavigationMenuItemProps, NavigationMenuTriggerProps, NavigationMenuContentProps, NavigationMenuLinkProps]
+---
+
+<ComponentKind package="components" name="NavigationMenu" />
+
+## Purpose
+
+`NavigationMenu` organises site navigation into top-level links and triggers that reveal panels of
+links. It keeps **navigation** semantics (`<nav>`, lists, links), unlike a command menu.
+
+## Import
+
+```tsx title="import.tsx"
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@neshel-ui/components";
+```
+
+## Usage
+
+<Preview demo="components/navigation-menu-basic" />
+
+## API
+
+<ApiTable package="components" name="NavigationMenuProps" />
+<ApiTable package="components" name="NavigationMenuListProps" />
+<ApiTable package="components" name="NavigationMenuItemProps" />
+<ApiTable package="components" name="NavigationMenuTriggerProps" />
+<ApiTable package="components" name="NavigationMenuContentProps" />
+<ApiTable package="components" name="NavigationMenuLinkProps" />
+
+`NavigationMenuLink` accepts `active` (`aria-current="page"`) and `asChild` for router links.
+
+## Accessibility
+
+Renders `<nav>`; give it an `aria-label`. Triggers are buttons with `aria-expanded`; panels contain
+plain links. Panels open on hover and on keyboard activation.
+
+## Keyboard
+
+| Key             | Action                                  |
+| --------------- | --------------------------------------- |
+| Tab             | Move between top-level items            |
+| Enter / Space / ↓ | Open a panel from its trigger         |
+| Tab (in a panel) | Move through the panel's links         |
+| Escape          | Close the panel, focus its trigger      |
+
+## Limitations
+
+Panels render inline in the navigation (not in a portal), so place the menu where panels have room.
+On small screens prefer a [MobileMenu](/en/docs/components/mobile-menu/).
+
+## Common mistakes
+
+- Commands (sign out, delete) in a NavigationMenu: use a DropdownMenu.

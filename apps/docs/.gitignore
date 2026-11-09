@@ -4,3 +4,4 @@ out/
 next-env.d.ts
 app/neshel.generated.css
 *.tsbuildinfo
+.snippets/

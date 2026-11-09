@@ -1,0 +1,35 @@
+---
+title: Container
+description: A centred, max-width page container with a responsive inline gutter.
+package: layout
+exports: [Container, ContainerProps, ContainerSize]
+---
+
+## Purpose
+
+`Container` constrains content to a readable maximum width, centres it with automatic inline margins
+and adds an inline gutter (padding) that you can vary per breakpoint.
+
+## Import
+
+```tsx title="import.tsx"
+import { Container } from "@neshel-ui/layout";
+```
+
+## Usage
+
+<Preview demo="layout/container-sizes" />
+
+## API
+
+<ApiTable package="layout" name="ContainerProps" />
+<ApiTable package="layout" name="ContainerSize" />
+
+- `size` (responsive) sets `max-width`; `full` removes the limit.
+- `gutter` (responsive) uses the spacing tokens for the inline padding.
+
+## Common mistakes
+
+- Importing the layout stylesheet before Tailwind: the preflight then removes the automatic margins.
+  Import Tailwind first.
+- Nesting Containers: one per page column is enough.

@@ -1,0 +1,63 @@
+---
+title: Navbar
+description: A header bar with brand, navigation links and actions, responsive with a MobileMenu.
+package: components
+exports: [Navbar, NavbarBrand, NavbarNav, NavbarLink, NavbarActions, NavbarProps, NavbarBrandProps, NavbarNavProps, NavbarLinkProps, NavbarActionsProps]
+---
+
+<ComponentKind package="components" name="Navbar" />
+
+## Purpose
+
+`Navbar` is a site or application header: a `<header>` with a brand, a `<nav>` list of links and an
+actions area. Its parts are server-compatible.
+
+## Import
+
+```tsx title="import.tsx"
+import {
+  Navbar,
+  NavbarActions,
+  NavbarBrand,
+  NavbarLink,
+  NavbarNav,
+} from "@neshel-ui/components";
+```
+
+## Usage
+
+<Preview demo="components/navbar-responsive" />
+
+## API
+
+<ApiTable package="components" name="NavbarProps" />
+<ApiTable package="components" name="NavbarBrandProps" />
+<ApiTable package="components" name="NavbarNavProps" />
+<ApiTable package="components" name="NavbarLinkProps" />
+<ApiTable package="components" name="NavbarActionsProps" />
+
+| Part            | Renders                                                        |
+| --------------- | -------------------------------------------------------------- |
+| `Navbar`        | `<header>`; `sticky` keeps it at the top                       |
+| `NavbarBrand`   | `div`, or your link with `asChild`                             |
+| `NavbarNav`     | `<nav aria-label="Main">` with a `<ul>`; `hideBelow` (responsive) |
+| `NavbarLink`    | `<li>` with an `<a>` (or your router link with `asChild`)      |
+| `NavbarActions` | `div` for buttons and menus                                    |
+
+## Responsive behaviour
+
+`<NavbarNav hideBelow="md">` hides the links below `md`; `<MobileMenu breakpoint="md">` shows its
+trigger only below `md`. Use the same breakpoint and exactly one is visible at any width — decided by
+CSS, so there is no hydration flash.
+
+## Accessibility
+
+- `active` sets `aria-current="page"` on the current link.
+- Give `NavbarNav` a distinct `aria-label` if the page has several `<nav>` elements.
+- `--neshel-navbar-height` (default `3.5rem`) sets the bar height.
+
+## Common mistakes
+
+- Putting dropdown commands among the links: use a [DropdownMenu](/en/docs/components/dropdown-menu/)
+  in `NavbarActions`, and [NavigationMenu](/en/docs/components/navigation-menu/) for panels of links.
+- Mismatched `hideBelow` and `MobileMenu breakpoint`, showing both or neither.

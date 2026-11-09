@@ -1,0 +1,41 @@
+---
+title: Box
+description: A semantic wrapper with an optional responsive display, for show/hide and landmarks.
+package: layout
+exports: [Box, BoxProps, BoxDisplay]
+---
+
+## Purpose
+
+`Box` renders one element with no styling except an optional responsive `display`. Use it to pick a
+semantic element, to apply `asChild`, or to show and hide content per breakpoint without media
+queries in your CSS.
+
+## Import
+
+```tsx title="import.tsx"
+import { Box } from "@neshel-ui/layout";
+```
+
+## Usage
+
+<Preview demo="layout/box-display" />
+
+## API
+
+<ApiTable package="layout" name="BoxProps" />
+<ApiTable package="layout" name="BoxDisplay" />
+
+- Default element: `div`. `as` accepts the [layout element list](/en/docs/layout/#as-and-aschild).
+- `display` values: `none`, `block`, `inline`, `inline-block` — responsive. Without `display`, the
+  element keeps its native display.
+
+## Accessibility
+
+`display="none"` removes content from the accessibility tree at that width, just like CSS. Do not hide
+the only copy of essential content at small widths.
+
+## Common mistakes
+
+- Using `Box` for spacing: it has no `space` prop — use `Stack` or `Inline`.
+- Expecting `display="flex"`: use `Flex`, which also manages direction and alignment.
