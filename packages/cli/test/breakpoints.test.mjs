@@ -360,3 +360,71 @@ declare module "@neshel-ui/config" {
   const extend = generateDeclarations(resolveBreakpoints({ values: { phone: "30rem" } }), "c.ts");
   assert.match(extend, /"phone" \| "sm" \| "md" \| "lg" \| "xl" \| "2xl";/);
 });
+
+test("renderComponentCss schema 2: supports conditions wrap rules and nest media (feature 006, R1)", () => {
+  const css = renderComponentCss(
+    {
+      ...manifest,
+      schema: 2,
+      rules: [
+        { selector: ".neshel-a", declarations: [["color", "var(--x)"]] },
+        {
+          selector: ".neshel-a",
+          declarations: [["color", "var(--y)"]],
+          supports: "not (color: light-dark(Canvas, CanvasText))",
+        },
+        {
+          selector: ".neshel-b",
+          declarations: [["color", "var(--z)"]],
+          supports: "not (color: light-dark(Canvas, CanvasText))",
+          media: "(prefers-color-scheme: dark)",
+        },
+      ],
+      responsive: [],
+    },
+    [],
+  );
+  assert.equal(
+    css,
+    `@layer components.neshel {
+  :root { --neshel-breakpoints: ""; }
+  .neshel-a { color: var(--x); }
+  @supports not (color: light-dark(Canvas, CanvasText)) {
+    .neshel-a { color: var(--y); }
+  }
+  @supports not (color: light-dark(Canvas, CanvasText)) {
+    @media (prefers-color-scheme: dark) {
+      .neshel-b { color: var(--z); }
+    }
+  }
+
+}
+`,
+  );
+});
+
+test("manifest validation: supports conditions need schema 2 and a safe feature query", () => {
+  const rule = (supports) => ({
+    selector: ".neshel-x",
+    declarations: [["opacity", "1"]],
+    supports,
+  });
+  assert.deepEqual(
+    manifestProblems({
+      ...manifest,
+      schema: 2,
+      rules: [rule("not (color: light-dark(Canvas, CanvasText))")],
+    }),
+    [],
+  );
+  assert.match(
+    manifestProblems({ ...manifest, rules: [rule("(display: grid)")] }).join(),
+    /supports requires schema 2/,
+  );
+  for (const bad of ["display: grid", "(a) { body", "(color: red);", "selector(:has(a))"]) {
+    assert.match(
+      manifestProblems({ ...manifest, schema: 2, rules: [rule(bad)] }).join(),
+      /invalid supports condition/,
+    );
+  }
+});

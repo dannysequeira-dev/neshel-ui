@@ -6,9 +6,11 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
+import { runBackdropSuite } from "./lib/backdrop-browser.mjs";
 import { findBrowser, launchBrowser } from "./lib/cdp.mjs";
 import { runComponentSuite } from "./lib/components-browser.mjs";
 import { COMPONENT_VARIANTS } from "./lib/consumer-components.mjs";
+import { repoRoot } from "./lib/workspace.mjs";
 
 function argValues(name) {
   const values = [];
@@ -70,6 +72,29 @@ async function main() {
             `::error title=check:browser:components::${failure.replace(/[\r\n]+/g, " ")}`,
           );
       }
+    }
+    // R1 (feature 006): backdrop fallback with the raw shipped stylesheets.
+    const page = await browser.newPage();
+    const backdrop = await runBackdropSuite(page, {
+      tokensCss: readFileSync(join(repoRoot, "packages", "config", "dist", "tokens.css"), "utf8"),
+      componentsCss: readFileSync(
+        join(repoRoot, "packages", "components", "dist", "styles.css"),
+        "utf8",
+      ),
+    });
+    report.backdrop = backdrop.cases;
+    total += backdrop.cases.length;
+    const backdropFailures = backdrop.cases.filter((c) => !c.ok);
+    passed += backdrop.cases.length - backdropFailures.length;
+    console.info(
+      `${backdropFailures.length ? "FAIL" : "ok  "} backdrop fallback (raw stylesheets) — ${backdrop.cases.length - backdropFailures.length}/${backdrop.cases.length} cases`,
+    );
+    for (const failure of backdropFailures) {
+      const message = `backdrop ${failure.id}: ${failure.error}`;
+      failures.push(message);
+      console.error(`  ${message}`);
+      if (process.env.GITHUB_ACTIONS === "true")
+        console.log(`::error title=check:browser:components::${message.replace(/[\r\n]+/g, " ")}`);
     }
   } finally {
     await browser.close();

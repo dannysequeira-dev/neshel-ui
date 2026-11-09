@@ -99,6 +99,15 @@
   .neshel-tooltip { z-index: var(--neshel-z-popover, 60); box-sizing: border-box; max-inline-size: 20rem; padding: calc(var(--neshel-spacing) * 1.5) calc(var(--neshel-spacing) * 2.5); border-radius: var(--neshel-radius-sm); background-color: var(--neshel-foreground); color: var(--neshel-background); font-family: var(--neshel-font-body); font-size: 0.75rem; line-height: 1.4; animation: neshel-fade-in 150ms ease-out; }
   .neshel-portal { display: contents; }
   .neshel-overlay { position: fixed; inset: 0; z-index: var(--neshel-z-overlay, 50); background-color: var(--neshel-overlay-backdrop, light-dark(color-mix(in srgb, var(--neshel-foreground) 45%, transparent), color-mix(in srgb, var(--neshel-background) 75%, transparent))); }
+  @supports not (color: light-dark(Canvas, CanvasText)) {
+    .neshel-overlay { background-color: var(--neshel-overlay-backdrop, color-mix(in srgb, var(--neshel-foreground) 45%, transparent)); }
+    .neshel-overlay:is([data-neshel-theme="dark"], [data-neshel-theme="dark"] *) { background-color: var(--neshel-overlay-backdrop, color-mix(in srgb, var(--neshel-background) 75%, transparent)); }
+  }
+  @supports not (color: light-dark(Canvas, CanvasText)) {
+    @media (prefers-color-scheme: dark) {
+      .neshel-overlay:is([data-neshel-theme="system"], [data-neshel-theme="system"] *) { background-color: var(--neshel-overlay-backdrop, color-mix(in srgb, var(--neshel-background) 75%, transparent)); }
+    }
+  }
   .neshel-overlay[data-state="open"] { animation: neshel-fade-in 180ms ease-out; }
   .neshel-overlay[data-state="closed"] { animation: neshel-fade-out 120ms ease-in; }
   .neshel-dialog-content { position: fixed; z-index: var(--neshel-z-overlay, 50); display: flex; flex-direction: column; gap: calc(var(--neshel-spacing) * 4); box-sizing: border-box; padding: calc(var(--neshel-spacing) * 6); overflow-y: auto; background-color: var(--neshel-surface); color: var(--neshel-surface-foreground); box-shadow: 0 16px 48px color-mix(in srgb, var(--neshel-foreground) 20%, transparent); font-family: var(--neshel-font-body); font-size: 0.875rem; line-height: 1.5; inset: 0; margin: auto; inline-size: min(calc(100% - calc(var(--neshel-spacing) * 8)), var(--neshel-dialog-width, 32rem)); block-size: fit-content; max-block-size: calc(100dvh - calc(var(--neshel-spacing) * 8)); border: 1px solid var(--neshel-border); border-radius: var(--neshel-radius-lg); }

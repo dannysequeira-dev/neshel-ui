@@ -376,6 +376,104 @@ export async function runComponentSuite(page, { name, labUrl, shellUrl, params, 
     labUrl,
   );
 
+  // --- Combobox inside a Popover (feature 006, release requirement R2) ---------------------------
+  const pcOpen = `document.querySelector("#pc-content")`;
+  const pcExpanded = `document.querySelector("#pc-combobox")?.getAttribute("aria-expanded") === "true"`;
+  await run(
+    "combobox-in-popover-focus-and-containment",
+    async () => {
+      await d.click("#pc-trigger");
+      await d.waitFor(pcOpen, "popover");
+      await d.settle(200);
+      const focusInside = await d.evaluate(
+        `!!document.querySelector("#pc-content")?.contains(document.activeElement)`,
+      );
+      check(focusInside, `focus did not move into the popover (${await d.active()})`);
+      await d.click("#pc-combobox");
+      await d.type("ja");
+      await d.waitFor(`${OPTIONS}.length === 1`, "filtered to Japan");
+      const contained = await d.evaluate(
+        `!!document.querySelector("#pc-content").contains(${LIST})`,
+      );
+      check(contained, "the listbox is not rendered inside the popover");
+      const layering = await d.evaluate(`(() => {
+        const list = ${LIST};
+        const r = list.getBoundingClientRect();
+        const hit = document.elementFromPoint(r.left + r.width / 2, r.top + Math.min(12, r.height / 2));
+        return !!hit && list.contains(hit);
+      })()`);
+      check(layering, "the listbox is covered by another layer");
+    },
+    labUrl,
+  );
+
+  await run(
+    "combobox-in-popover-escape-layering",
+    async () => {
+      await d.click("#pc-trigger");
+      await d.waitFor(pcOpen, "popover");
+      await d.click("#pc-combobox");
+      await d.type("c");
+      await d.waitFor(pcExpanded, "listbox open");
+      await d.press("Escape");
+      await d.waitFor(`!(${pcExpanded})`, "first Escape closes the listbox");
+      await d.settle(150);
+      check(await d.evaluate(`!!${pcOpen}`), "first Escape also closed the popover");
+      await d.press("Escape");
+      await d.waitFor(`!${pcOpen}`, "second Escape closes the popover");
+      check((await d.active()) === "pc-trigger", `focus after close: ${await d.active()}`);
+    },
+    labUrl,
+  );
+
+  await run(
+    "combobox-in-popover-selection",
+    async () => {
+      await d.click("#pc-trigger");
+      await d.waitFor(pcOpen, "popover");
+      await d.click("#pc-combobox");
+      await d.type("spa");
+      await d.waitFor(`${OPTIONS}.length === 1`, "filtered to Spain");
+      await d.press("ArrowDown");
+      await d.press("Enter");
+      await d.waitFor(`document.querySelector("#pc-result").textContent === "es"`, "value es");
+      await d.settle(150);
+      check(await d.evaluate(`!!${pcOpen}`), "selecting an item closed the popover");
+      check(!(await d.evaluate(pcExpanded)), "listbox still open after selection");
+      // Pointer selection.
+      await d.evaluate(`document.querySelector("#pc-combobox").select()`);
+      await d.type("cos");
+      await d.waitFor(`${OPTIONS}.length === 1`, "filtered to Costa Rica");
+      await d.clickOption("Costa Rica");
+      await d.waitFor(
+        `document.querySelector("#pc-result").textContent === "cr"`,
+        "value cr by pointer",
+      );
+      check(await d.evaluate(`!!${pcOpen}`), "pointer selection closed the popover");
+    },
+    labUrl,
+  );
+
+  await run(
+    "combobox-in-popover-outside-dismissal",
+    async () => {
+      await d.click("#pc-trigger");
+      await d.waitFor(pcOpen, "popover");
+      await d.click("#pc-combobox");
+      await d.type("j");
+      await d.waitFor(pcExpanded, "listbox open");
+      await d.clickAt(5, 5);
+      await d.waitFor(`!${pcOpen}`, "outside press closes the popover");
+      await d.settle(150);
+      check(
+        (await d.count('.neshel-select-positioner:not([hidden]) [role="listbox"]')) === 0,
+        "the listbox survived the popover's dismissal",
+      );
+      check((await d.text("#pc-result")) === "none", "outside dismissal changed the value");
+    },
+    labUrl,
+  );
+
   await run(
     "sheet",
     async () => {

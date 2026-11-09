@@ -17,6 +17,7 @@ export interface StyleRule {
   readonly selector: string;
   readonly declarations: readonly Declaration[];
   readonly media?: string;
+  readonly supports?: string;
 }
 
 export interface Keyframes {
@@ -88,6 +89,22 @@ function rule(selector: string | readonly string[], block: Block, media?: string
   rules.push({
     selector: joined,
     declarations: toDeclarations(block),
+    ...(media ? { media } : {}),
+  });
+}
+
+/** A rule inside `@supports <supports>` (optionally also inside `@media <media>`). */
+function supportsRule(
+  selector: string | readonly string[],
+  block: Block,
+  supports: string,
+  media?: string,
+): void {
+  const joined = typeof selector === "string" ? selector : selector.join(", ");
+  rules.push({
+    selector: joined,
+    declarations: toDeclarations(block),
+    supports,
     ...(media ? { media } : {}),
   });
 }
@@ -535,6 +552,26 @@ rule(".neshel-overlay", [
     `var(--neshel-overlay-backdrop, light-dark(${mix("foreground", 45, "transparent")}, ${mix("background", 75, "transparent")}))`,
   ],
 ]);
+// Release requirement R1: without light-dark() the declaration above is valid at parse time (it
+// contains var()) but invalid at computed-value time, i.e. transparent. Feature-query fallback:
+// the foreground mix in light contexts, the background mix for the built-in dark theme and for
+// system under a dark preference (named dark themes: set --neshel-overlay-backdrop).
+const NO_LIGHT_DARK = "not (color: light-dark(Canvas, CanvasText))";
+const lightScrim = `var(--neshel-overlay-backdrop, ${mix("foreground", 45, "transparent")})`;
+const darkScrim = `var(--neshel-overlay-backdrop, ${mix("background", 75, "transparent")})`;
+supportsRule(".neshel-overlay", { "background-color": lightScrim }, NO_LIGHT_DARK);
+// Selectors keep the .neshel-* namespace; :is() matches the theme on the overlay or an ancestor.
+supportsRule(
+  '.neshel-overlay:is([data-neshel-theme="dark"], [data-neshel-theme="dark"] *)',
+  { "background-color": darkScrim },
+  NO_LIGHT_DARK,
+);
+supportsRule(
+  '.neshel-overlay:is([data-neshel-theme="system"], [data-neshel-theme="system"] *)',
+  { "background-color": darkScrim },
+  NO_LIGHT_DARK,
+  "(prefers-color-scheme: dark)",
+);
 rule('.neshel-overlay[data-state="open"]', { animation: "neshel-fade-in 180ms ease-out" });
 rule('.neshel-overlay[data-state="closed"]', { animation: "neshel-fade-out 120ms ease-in" });
 
@@ -1310,10 +1347,11 @@ export function manifestRules() {
       name,
       frames: list.map(({ selector, declarations }) => ({ selector, declarations })),
     })),
-    rules: baseRules.map(({ selector, declarations, media }) => ({
+    rules: baseRules.map(({ selector, declarations, media, supports }) => ({
       selector,
       declarations,
       ...(media ? { media } : {}),
+      ...(supports ? { supports } : {}),
     })),
     responsive: tableKeys.flatMap((key) =>
       Object.entries(responsiveTables[key]).map(([token, declarations]) => ({

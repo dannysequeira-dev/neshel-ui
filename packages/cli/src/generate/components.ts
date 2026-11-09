@@ -29,6 +29,8 @@ export interface StyleManifest {
     readonly declarations: readonly Declaration[];
     /** Schema 2 only: media condition wrapping the rule, e.g. "(prefers-reduced-motion: reduce)". */
     readonly media?: string;
+    /** Schema 2 only: feature query wrapping the rule, e.g. "not (color: light-dark(Canvas, CanvasText))". */
+    readonly supports?: string;
   }>;
   readonly responsive: ReadonlyArray<{
     readonly class: string;
@@ -45,6 +47,7 @@ const CLASS_SUFFIX = /^[A-Za-z0-9._-]+$/;
 const UNSAFE = /[{};]|\*\/|\/\*/;
 const PROPERTY = /^(?:--)?[a-z][a-z0-9-]*$/;
 const MEDIA = /^\([a-z0-9 :().,-]+\)$/;
+const SUPPORTS = /^(not )?\([a-z-]+: [A-Za-z0-9 ().,%-]+\)$/;
 const KEYFRAMES_NAME = /^neshel-[a-z0-9-]+$/;
 const FRAME_SELECTOR = /^(?:from|to|\d{1,3}(?:\.\d+)?%)$/;
 
@@ -147,6 +150,15 @@ export function manifestProblems(value: unknown, expectedPackage?: string): stri
         )
           problems.push(`rules[${index}]: invalid media condition`);
       }
+      if (rule.supports !== undefined) {
+        if (!schema2) problems.push(`rules[${index}]: supports requires schema 2`);
+        else if (
+          typeof rule.supports !== "string" ||
+          !SUPPORTS.test(rule.supports) ||
+          UNSAFE.test(rule.supports)
+        )
+          problems.push(`rules[${index}]: invalid supports condition`);
+      }
       problems.push(...declarationProblems(rule.declarations, `rules[${index}]`));
     });
   }
@@ -195,17 +207,28 @@ export function renderComponentCss(
     const body = frames.map((frame) => `${frame.selector} { ${declarations(frame.declarations)} }`);
     lines.push(`  @keyframes ${name} { ${body.join(" ")} }`);
   }
-  let openMedia: string | undefined;
+  // Consecutive rules sharing their wrappers (`@supports`, then `@media` inside) share one block.
+  let open: string[] = [];
+  const close = () => {
+    for (let depth = open.length; depth > 0; depth--) lines.push(`${"  ".repeat(depth)}}`);
+    open = [];
+  };
   for (const rule of manifest.rules) {
-    if (rule.media !== openMedia) {
-      if (openMedia !== undefined) lines.push("  }");
-      if (rule.media !== undefined) lines.push(`  @media ${rule.media} {`);
-      openMedia = rule.media;
+    const wrappers = [
+      ...(rule.supports !== undefined ? [`@supports ${rule.supports}`] : []),
+      ...(rule.media !== undefined ? [`@media ${rule.media}`] : []),
+    ];
+    if (wrappers.join("\n") !== open.join("\n")) {
+      close();
+      wrappers.forEach((wrapper, depth) => {
+        lines.push(`${"  ".repeat(depth + 1)}${wrapper} {`);
+      });
+      open = wrappers;
     }
-    const indent = openMedia === undefined ? "  " : "    ";
+    const indent = "  ".repeat(open.length + 1);
     lines.push(`${indent}${rule.selector} { ${declarations(rule.declarations)} }`);
   }
-  if (openMedia !== undefined) lines.push("  }");
+  close();
   lines.push("");
   for (const rule of manifest.responsive) {
     lines.push(

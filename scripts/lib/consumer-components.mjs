@@ -105,6 +105,7 @@ function Lab() {
   const [result, setResult] = useState("");
   const [alert, setAlert] = useState("none");
   const [menu, setMenu] = useState("none");
+  const [assignee, setAssignee] = useState<string | null>(null);
   const onSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setResult(JSON.stringify([...new FormData(event.currentTarget).entries()]));
@@ -194,6 +195,14 @@ function Lab() {
               <Button id="popover-inner" size="sm">Inner</Button>
             </PopoverContent>
           </Popover>
+          <Popover>
+            <PopoverTrigger asChild><Button id="pc-trigger" variant="outline">Assign</Button></PopoverTrigger>
+            <PopoverContent id="pc-content">
+              <Label htmlFor="pc-combobox">Assignee</Label>
+              <Combobox id="pc-combobox" items={countries} value={assignee} onValueChange={setAssignee} placeholder="Search" />
+            </PopoverContent>
+          </Popover>
+          <output id="pc-result">{assignee ?? "none"}</output>
           <Sheet>
             <SheetTrigger asChild><Button id="sheet-trigger" variant="outline">Filters</Button></SheetTrigger>
             <SheetContent side="right">

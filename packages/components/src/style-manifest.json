@@ -1792,6 +1792,37 @@
       ]
     },
     {
+      "selector": ".neshel-overlay",
+      "declarations": [
+        [
+          "background-color",
+          "var(--neshel-overlay-backdrop, color-mix(in srgb, var(--neshel-foreground) 45%, transparent))"
+        ]
+      ],
+      "supports": "not (color: light-dark(Canvas, CanvasText))"
+    },
+    {
+      "selector": ".neshel-overlay:is([data-neshel-theme=\"dark\"], [data-neshel-theme=\"dark\"] *)",
+      "declarations": [
+        [
+          "background-color",
+          "var(--neshel-overlay-backdrop, color-mix(in srgb, var(--neshel-background) 75%, transparent))"
+        ]
+      ],
+      "supports": "not (color: light-dark(Canvas, CanvasText))"
+    },
+    {
+      "selector": ".neshel-overlay:is([data-neshel-theme=\"system\"], [data-neshel-theme=\"system\"] *)",
+      "declarations": [
+        [
+          "background-color",
+          "var(--neshel-overlay-backdrop, color-mix(in srgb, var(--neshel-background) 75%, transparent))"
+        ]
+      ],
+      "media": "(prefers-color-scheme: dark)",
+      "supports": "not (color: light-dark(Canvas, CanvasText))"
+    },
+    {
       "selector": ".neshel-overlay[data-state=\"open\"]",
       "declarations": [
         [
