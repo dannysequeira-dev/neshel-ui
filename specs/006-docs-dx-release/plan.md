@@ -52,7 +52,7 @@ starters/* ──► scripts/check-starters.mjs (tarballs, build) + scripts/star
 consumer builds ──► scripts/check-cross-browser.mjs (Playwright: chromium/firefox/webkit)
 consumer builds ──► scripts/check-bundles.mjs (+ scripts/bundle-budgets.json)
 repo copy ──► scripts/release-simulate.mjs (guards removed in copy, changeset version, dry-run)
-.github/workflows/{ci.yml (+docs, browsers, next jobs), docs-deploy.yml, release.yml}
+.github/workflows/{ci.yml (+docs, browsers, next jobs), release.yml}   apps/docs/vercel.json (Vercel)
 ```
 
 ## Milestones

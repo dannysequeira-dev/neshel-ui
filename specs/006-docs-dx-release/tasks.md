@@ -57,7 +57,7 @@ Dependency-ordered. `[P]` = can run in parallel with the previous task. Status: 
 
 - [x] T060 Package metadata + check-pack manifest rules (FR-050)
 - [x] T061 Changesets repair, fixed group, release:simulate with dry-run publish (FR-051)
-- [x] T062 release.yml, docs-deploy.yml; releasing.md rewrite (FR-052)
+- [x] T062 release.yml; releasing.md rewrite (FR-052); docs hosting moved to Vercel (vercel.json, deployment.md) after the owner decision of 2026-11-09
 - [x] T063 Release notes draft, brand policy draft, SECURITY/CONTRIBUTING, repo metadata suggestions, docs maintenance (FR-053)
 - [x] T064 CI on three OSes green (SC-010)
 

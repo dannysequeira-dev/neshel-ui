@@ -52,4 +52,4 @@ Normative for feature 006. Decisions: research R15–R18; [ADR 0017](../../../do
 5. Push tag `v0.1.0`, approve the environment.
 6. After 0.1.0: configure a trusted publisher per package (`release.yml`, environment
    `npm-release`), set "Require 2FA and disallow tokens", revoke the bootstrap token.
-7. Enable GitHub Pages (Actions source) and run the docs deployment; optionally a custom domain.
+7. Import the repository in Vercel (Root Directory `apps/docs`) and deploy — docs/deployment.md; optionally a custom domain.

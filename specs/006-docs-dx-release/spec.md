@@ -56,8 +56,8 @@ The brief answers the scope questions; remaining ambiguities were resolved under
 - Q: Phase 006 vs Phase 007 authority? → A: Phase 006 builds and dry-runs the pipeline; executing a
   publication, tags and releases stay with the owner-authorised publication milestone (roadmap row
   007 renamed "First publication (owner-authorised)").
-- Q: Deployment target? → A: static export to GitHub Pages (free); enabling Pages is an owner
-  action (R2).
+- Q: Deployment target? → A: static export on **Vercel** (owner decision 2026-11-09, replacing
+  the initial GitHub Pages choice); importing the project is an owner action (R2 amendment).
 - Q: Missing translations? → A: English fallback with a visible notice, declared in
   `translations.json`; release-candidate target zero fallbacks (R3).
 - Q: Download ZIPs before packages exist on npm? → A: generated and verified, linked only after

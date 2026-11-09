@@ -35,6 +35,13 @@ Source: GitHub Actions). Alternatives documented with costs: Cloudflare Pages an
 static tiers, need an external account), Vercel Hobby (free but non-commercial terms; preview
 deployments per PR). Static export rules out middleware, so i18n uses path prefixes (R3).
 
+**Amendment (owner decision, 2026-11-09):** the documentation is hosted on **Vercel** (native Git
+integration: production from `main`, previews for pull requests), not GitHub Pages. The static export
+is kept; `apps/docs/vercel.json` installs the workspace with pnpm 12.16.1, builds the packages, then
+the site, and serves `out`. The origin is resolved from `NESHEL_DOCS_SITE_URL` or Vercel's
+`VERCEL_PROJECT_PRODUCTION_URL` / `VERCEL_URL` (never invented); base path empty. The GitHub Pages
+workflow was removed. Guide: [docs/deployment.md](../../docs/deployment.md).
+
 ## R3 — Internationalisation
 
 **Decision:** `defineI18n({ languages: ["en", "es"], defaultLanguage: "en", parser: "dir",

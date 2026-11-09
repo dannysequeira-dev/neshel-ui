@@ -1,6 +1,7 @@
 /**
- * Site-wide constants. Build inputs (research R2): NESHEL_DOCS_SITE_URL (canonical origin; unset
- * means a non-indexed preview build) and NESHEL_DOCS_BASE_PATH (e.g. "/neshel-ui").
+ * Site-wide constants. Build inputs, resolved in next.config.mjs (site-url.mjs): the public origin
+ * (NESHEL_DOCS_SITE_URL, else the Vercel production domain, else the Vercel preview URL), whether the
+ * build is indexable (production only), and NESHEL_DOCS_BASE_PATH (empty on Vercel: domain root).
  */
 export const siteName = "Neshel-UI";
 export const tagline = "Rooted in faith. Built with hope.";
@@ -13,8 +14,8 @@ export const siteUrl = rawSiteUrl ? rawSiteUrl.replace(/\/+$/, "") : undefined;
 /** Base path the site is served under ("" at the domain root). */
 export const basePath = (process.env.NESHEL_DOCS_BASE_PATH ?? "").replace(/\/+$/, "");
 
-/** True when the build is meant for search engines (a public site URL was configured). */
-export const indexable = siteUrl !== undefined;
+/** True for production builds meant for search engines (never for previews or local builds). */
+export const indexable = process.env.NESHEL_DOCS_INDEXABLE === "true";
 
 /** Absolute URL for a site path such as "/en/docs" (preview builds use localhost). */
 export function absoluteUrl(path: string): string {

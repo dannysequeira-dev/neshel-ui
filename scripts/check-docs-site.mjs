@@ -208,11 +208,11 @@ async function main() {
     });
 
     await attempt(
-      "sitemap.xml lists both languages; robots.txt disallows preview builds",
+      "sitemap.xml lists both languages; robots.txt matches the build kind (production vs preview)",
       async () => {
         const sitemap = await (await fetch(server.url("/sitemap.xml"))).text();
         const robots = await (await fetch(server.url("/robots.txt"))).text();
-        const indexable = Boolean(process.env.NESHEL_DOCS_SITE_URL);
+        const indexable = process.argv.includes("--expect-indexable");
         return sitemap.includes("/en/docs/components/button/") &&
           sitemap.includes("/es/docs/components/button/") &&
           (indexable ? /Allow: \//.test(robots) : /Disallow: \//.test(robots))
@@ -220,6 +220,51 @@ async function main() {
           : "sitemap or robots unexpected";
       },
     );
+
+    const expectIndex = process.argv.indexOf("--expect-origin");
+    if (expectIndex !== -1) {
+      const origin = process.argv[expectIndex + 1].replace(/\/+$/, "");
+      const indexable = process.argv.includes("--expect-indexable");
+      await attempt(
+        `deployment origin ${origin}: canonical, hreflang, OG image, sitemap, robots, noindex policy`,
+        async () => {
+          await open("/es/docs/components/select/");
+          const meta = await d.evaluate(`({
+          canonical: document.querySelector('link[rel="canonical"]')?.href,
+          alternates: [...document.querySelectorAll('link[rel="alternate"][hreflang]')].map((l) => l.hreflang + "=" + l.href),
+          og: document.querySelector('meta[property="og:image"]')?.content,
+          robots: document.querySelector('meta[name="robots"]')?.content ?? "",
+        })`);
+          const problems = [];
+          if (meta.canonical !== `${origin}/es/docs/components/select/`)
+            problems.push(`canonical ${meta.canonical}`);
+          for (const [lang, path] of [
+            ["en", "/en/docs/components/select/"],
+            ["es", "/es/docs/components/select/"],
+            ["x-default", "/en/docs/components/select/"],
+          ]) {
+            if (!meta.alternates.includes(`${lang}=${origin}${path}`))
+              problems.push(`hreflang ${lang} missing (${meta.alternates.join(", ")})`);
+          }
+          if (meta.og !== `${origin}/og.png`) problems.push(`og:image ${meta.og}`);
+          if (indexable === /noindex/.test(meta.robots))
+            problems.push(`robots meta "${meta.robots}" for indexable=${indexable}`);
+          const sitemap = await (await fetch(server.url("/sitemap.xml"))).text();
+          const locs = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
+          if (!locs.length || locs.some((loc) => !loc.startsWith(`${origin}/`)))
+            problems.push("sitemap URLs do not all use the origin");
+          const robots = await (await fetch(server.url("/robots.txt"))).text();
+          if (indexable && !robots.includes(`Sitemap: ${origin}/sitemap.xml`))
+            problems.push("robots.txt lacks the sitemap URL");
+          const og = await fetch(server.url("/og.png"));
+          if (og.status !== 200 || !(og.headers.get("content-type") ?? "").includes("image/png"))
+            problems.push("og.png not served as PNG");
+          const index = await fetch(server.url("/search-index.json"));
+          if (index.status !== 200) problems.push("search index missing");
+          return problems.length ? problems.join("; ") : true;
+        },
+      );
+    }
 
     for (const scheme of ["light", "dark"]) {
       await attempt(

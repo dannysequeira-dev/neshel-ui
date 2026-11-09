@@ -12,10 +12,10 @@ Normative for feature 006. Decisions: research R1–R4, R19; [ADR 0015](../../..
 
 ## Build inputs
 
-| Variable                | Default | Effect                                                                           |
-| ----------------------- | ------- | -------------------------------------------------------------------------------- |
-| `NESHEL_DOCS_SITE_URL`  | unset   | Canonical origin for metadata, sitemap, OG. Unset → `noindex` + robots disallow. |
-| `NESHEL_DOCS_BASE_PATH` | `""`    | Next `basePath` (e.g. `/neshel-ui` on GitHub Pages project sites).               |
+| Variable                | Default | Effect                                                                                                                                         |
+| ----------------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `NESHEL_DOCS_SITE_URL`  | unset   | Explicit origin (custom domain). Unset → Vercel production domain, else preview URL, else none (`site-url.mjs`). Only production is indexable. |
+| `NESHEL_DOCS_BASE_PATH` | `""`    | Next `basePath`; **empty on Vercel** (domain root).                                                                                            |
 
 ## Routes
 

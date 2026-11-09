@@ -62,5 +62,6 @@ with the code diff.
 ## Ownership and releases
 
 The maintainers own the documentation. The site documents the version on `main`; at each release the
-release status page and version information are updated together with the changelog. Preview builds
-are attached to every CI run; production deployment is a manual, maintainer-approved step.
+release status page and version information are updated together with the changelog. The site is
+hosted on Vercel: production deploys from `main`, every pull request gets a preview deployment, and
+CI also attaches the static export as an artefact.

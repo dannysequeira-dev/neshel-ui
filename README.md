@@ -101,7 +101,8 @@ pnpm docs:build     # static export to apps/docs/out
 pnpm docs:preview   # serve the export
 ```
 
-Its public deployment awaits the owner (see [docs/releasing.md](docs/releasing.md)). Maintainer
+It is deployed on Vercel from `main` once the owner imports the project — see
+[docs/deployment.md](docs/deployment.md); no public URL exists yet. Maintainer
 and contract documentation stays in [`docs/`](docs) and [`specs/`](specs).
 
 ## Development

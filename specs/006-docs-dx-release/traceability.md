@@ -27,7 +27,7 @@ Previous: 42631486037 (`df96f64`, 13/13), 42630400156 (`3182326`, 13/13).
 | ----- | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------- |
 | 3, 26 | Brand preserved                                                                     | Static imports of the canonical PNG; icons = approved crops (byte-identical test); OG composed, not redrawn; tokens drive the site palette | `tests/brand-assets.test.mjs`; visual review                      |
 | 4–5   | Next.js + Fumadocs site, search, nav, TOC, themes, SEO, 404, configurable base URL  | `apps/docs` (ADR 0015)                                                                                                                     | `check:docs-site`, CI docs ×3                                     |
-| 5     | Deployment target and instructions                                                  | GitHub Pages workflow (manual), preview artefact per CI run, alternatives in research R2                                                   | Workflow reviewed; deployment **not executed** (owner)            |
+| 5     | Deployment target and instructions                                                  | Vercel (`apps/docs/vercel.json`, `site-url.mjs`, docs/deployment.md); preview artefact per CI run                                          | Workflow reviewed; deployment **not executed** (owner)            |
 | 6     | English + Spanish, page-preserving switch, missing-translation policy               | `[lang]` routes, ES content, UI strings, `translations.json`, parity checks                                                                | `check:docs` translations; site smoke                             |
 | 7     | Every export documented; coverage check                                             | `exports` frontmatter, `<ApiTable>` from `docs:api`                                                                                        | `check:docs` coverage (317 targets)                               |
 | 8     | Getting Started tutorials with complete files                                       | 12 pages EN/ES                                                                                                                             | snippet type-checking                                             |
@@ -64,7 +64,7 @@ Previous: 42631486037 (`df96f64`, 13/13), 42630400156 (`3182326`, 13/13).
 - [ ] Bootstrap credential chosen (short-lived granular token secret, or manual publish)
 - [ ] Tag `v0.1.0` pushed; environment approved; registry verification green
 - [ ] Trusted publishers configured; tokens disallowed; bootstrap token revoked
-- [ ] GitHub Pages enabled and documentation deployed; `release.published = true`
+- [ ] Vercel project imported (Root Directory `apps/docs`) and production deployed; `release.published = true` only after npm publication
 - [ ] Repository metadata applied (optional)
 
 ## Recommendation

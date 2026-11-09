@@ -16,7 +16,9 @@ There is no production domain and paid services should be avoided.
 
 1. `apps/docs`: Next.js 16 App Router, Fumadocs 16 (`fumadocs-ui` Base UI flavour), MDX,
    static export. A private workspace consumer of the public packages; nothing depends on it.
-2. Hosting: static files; recommended GitHub Pages via Actions. `NESHEL_DOCS_SITE_URL` and
+2. Hosting: static files on **Vercel** (owner decision 2026-11-09, amending the original GitHub
+   Pages recommendation; see [deployment.md](../deployment.md)). The origin comes from
+   `NESHEL_DOCS_SITE_URL` or Vercel's system variables (`site-url.mjs`); `NESHEL_DOCS_SITE_URL` and
    `NESHEL_DOCS_BASE_PATH` configure origin and base path; no domain is assumed. Without a site URL
    the build is `noindex`.
 3. i18n: `/en` and `/es` path prefixes (`parser: "dir"`), English fallback with a visible notice and

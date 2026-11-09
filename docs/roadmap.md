@@ -12,6 +12,8 @@ Legend: **Scaffold** = files exist, **Planned** = work not done, **Verified** = 
 | 006   | Documentation website, DX, release hardening (R1–R9) and release candidate                  | Complete, awaiting owner review (CONDITIONAL PASS recommended); `specs/006-docs-dx-release/` | Docs CI, packed Next/Vite consumers, 3 browsers, dry-run |
 | 007   | First publication (owner-authorised execution of the pipeline prepared in 006)              | Planned — requires explicit owner authorisation                                              | Owner approval, scope owned, npm dry-run, provenance     |
 
+Documentation hosting: Vercel (owner decision 2026-11-09) — [deployment.md](deployment.md).
+
 ## Pre-publication requirements
 
 The owner's Phase 005 review recorded nine open requirements (R1–R9) that must be met before any

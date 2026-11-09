@@ -60,11 +60,11 @@ registry (a failed run can be repeated) and then verifies `npm view` and a clean
    repository `dannysequeira-dev/neshel-ui`, workflow `release.yml`, environment `npm-release`. Then
    Publishing access → "Require two-factor authentication and disallow tokens", and delete the
    bootstrap token and secret. Later releases publish with OIDC and automatic provenance.
-8. **Documentation site.** Settings → Pages → Source: GitHub Actions; run "Deploy documentation"
-   with the public URL (for example `https://dannysequeira-dev.github.io` and base path
-   `/neshel-ui`). A custom domain is an owner decision (DNS). Then set
-   `release.published = true` in `apps/docs/lib/release.ts` to switch the site from tarball to npm
-   instructions and enable starter downloads.
+8. **Documentation site (Vercel).** Import the repository in Vercel with Root Directory `apps/docs`
+   and deploy (exact settings: [deployment.md](deployment.md)). Production deploys from `main`,
+   previews for pull requests. Custom domains (DNS) are an owner decision. Only after the npm
+   publication is verified, set `release.published = true` in `apps/docs/lib/release.ts` to switch
+   the site from tarball to npm instructions and enable starter downloads.
 9. **GitHub Release** (optional): create it from the tag with the release notes draft
    ([specs/006-docs-dx-release/release-notes-0.1.0.md](../specs/006-docs-dx-release/release-notes-0.1.0.md)).
 

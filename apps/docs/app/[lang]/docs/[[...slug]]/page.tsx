@@ -13,7 +13,7 @@ import { getMDXComponents } from "@/components/mdx";
 import { dictionary } from "@/lib/dictionary";
 import { isLocale, type Locale, locales } from "@/lib/i18n";
 import { alternates } from "@/lib/metadata";
-import { editUrl } from "@/lib/site";
+import { absoluteUrl, editUrl } from "@/lib/site";
 import { source } from "@/lib/source";
 
 type Params = { lang: string; slug?: string[] };
@@ -71,6 +71,11 @@ export async function generateMetadata({ params }: { params: Promise<Params> }):
       locale,
       translatedLocales(resolved.slug),
     ),
-    openGraph: { title: page.data.title, description: page.data.description },
+    // Child openGraph replaces the parent's, so the image is repeated here.
+    openGraph: {
+      title: page.data.title,
+      description: page.data.description,
+      images: [{ url: absoluteUrl("/og.png"), width: 1200, height: 630 }],
+    },
   };
 }

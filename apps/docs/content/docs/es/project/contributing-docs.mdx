@@ -66,5 +66,6 @@ diff de la documentación junto con el del código.
 
 Los mantenedores son los responsables de la documentación. El sitio documenta la versión de `main`; en
 cada versión se actualizan a la vez la página de estado, la información de versión y el registro de
-cambios. Cada ejecución de CI adjunta una compilación de vista previa; el despliegue de producción es
-un paso manual aprobado por los mantenedores.
+cambios. El sitio se aloja en Vercel:
+producción se despliega desde `main`, cada *pull request* obtiene un despliegue de vista previa y el
+CI también adjunta la exportación estática como artefacto.

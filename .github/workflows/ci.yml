@@ -234,3 +234,39 @@ jobs:
           name: browsers-report-${{ matrix.os }}
           path: ${{ runner.temp }}/browsers-report.json
           if-no-files-found: ignore
+
+  # Deployment decision (2026-11-09): the documentation is hosted on Vercel. This job runs the Vercel
+  # CLI build locally on the runner (no account, no deployment) with apps/docs/vercel.json and a
+  # simulated production domain under the reserved .invalid TLD, then smoke-tests the produced
+  # .vercel/output/static at the domain root (empty base path).
+  vercel-build:
+    name: vercel build (local, no deployment)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "26"
+      - name: Link a local-only Vercel project (root directory apps/docs)
+        run: |
+          mkdir -p .vercel
+          printf '{"projectId":"prj_ci_local","orgId":"team_ci_local","settings":{"framework":null,"rootDirectory":"apps/docs"}}' > .vercel/project.json
+      - name: vercel build --prod (install + packages + docs, static output)
+        env:
+          VERCEL_PROJECT_PRODUCTION_URL: neshel-docs-ci-simulation.invalid
+        run: npx --yes vercel@65.12.1 build --prod --yes
+      - name: Static output exists
+        run: |
+          test -f .vercel/output/config.json
+          test -f .vercel/output/static/en/index.html
+          test -f .vercel/output/static/es/docs/components/select/index.html
+          test -f .vercel/output/static/404.html
+          test -f .vercel/output/static/search-index.json
+      - name: Smoke-test the Vercel output (origin, hreflang, OG, sitemap, robots, axe)
+        run: |
+          corepack enable 2>/dev/null || npm install --global pnpm@12.16.1
+          pnpm install --frozen-lockfile
+          node scripts/check-docs-site.mjs --out .vercel/output/static --expect-origin https://neshel-docs-ci-simulation.invalid --expect-indexable
