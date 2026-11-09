@@ -148,7 +148,7 @@ Release readiness and its evidence: [docs/release-readiness.md](docs/release-rea
 The emblem is a **navy-blue rose** with restrained golden reflections and a quiet light at its
 heart, representing faith as the foundation and hope as the reason to keep building. The original
 artwork is preserved unchanged in [`assets/brand/`](assets/brand) — see the
-[brand asset guide](docs/BRANDING.md) and the [brand usage policy (draft)](docs/BRAND-POLICY.md).
+[brand asset guide](docs/BRANDING.md) and the [brand usage policy](docs/BRAND-POLICY.md).
 
 ## Contributing
 
@@ -158,7 +158,7 @@ Thoughtful contributions are welcome: read the [contribution guide](CONTRIBUTING
 ## License
 
 The software is released under the [MIT license](LICENSE). The MIT license does not grant rights to
-the Neshel-UI name or logo; see the [brand usage policy (draft)](docs/BRAND-POLICY.md).
+the Neshel-UI name or logo; see the [brand usage policy](docs/BRAND-POLICY.md).
 
 ---
 

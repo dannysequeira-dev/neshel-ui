@@ -58,7 +58,7 @@ Previous: 42631486037 (`df96f64`, 13/13), 42630400156 (`3182326`, 13/13).
 
 - [ ] Manual screen-reader session (protocol ready) or explicit acceptance of the gap
 - [ ] npm organisation `neshel-ui` created/confirmed, 2FA enforced
-- [ ] Brand policy reviewed and approved
+- [x] Brand policy reviewed and approved (owner, 2026-11-09)
 - [ ] GitHub environment `npm-release` with required reviewers and tag rule
 - [ ] Release PR: remove `private`, `changeset version`, review changelogs, green CI
 - [ ] Bootstrap credential chosen (short-lived granular token secret, or manual publish)

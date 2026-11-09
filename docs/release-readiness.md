@@ -36,6 +36,6 @@ authorises it (constitution VIII).
 
 ## Remaining before publication (owner)
 
-Manual screen-reader session (R3), npm organisation ownership (R9), brand policy approval, the
+Manual screen-reader session (R3), npm organisation ownership (R9), the
 release PR lifting the guards, the bootstrap credential, the tag and the environment approval — see
 [releasing.md](releasing.md).
