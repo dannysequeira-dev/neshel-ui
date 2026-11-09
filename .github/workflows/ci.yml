@@ -255,7 +255,11 @@ jobs:
           mkdir -p .vercel
           printf '{"projectId":"prj_ci_local","orgId":"team_ci_local","settings":{"framework":"nextjs","rootDirectory":"apps/docs"}}' > .vercel/project.json
       - name: vercel build --prod (install + packages + docs, static output)
+        # A local `vercel build` does not inject Vercel's system variables; on Vercel they are
+        # provided automatically. They are set here to simulate a production deployment.
         env:
+          VERCEL: "1"
+          VERCEL_ENV: production
           VERCEL_PROJECT_PRODUCTION_URL: neshel-docs-ci-simulation.invalid
         # On failure the log tail becomes annotations (readable without credentials).
         run: |

@@ -11,7 +11,7 @@ serves `apps/docs/out` as static files. Status: **prepared and verified locally 
 
 | Setting          | Value                                                                             | Why                                                                                                         |
 | ---------------- | --------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| Framework        | `null` ("Other")                                                                  | Static export: serve `out/` directly, no Next.js server runtime                                             |
+| Framework        | `nextjs`                                                                          | Vercel's Next.js support serves the static export (`output: "export"`) itself                               |
 | Install command  | `npm install --global pnpm@12.16.1 && cd ../.. && pnpm install --frozen-lockfile` | Install the whole pnpm workspace from the repository root with the pinned pnpm and the committed lockfile   |
 | Build command    | `cd ../.. && pnpm build:packages && pnpm --filter @neshel-ui/docs build`          | Build every Neshel-UI package first (the site consumes their `dist`), then `neshel generate` + `next build` |
 | Output directory | `out`                                                                             | Next.js static export                                                                                       |
