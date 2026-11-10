@@ -79,6 +79,5 @@ Claude Code se usan los skills `/speckit-*`; no confundir con el comando `specif
 
 ## 5. Antes de publicar en npm
 
-No hay paquetes publicados todavía. El PR de la versión 0.1.0 retira `private: true` de los cinco
-paquetes públicos; `@neshel-ui/core` sigue privado. Ver [`releasing.md`](releasing.md): ningún `publish`,
+Los cinco paquetes públicos están publicados en npm como 0.1.0; `@neshel-ui/core` sigue privado. Ver [`releasing.md`](releasing.md): ningún `publish`,
 release ni push sin aprobación explícita del maintainer.

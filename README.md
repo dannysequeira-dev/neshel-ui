@@ -18,11 +18,10 @@
   <a href="#contributing">Contributing</a>
 </p>
 
-> [!IMPORTANT]
-> **Release candidate 0.1.0 — not published to npm yet.** All five packages are implemented and
-> verified from packed tarballs in external Vite and Next.js applications on Linux, Windows and
-> macOS. Until the owner authorises the first publication, install them from local tarballs (see
-> [Quick start](#quick-start)).
+> [!NOTE]
+> **0.1.0 is on npm.** The five packages are published with
+> [npm provenance](https://docs.npmjs.com/generating-provenance-statements) from the tagged release
+> workflow. Release evidence: [specs/007-first-publication/evidence.md](specs/007-first-publication/evidence.md).
 
 Neshel-UI gives React applications **semantic design tokens**, **layout primitives**,
 **metrics-aware typography**, **accessible components** and a **build-time CLI** — as independent
@@ -46,21 +45,15 @@ Peer dependencies: `react` and `react-dom` 19. ESM only, TypeScript declarations
 
 ## Quick start
 
-After the 0.1.0 publication:
-
 ```bash
 pnpm add @neshel-ui/config @neshel-ui/layout @neshel-ui/typography @neshel-ui/components
+pnpm add -D @neshel-ui/cli   # optional: custom themes, fonts and breakpoints
 ```
 
-Today, from a clone of this repository:
-
-```bash
-pnpm install --frozen-lockfile
-pnpm build:packages
-node scripts/pack-local.mjs --out ../neshel-tarballs
-# in your application:
-node <path-to-neshel-ui>/scripts/pack-local.mjs --use ../neshel-tarballs && pnpm install
-```
+npm and Yarn work the same way. Ready-to-run starters (Vite + Tailwind, Vite + plain CSS, Next.js)
+can be downloaded from the [starters page](https://neshel-ui.vercel.app/en/docs/examples/starters/).
+To try unreleased changes, install packed tarballs from a clone
+([installation guide](https://neshel-ui.vercel.app/en/docs/getting-started/installation/)).
 
 ```css
 /* your global CSS — with Tailwind v4 (or import @neshel-ui/config/tokens.css without it) */
@@ -134,14 +127,15 @@ Working agreements: [constitution](.specify/memory/constitution.md), [architectu
 
 ## Project status
 
-| Phase   | Focus                                                                | Status  |
-| ------- | -------------------------------------------------------------------- | ------- |
-| 001–005 | Foundation, tokens and CLI, layout, typography, components and shell | Done    |
-| 006     | Documentation website, developer experience, release candidate       | Done    |
-| 007     | First npm publication (owner-authorised)                             | Planned |
+| Phase   | Focus                                                                | Status |
+| ------- | -------------------------------------------------------------------- | ------ |
+| 001–005 | Foundation, tokens and CLI, layout, typography, components and shell | Done   |
+| 006     | Documentation website, developer experience, release candidate       | Done   |
+| 007     | First npm publication: 0.1.0                                         | Done   |
 
-Release readiness and its evidence: [docs/release-readiness.md](docs/release-readiness.md). The
-`neshel-ui` npm organisation exists (owner-confirmed); no package is published yet.
+Release readiness: [docs/release-readiness.md](docs/release-readiness.md). Publication evidence for
+0.1.0 (tag `v0.1.0`, provenance, integrity, clean installation):
+[specs/007-first-publication/evidence.md](specs/007-first-publication/evidence.md).
 
 ## Brand identity
 

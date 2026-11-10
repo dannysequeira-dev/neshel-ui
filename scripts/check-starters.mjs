@@ -1,11 +1,14 @@
-// pnpm check:starters [--starter <name>]... [--zip-out <dir>] [--no-build]
+// pnpm check:starters [--starter <name>]... [--zip-out <dir>] [--no-build] [--from-registry]
 // Feature 006 (research R9, FR-032): writes deterministic ZIP archives of starters/*, then, for
 // each starter, extracts its ZIP into a temporary directory OUTSIDE the workspace (path with spaces
 // and Unicode), points its @neshel-ui/* dependencies at freshly packed tarballs, installs from the
 // registry, and runs the starter's own build script. Verifies the ZIP round-trip byte for byte and
 // that a second archive is identical (determinism). Requires network access for third-party tools.
+// --from-registry (after a publication, feature 007): installs each extracted ZIP exactly as a user
+// would — @neshel-ui/* from the npm registry instead of tarballs — and checks the resolved versions.
 import { existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
+import { pathToFileURL } from "node:url";
 import { pnpm } from "./lib/pnpm.mjs";
 import { createTempDir } from "./lib/temp.mjs";
 import { repoRoot } from "./lib/workspace.mjs";
@@ -36,6 +39,27 @@ const OUTPUT = {
   "next-app": ".next/BUILD_ID",
 };
 
+function installedVersion(appDir, pkg) {
+  try {
+    return JSON.parse(readFileSync(join(appDir, "node_modules", pkg, "package.json"), "utf8"))
+      .version;
+  } catch {
+    return "missing";
+  }
+}
+
+/** `^M.m.p` semantics (0.x keeps the minor fixed); the starters only use caret ranges. */
+export function satisfiesCaret(version, range) {
+  const want = /^\^(\d+)\.(\d+)\.(\d+)$/.exec(range);
+  const have = /^(\d+)\.(\d+)\.(\d+)$/.exec(version ?? "");
+  if (!want || !have) return false;
+  const [w, h] = [want.slice(1).map(Number), have.slice(1).map(Number)];
+  if (h[0] !== w[0]) return false;
+  if (w[0] === 0 && h[1] !== w[1]) return false;
+  for (let i = 0; i < 3; i += 1) if (h[i] !== w[i]) return h[i] > w[i];
+  return true;
+}
+
 function arg(name) {
   return process.argv.flatMap((a, i) => (process.argv[i - 1] === name ? [a] : []));
 }
@@ -45,13 +69,14 @@ function main() {
   const names = selected.length ? selected : starterNames();
   const zipOut = resolve(arg("--zip-out")[0] ?? join(repoRoot, "dist-starters"));
   const build = !process.argv.includes("--no-build");
+  const fromRegistry = process.argv.includes("--from-registry");
   const problems = [];
   mkdirSync(zipOut, { recursive: true });
 
   const temp = createTempDir("neshel starters ñ-");
   try {
     let tarballDir;
-    if (build) {
+    if (build && !fromRegistry) {
       tarballDir = join(temp.dir, "tarballs");
       console.info("Packing the public packages…");
       packPublicPackages(tarballDir);
@@ -93,7 +118,9 @@ function main() {
         mkdirSync(dirname(target), { recursive: true });
         writeFileSync(target, entry.data);
       }
-      for (const line of useTarballs(appDir, tarballDir)) console.info(`  · ${line}`);
+      if (!fromRegistry) {
+        for (const line of useTarballs(appDir, tarballDir)) console.info(`  · ${line}`);
+      }
       try {
         console.info("  · pnpm install");
         pnpm(["install", "--no-frozen-lockfile"], appDir, { isolated: true });
@@ -112,7 +139,14 @@ function main() {
         ...manifest.dependencies,
         ...manifest.devDependencies,
       }).filter(([n]) => n.startsWith("@neshel-ui/"));
-      if (neshel.some(([, spec]) => !String(spec).startsWith("file:")))
+      if (fromRegistry) {
+        for (const [pkg, spec] of neshel) {
+          const installed = installedVersion(appDir, pkg);
+          if (!satisfiesCaret(installed, spec))
+            problems.push(`${name}: ${pkg} resolved to ${installed}, expected ${spec} from npm`);
+          else console.info(`  · ${pkg}@${installed} from the registry ✓`);
+        }
+      } else if (neshel.some(([, spec]) => !String(spec).startsWith("file:")))
         problems.push(`${name}: not all Neshel packages came from tarballs`);
     }
   } finally {
@@ -128,8 +162,8 @@ function main() {
     process.exitCode = 1;
   } else
     console.info(
-      `\ncheck:starters: ${names.length} starter(s) archived${build ? ", installed and built" : ""} ✓`,
+      `\ncheck:starters: ${names.length} starter(s) archived${build ? `, installed${fromRegistry ? " from npm" : ""} and built` : ""} ✓`,
     );
 }
 
-main();
+if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) main();

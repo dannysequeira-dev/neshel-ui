@@ -6,3 +6,4 @@ app/neshel.generated.css
 *.tsbuildinfo
 .snippets/
 .vercel/
+public/downloads/

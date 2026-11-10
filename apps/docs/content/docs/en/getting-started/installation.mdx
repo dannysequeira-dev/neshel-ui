@@ -1,6 +1,6 @@
 ---
 title: Installation
-description: Install the Neshel-UI packages you need with pnpm, npm or Yarn — from npm after publication, or from local tarballs today.
+description: Install the Neshel-UI packages you need from npm with pnpm, npm or Yarn.
 ---
 
 Neshel-UI is five packages. Install only what you use: `@neshel-ui/config` always (it provides the
@@ -20,7 +20,7 @@ fonts or breakpoints.
 Runtime dependencies (Radix, Base UI, tailwind-variants…) are installed automatically. pnpm and
 npm ≥ 7 install missing peers automatically; Yarn reports them so that you add them yourself.
 
-## From npm (after the 0.1.0 publication)
+## From npm
 
 <PackageInstall packages={["@neshel-ui/config", "@neshel-ui/layout", "@neshel-ui/typography", "@neshel-ui/components"]} />
 
@@ -28,16 +28,20 @@ And, for configuration (optional):
 
 <PackageInstall packages={["@neshel-ui/cli"]} dev />
 
+All five packages are published as `0.1.0` with [npm provenance](https://docs.npmjs.com/generating-provenance-statements):
+each tarball is signed and linked to the GitHub Actions run that built it. `npm audit signatures`
+verifies the registry signatures and attestations in your project.
+
 ### Choosing pnpm, npm or Yarn
 
 All three work; the packages are plain ESM with standard `exports`. Neshel-UI's own tooling and
 automated consumer tests use **pnpm**; the same `package.json` works with npm and Yarn (Berry with the
 `node-modules` linker or Plug'n'Play). Use one package manager per project and commit its lockfile.
 
-## From local tarballs (before publication)
+## From local tarballs (unreleased changes)
 
-Until the packages are on npm, build them from the repository and install the packed tarballs. This
-is exactly how Neshel-UI's automated external-consumer tests install them.
+To try changes that are not on npm yet, build the packages from the repository and install the
+packed tarballs. This is exactly how Neshel-UI's automated external-consumer tests install them.
 
 <Steps>
 <Step>

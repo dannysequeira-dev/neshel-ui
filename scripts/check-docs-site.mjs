@@ -112,6 +112,30 @@ async function main() {
         : JSON.stringify(meta);
     });
 
+    await attempt(
+      "starter pages link the three ZIP downloads and every ZIP is served",
+      async () => {
+        const hrefs = [];
+        for (const lang of ["en", "es"]) {
+          await open(`/${lang}/docs/examples/starters/`);
+          const links = await d.evaluate(
+            `[...document.querySelectorAll('a[download][href$=".zip"]')].map((a) => a.getAttribute("href"))`,
+          );
+          if (links.length !== 3) return `${lang}: expected 3 ZIP links, found ${links.length}`;
+          hrefs.push(...links);
+        }
+        for (const href of new Set(hrefs)) {
+          // href already carries the base path: resolve it against the origin only.
+          const response = await fetch(new URL(href, server.url("/")));
+          const bytes = Buffer.from(await response.arrayBuffer());
+          // ZIP local file header signature "PK\x03\x04".
+          if (!response.ok || bytes.readUInt32LE(0) !== 0x04034b50)
+            return `${href}: HTTP ${response.status}, ${bytes.length} bytes, not a ZIP`;
+        }
+        return true;
+      },
+    );
+
     await attempt("language switch keeps the current page", async () => {
       await open("/en/docs/components/button/");
       // Fumadocs language switch: open the language popover and pick Español.

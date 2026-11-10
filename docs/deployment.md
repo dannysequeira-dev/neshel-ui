@@ -35,8 +35,9 @@ the sitemap and robots:
 Only production builds are indexable; previews and local builds render
 `<meta name="robots" content="noindex, nofollow">` and `Disallow: /`.
 
-`release.published` in `apps/docs/lib/release.ts` stays **false** until the npm publication is
-verified, so the site keeps the tarball instructions and hides starter downloads.
+`release.published` in `apps/docs/lib/release.ts` is **true** since 0.1.0 was verified on npm
+(feature 007): the site shows npm install instructions, and its build writes the starter ZIPs to
+`public/downloads/` (`check-starters --no-build`), linked from the starters page.
 
 ## Owner actions in the Vercel Dashboard
 

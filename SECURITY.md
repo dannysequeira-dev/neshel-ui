@@ -2,13 +2,13 @@
 
 ## Supported versions
 
-Neshel-UI has not published a release yet. Once 0.1.0 is published, security fixes target the
+Neshel-UI 0.1.0 is published on npm. Security fixes target the
 latest published 0.x minor version only.
 
-| Version               | Supported   |
-| --------------------- | ----------- |
-| 0.1.x (after release) | Yes         |
-| unreleased `main`     | Best effort |
+| Version           | Supported   |
+| ----------------- | ----------- |
+| 0.1.x             | Yes         |
+| unreleased `main` | Best effort |
 
 ## Reporting a vulnerability
 

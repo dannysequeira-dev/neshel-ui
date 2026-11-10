@@ -1,6 +1,6 @@
 # Changesets
 
-Changesets will record user-facing changes once the packages become publishable.
+Changesets record user-facing changes to the published packages.
 
 The five public packages form a fixed group (one version). The 0.1.0 release PR consumed
 the pre-release changesets into each package's `CHANGELOG.md`. `@neshel-ui/core` stays

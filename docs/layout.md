@@ -1,7 +1,7 @@
 # Layout guide (`@neshel-ui/layout`)
 
 Status: **implemented in feature 003**, custom breakpoints added in feature 004 (ADR 0010);
-verified from packed tarballs; **not published**. The normative contracts are [layout-api.md](../specs/003-layout-system/contracts/layout-api.md) and
+published on npm as 0.1.0. The normative contracts are [layout-api.md](../specs/003-layout-system/contracts/layout-api.md) and
 [layout-css.md](../specs/003-layout-system/contracts/layout-css.md); decisions in
 [ADR 0008](decisions/0008-layout-styling-and-css-distribution.md) and
 [ADR 0009](decisions/0009-layout-composition-aschild-separators.md).
