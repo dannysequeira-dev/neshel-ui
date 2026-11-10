@@ -36,6 +36,15 @@ normative detail: [contracts/release.md](../specs/006-docs-dx-release/contracts/
 `@neshel-ui/config` → `layout` → `typography` → `components` → `cli` (every other package peers on
 `config`). `scripts/publish-tarballs.mjs` publishes in this order, skips versions already on the
 registry (a failed run can be repeated) and then verifies `npm view` and a clean install.
+It decides from npm's exit status and stdout only (npm warnings on stderr are ignored), publishes
+only on a confirmed miss (E404 or an empty answer), stops on network, authentication or registry
+errors instead of publishing, and treats a publish conflict on a version that now exists as
+already published. `--verify-only` retries registry checks and the clean install with bounded
+backoff (5 attempts after the first, about 95 s in total) before failing.
+
+> The `v0.1.0` tag keeps the original script: attempt 3 of release run 42843343125 failed after a
+> successful publish because npm 11 warnings on stderr were compared with the version. The fix
+> applies to releases tagged after it lands on `main`; do not rerun the 0.1.0 workflow.
 
 ## Owner actions — first publication (0.1.0)
 

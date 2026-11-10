@@ -19,6 +19,7 @@ import { packPackage } from "./lib/pnpm.mjs";
 import { readTarGz } from "./lib/tar.mjs";
 import { createTempDir } from "./lib/temp.mjs";
 import { repoRoot } from "./lib/workspace.mjs";
+import { isPublishConflict } from "./publish-tarballs.mjs";
 
 export const PUBLISH_ORDER = ["config", "layout", "typography", "components", "cli"];
 const TARGET = "0.1.0";
@@ -124,6 +125,10 @@ function main() {
         [npmCli(), "publish", tarball, "--dry-run", "--access", "public", "--provenance=false"],
         temp.dir,
       );
+      // After 0.1.0 is on the registry, npm 11 rejects the dry run at the registry check: the tarball
+      // was packed and validated, only the (immutable) version is taken. Not a failure.
+      const published = !dry.ok && isPublishConflict({ stdout: dry.output, stderr: "" });
+      if (published) dry.ok = true;
       if (!dry.ok)
         problems.push(
           `${where}: npm publish --dry-run failed:\n${dry.output.split("\n").slice(-12).join("\n")}`,
@@ -140,7 +145,7 @@ function main() {
         dependencies: manifest.dependencies ?? {},
       });
       console.info(
-        `  ${dry.ok ? "✓" : "✗"} ${where} — ${files.size} files, ${(bytes.length / 1024).toFixed(1)} KiB, npm publish --dry-run ${dry.ok ? "ok" : "failed"}`,
+        `  ${dry.ok ? "✓" : "✗"} ${where} — ${files.size} files, ${(bytes.length / 1024).toFixed(1)} KiB, npm publish --dry-run ${published ? `ok (${TARGET} already on the registry)` : dry.ok ? "ok" : "failed"}`,
       );
     }
 
