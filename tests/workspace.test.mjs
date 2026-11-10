@@ -23,12 +23,18 @@ test("intended public packages are marked with publishConfig; core stays interna
   );
 });
 
-test("all packages keep the publish guard and declare ESM and types exports", () => {
+test("all packages declare ESM and types exports", () => {
   for (const { dirName, manifest } of packages) {
     assert.equal(manifest.name, `@neshel-ui/${dirName}`);
     assert.ok(manifest.exports["."].import);
     assert.ok(manifest.exports["."].types);
-    assert.equal(manifest.private, true);
+  }
+});
+
+test("only the five intended public packages lift the publish guard; core stays private", () => {
+  for (const { dirName, manifest } of packages) {
+    if (EXPECTED_PUBLIC.includes(dirName)) assert.equal(manifest.private, undefined, dirName);
+    else assert.equal(manifest.private, true, dirName);
   }
 });
 
