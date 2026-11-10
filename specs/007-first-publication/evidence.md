@@ -100,4 +100,4 @@ Local (Windows 11, Node 26.13.0, pnpm 12.16.1), 2026-11-10:
 | `pnpm release:simulate`                                                            | pass — five packages `ok (0.1.0 already on the registry)`                                                                                          |
 | `pnpm check:starters --from-registry`                                              | pass (three starters from npm)                                                                                                                     |
 
-CI for the finalization PR: see below.
+CI for the finalization PR #3: run [42888603889](https://github.com/dannysequeira-dev/neshel-ui/actions/runs/42888603889) on commit `2648d41`, **14/14 green** — Node 26 on Linux, Windows and macOS, Node 22 and 24 on Linux; docs ×3 OS; Next.js + starters ×3 OS; Chromium/Firefox/WebKit on Linux and macOS; local Vercel build. The Vercel preview deployment of the PR completed. This evidence update follows in a docs-only commit.

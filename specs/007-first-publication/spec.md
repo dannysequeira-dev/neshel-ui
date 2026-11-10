@@ -68,5 +68,5 @@ token (owner actions); any new version or tag.
 - **SC-005** `pnpm check:starters --from-registry` passes for the three starters.
 - **SC-006** CI green on Linux, Windows and macOS for PR #2 and for the finalization PR.
 
-SC-001–SC-005 are met and SC-006 is met for PR #2; the finalization PR's CI result is recorded in
-[evidence.md](evidence.md).
+All six are met (SC-006: PR #2 run 42860415878 and finalization PR #3 run 42888603889, 14/14
+each): [evidence.md](evidence.md).
