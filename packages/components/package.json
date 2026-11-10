@@ -1,6 +1,6 @@
 {
   "name": "@neshel-ui/components",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Accessible React components, navigation and application shell",
   "keywords": [
     "neshel-ui",
@@ -23,7 +23,6 @@
   },
   "author": "Neshel-UI maintainers",
   "type": "module",
-  "private": true,
   "license": "MIT",
   "sideEffects": [
     "**/*.css"
@@ -36,6 +35,7 @@
     "!src/**/*.test.tsx",
     "!src/**/*.stories.tsx",
     "README.md",
+    "CHANGELOG.md",
     "LICENSE"
   ],
   "exports": {

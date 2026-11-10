@@ -1,7 +1,7 @@
 {
   "schema": 2,
   "package": "@neshel-ui/components",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "layer": "components.neshel",
   "keyframes": [
     {

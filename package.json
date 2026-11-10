@@ -32,7 +32,7 @@
     "check": "pnpm run doctor && pnpm lint && pnpm typecheck && pnpm test && pnpm build:packages && pnpm test:packages && pnpm check:exports && pnpm check:pack --no-build",
     "changeset": "changeset",
     "changeset:status": "changeset status",
-    "version-packages": "changeset version",
+    "version-packages": "changeset version && pnpm build:packages && pnpm generate:component-css",
     "clean": "node scripts/clean.mjs",
     "doctor": "node scripts/check-platform.mjs && node scripts/check-workspace.mjs && node scripts/check-portability.mjs",
     "check:portability": "node scripts/check-portability.mjs",

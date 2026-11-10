@@ -34,7 +34,8 @@
       "!apps/docs/.snippets",
       "!apps/docs/out",
       "!apps/docs/.source",
-      "!.changeset/*.md"
+      "!.changeset/*.md",
+      "!packages/*/CHANGELOG.md"
     ]
   },
   "formatter": {

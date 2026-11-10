@@ -2,10 +2,11 @@
 
 CSS-first design tokens, semantic themes and typed theme configuration for Neshel-UI.
 
-**Status:** release candidate for 0.1.0 — **not published to npm yet**. Verified from the packed
-tarball in external applications on Linux, Windows and macOS. Documentation: the
-official site in [`apps/docs`](https://github.com/dannysequeira-dev/neshel-ui/tree/main/apps/docs) (English and Spanish); pre-publication installation:
-`node scripts/pack-local.mjs` in the repository.
+**Status:** 0.1.0, the first public release (pre-1.0: breaking changes bump the minor version and are called out in the [changelog](./CHANGELOG.md)). Verified from the packed tarball in external applications on Linux, Windows and macOS. Documentation (English and Spanish): https://neshel-ui.vercel.app
+
+```sh
+pnpm add @neshel-ui/config
+```
 
 Feature 004 adds `breakpoints` (custom responsive breakpoints shared by layout and typography),
 `types`, Capsize-format `typography.metrics` and `typography.fallbacks`, and the `BreakpointName`

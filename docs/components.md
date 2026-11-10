@@ -1,6 +1,6 @@
 # Components guide
 
-`@neshel-ui/components` (feature 005; unpublished, `private: true`) provides accessible React
+`@neshel-ui/components` (feature 005; first release 0.1.0) provides accessible React
 components for dashboards, back offices and forms: foundation controls, overlays, selection
 controls, navigation and a responsive application shell. Contracts:
 [components-api](../specs/005-components-navigation-shell/contracts/components-api.md),

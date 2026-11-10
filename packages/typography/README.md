@@ -4,10 +4,11 @@ Semantic, metrics-aware React typography: `Heading`, `Text`, `Paragraph` and `Ca
 Capsize trimming driven by your fonts' metrics and responsive props for the breakpoints your
 application configures.
 
-**Status:** release candidate for 0.1.0 — **not published to npm yet**. Verified from the packed
-tarball in external applications on Linux, Windows and macOS. Documentation: the
-official site in [`apps/docs`](https://github.com/dannysequeira-dev/neshel-ui/tree/main/apps/docs) (English and Spanish); pre-publication installation:
-`node scripts/pack-local.mjs` in the repository.
+**Status:** 0.1.0, the first public release (pre-1.0: breaking changes bump the minor version and are called out in the [changelog](./CHANGELOG.md)). Verified from the packed tarball in external applications on Linux, Windows and macOS. Documentation (English and Spanish): https://neshel-ui.vercel.app
+
+```sh
+pnpm add @neshel-ui/typography @neshel-ui/config react
+```
 
 ```css
 @import "@neshel-ui/config/tokens.css"; /* or tailwind.css after @import "tailwindcss" */

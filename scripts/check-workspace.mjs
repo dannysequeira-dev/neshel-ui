@@ -20,7 +20,11 @@ for (const { dirName, name, manifest, intendedPublic } of packages) {
   if (name !== `@neshel-ui/${dirName}`) {
     problems.push(`packages/${dirName}: name must be @neshel-ui/${dirName}, found ${name}`);
   }
-  if (manifest.private !== true) problems.push(`Publishing guard missing: ${name}`);
+  // Publishing guard: only the five intended public packages may drop `private` (release PR,
+  // ADR 0017); every other workspace package, @neshel-ui/core included, must stay private.
+  if (!intendedPublic && manifest.private !== true) {
+    problems.push(`Publishing guard missing: ${name}`);
+  }
   if (!manifest.exports?.["."]?.types || !manifest.exports?.["."]?.import) {
     problems.push(`Missing type or ESM exports in ${name}`);
   }
@@ -36,6 +40,6 @@ if (problems.length > 0) {
 } else {
   const publicCount = packages.filter((pkg) => pkg.intendedPublic).length;
   console.info(
-    `Workspace scaffold verified (${packages.length} guarded packages, ${publicCount} intended public).`,
+    `Workspace scaffold verified (${packages.length} packages, ${publicCount} intended public, ${packages.length - publicCount} private).`,
   );
 }

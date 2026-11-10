@@ -1,7 +1,9 @@
 # Releasing Neshel-UI
 
-**Nothing is published.** All packages are `private: true`. Feature 006 prepared and rehearsed the
-pipeline; executing it is the owner-authorised publication milestone (roadmap row 007). A green CI
+**Nothing is published yet.** The 0.1.0 release PR (`release/0.1.0`, feature 007) lifts `private: true`
+from the five public packages and versions them to 0.1.0; `@neshel-ui/core` stays private. Feature 006
+prepared and rehearsed the pipeline; executing it is the owner-authorised publication milestone
+(roadmap row 007). A green CI
 is not an authorisation to publish. Decisions: [ADR 0017](decisions/0017-release-and-publishing-pipeline.md);
 normative detail: [contracts/release.md](../specs/006-docs-dx-release/contracts/release.md).
 
@@ -43,8 +45,11 @@ registry (a failed run can be repeated) and then verifies `npm view` and a clean
 2. **Brand policy.** ✅ Done (2026-11-09): [BRAND-POLICY.md](BRAND-POLICY.md) is owner-approved.
 3. **GitHub environment.** Settings → Environments → `npm-release`: required reviewers (you),
    deployment branches/tags limited to `v*.*.*`.
-4. **Release PR** (owner-approved, the only change that lifts the guards): remove `"private": true`
-   from the five public package manifests, run `pnpm changeset version`, review the five
+4. **Release PR** 🟡 Prepared (2026-11-09, branch `release/0.1.0`; merging needs owner approval).
+   The only change that lifts the guards: remove `"private": true`
+   from the five public package manifests, run `pnpm version-packages` (`changeset version`, then a
+   build and `generate:component-css`, because the three style manifests embed the package version),
+   review the five
    `CHANGELOG.md` files and the `0.1.0` versions, merge after green CI. (`pnpm release:simulate`
    already proves this produces exactly 0.1.0.)
 5. **Bootstrap credential** (npm trusted publishing cannot be configured before a package exists).
@@ -70,5 +75,5 @@ registry (a failed run can be repeated) and then verifies `npm view` and a clean
 
 ## Later releases
 
-Merge changes with changesets → open a version PR (`pnpm changeset version`) → merge → push the tag
+Merge changes with changesets → open a version PR (`pnpm version-packages`) → merge → push the tag
 `vX.Y.Z` → approve the environment. The guards refuse a tag that does not match all five versions.

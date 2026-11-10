@@ -103,7 +103,8 @@ manifests, declarations, Tailwind `@theme` breakpoints, Capsize fallback fonts; 
 
 Status: **implemented and CI-verified** with `pnpm check:pack` and `pnpm check:consumer`
 (latest: run 42436591929 — Node 26 on Linux, Windows and macOS; Node 22 and 24 on Linux). **No package is
-published**; all six keep `private: true`, and the `@neshel-ui` scope remains unverified on npm.
+published yet.** The 0.1.0 release PR (feature 007) lifts `private: true` from the five intended public
+packages; `@neshel-ui/core` stays private. The `neshel-ui` npm organisation exists (owner-confirmed).
 
 | Package                 | Intended public | Runtime deps                                                            | Peer deps                                         | Exports                                                                        |
 | ----------------------- | --------------- | ----------------------------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------ |
@@ -114,13 +115,13 @@ published**; all six keep `private: true`, and the `@neshel-ui` scope remains un
 | `@neshel-ui/cli`        | Yes             | `jiti`, `colorjs.io`, `@capsizecss/core`                                | `@neshel-ui/config` (`workspace:^`)               | `.` (types + import); bin `neshel`                                             |
 | `@neshel-ui/core`       | No (internal)   | none                                                                    | none                                              | `.` (never packed for publication)                                             |
 
-- **Intended public** = `"publishConfig": { "access": "public" }`. It is metadata only while
-  `private: true` blocks publication.
+- **Intended public** = `"publishConfig": { "access": "public" }`. Only these five may omit
+  `private: true`; every other workspace package, core included, keeps it (`pnpm check:workspace`).
 - **ESM only**: `types` is always the first export condition, then `import`. No CommonJS build.
 - **NodeNext**: libraries compile through `tsconfig.library.json`; relative imports need
   explicit `.js` extensions. Apps keep `Bundler` resolution.
 - **Tarball contents**: `dist/` (JS, `.d.ts`, JS and declaration maps, CSS), `src/**/*.ts(x)`
-  (so maps resolve; tests and stories excluded), `README.md`, `LICENSE`, `package.json`.
+  (so maps resolve; tests and stories excluded), `README.md`, `CHANGELOG.md`, `LICENSE`, `package.json`.
 - **Side effects**: packages exporting CSS declare `"sideEffects": ["**/*.css"]`; `cli` and
   `core` declare `false`.
 - **Dependencies are declared when first imported** (research R9). A workspace runtime
@@ -142,7 +143,7 @@ external smoke test (`pnpm check:consumer`) does:
 pnpm build:packages
 cd packages/config && pnpm pack --pack-destination <dir>
 # in the consumer app:
-pnpm add file:./vendor/neshel-ui-config-0.0.0.tgz
+pnpm add file:./vendor/neshel-ui-config-0.1.0.tgz
 ```
 
 Import one stylesheet in the app's global CSS. No `@source` entry and no PostCSS configuration

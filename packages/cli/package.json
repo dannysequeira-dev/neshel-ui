@@ -1,6 +1,6 @@
 {
   "name": "@neshel-ui/cli",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Configuration and CSS generation CLI",
   "keywords": [
     "neshel-ui",
@@ -23,7 +23,6 @@
   },
   "author": "Neshel-UI maintainers",
   "type": "module",
-  "private": true,
   "license": "MIT",
   "engines": {
     "node": ">=22.13.0"
@@ -37,6 +36,7 @@
     "!src/**/*.test.tsx",
     "!src/**/*.stories.tsx",
     "README.md",
+    "CHANGELOG.md",
     "LICENSE"
   ],
   "exports": {

@@ -7,11 +7,13 @@
 //   3. packs each package and checks the packed manifest (version, ^0.1.0 peer ranges, no
 //      workspace:/catalog: specs, not private),
 //   4. runs `npm publish <tarball> --dry-run` for each, in dependency order.
+// Once the release PR has committed the transition (no pending changesets), steps 1–2 are no-ops and
+// the script verifies the committed versions instead.
 // --out keeps the generated changelogs and tarball inventory (release notes draft input).
 // Requires `pnpm build:packages` (dist is copied with the sources).
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { cpSync, existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
+import { cpSync, existsSync, mkdirSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { packPackage } from "./lib/pnpm.mjs";
 import { readTarGz } from "./lib/tar.mjs";
@@ -65,10 +67,19 @@ function main() {
       writeFileSync(file, `${JSON.stringify(manifest, null, 2)}\n`);
     }
 
-    // 2. Version with the repository's own Changesets CLI and configuration.
+    // 2. Version with the repository's own Changesets CLI and configuration. On the release branch
+    //    (and after it merges) the transition has already happened: no changesets are pending and the
+    //    manifests were committed at TARGET, so versioning is skipped and only verified below.
     const changeset = join(repoRoot, "node_modules", "@changesets", "cli", "bin.js");
-    const version = run(process.execPath, [changeset, "version"], copy);
-    if (!version.ok) throw new Error(`changeset version failed:\n${version.output}`);
+    const pending = readdirSync(join(copy, ".changeset")).filter(
+      (file) => file.endsWith(".md") && file !== "README.md",
+    );
+    if (pending.length > 0) {
+      const version = run(process.execPath, [changeset, "version"], copy);
+      if (!version.ok) throw new Error(`changeset version failed:\n${version.output}`);
+    } else {
+      console.info("  no pending changesets: verifying the committed 0.1.0 transition");
+    }
     for (const dir of PUBLISH_ORDER) {
       const manifest = JSON.parse(
         readFileSync(join(copy, "packages", dir, "package.json"), "utf8"),
