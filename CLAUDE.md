@@ -1,8 +1,10 @@
 # Claude Code — Neshel-UI Project Contract
 
 **Current phase:** features 001–006 are closed (PASS; 006 closed 2026-11-09, R1–R9 met:
-`specs/006-docs-dx-release/`). Feature 007 (first npm publication) has NOT started and requires
-explicit owner authorisation: no publish, tags, releases or removal of `private: true` without it.
+`specs/006-docs-dx-release/`). Feature 007 (first npm publication, 0.1.0) is in progress: the owner authorised the release PR
+(`release/0.1.0`: five packages at 0.1.0, `private` lifted on that branch, core private). Merging it,
+the `v0.1.0` tag, environment approval, npm publication and GitHub Releases each need separate,
+explicit owner approval.
 **Mission:** build a small, modular, accessible React design system that consumers can
 install without monorepo internals. **Do not implement the entire library in one pass.**
 

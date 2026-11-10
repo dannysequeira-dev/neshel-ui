@@ -98,5 +98,6 @@ Para elegir la feature activa en un clon nuevo, ver [`.specify/README.md`](../.s
 
 ## Publicación npm
 
-Los seis paquetes mantienen `private: true`; no hay workflow de publicación y el scope
-`@neshel-ui` no está verificado. Ver [`releasing.md`](releasing.md).
+Ningún paquete está publicado todavía. El PR de la versión 0.1.0 retira `private: true` de los cinco
+paquetes públicos (`@neshel-ui/core` sigue privado); la publicación la hace `release.yml` solo tras la
+aprobación del propietario. Ver [`releasing.md`](releasing.md).
