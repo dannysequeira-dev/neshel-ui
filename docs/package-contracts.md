@@ -2,7 +2,7 @@
 
 ## `@neshel-ui/config`
 
-**Implemented in feature 002** (unpublished; [contracts](../specs/002-config-and-tokens/contracts/),
+**Implemented in feature 002** (published as 0.1.0; [contracts](../specs/002-config-and-tokens/contracts/),
 [theme guide](theming.md)). Installing the package never injects CSS; consumers import a
 stylesheet explicitly.
 
@@ -19,7 +19,7 @@ stylesheet explicitly.
 
 ## `@neshel-ui/layout`
 
-**Implemented in feature 003**, custom breakpoints in feature 004 (unpublished;
+**Implemented in feature 003**, custom breakpoints in feature 004 (published as 0.1.0;
 [contracts](../specs/003-layout-system/contracts/), [layout guide](layout.md), ADR 0008/0009/0010).
 Peers `react ^19.0.0` and `@neshel-ui/config` (types only, feature 004); runtime dependencies
 `@radix-ui/react-slot` and `tailwind-variants` (lite entry, no `tailwind-merge`).
@@ -50,7 +50,7 @@ The earlier `gap` proposal was replaced by the owner's `space` / `spaceX` / `spa
 
 ## `@neshel-ui/typography`
 
-**Implemented in feature 004** (unpublished; [contracts](../specs/004-typography-breakpoints/contracts/),
+**Implemented in feature 004** (published as 0.1.0; [contracts](../specs/004-typography-breakpoints/contracts/),
 [typography guide](typography.md), ADR 0011). Peers `react ^19.0.0` and `@neshel-ui/config`;
 runtime dependencies `@radix-ui/react-slot` and `tailwind-variants` (lite).
 
@@ -67,7 +67,7 @@ runtime dependencies `@radix-ui/react-slot` and `tailwind-variants` (lite).
 
 ## `@neshel-ui/components`
 
-**Implemented in feature 005** (unpublished; [contracts](../specs/005-components-navigation-shell/contracts/),
+**Implemented in feature 005** (published as 0.1.0; [contracts](../specs/005-components-navigation-shell/contracts/),
 [components guide](components.md), ADR 0012/0013/0014). Peers `react ^19.0.0`, `react-dom ^19.0.0`
 and `@neshel-ui/config` (types only); runtime dependencies `@base-ui/react` (select/combobox subpaths),
 six Radix primitives (dialog, alert-dialog, popover, dropdown-menu, navigation-menu, tooltip),
@@ -90,7 +90,7 @@ six Radix primitives (dialog, alert-dialog, popover, dropdown-menu, navigation-m
 
 ## `@neshel-ui/cli`
 
-**Implemented in feature 002** (unpublished; [contracts/cli.md](../specs/002-config-and-tokens/contracts/cli.md),
+**Implemented in feature 002** (published as 0.1.0; [contracts/cli.md](../specs/002-config-and-tokens/contracts/cli.md),
 ADR 0007), Node `>=22.13`: `neshel validate` and `neshel generate` (`--config`, `--out`, `--check`, `--strict`),
 exit codes 0–5, TS configs loaded with `jiti`, colour parsing/contrast with `colorjs.io`,
 peer dependency on `@neshel-ui/config`. The importable entry (`.`) stays empty and side-effect free; `init` and a programmatic API are
@@ -102,9 +102,9 @@ manifests, declarations, Tailwind `@theme` breakpoints, Capsize fallback fonts; 
 ## Distribution contract (implemented in milestone 001.2)
 
 Status: **implemented and CI-verified** with `pnpm check:pack` and `pnpm check:consumer`
-(latest: run 42436591929 — Node 26 on Linux, Windows and macOS; Node 22 and 24 on Linux). **No package is
-published yet.** The 0.1.0 release PR (feature 007) lifts `private: true` from the five intended public
-packages; `@neshel-ui/core` stays private. The `neshel-ui` npm organisation exists (owner-confirmed).
+(latest: run 42436591929 — Node 26 on Linux, Windows and macOS; Node 22 and 24 on Linux). The five intended
+public packages are **published on npm as 0.1.0** (feature 007, [evidence](../specs/007-first-publication/evidence.md));
+`@neshel-ui/core` stays private and unpublished.
 
 | Package                 | Intended public | Runtime deps                                                            | Peer deps                                         | Exports                                                                        |
 | ----------------------- | --------------- | ----------------------------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------ |
@@ -136,8 +136,8 @@ exact version, `catalog:` becomes the catalog range, `private` is preserved.
 
 ## Consuming the packages (milestone 001.3)
 
-Nothing is published yet. Consumers are verified with the packed tarball, exactly as the
-external smoke test (`pnpm check:consumer`) does:
+Consumers install the published packages from npm. Unreleased changes are verified with the
+packed tarball, exactly as the external smoke test (`pnpm check:consumer`) does:
 
 ```text
 pnpm build:packages

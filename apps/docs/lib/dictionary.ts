@@ -11,9 +11,10 @@ const en = {
   navComponents: "Components",
   navExamples: "Examples",
   navGettingStarted: "Getting started",
-  releaseBadge: "Release candidate 0.1.0 — not yet on npm",
+  releaseBadge: "Release candidate — not yet on npm",
   releaseNotice:
-    "Neshel-UI 0.1.0 is a release candidate. The packages are not published to npm yet; until they are, install them from locally packed tarballs.",
+    "This version of Neshel-UI is a release candidate and is not on npm yet; until it is, install the packages from locally packed tarballs.",
+  starterDownload: "Download",
   missingTranslation:
     "This page has not been translated yet. You are reading the English original.",
   editPage: "Edit this page on GitHub",
@@ -71,7 +72,7 @@ const en = {
     "Flat, composable parts, asChild for your links and router, no provider for theming.",
   statusTitle: "Project status",
   statusText:
-    "Version 0.1.0 is a release candidate. Packages are verified from packed tarballs on Linux, Windows and macOS, but they are not on npm yet.",
+    "Version 0.1.0 is published on npm with provenance. Every release is verified from packed tarballs on Linux, Windows and macOS before it is published.",
   statusLink: "Read the release status",
 };
 
@@ -84,9 +85,10 @@ const es: Dictionary = {
   navComponents: "Componentes",
   navExamples: "Ejemplos",
   navGettingStarted: "Primeros pasos",
-  releaseBadge: "Versión candidata 0.1.0 — aún no está en npm",
+  releaseBadge: "Versión candidata — aún no está en npm",
   releaseNotice:
-    "Neshel-UI 0.1.0 es una versión candidata. Los paquetes todavía no están publicados en npm; mientras tanto, instálalos desde tarballs empaquetados localmente.",
+    "Esta versión de Neshel-UI es una versión candidata y todavía no está en npm; mientras tanto, instala los paquetes desde tarballs empaquetados localmente.",
+  starterDownload: "Descargar",
   missingTranslation: "Esta página aún no está traducida. Estás leyendo el original en inglés.",
   editPage: "Editar esta página en GitHub",
   sourceLabel: "Código",
@@ -143,7 +145,7 @@ const es: Dictionary = {
     "Partes planas y combinables, asChild para tus enlaces y tu router, sin proveedor para los temas.",
   statusTitle: "Estado del proyecto",
   statusText:
-    "La versión 0.1.0 es una versión candidata. Los paquetes se verifican desde tarballs empaquetados en Linux, Windows y macOS, pero todavía no están en npm.",
+    "La versión 0.1.0 está publicada en npm con procedencia (provenance). Cada versión se verifica desde tarballs empaquetados en Linux, Windows y macOS antes de publicarse.",
   statusLink: "Leer el estado de la versión",
 };
 

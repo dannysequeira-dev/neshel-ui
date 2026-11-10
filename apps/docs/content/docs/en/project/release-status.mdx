@@ -1,21 +1,30 @@
 ---
 title: Release status
-description: What is published, what is verified, and what remains before Neshel-UI 0.1.0 reaches npm.
+description: What is published, how the release was verified, and the known limitations of Neshel-UI 0.1.0.
 ---
 
-<ReleaseNotice />
+| Item                  | Status                                                                                                   |
+| --------------------- | -------------------------------------------------------------------------------------------------------- |
+| npm publication       | **Published.** `@neshel-ui/config`, `layout`, `typography`, `components` and `cli` at `0.1.0` (2026-11-10). |
+| Provenance            | Every package has a signed SLSA v1 provenance statement linking it to tag `v0.1.0` and the GitHub Actions release run. |
+| Private packages      | `@neshel-ui/core` is internal and is not published; no public package depends on it.                     |
+| Documentation website | Live at https://neshel-ui.vercel.app (Vercel, deployed from `main`).                                     |
 
-| Item                         | Status                                                                                       |
-| ---------------------------- | -------------------------------------------------------------------------------------------- |
-| npm publication              | **Not published yet.** The release PR versions the five public packages to `0.1.0` and lifts their `private` guard; publishing waits for the owner's approval. `@neshel-ui/core` stays private. |
-| Intended version             | `0.1.0` for the five public packages, released together.                                   |
-| npm scope `@neshel-ui`       | The `neshel-ui` npm organisation exists (confirmed by the owner); no package is published yet. |
-| Documentation website        | Live at https://neshel-ui.vercel.app (Vercel, deployed from `main`).                  |
+## How 0.1.0 was verified after publication
 
-## What is verified
+- The registry serves all five packages at `0.1.0`, and each tarball's SHA-512 integrity matches the
+  tarball built and validated by the release workflow byte for byte.
+- `npm audit signatures` in a clean project verifies the registry signatures and provenance
+  attestations of all five packages; each statement names the repository, `release.yml`, tag
+  `v0.1.0` and its commit.
+- A clean installation outside the repository (empty npm cache, no repository configuration) imports
+  every package, resolves every exported stylesheet, renders on the server and runs the `neshel` CLI.
+- The three starter ZIPs install from the registry and build.
+
+## What is verified for every change
 
 Automated checks run on GitHub Actions (Linux, Windows and macOS, Node 26; Linux also Node 22
-and 24) for every change:
+and 24):
 
 - Lint, type checks, unit and integration tests, package builds and declarations.
 - Packed tarballs: manifests, exports, declarations, source maps, `publint`, `arethetypeswrong`,
@@ -32,10 +41,11 @@ and 24) for every change:
   and macOS).
 - Bundle-size budgets per component family, measured from the packed packages.
 - The three starters, installed from deterministic ZIP archives and built outside the repository.
-- A rehearsal of the 0.1.0 versioning transition with `npm publish --dry-run`.
+- A rehearsal of the versioning transition with `npm publish --dry-run`.
 
 Full evidence: the repository's
-[release readiness record](https://github.com/dannysequeira-dev/neshel-ui/blob/main/docs/release-readiness.md).
+[release readiness record](https://github.com/dannysequeira-dev/neshel-ui/blob/main/docs/release-readiness.md)
+and the [0.1.0 publication evidence](https://github.com/dannysequeira-dev/neshel-ui/blob/main/specs/007-first-publication/evidence.md).
 
 ## Known limitations
 

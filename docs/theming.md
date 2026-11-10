@@ -1,6 +1,6 @@
 # Theme and token model
 
-**Status:** implemented in feature 002 (unpublished). Normative contracts:
+**Status:** implemented in feature 002; published on npm as 0.1.0. Normative contracts:
 [tokens](../specs/002-config-and-tokens/contracts/tokens.md),
 [CSS and cascade](../specs/002-config-and-tokens/contracts/css.md),
 [configuration API](../specs/002-config-and-tokens/contracts/config-api.md),

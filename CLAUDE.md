@@ -1,10 +1,10 @@
 # Claude Code — Neshel-UI Project Contract
 
-**Current phase:** features 001–006 are closed (PASS; 006 closed 2026-11-09, R1–R9 met:
-`specs/006-docs-dx-release/`). Feature 007 (first npm publication, 0.1.0) is in progress: the owner authorised the release PR
-(`release/0.1.0`: five packages at 0.1.0, `private` lifted on that branch, core private). Merging it,
-the `v0.1.0` tag, environment approval, npm publication and GitHub Releases each need separate,
-explicit owner approval.
+**Current phase:** features 001–007 are closed (PASS). Feature 007 published 0.1.0 on 2026-11-10
+(tag `v0.1.0`, release run 42843343125; evidence: `specs/007-first-publication/`). The five public
+packages are on npm with provenance; `@neshel-ui/core` stays private. `v0.1.0` is immutable: never
+move, delete or recreate it, and never rerun its release workflow. Every new version, tag, npm
+publication, GitHub Release and trusted-publisher change needs separate, explicit owner approval.
 **Mission:** build a small, modular, accessible React design system that consumers can
 install without monorepo internals. **Do not implement the entire library in one pass.**
 
@@ -25,7 +25,9 @@ install without monorepo internals. **Do not implement the entire library in one
 - Project tagline: **Rooted in faith. Built with hope.** Do not assume or publish
   private personal stories, identities, or relationships behind the project name.
 - The npm organisation `neshel-ui` exists (owner-confirmed 2026-11-09). Org-wide 2FA enforcement is
-  not verified; no package is published. Do not claim otherwise.
+  not verified. `@neshel-ui/{config,layout,typography,components,cli}@0.1.0` are published and
+  verified (registry, SLSA provenance, SHA-512 integrity, clean install). Trusted publishing (OIDC)
+  is documented but not verified until a release publishes through it. Do not claim otherwise.
 
 ## Technology / architecture
 
@@ -51,8 +53,8 @@ install without monorepo internals. **Do not implement the entire library in one
 4. Small vertical slice; minimal implementation and tests; package build / Storybook proof.
 5. Record any unresolved contracts or DGS-like external constraints as blockers, not assumptions.
 6. Run quality gates and document actual results. Never report an unrun test as passing.
-7. Stop at owner approval before any npm publish, GitHub release, remote push, or
-   removal of package `private` guard.
+7. Stop at owner approval before any npm publish, version bump, tag, GitHub release, remote push,
+   or change to a package's `private` guard.
 
 ## Current runnable commands
 
@@ -68,6 +70,8 @@ install without monorepo internals. **Do not implement the entire library in one
   custom breakpoints, component labs with SSR; network). `--artifacts <dir>` keeps the builds.
 - `pnpm check:browser` / `pnpm check:browser:components --consumers <dir>` — computed styles and
   real-input interaction + axe checks in headless Chrome against those builds.
+- `pnpm check:starters [--from-registry]` — starter ZIPs built from tarballs, or (after a publication)
+  installed from npm and built.
 - `pnpm check` — doctor, lint, typecheck, test, build, check:exports, check:pack (offline).
 - `pnpm test` — `node:test` suites (scripts, tarball reader, validators, portability).
 - `pnpm typecheck` — workspace typecheck.

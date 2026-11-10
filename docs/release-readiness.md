@@ -8,8 +8,9 @@ three OSes, Chromium/Firefox/WebKit on Linux and macOS); closure: run
 **42731164807** (commit `52b0997`, 14/14 jobs). Details:
 [feature 006 evidence](../specs/006-docs-dx-release/evidence.md).
 
-No package may be published and no `private: true` flag removed until the owner explicitly
-authorises it (constitution VIII).
+**Outcome:** with R1–R9 met, the owner authorised feature 007, and 0.1.0 was published on
+2026-11-10 (tag `v0.1.0`, release run 42843343125) — [evidence](../specs/007-first-publication/evidence.md). Every later publication still
+needs explicit owner authorisation (constitution VIII).
 
 | #   | Requirement                                                                           | Status  | Evidence                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | --- | ------------------------------------------------------------------------------------- | ------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -35,9 +36,9 @@ authorises it (constitution VIII).
 | Layout CSS close to its size budget                                   | **Accepted**: 47.7 KiB minified, 3.6 KiB gzip; the existing byte budget and the new gzip budget fail on growth.                                                                                                                                                                                                                                                                                                                                   |
 | `@neshel-ui` npm scope unverified                                     | **Resolved (owner-confirmed, 2026-11-09)**: the owner confirmed that the `neshel-ui` npm organisation exists and that their personal npm account has 2FA enabled. Corroborated anonymously: the registry's organisation package listing now answers 200 with no packages (it was 404 on 2026-11-08); the five package names are still unused (404). **Organisation-wide 2FA enforcement for members is not verified** (docs/releasing.md step 1). |
 
-## Remaining before publication (owner)
+## After publication
 
-R1–R9 are met; feature 006 is closed (PASS, 2026-11-09). What remains belongs to feature 007 and
-requires explicit owner authorisation: optional organisation-wide 2FA enforcement, the GitHub
-environment `npm-release`, the release PR lifting the guards, the bootstrap credential, the tag and
-the environment approval — see [releasing.md](releasing.md).
+R1–R9 were met in feature 006 (closed PASS, 2026-11-09). Feature 007 executed the publication and
+closed PASS on 2026-11-10 ([evidence](../specs/007-first-publication/evidence.md)). Remaining owner actions — revoking the bootstrap token,
+the GitHub Release, trusted publishers before the next release and optional organisation-wide 2FA
+enforcement — are listed in [releasing.md](releasing.md).

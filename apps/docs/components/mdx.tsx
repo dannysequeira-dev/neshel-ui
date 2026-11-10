@@ -10,6 +10,7 @@ import { ApiTable, ComponentKind } from "./api-table";
 import { ExportList } from "./export-list";
 import { PackageInstall, ReleaseNotice } from "./package-install";
 import { Preview } from "./preview";
+import { StarterDownloads } from "./starter-downloads";
 
 type WithoutLocale<T extends (props: never) => unknown> = Omit<Parameters<T>[0], "locale">;
 
@@ -38,6 +39,7 @@ export function getMDXComponents(components?: MDXComponents, locale: Locale = "e
     ReleaseNotice: (props: Omit<ComponentProps<typeof ReleaseNotice>, "locale">) => (
       <ReleaseNotice {...props} locale={locale} />
     ),
+    StarterDownloads: () => <StarterDownloads locale={locale} />,
     ...components,
   } satisfies MDXComponents;
 }

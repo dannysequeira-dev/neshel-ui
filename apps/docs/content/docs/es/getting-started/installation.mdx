@@ -1,6 +1,6 @@
 ---
 title: Instalación
-description: Instala los paquetes de Neshel-UI que necesites con pnpm, npm o Yarn — desde npm tras la publicación o desde tarballs locales hoy.
+description: Instala desde npm los paquetes de Neshel-UI que necesites con pnpm, npm o Yarn.
 ---
 
 Neshel-UI son cinco paquetes. Instala solo lo que uses: `@neshel-ui/config` siempre (aporta los
@@ -20,13 +20,17 @@ breakpoints.
 Las dependencias en tiempo de ejecución (Radix, Base UI, tailwind-variants…) se instalan solas. pnpm
 y npm ≥ 7 instalan automáticamente las peers que falten; Yarn las indica para que las añadas tú.
 
-## Desde npm (tras la publicación de 0.1.0)
+## Desde npm
 
 <PackageInstall packages={["@neshel-ui/config", "@neshel-ui/layout", "@neshel-ui/typography", "@neshel-ui/components"]} />
 
 Y, para la configuración (opcional):
 
 <PackageInstall packages={["@neshel-ui/cli"]} dev />
+
+Los cinco paquetes están publicados como `0.1.0` con [procedencia de npm](https://docs.npmjs.com/generating-provenance-statements):
+cada tarball está firmado y vinculado a la ejecución de GitHub Actions que lo construyó.
+`npm audit signatures` verifica en tu proyecto las firmas del registro y las atestaciones.
 
 ### Elegir pnpm, npm o Yarn
 
@@ -35,11 +39,11 @@ Neshel-UI y sus pruebas automáticas de consumidores externos usan **pnpm**; el 
 funciona con npm y con Yarn (Berry con el *linker* `node-modules` o con Plug'n'Play). Usa un solo
 gestor por proyecto y versiona su archivo de bloqueo.
 
-## Desde tarballs locales (antes de la publicación)
+## Desde tarballs locales (cambios sin publicar)
 
-Hasta que los paquetes estén en npm, compílalos desde el repositorio e instala los tarballs
-empaquetados. Así es exactamente como los instalan las pruebas automáticas de consumidores externos
-de Neshel-UI.
+Para probar cambios que aún no están en npm, compila los paquetes desde el repositorio e instala los
+tarballs empaquetados. Así es exactamente como los instalan las pruebas automáticas de consumidores
+externos de Neshel-UI.
 
 <Steps>
 <Step>

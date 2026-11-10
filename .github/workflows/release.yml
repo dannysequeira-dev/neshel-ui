@@ -1,17 +1,15 @@
 # Release pipeline (feature 006, ADR 0017, specs/006-docs-dx-release/contracts/release.md).
 #
-# PREPARED, NOT AUTHORISED: nothing here runs on branch pushes or pull requests. Publication happens
-# only when the owner pushes a tag `vX.Y.Z` AND approves the protected `npm-release` environment.
-# A manual run (workflow_dispatch) is always a dry run: it rehearses the 0.1.0 transition in a
-# temporary copy (pnpm release:simulate) and publishes nothing.
+# Nothing here runs on branch pushes or pull requests. Publication happens only when the owner
+# pushes a tag `vX.Y.Z` AND approves the protected `npm-release` environment. A manual run
+# (workflow_dispatch) is always a dry run (pnpm release:simulate) and publishes nothing.
 #
-# Owner setup before the first real run (docs/releasing.md):
-#   - npm organisation `neshel-ui` exists and is owned by the maintainers (2FA enforced);
-#   - the release PR removed `private: true` and ran `changeset version` (packages at X.Y.Z);
-#   - GitHub environment `npm-release` with required reviewers and a tag rule `v*.*.*`;
-#   - 0.1.0 bootstrap: secret NPM_BOOTSTRAP_TOKEN (granular, short-lived, five packages) in that
-#     environment, OR a manual publish of the CI tarballs; afterwards trusted publishers per package
-#     (workflow file `release.yml`, environment `npm-release`) and the token is revoked.
+# 0.1.0 was published from tag v0.1.0 by run 42843343125 with a bootstrap token; that tag keeps the
+# workflow as it was and is never rerun. From here on the publish job uses npm trusted publishing
+# (OIDC, `id-token: write`) and has no npm credential: before the next tag, the owner configures a
+# trusted publisher per package (repository dannysequeira-dev/neshel-ui, workflow `release.yml`,
+# environment `npm-release`). Without it the publish step fails on authentication and publishes
+# nothing. See docs/releasing.md.
 name: Release
 
 on:
@@ -96,10 +94,9 @@ jobs:
         with:
           name: release-tarballs
           path: release-tarballs
+      # npm trusted publishing (OIDC): no npm token. Each package needs a trusted publisher for
+      # this repository, workflow `release.yml` and environment `npm-release` (docs/releasing.md).
       - name: Publish in dependency order (idempotent)
-        env:
-          # Only for the 0.1.0 bootstrap; leave unset once trusted publishers are configured.
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_BOOTSTRAP_TOKEN }}
         run: node scripts/publish-tarballs.mjs release-tarballs --version "${{ needs.verify.outputs.version }}"
       - name: Verify installation from the registry
         run: node scripts/publish-tarballs.mjs release-tarballs --version "${{ needs.verify.outputs.version }}" --verify-only

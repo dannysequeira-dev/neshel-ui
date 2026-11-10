@@ -1,6 +1,6 @@
 # Typography guide (`@neshel-ui/typography`)
 
-Status: **implemented in feature 004**, verified from packed tarballs; **not published**. Normative
+Status: **implemented in feature 004**, published on npm as 0.1.0. Normative
 contracts: [typography-api.md](../specs/004-typography-breakpoints/contracts/typography-api.md),
 [typography-css.md](../specs/004-typography-breakpoints/contracts/typography-css.md); decision:
 [ADR 0011](decisions/0011-typography-capsize.md).

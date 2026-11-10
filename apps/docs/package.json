@@ -6,7 +6,7 @@
   "description": "Official Neshel-UI documentation website (static export)",
   "scripts": {
     "dev": "neshel generate && next dev",
-    "build": "neshel generate && next build",
+    "build": "neshel generate && node ../../scripts/check-starters.mjs --no-build --zip-out public/downloads && next build",
     "typecheck": "next typegen && tsc -p tsconfig.typecheck.json --noEmit"
   },
   "dependencies": {
