@@ -1,6 +1,6 @@
 {
   "name": "@neshel-ui/typography",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Semantic, metrics-aware React typography",
   "keywords": [
     "neshel-ui",
@@ -22,7 +22,6 @@
   },
   "author": "Neshel-UI maintainers",
   "type": "module",
-  "private": true,
   "license": "MIT",
   "sideEffects": [
     "**/*.css"
@@ -35,6 +34,7 @@
     "!src/**/*.test.tsx",
     "!src/**/*.stories.tsx",
     "README.md",
+    "CHANGELOG.md",
     "LICENSE"
   ],
   "exports": {
