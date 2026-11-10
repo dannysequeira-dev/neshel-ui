@@ -158,12 +158,16 @@ async function main() {
         await d.press("k", 2); // Ctrl
         await d.waitFor(`document.querySelector('[role="dialog"] input')`, "search dialog", 5000);
         await d.type(query);
+        const found = `[...document.querySelectorAll('[id^="fd-search-option-"]')].some((o) => o.id === "fd-search-option-${expected}")`;
         await d
-          .waitFor(
-            `[...document.querySelectorAll('[id^="fd-search-option-"]')].some((o) => o.id === "fd-search-option-${expected}")`,
-            `result ${expected}`,
-            8000,
-          )
+          .waitFor(found, `result ${expected}`, 8000)
+          .catch(async () => {
+            // The per-locale index loads lazily; on a slow runner the first query can run before it
+            // arrives and stay empty. Retype the query once (real input over the selected text).
+            await d.evaluate(`document.querySelector('[role="dialog"] input')?.select()`);
+            await d.type(query);
+            await d.waitFor(found, `result ${expected}`, 15000);
+          })
           .catch(async () => {
             const ids = await d.evaluate(
               `[...document.querySelectorAll('[id^="fd-search-option-"]')].map((o) => o.id).slice(0, 5)`,
