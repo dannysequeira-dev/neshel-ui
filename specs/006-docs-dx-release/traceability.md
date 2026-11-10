@@ -2,7 +2,8 @@
 
 Brief § → requirement → implementation → verification. Evidence details: [evidence.md](evidence.md).
 
-**Owner closure (2026-11-09): PASS.** Latest CI before closure: run 42711217374 (`8f13a20`, 14/14).
+**Owner closure (2026-11-09): PASS.** Closure CI: run 42731164807 (`52b0997`, 14/14). Run 42716476478
+(`712105a`, closure docs) failed only the macOS Spanish search smoke (lazy index race), fixed in `52b0997`.
 Implementation closure commit `3d86273`: CI run 42632460159, 13/13 jobs green (validate ×5, docs ×3 OS, Next.js +
 starters + bundle budgets + release rehearsal ×3 OS, Chromium/Firefox/WebKit on Linux and macOS).
 Previous: 42631486037 (`df96f64`, 13/13), 42630400156 (`3182326`, 13/13).

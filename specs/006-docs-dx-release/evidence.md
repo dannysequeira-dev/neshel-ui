@@ -14,6 +14,8 @@ no guard was lifted; no tag or release was created.
 | 42629953416 | `0e53ae3` | cancelled              | superseded by the next push                                                                                     |
 | 42630400156 | `3182326` | **13/13**              | validate ×5, docs ×3 OS, next + starters + bundles ×3 OS, browsers (Chromium/Firefox/WebKit) on Linux and macOS |
 | 42711217374 | `8f13a20` | **14/14**              | latest before closure (adds the Vercel build job); brand policy approved                                        |
+| 42716476478 | `712105a` | 13/14                  | closure docs; docs / macos-latest: Spanish search returned no options (lazy index race)                         |
+| 42731164807 | `52b0997` | **14/14**              | **closure run**: the search smoke retypes once when the index arrives late                                      |
 
 The final run for the closure commit is recorded in [traceability.md](traceability.md).
 

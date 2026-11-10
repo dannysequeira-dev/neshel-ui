@@ -4,8 +4,8 @@ Recorded from the owner's Phase 005 review (2026-11-09) and worked on in feature
 ([spec](../specs/006-docs-dx-release/spec.md), owner brief 2026-11-08). Each status is backed by
 evidence; accepted risks stay listed as risks. CI references: run **42630400156** (commit `3182326`,
 13/13 jobs: Linux/Windows/macOS validation, docs on three OSes, Next.js + starters + bundle budgets on
-three OSes, Chromium/Firefox/WebKit on Linux and macOS); latest on `main` before closure: run
-**42711217374** (commit `8f13a20`, 14/14 jobs). Details:
+three OSes, Chromium/Firefox/WebKit on Linux and macOS); closure: run
+**42731164807** (commit `52b0997`, 14/14 jobs). Details:
 [feature 006 evidence](../specs/006-docs-dx-release/evidence.md).
 
 No package may be published and no `private: true` flag removed until the owner explicitly

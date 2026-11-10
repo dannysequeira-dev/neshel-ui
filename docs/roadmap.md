@@ -9,7 +9,7 @@ Legend: **Scaffold** = files exist, **Planned** = work not done, **Verified** = 
 | 003   | Layout primitives: Box / Flex / Stack / Inline / Grid / Center / Container                  | PASS — closed; tag `v0.0.1-phase-3` (owner)                                                   | Responsive variants, semantic DOM, SSR, tests            |
 | 004   | Typography: Heading / Text / Paragraph / Caption + Capsize; custom responsive breakpoints   | PASS — closed (`e2c60d1`, run 42489974343)                                                    | Font metrics snapshots, accessibility, SSR               |
 | 005   | Components, navigation, overlays, selection and application shell (expanded MVP)            | PASS — closed by the owner (2026-11-09); `f66afe4`, CI runs 42543517738 / 42544327073 5/5     | Interactions, keyboard, focus, contrast                  |
-| 006   | Documentation website, DX, release hardening (R1–R9) and release candidate                  | PASS — closed (2026-11-09); R1–R9 met; CI run 42711217374 14/14; `specs/006-docs-dx-release/` | Docs CI, packed Next/Vite consumers, 3 browsers, dry-run |
+| 006   | Documentation website, DX, release hardening (R1–R9) and release candidate                  | PASS — closed (2026-11-09); R1–R9 met; CI run 42731164807 14/14; `specs/006-docs-dx-release/` | Docs CI, packed Next/Vite consumers, 3 browsers, dry-run |
 | 007   | First publication (owner-authorised execution of the pipeline prepared in 006)              | Planned — requires explicit owner authorisation                                               | Owner approval, scope owned, npm dry-run, provenance     |
 
 Documentation hosting: Vercel (owner decision 2026-11-09), live at https://neshel-ui.vercel.app — [deployment.md](deployment.md).
