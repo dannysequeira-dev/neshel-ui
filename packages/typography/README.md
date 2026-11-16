@@ -1,5 +1,8 @@
 # @neshel-ui/typography
 
+[![@neshel-ui/typography npm version](https://img.shields.io/npm/v/@neshel-ui/typography?style=flat-square&logo=npm&label=npm)](https://www.npmjs.com/package/@neshel-ui/typography) [![@neshel-ui/typography monthly downloads](https://img.shields.io/npm/dm/@neshel-ui/typography?style=flat-square&logo=npm&label=downloads%2Fmonth)](https://www.npmjs.com/package/@neshel-ui/typography)
+![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?style=flat-square&logo=typescript&logoColor=white) ![React 19](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=0D1B39) [![MIT License](https://img.shields.io/github/license/dannysequeira-dev/neshel-ui?style=flat-square&color=D9B86A)](https://github.com/dannysequeira-dev/neshel-ui/blob/main/LICENSE)
+
 Semantic, metrics-aware React typography: `Heading`, `Text`, `Paragraph` and `Caption`, with
 Capsize trimming driven by your fonts' metrics and responsive props for the breakpoints your
 application configures.
