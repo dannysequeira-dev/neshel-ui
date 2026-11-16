@@ -49,14 +49,14 @@ The navy, ivory and gold appearance is Neshel's default; your application owns i
 
 ## Packages
 
-| Package | npm release | What it gives you |
-| --- | --- | --- |
-| [`@neshel-ui/config`](packages/config) | ![npm version](https://img.shields.io/npm/v/@neshel-ui/config?style=flat-square&logo=npm&label=npm) | Tokens as CSS custom properties; light, dark, system and named themes; `defineConfig` |
-| [`@neshel-ui/layout`](packages/layout) | ![npm version](https://img.shields.io/npm/v/@neshel-ui/layout?style=flat-square&logo=npm&label=npm) | `Box`, `Flex`, `Stack`, `Inline`, `Grid`, `Center`, `Container` |
-| [`@neshel-ui/typography`](packages/typography) | ![npm version](https://img.shields.io/npm/v/@neshel-ui/typography?style=flat-square&logo=npm&label=npm) | `Heading`, `Text`, `Paragraph`, `Caption` with Capsize trimming |
-| [`@neshel-ui/components`](packages/components) | ![npm version](https://img.shields.io/npm/v/@neshel-ui/components?style=flat-square&logo=npm&label=npm) | Buttons, cards, form controls, overlays, selection, navigation, application shell |
-| [`@neshel-ui/cli`](packages/cli) | ![npm version](https://img.shields.io/npm/v/@neshel-ui/cli?style=flat-square&logo=npm&label=npm) | `neshel validate` and `neshel generate` for themes, fonts and custom breakpoints |
-| [`@neshel-ui/animations`](packages/animations) | ![Experimental / unpublished](https://img.shields.io/badge/status-experimental%20%2F%20unpublished-D9B86A?style=flat-square) | Motion engine and Tilt3D prototype; **private, not on npm** |
+| Package                                        | npm release                                                                                                                  | What it gives you                                                                     |
+| ---------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| [`@neshel-ui/config`](packages/config)         | ![npm version](https://img.shields.io/npm/v/@neshel-ui/config?style=flat-square&logo=npm&label=npm)                          | Tokens as CSS custom properties; light, dark, system and named themes; `defineConfig` |
+| [`@neshel-ui/layout`](packages/layout)         | ![npm version](https://img.shields.io/npm/v/@neshel-ui/layout?style=flat-square&logo=npm&label=npm)                          | `Box`, `Flex`, `Stack`, `Inline`, `Grid`, `Center`, `Container`                       |
+| [`@neshel-ui/typography`](packages/typography) | ![npm version](https://img.shields.io/npm/v/@neshel-ui/typography?style=flat-square&logo=npm&label=npm)                      | `Heading`, `Text`, `Paragraph`, `Caption` with Capsize trimming                       |
+| [`@neshel-ui/components`](packages/components) | ![npm version](https://img.shields.io/npm/v/@neshel-ui/components?style=flat-square&logo=npm&label=npm)                      | Buttons, cards, form controls, overlays, selection, navigation, application shell     |
+| [`@neshel-ui/cli`](packages/cli)               | ![npm version](https://img.shields.io/npm/v/@neshel-ui/cli?style=flat-square&logo=npm&label=npm)                             | `neshel validate` and `neshel generate` for themes, fonts and custom breakpoints      |
+| [`@neshel-ui/animations`](packages/animations) | ![Experimental / unpublished](https://img.shields.io/badge/status-experimental%20%2F%20unpublished-D9B86A?style=flat-square) | Motion engine and Tilt3D prototype; **private, not on npm**                           |
 
 Package version badges report individual npm releases; download badges in each public package README are also per package. Animations remains private until its release criteria are met.
 
@@ -146,12 +146,12 @@ Working agreements: [constitution](.specify/memory/constitution.md), [architectu
 
 ## Project status
 
-| Phase   | Focus                                                                | Status |
-| ------- | -------------------------------------------------------------------- | ------ |
-| 001–005 | Foundation, tokens and CLI, layout, typography, components and shell | Done   |
-| 006     | Documentation website, developer experience, release candidate       | Done   |
-| 007     | First npm publication: 0.1.0                                         | Done   |
-| 008.0   | Animations foundation (private), core engine and technical spikes      | Merged; experimental |
+| Phase   | Focus                                                                | Status               |
+| ------- | -------------------------------------------------------------------- | -------------------- |
+| 001–005 | Foundation, tokens and CLI, layout, typography, components and shell | Done                 |
+| 006     | Documentation website, developer experience, release candidate       | Done                 |
+| 007     | First npm publication: 0.1.0                                         | Done                 |
+| 008.0   | Animations foundation (private), core engine and technical spikes    | Merged; experimental |
 
 Release readiness: [docs/release-readiness.md](docs/release-readiness.md). Publication evidence for
 0.1.0 (tag `v0.1.0`, provenance, integrity, clean installation):
