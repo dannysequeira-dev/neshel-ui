@@ -74,5 +74,5 @@ packages (ADR 0017); three-OS CI (ADR 0003).
 
 Implemented and verified locally in 008.0 ([evidence](../../specs/008-animations/evidence.md)):
 `pnpm check` (contract, core and Tilt3D tests; tarball), `check:browser:animations` 14/14 in Chrome
-157, Storybook and playground builds, unchanged release guards and Changesets status. Three-OS CI and
-Firefox/WebKit runs are pending.
+157, Storybook and playground builds, unchanged release guards and Changesets status. GitHub Actions on PR #4: run 43800110693 green
+(14/14 jobs, lab 14/14 on Linux, Windows and macOS). Firefox/WebKit lab runs are pending (009).

@@ -1,8 +1,8 @@
 # Evidence — feature 008 (008.0)
 
 Status vocabulary (feature 001): **implemented**, **verified locally** (named machine), **verified
-in GitHub Actions** (named run and commit), **planned**. Nothing was pushed, merged, versioned,
-tagged or published; `@neshel-ui/animations` is `private: true` at `0.0.0`; no existing tag was
+in GitHub Actions** (named run and commit), **planned**. Nothing was merged, versioned,
+tagged or published (the branch was pushed and PR #4 opened with owner authorisation, 2026-11-15); `@neshel-ui/animations` is `private: true` at `0.0.0`; no existing tag was
 touched (`v0.1.0` unchanged).
 
 Machine: Windows 11 Home 10.0.26300, PowerShell 7 host with Git Bash, Node 26.13.0, pnpm 12.16.1,
@@ -11,19 +11,19 @@ code commit `9ff8aec`.
 
 ## Inventory
 
-| Item                                                  | Status                                       |
-| ----------------------------------------------------- | -------------------------------------------- |
-| `@neshel-ui/animations` package (private)             | implemented, verified locally                |
-| `./core`: scheduler, spring, composer, reduced motion | implemented (experimental), verified locally |
-| Tilt3D (component, `asChild`, hook, controller)       | implemented (experimental), verified locally |
-| CornerRecede (4 techniques, playground)               | prototype, verified locally (lab)            |
-| ScrollScene (playground)                              | prototype, verified locally (lab)            |
-| Storybook story Tilt3D                                | implemented, Storybook build passes          |
-| `check:pack --with`, `checkAnimationsContract`        | implemented, verified locally                |
-| `check:browser:animations`                            | implemented, verified locally                |
-| CI steps (pack `--with animations`, lab check)        | implemented, **not verified** (no push)      |
-| Catalogue (157 entries), ADRs 0018–0020               | documented (proposals for owner review)      |
-| Effects other than Tilt3D, registry, presets, tokens  | planned (009–016)                            |
+| Item                                                  | Status                                                        |
+| ----------------------------------------------------- | ------------------------------------------------------------- |
+| `@neshel-ui/animations` package (private)             | implemented, verified locally                                 |
+| `./core`: scheduler, spring, composer, reduced motion | implemented (experimental), verified locally                  |
+| Tilt3D (component, `asChild`, hook, controller)       | implemented (experimental), verified locally                  |
+| CornerRecede (4 techniques, playground)               | prototype, verified locally (lab)                             |
+| ScrollScene (playground)                              | prototype, verified locally (lab)                             |
+| Storybook story Tilt3D                                | implemented, Storybook build passes                           |
+| `check:pack --with`, `checkAnimationsContract`        | implemented, verified locally                                 |
+| `check:browser:animations`                            | implemented, verified locally                                 |
+| CI steps (pack `--with animations`, lab check)        | implemented, **verified in GitHub Actions** (run 43800110693) |
+| Catalogue (157 entries), ADRs 0018–0020               | documented (proposals for owner review)                       |
+| Effects other than Tilt3D, registry, presets, tokens  | planned (009–016)                                             |
 
 ## Local verification (2026-11-15)
 
@@ -84,13 +84,37 @@ The core never pulls React or the Slot; `composeTransform` alone pulls no schedu
 
 Screenshots in [visual-verification/](visual-verification/README.md) (Chrome 157, 1280×900).
 
+## GitHub Actions (PR #4, 2026-11-16)
+
+| Run         | Head commit | Result                     | Notes                                                                                                                                                                                                                                                                                      |
+| ----------- | ----------- | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 43796180289 | `53272c7`   | failure (12/14 jobs green) | `macos-latest / Node 26` and `windows-latest / Node 26` failed `check:browser:animations` (6/14). Cause: those runners expose `prefers-reduced-motion: reduce` at OS level, so Tilt3D correctly stayed flat (state `reduced`) while the check assumed no preference. Not a product defect. |
+| 43800110693 | `7c35f5c`   | **success, 14/14 jobs**    | Fix in the check only: it records the host preference and emulates `no-preference`; reduced cases still emulate `reduce`.                                                                                                                                                                  |
+
+Run 43800110693, per job: Node 26 on Linux, Windows and macOS; Node 22 and 24 on Linux (doctor, lint,
+tests, typecheck, build, package tests, exports, `check:pack --with animations`, packed consumers,
+browser suites, playground build, **`check:browser:animations`**, Storybook); docs on three OSes;
+browsers (Chromium/Firefox/WebKit smoke of the existing suites) on Linux and macOS; Next + starters on
+three OSes; Vercel local build.
+
+| OS (Node 26) | Chrome        | Host prefers reduced motion | WebGL       | Lab result |
+| ------------ | ------------- | --------------------------- | ----------- | ---------- |
+| Linux        | 157.0.8103.50 | no                          | ready       | 14/14      |
+| Windows      | 156.0.8078.80 | **yes**                     | ready       | 14/14      |
+| macOS        | 157.0.8103.52 | **yes**                     | unavailable | 14/14      |
+
+Finding: the reduced-motion policy was exercised by real OS settings on two runners, independently
+of emulation — the effect honoured them. WebGL is unavailable on the macOS runner; the lab reported
+`unavailable` and the DOM techniques still passed.
+
+Untouched areas re-checked on the PR head: `git diff main -- packages/{config,layout,typography,components,cli,core} .changeset .github/workflows/release.yml scripts/release-guards.mjs scripts/publish-tarballs.mjs` is empty; `@neshel-ui/animations` remains `private: true`.
+
 ## Not run / pending
 
-| Check                                                 | Why                                                                                 | Plan                                  |
-| ----------------------------------------------------- | ----------------------------------------------------------------------------------- | ------------------------------------- |
-| GitHub Actions (Linux, Windows, macOS; Node 22/24/26) | Requires pushing the branch — owner authorisation needed                            | After owner review (T044)             |
-| Firefox / WebKit lab runs                             | Harness (ADR 0016) not yet wired for the lab                                        | Phase 009 (T045)                      |
-| `pnpm check:consumer` (packed external apps)          | No published package changed; animations is private and has no consumer variant yet | Add an animations consumer in 009/016 |
-| `pnpm check:bundles` budgets for animations           | API not approved; measured manually above                                           | Phase 009                             |
-| Manual screen-reader pass of the lab                  | Owner task                                                                          | Before publication                    |
-| `pnpm check:next`, docs-site checks                   | Not affected by this slice                                                          | —                                     |
+| Check                                        | Why                                                                                 | Plan                                  |
+| -------------------------------------------- | ----------------------------------------------------------------------------------- | ------------------------------------- |
+| Firefox / WebKit lab runs                    | Harness (ADR 0016) not yet wired for the lab                                        | Phase 009 (T045)                      |
+| `pnpm check:consumer` (packed external apps) | No published package changed; animations is private and has no consumer variant yet | Add an animations consumer in 009/016 |
+| `pnpm check:bundles` budgets for animations  | API not approved; measured manually above                                           | Phase 009                             |
+| Manual screen-reader pass of the lab         | Owner task                                                                          | Before publication                    |
+| `pnpm check:next`, docs-site checks          | Not affected by this slice                                                          | —                                     |

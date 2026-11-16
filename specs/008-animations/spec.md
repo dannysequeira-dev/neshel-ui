@@ -4,8 +4,8 @@
 
 **Created**: 2026-11-15
 
-**Status**: **008.0 implemented and verified locally; awaiting owner review.** Milestone 008.0
-(architecture, contracts and technical spikes) is complete on the branch; nothing is pushed,
+**Status**: **008.0 implemented, verified locally and in GitHub Actions (PR #4, run 43800110693); awaiting owner review.** Milestone 008.0
+(architecture, contracts and technical spikes) is complete on the branch (pushed, PR #4 open); nothing is
 merged, versioned, tagged or published. `@neshel-ui/animations` is `private: true` at 0.0.0.
 Phases 009–016 are planned only. Evidence: [evidence.md](evidence.md).
 
@@ -266,7 +266,7 @@ As specified in [tilt-3d.md](contracts/tilt-3d.md):
 - **SC-005**: Catalogue ≥ 150 entries; ADRs 0018–0020 accepted as proposals pending owner review.
 - **SC-006**: No change to published packages' runtime code, exports or stylesheets
   (`git diff main -- packages/{config,layout,typography,components,cli}` empty).
-- **SC-007**: Three-OS CI and Firefox/WebKit checks — **pending** (nothing is pushed in 008.0).
+- **SC-007**: Three-OS CI — **met** (PR #4, run 43800110693). Firefox/WebKit lab checks — pending (009).
 
 ## Assumptions
 

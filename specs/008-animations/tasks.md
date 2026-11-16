@@ -48,9 +48,10 @@ Requirement links in parentheses.
 - [x] T040 `check:browser:animations` (14 cases incl. axe) (FR-090)
 - [x] T041 `pnpm check`, Storybook build, playground build, `changeset status`, release guards,
   `docs:api --check`, bundle measurement (SC-001–SC-004, SC-006)
-- [x] T042 CI workflow steps for `--with animations` and the lab check (written; **unverified**)
+- [x] T042 CI workflow steps for `--with animations` and the lab check (verified in run 43800110693)
 - [x] T043 evidence.md, roadmap, architecture, package contracts, CLAUDE.md, ADR index (FR-102)
-- [ ] T044 Three-OS CI run of the branch — **blocked**: requires owner authorisation to push (SC-007)
+- [x] T044 Three-OS CI run of the branch — PR #4, run 43800110693 green (14/14 jobs) after fixing the
+  lab check's reduced-motion assumption found in run 43796180289 (SC-007)
 - [ ] T045 Firefox/WebKit run of the lab — moved to 009 (research R2)
 - [ ] T046 Owner review and closure of 008.0
 

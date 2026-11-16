@@ -3,7 +3,8 @@
 **Current phase:** features 001–007 are closed (PASS). Feature 007 published 0.1.0 on 2026-11-10
 (tag `v0.1.0`, release run 42843343125; evidence: `specs/007-first-publication/`). Feature 008
 (animations) milestone 008.0 — architecture, contracts, catalogue and spikes — is implemented and
-verified locally on `feature/008-animations`, awaiting owner review (`specs/008-animations/`).
+verified locally and in CI (PR #4, run 43800110693, not merged), awaiting owner review
+(`specs/008-animations/`).
 `@neshel-ui/animations` is **private** (0.0.0) and must stay private until the owner approves its
 first publication; it is outside the Changesets fixed group and the release scripts. The five public
 packages are on npm with provenance; `@neshel-ui/core` stays private. `v0.1.0` is immutable: never

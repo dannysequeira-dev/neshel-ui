@@ -111,7 +111,7 @@ Changesets fixed group or the release workflow. Peer `react ^19.0.0`; runtime de
   `./styles.css` (opt-in, `@layer components.neshel`).
 - Tilt3D: pointer-driven 3D tilt with spring return, no React render per pointer move, keyboard focus
   pose, live `prefers-reduced-motion`, `asChild`, SSR-safe markup.
-- Verified locally (unit, type, contract, packed tarball, Chrome lab); three-OS CI pending. The
+- Verified locally (unit, type, contract, packed tarball, Chrome lab); three-OS CI green (PR #4, run 43800110693). The
   157-entry catalogue and phases 009–016 are planned only.
 
 ```tsx
