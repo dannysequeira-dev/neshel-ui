@@ -1,5 +1,8 @@
 # @neshel-ui/layout
 
+[![@neshel-ui/layout npm version](https://img.shields.io/npm/v/@neshel-ui/layout?style=flat-square&logo=npm&label=npm)](https://www.npmjs.com/package/@neshel-ui/layout) [![@neshel-ui/layout monthly downloads](https://img.shields.io/npm/dm/@neshel-ui/layout?style=flat-square&logo=npm&label=downloads%2Fmonth)](https://www.npmjs.com/package/@neshel-ui/layout)
+![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?style=flat-square&logo=typescript&logoColor=white) ![React 19](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=0D1B39) [![MIT License](https://img.shields.io/github/license/dannysequeira-dev/neshel-ui?style=flat-square&color=D9B86A)](https://github.com/dannysequeira-dev/neshel-ui/blob/main/LICENSE)
+
 Composable, responsive and accessible React layout primitives: `Box`, `Flex`, `Stack`, `Inline`,
 `Grid`, `Center` and `Container`.
 
