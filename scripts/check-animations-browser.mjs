@@ -377,6 +377,7 @@ async function main() {
         const control = window.__neshelLab.engine.api.animate(80, 5000);
         const result = await control.finished;
         window.__neshelLab.engine.api.animate(0, 0);
+        window.__neshelLab.engine.api.unbind();
         return { ...result, ms: performance.now() - started };
       })()`);
       await motionPreference("no-preference");

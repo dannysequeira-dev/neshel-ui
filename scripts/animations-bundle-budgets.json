@@ -1,0 +1,6 @@
+{
+  "core (entire entry)": 8192,
+  "registry + host (defineEffect, createEffectRegistry, attachEffect)": 3072,
+  "composeTransform": 614,
+  "hover: Tilt3D": 7168
+}

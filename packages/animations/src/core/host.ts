@@ -11,7 +11,7 @@
  */
 import { composeTransform, type TransformLayer } from "./compose.js";
 import { describeElement, devWarnOnce, isProduction } from "./dev.js";
-import { NeshelAnimationsError } from "./errors.js";
+import { animationsError } from "./errors.js";
 import { type FrameScheduler, getFrameScheduler } from "./scheduler.js";
 
 export const EXCLUSIVE_CHANNELS = [
@@ -37,9 +37,7 @@ export function isExclusiveChannel(channel: unknown): channel is ExclusiveChanne
 export function resolveConflictPolicy(policy: ConflictPolicy | undefined): ConflictPolicy {
   if (policy === undefined) return isProduction() ? "silent" : "warn";
   if (policy !== "warn" && policy !== "error" && policy !== "silent") {
-    throw new NeshelAnimationsError(
-      `[@neshel-ui/animations] invalid conflict policy ${JSON.stringify(policy)}; expected "warn", "error" or "silent".`,
-    );
+    throw animationsError("conflicts", `invalid policy ${JSON.stringify(policy)}`);
   }
   return policy;
 }
@@ -70,17 +68,6 @@ interface PropState {
   written: string | undefined;
 }
 
-export interface MotionDebugInfo {
-  channels: Array<{
-    channel: string;
-    mode: "compose" | "multiply" | "exclusive";
-    owner?: string;
-    waiting: string[];
-    contributions: number;
-  }>;
-  writes: number;
-}
-
 export interface MotionHost {
   setLayer(key: symbol, layer: TransformLayer | undefined): void;
   setOpacity(key: symbol, value: number | undefined): void;
@@ -93,7 +80,20 @@ export interface MotionHost {
   commit(property: string, value: string): void;
   /** Write pending changes now (normally done in the scheduler's write phase). */
   flush(): void;
-  debug(): MotionDebugInfo;
+  /** Engine-internal state, read by debug.ts only (kept out of bundles that do not import it). */
+  readonly internals: HostInternals;
+}
+
+export interface HostInternals {
+  readonly layers: ReadonlyMap<symbol, unknown>;
+  readonly opacities: ReadonlyMap<symbol, number>;
+  readonly records: ReadonlyMap<
+    Claim,
+    { readonly claim: Claim; readonly seq: number; readonly granted: boolean }
+  >;
+  readonly owners: ReadonlyMap<string, { readonly claim: Claim }>;
+  readonly values: ReadonlyMap<string, string>;
+  readonly writes: number;
 }
 
 type Styled = { readonly style: CSSStyleDeclaration };
@@ -113,9 +113,9 @@ export function getMotionHost(
   return host;
 }
 
-/** Diagnostics of the element's host (unstable output; development and tests). */
-export function getMotionDebugInfo(element: object): MotionDebugInfo | undefined {
-  return hosts.get(element)?.debug();
+/** The element's host if one exists (never creates one). */
+export function peekMotionHost(element: object): MotionHost | undefined {
+  return hosts.get(element);
 }
 
 function createHost(element: Styled, scheduler: FrameScheduler): MotionHost {
@@ -215,7 +215,7 @@ function createHost(element: Styled, scheduler: FrameScheduler): MotionHost {
           state.written = undefined;
           devWarnOnce(
             `external:${elementKey()}:${property}`,
-            `"${property}" on ${describeElement(element)} was changed outside the motion engine while animated; the new value is kept as the baseline and restored when the animation ends.`,
+            `"${property}" on ${describeElement(element)} changed outside the engine; kept as the baseline to restore.`,
           );
         }
       }
@@ -251,8 +251,8 @@ function createHost(element: Styled, scheduler: FrameScheduler): MotionHost {
   }
 
   function report(policy: ConflictPolicy, loser: Claim, winner: Claim, channel: string): void {
-    const message = `"${loser.id}" is suspended: "${channel}" on ${describeElement(element)} is owned by "${winner.id}" (priority ${winner.priority}${winner.priority === loser.priority ? ", claimed first" : ` > ${loser.priority}`}).`;
-    if (policy === "error") throw new NeshelAnimationsError(`[@neshel-ui/animations] ${message}`);
+    const message = `"${loser.id}" is suspended: "${channel}" on ${describeElement(element)} is owned by "${winner.id}" (priority ${winner.priority} vs ${loser.priority}).`;
+    if (policy === "error") throw animationsError("conflict", message);
     if (policy === "warn") {
       devWarnOnce(`conflict:${elementKey()}:${channel}:${loser.id}:${winner.id}`, message);
     }
@@ -311,13 +311,6 @@ function createHost(element: Styled, scheduler: FrameScheduler): MotionHost {
     request(claim, policy) {
       const resolved = resolveConflictPolicy(policy);
       if (records.has(claim)) return records.get(claim)?.granted ?? false;
-      for (const channel of claim.channels) {
-        if (!isExclusiveChannel(channel)) {
-          throw new NeshelAnimationsError(
-            `[@neshel-ui/animations] "${claim.id}": "${String(channel)}" is not an exclusive channel.`,
-          );
-        }
-      }
       // Blocking owners: equal or higher priority (ties keep the existing owner).
       for (const channel of claim.channels) {
         const owner = owners.get(channel);
@@ -376,44 +369,8 @@ function createHost(element: Styled, scheduler: FrameScheduler): MotionHost {
       schedule();
     },
     flush,
-    debug() {
-      const channels: MotionDebugInfo["channels"] = [];
-      if (layers.size > 0) {
-        channels.push({
-          channel: "transform",
-          mode: "compose",
-          waiting: [],
-          contributions: layers.size,
-        });
-      }
-      if (opacities.size > 0) {
-        channels.push({
-          channel: "opacity",
-          mode: "multiply",
-          waiting: [],
-          contributions: opacities.size,
-        });
-      }
-      const exclusive = new Set<string>();
-      for (const record of records.values())
-        for (const channel of record.claim.channels) exclusive.add(channel);
-      for (const channel of [...exclusive].sort()) {
-        const owner = owners.get(channel);
-        channels.push({
-          channel,
-          mode: "exclusive",
-          ...(owner ? { owner: owner.claim.id } : {}),
-          waiting: [...records.values()]
-            .filter(
-              (record) =>
-                !record.granted && record.claim.channels.includes(channel as ExclusiveChannel),
-            )
-            .sort((a, b) => b.claim.priority - a.claim.priority || a.seq - b.seq)
-            .map((record) => record.claim.id),
-          contributions: owner && values.has(channel) ? 1 : 0,
-        });
-      }
-      return { channels, writes };
+    get internals() {
+      return { layers, opacities, records, owners, values, writes };
     },
   };
   return host;

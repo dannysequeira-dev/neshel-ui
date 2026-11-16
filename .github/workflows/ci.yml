@@ -114,6 +114,11 @@ jobs:
       - name: Browser animations lab check
         run: pnpm check:browser:animations
 
+      # Phase 009: an external app consumes the packed animations tarball (Vite build, SSR,
+      # hydration in Chrome, real pointer input, a custom engine effect).
+      - name: Animations packed consumer (SSR + hydration)
+        run: pnpm check:animations:consumer --no-build
+
       - name: Build Storybook
         run: pnpm --filter @neshel-ui/storybook build
 
@@ -234,6 +239,12 @@ jobs:
         run: pnpm check:consumer --no-build --artifacts "${{ runner.temp }}/neshel-consumers"
       - name: Chromium, Firefox and WebKit smoke flows + axe
         run: pnpm check:browsers --consumers "${{ runner.temp }}/neshel-consumers" --report "${{ runner.temp }}/browsers-report.json"
+      # Phase 009: the animations lab (Tilt3D input, reduced motion, engine conflicts, controllers,
+      # WAAPI, ScrollScene) in Chromium, Firefox and WebKit.
+      - name: Build the animations lab (playground)
+        run: pnpm --filter @neshel-ui/playground-vite build
+      - name: Animations lab in Chromium, Firefox and WebKit
+        run: pnpm check:animations:engines --report "${{ runner.temp }}/animations-engines-report.json"
       - name: Upload browser report (accessibility-tree evidence)
         if: always()
         uses: actions/upload-artifact@v7

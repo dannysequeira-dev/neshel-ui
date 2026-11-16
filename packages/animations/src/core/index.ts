@@ -15,6 +15,7 @@ export {
   type Transition,
   type TweenControl,
 } from "./controls.js";
+export { getMotionDebugInfo, type MotionDebugInfo } from "./debug.js";
 export { type DurationPreset, motionDefaults, type SpringPreset } from "./defaults.js";
 export {
   cubicBezier,
@@ -45,12 +46,7 @@ export {
   type ReducedBehaviour,
 } from "./effect.js";
 export { NeshelAnimationsError } from "./errors.js";
-export {
-  type ConflictPolicy,
-  type ExclusiveChannel,
-  getMotionDebugInfo,
-  type MotionDebugInfo,
-} from "./host.js";
+export type { ConflictPolicy, ExclusiveChannel } from "./host.js";
 export { clamp, mapRange, mix, progress } from "./interpolate.js";
 export { type MotionValue, motionValue } from "./motion-value.js";
 export {

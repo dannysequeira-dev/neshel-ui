@@ -13,6 +13,8 @@ export interface LabState {
       animate(to: number, duration?: number): { reverse(): void; cancel(): void };
       control(): { reverse(): void; cancel(): void } | undefined;
       waapi(): unknown;
+      debug(): unknown;
+      unbind(): void;
     };
     runEngineSuite(): Promise<Array<{ id: string; ok: boolean; error?: string }>>;
   };

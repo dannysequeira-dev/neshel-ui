@@ -106,6 +106,7 @@ export function EngineLab() {
         return control;
       },
       control: () => control,
+      debug: () => getMotionDebugInfo(element),
       waapi() {
         return animateElement(
           waapiElement,
@@ -159,7 +160,10 @@ export function EngineLab() {
         await frames(2);
         check(filter() === "saturate(1.2)", `restored ${filter()}`);
         check(element.style.getPropertyPriority("filter") === "important", "priority not restored");
-        check(getMotionDebugInfo(element) === undefined, "host not released");
+        check(
+          getMotionDebugInfo(element) === undefined,
+          `host not released: ${JSON.stringify(getMotionDebugInfo(element))}`,
+        );
       });
 
       await run(

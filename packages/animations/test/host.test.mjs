@@ -5,9 +5,8 @@ import test from "node:test";
 import { frames, setupDom } from "./helpers.mjs";
 
 await setupDom();
-const { getMotionHost, getMotionDebugInfo, resolveConflictPolicy } = await import(
-  "../dist/core/host.js"
-);
+const { getMotionHost, resolveConflictPolicy } = await import("../dist/core/host.js");
+const { getMotionDebugInfo } = await import("../dist/core/debug.js");
 const { NeshelAnimationsError } = await import("../dist/index.js");
 
 const el = () => {
@@ -127,7 +126,7 @@ test("external inline changes during animation become the baseline, with one war
   });
   assert.equal(element.style.transform, "scale(2) rotateZ(4deg)");
   assert.equal(warnings.length, 1);
-  assert.match(warnings[0], /changed outside the motion engine/);
+  assert.match(warnings[0], /changed outside the engine; kept as the baseline/);
   host.setLayer(key, undefined);
   frames.flush();
   assert.equal(element.style.transform, "scale(2)", "external value restored, never lost");
@@ -181,7 +180,7 @@ test("arbitration: ties keep the existing owner; the waiting claim resumes on re
   assert.equal(warnings.length, 1);
   assert.match(
     warnings[0],
-    /"media\/b" is suspended: "filter" on <div#t[a-z0-9]+> is owned by "media\/a" \(priority 0, claimed first\)/,
+    /"media\/b" is suspended: "filter" on <div#t[a-z0-9]+> is owned by "media\/a" \(priority 0 vs 0\)/,
   );
   host.setExclusive(b, "filter", "invert(1)"); // discarded while suspended
   host.setExclusive(a, "filter", "blur(2px)");

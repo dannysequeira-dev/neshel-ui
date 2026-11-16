@@ -3,7 +3,7 @@
  * Definitions are frozen values; nothing registers at import time.
  */
 import type { TransformLayer } from "./compose.js";
-import { NeshelAnimationsError } from "./errors.js";
+import { animationsError } from "./errors.js";
 import {
   type Claim,
   type ConflictPolicy,
@@ -87,7 +87,7 @@ export interface EffectDefinition<Options, Resolved> {
 export type AnyEffectDefinition = EffectDefinition<any, any>;
 
 const fail = (message: string): never => {
-  throw new NeshelAnimationsError(`[@neshel-ui/animations] defineEffect: ${message}`);
+  throw animationsError("defineEffect", message);
 };
 
 export function defineEffect<Options, Resolved>(
@@ -131,9 +131,7 @@ export function createEffectRegistry(definitions: readonly AnyEffectDefinition[]
   const byId = new Map<string, AnyEffectDefinition>();
   for (const definition of definitions) {
     if (byId.has(definition.id)) {
-      throw new NeshelAnimationsError(
-        `[@neshel-ui/animations] createEffectRegistry: duplicate effect id "${definition.id}".`,
-      );
+      throw animationsError("createEffectRegistry", `duplicate effect id "${definition.id}"`);
     }
     byId.set(definition.id, definition);
   }
@@ -192,8 +190,9 @@ export function attachEffect<Options, Resolved>(
 
   const guard = (channel: string) => {
     if (!declared.has(channel as never)) {
-      throw new NeshelAnimationsError(
-        `[@neshel-ui/animations] "${definition.id}" wrote "${channel}", which it did not declare in channels.`,
+      throw animationsError(
+        definition.id,
+        `wrote "${channel}", which it did not declare in channels`,
       );
     }
   };
