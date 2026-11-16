@@ -5,6 +5,17 @@ export interface LabState {
   sceneMeasurements: number;
   cornerAmount: number;
   webgl: "pending" | "ready" | "unavailable";
+  /** Phase 009 engine lab (set after mount). */
+  engine?: {
+    api: {
+      attach(name: "grayscale" | "alert"): void;
+      detach(name: "grayscale" | "alert"): void;
+      animate(to: number, duration?: number): { reverse(): void; cancel(): void };
+      control(): { reverse(): void; cancel(): void } | undefined;
+      waapi(): unknown;
+    };
+    runEngineSuite(): Promise<Array<{ id: string; ok: boolean; error?: string }>>;
+  };
 }
 
 declare global {

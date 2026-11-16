@@ -365,6 +365,25 @@ async function main() {
     notes.scrollDrivenAnimations = await p.evaluate(`CSS.supports("animation-timeline: view()")`);
     notes.viewTransitions = await p.evaluate(`typeof document.startViewTransition === "function"`);
 
+    // Phase 009 engine suite (runs inside the page; shared with the Playwright engine check).
+    await p.evaluate(`document.getElementById("engine-title").scrollIntoView()`);
+    const engineCases = await p.evaluate("window.__neshelLab.engine.runEngineSuite()");
+    for (const item of engineCases) cases.push(item);
+
+    await run("controller: reduced motion completes immediately at the end value", async () => {
+      await motionPreference("reduce");
+      const result = await p.evaluate(`(async () => {
+        const started = performance.now();
+        const control = window.__neshelLab.engine.api.animate(80, 5000);
+        const result = await control.finished;
+        window.__neshelLab.engine.api.animate(0, 0);
+        return { ...result, ms: performance.now() - started };
+      })()`);
+      await motionPreference("no-preference");
+      check(result.status === "completed" && result.value === 80, JSON.stringify(result));
+      check(result.ms < 500, `took ${result.ms} ms`);
+    });
+
     await run("axe: no violations on the lab page", async () => {
       await p.evaluate("window.scrollTo(0, 0)");
       await p.evaluate(axeSource);

@@ -2,9 +2,10 @@
  * Tilt3D options and their validation (contracts/tilt-3d.md §2). Pure; shared by the controller,
  * the hook and the component, so JavaScript consumers get the same errors as TypeScript ones.
  */
-import { REDUCED_MOTION_VALUES, type ReducedMotion } from "../core/reduced-motion.js";
-import { resolveSpring, type SpringOptions } from "../core/spring.js";
-import { animationsError } from "../errors.js";
+
+import { animationsError } from "../../core/errors.js";
+import { REDUCED_MOTION_VALUES, type ReducedMotion } from "../../core/reduced-motion.js";
+import { resolveSpring, type SpringOptions } from "../../core/spring.js";
 
 export type Tilt3DAxis = "both" | "x" | "y";
 export type Tilt3DPointerType = "mouse" | "pen" | "touch";

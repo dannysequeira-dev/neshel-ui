@@ -446,17 +446,19 @@ export function checkPackageContract(manifest, files, context = {}) {
 }
 
 /**
- * Contract of the private, experimental `@neshel-ui/animations` package (feature 008.0, ADR 0018):
- * still private, exports exactly `.`, `./core` and `./styles.css`, React as the only peer,
- * `@radix-ui/react-slot` as the only runtime dependency, a framework-free `./core` entry (relative
- * imports only) and a root entry that imports nothing beyond React and the slot.
+ * Contract of the private, experimental `@neshel-ui/animations` package (features 008–009, ADR 0018,
+ * owner decision D3): still private, exports exactly `.`, `./core`, `./hover` and `./styles.css`,
+ * React as the only peer, `@radix-ui/react-slot` as the only runtime dependency, a framework-free
+ * `./core` (relative imports only, never into React bindings or families), a root entry that never
+ * imports family code, and family subpaths that never import each other.
  */
 export function checkAnimationsContract(manifest, files) {
   const errors = [];
   if (manifest.private !== true) {
     errors.push("must stay private until the owner approves its first publication (feature 008)");
   }
-  const expected = [".", "./core", "./styles.css"];
+  const expected = [".", "./core", "./hover", "./styles.css"];
+  const FAMILY_DIRS = ["hover"];
   if (!sameKeys(manifest.exports, expected)) {
     errors.push(`exports must be exactly ${expected.join(", ")}`);
   }
@@ -471,7 +473,23 @@ export function checkAnimationsContract(manifest, files) {
   const allowed = new Set(["react", "react/jsx-runtime", "@radix-ui/react-slot"]);
   for (const [path, contents] of files) {
     if (!/^dist\/.*\.js$/.test(path)) continue;
-    for (const specifier of bareImports(contents.toString("utf8"))) {
+    const source = contents.toString("utf8");
+    const relativeImports = [
+      ...source.matchAll(/(?:from|import)\s*["'](\.{1,2}\/[^"']+)["']/g),
+    ].map((match) => new URL(match[1], `file:///${path}`).pathname.slice(1));
+    const family = FAMILY_DIRS.find((name) => path.startsWith(`dist/${name}/`));
+    for (const target of relativeImports) {
+      if (path.startsWith("dist/core/") && !target.startsWith("dist/core/")) {
+        errors.push(`${path} imports ${target}; the core entry may import only core modules`);
+      }
+      const targetFamily = FAMILY_DIRS.find((name) => target.startsWith(`dist/${name}/`));
+      if (targetFamily && targetFamily !== family) {
+        errors.push(
+          `${path} imports ${target}; family code is reachable only through its own subpath`,
+        );
+      }
+    }
+    for (const specifier of bareImports(source)) {
       if (path.startsWith("dist/core/")) {
         errors.push(
           `${path} imports "${specifier}"; the core entry may import only relative modules`,

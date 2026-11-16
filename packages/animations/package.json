@@ -46,6 +46,10 @@
       "types": "./dist/core/index.d.ts",
       "import": "./dist/core/index.js"
     },
+    "./hover": {
+      "types": "./dist/hover/index.d.ts",
+      "import": "./dist/hover/index.js"
+    },
     "./styles.css": "./dist/styles.css"
   },
   "scripts": {

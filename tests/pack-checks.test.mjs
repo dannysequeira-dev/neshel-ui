@@ -407,6 +407,7 @@ const animationsManifest = {
   exports: {
     ".": { types: "./dist/index.d.ts", import: "./dist/index.js" },
     "./core": { types: "./dist/core/index.d.ts", import: "./dist/core/index.js" },
+    "./hover": { types: "./dist/hover/index.d.ts", import: "./dist/hover/index.js" },
     "./styles.css": "./dist/styles.css",
   },
   peerDependencies: { react: "^19.0.0" },
@@ -419,6 +420,8 @@ test("animations package contract: private, exact exports, peers and framework-f
     "dist/tilt/tilt-3d.js":
       '"use client";\nimport { jsx } from "react/jsx-runtime";\nimport { Slot } from "@radix-ui/react-slot";\nimport { useRef } from "react";',
     "dist/core/index.js": 'export { stepSpring } from "./spring.js";',
+    "dist/hover/index.js": 'export { tilt3D } from "./tilt/controller.js";',
+    "dist/hover/tilt/controller.js": 'import { attachEffect } from "../../core/effect.js";',
   });
   assert.deepEqual(checkPackageContract(animationsManifest, good), []);
 });
@@ -426,7 +429,9 @@ test("animations package contract: private, exact exports, peers and framework-f
 test("negative: animations contract detects lifted guard, extra exports/deps and impure core", () => {
   const bad = files({
     "dist/core/scheduler.js": 'import { useEffect } from "react";',
-    "dist/index.js": 'import { animate } from "motion";',
+    "dist/core/effect.js": 'import { x } from "../react/use-motion-effect.js";',
+    "dist/index.js":
+      'import { animate } from "motion";\nexport { Tilt3D } from "./hover/tilt/tilt-3d.js";',
   });
   const errors = checkPackageContract(
     {
@@ -445,6 +450,8 @@ test("negative: animations contract detects lifted guard, extra exports/deps and
     /dependencies must/,
     /core entry/,
     /"motion"/,
+    /may import only core modules/,
+    /reachable only through its own subpath/,
   ]) {
     assert.ok(
       errors.some((error) => pattern.test(error)),

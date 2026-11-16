@@ -1,4 +1,4 @@
-import { Tilt3D } from "@neshel-ui/animations";
+import { Tilt3D } from "@neshel-ui/animations/hover";
 import {
   Button,
   Card,

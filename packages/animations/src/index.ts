@@ -1,17 +1,17 @@
 /**
- * `@neshel-ui/animations` (experimental, private, feature 008.0). Exports only what is implemented:
- * the Tilt3D effect at three API levels (component, hook, controller). The framework-agnostic
- * engine lives in `@neshel-ui/animations/core`.
+ * `@neshel-ui/animations` (experimental, private): React bindings of the motion engine (Phase 009).
+ * Effects live in family subpaths (`@neshel-ui/animations/hover`, …); the framework-free engine in
+ * `@neshel-ui/animations/core`.
  */
-
+export type {
+  AttachConfig,
+  EffectDefinition,
+  EffectHandle,
+  EffectState,
+} from "./core/effect.js";
+export { NeshelAnimationsError } from "./core/errors.js";
+export type { MotionValue } from "./core/motion-value.js";
 export type { ReducedMotion } from "./core/reduced-motion.js";
 export type { SpringOptions } from "./core/spring.js";
-export { NeshelAnimationsError } from "./errors.js";
-export {
-  createTilt3D,
-  type Tilt3DController,
-  type Tilt3DState,
-} from "./tilt/controller.js";
-export type { Tilt3DAxis, Tilt3DOptions, Tilt3DPointerType } from "./tilt/options.js";
-export { Tilt3D, type Tilt3DProps } from "./tilt/tilt-3d.js";
-export { useTilt3D } from "./tilt/use-tilt-3d.js";
+export { useMotionEffect } from "./react/use-motion-effect.js";
+export { useMotionValue, useMotionValueEvent } from "./react/use-motion-value.js";

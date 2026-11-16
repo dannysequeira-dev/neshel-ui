@@ -1,5 +1,5 @@
 // Experiment A: Tilt3D from the package (component, asChild, composition, depth, unmount).
-import { Tilt3D } from "@neshel-ui/animations";
+import { Tilt3D } from "@neshel-ui/animations/hover";
 import { Profiler, useState } from "react";
 import { labState } from "./lab-state";
 
