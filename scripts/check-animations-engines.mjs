@@ -1,12 +1,24 @@
 // pnpm check:animations:engines [--dist <dir>] [--engine chromium|firefox|webkit]... [--report <file>]
+//   [--cpu-throttle <rate>]
 // Phase 009 (spec FR-061): the animations lab in Chromium, Firefox and WebKit through Playwright
 // (the ADR 0016 harness; WebKit is Playwright's build, not Safari). Real mouse input for Tilt3D,
 // keyboard focus, live reduced-motion emulation, the in-page engine suite shared with the CDP
-// check, and the ScrollScene progress. Requires `pnpm build:playground`.
+// check, the ScrollScene progress and its geometry invalidation. Results are decided by observable
+// conditions with a ceiling (scripts/lib/animations-lab.mjs), never by fixed sleeps.
+// `--cpu-throttle <rate>` slows Chromium's main thread (CDP) to exercise slow-runner timing.
+// Requires `pnpm build:playground`.
 // Without Playwright or a browser: fails when CI=true, otherwise prints SKIPPED for that engine.
 import { createReadStream, existsSync, mkdirSync, statSync, writeFileSync } from "node:fs";
 import { createServer } from "node:http";
 import { extname, join, normalize, resolve, sep } from "node:path";
+import {
+  assertUntil,
+  runSceneShiftCase,
+  sceneShiftCases,
+  scrollSceneTo,
+  tiltStateExpression,
+  untilExpression,
+} from "./lib/animations-lab.mjs";
 import { repoRoot } from "./lib/workspace.mjs";
 
 const ENGINES = ["chromium", "firefox", "webkit"];
@@ -15,7 +27,7 @@ function argValues(name) {
   return process.argv.flatMap((arg, index) => (arg === name ? [process.argv[index + 1]] : []));
 }
 
-async function runEngine(playwright, engine, url) {
+async function runEngine(playwright, engine, url, throttle) {
   const browser = await playwright[engine].launch();
   const cases = [];
   const notes = { version: browser.version() };
@@ -32,7 +44,19 @@ async function runEngine(playwright, engine, url) {
       if (message.type() === "error") errors.push(message.text());
     });
     await page.goto(url);
-    await page.waitForFunction(() => window.__neshelLab?.engine !== undefined);
+    const evaluate = (expression) => page.evaluate(expression);
+    const until = async (label, condition, describe) =>
+      assertUntil(await evaluate(untilExpression(condition, describe)), label);
+    await until(
+      "lab ready",
+      `window.__neshelLab?.engine !== undefined && window.__neshelLab.sceneGeometry !== undefined`,
+      "window.__neshelLab",
+    );
+    if (throttle && engine === "chromium") {
+      const session = await context.newCDPSession(page);
+      await session.send("Emulation.setCPUThrottlingRate", { rate: throttle });
+      notes.cpuThrottle = throttle;
+    }
 
     const run = async (id, fn) => {
       try {
@@ -45,20 +69,13 @@ async function runEngine(playwright, engine, url) {
     const check = (condition, message) => {
       if (!condition) throw new Error(message);
     };
-    const tilt = (selector) =>
-      page.evaluate((sel) => {
-        const el = document.querySelector(sel);
-        const angle = (axis) =>
-          Number(
-            new RegExp(`rotate${axis}\\((-?[\\d.]+)deg\\)`).exec(el.style.transform)?.[1] ?? 0,
-          );
-        return {
-          state: el.getAttribute("data-neshel-tilt"),
-          inline: el.style.transform,
-          rx: angle("X"),
-          ry: angle("Y"),
-        };
-      }, selector);
+    const tilt = (selector) => evaluate(tiltStateExpression(selector));
+    const untilTilt = (label, selector, condition) =>
+      until(
+        label,
+        `((t) => ${condition})(${tiltStateExpression(selector)})`,
+        tiltStateExpression(selector),
+      );
 
     await run("load: no errors; tilt at rest", async () => {
       check(errors.length === 0, errors.join(" | "));
@@ -73,13 +90,13 @@ async function runEngine(playwright, engine, url) {
         await page.mouse.move(2, 2);
         await page.mouse.move(box.x + box.width * 0.5, box.y + box.height * 0.5);
         await page.mouse.move(box.x + box.width * 0.99, box.y + box.height * 0.01, { steps: 12 });
-        await page.waitForTimeout(800);
-        const tilted = await tilt("#tilt-basic");
-        check(tilted.state === "pointer" && tilted.rx > 8 && tilted.ry > 8, JSON.stringify(tilted));
+        await untilTilt(
+          "pointer pose",
+          "#tilt-basic",
+          `t.state === "pointer" && t.rx > 8 && t.ry > 8`,
+        );
         await page.mouse.move(2, 2);
-        await page.waitForTimeout(1600);
-        const rest = await tilt("#tilt-basic");
-        check(rest.state === "rest" && rest.inline === "", JSON.stringify(rest));
+        await untilTilt("back at rest", "#tilt-basic", `t.state === "rest" && t.inline === ""`);
       },
     );
 
@@ -87,20 +104,14 @@ async function runEngine(playwright, engine, url) {
       await page.evaluate(() => document.activeElement?.blur());
       await page.keyboard.press("Shift"); // keyboard modality for :focus-visible heuristics
       await page.focus("#tilt-focus-target");
-      await page.waitForTimeout(800);
-      const focused = await tilt("#tilt-basic");
-      check(
-        focused.state === "focus" && focused.rx > 3 && focused.ry < -3,
-        JSON.stringify(focused),
-      );
+      await untilTilt("focus pose", "#tilt-basic", `t.state === "focus" && t.rx > 3 && t.ry < -3`);
       await page.evaluate(() => document.activeElement?.blur());
-      await page.waitForTimeout(1200);
+      await untilTilt("rest after blur", "#tilt-basic", `t.state === "rest" && t.inline === ""`);
     });
 
     await run("reduced motion (live): flat card, controllers complete immediately", async () => {
       await page.emulateMedia({ reducedMotion: "reduce" });
-      await page.waitForTimeout(100);
-      check((await tilt("#tilt-basic")).state === "reduced", "tilt not reduced");
+      await untilTilt("tilt reduced", "#tilt-basic", `t.state === "reduced" && t.inline === ""`);
       const result = await page.evaluate(async () => {
         const started = performance.now();
         const outcome = await window.__neshelLab.engine.api.animate(80, 5000).finished;
@@ -113,7 +124,7 @@ async function runEngine(playwright, engine, url) {
         JSON.stringify(result),
       );
       await page.emulateMedia({ reducedMotion: "no-preference" });
-      await page.waitForTimeout(100);
+      await untilTilt("left the reduced state", "#tilt-basic", `t.state === "rest"`);
     });
 
     const suite = await page.evaluate(async () => {
@@ -123,22 +134,12 @@ async function runEngine(playwright, engine, url) {
     for (const item of suite) cases.push(item);
 
     await run("scene: progress follows scroll with the stage pinned", async () => {
-      const g = await page.evaluate(() => {
-        const s = document.getElementById("scene");
-        const r = s.getBoundingClientRect();
-        return { top: r.top + window.scrollY, distance: s.offsetHeight - window.innerHeight };
-      });
-      await page.evaluate((y) => window.scrollTo(0, y), g.top + g.distance * 0.25);
-      await page.waitForTimeout(300);
-      const state = await page.evaluate(() => ({
-        progress: window.__neshelLab.sceneProgress,
-        top: document.getElementById("scene-stage").getBoundingClientRect().top,
-      }));
-      check(
-        Math.abs(state.progress - 0.25) < 0.02 && Math.abs(state.top) < 1,
-        JSON.stringify(state),
-      );
+      await scrollSceneTo(evaluate, 0.25);
     });
+
+    for (const item of sceneShiftCases) {
+      await run(item.id, () => runSceneShiftCase(evaluate, item));
+    }
 
     await run("no page errors during the run", async () =>
       check(errors.length === 0, errors.join(" | ")),
@@ -189,6 +190,7 @@ async function main() {
   if (!existsSync(page)) throw new Error(`${page} not found; run pnpm build:playground first`);
   const selected = argValues("--engine");
   const engines = selected.length ? selected : ENGINES;
+  const throttle = Number(argValues("--cpu-throttle")[0] ?? 0);
   let playwright;
   try {
     playwright = await import("playwright");
@@ -204,7 +206,7 @@ async function main() {
   for (const engine of engines) {
     let result;
     try {
-      result = await runEngine(playwright, engine, url);
+      result = await runEngine(playwright, engine, url, throttle);
     } catch (error) {
       const message = `${engine}: cannot run (${String(error.message).split("\n")[0]}) — pnpm exec playwright install ${engine}`;
       if (process.env.CI === "true") throw new Error(message);

@@ -3,7 +3,11 @@
 Status vocabulary: **implemented**, **verified locally** (named machine), **verified in GitHub
 Actions** (named run), **planned**. **Current status: verified in GitHub Actions — CI run
 `43891329593`, 14/14 jobs, on commit `ceb71b6` (PR #6, branch pushed with owner authorisation);
-awaiting the owner's merge.** Nothing was merged, versioned, tagged or published;
+awaiting the owner's merge.** The documentation-only commit `79cedf4` then failed 13/14 (run
+`43936536735`, WebKit on Linux, ScrollScene prototype); the cause, the fixes to the playground
+prototype and the lab checks, and their verification are in
+[CI follow-up](#ci-follow-up-2026-11-16-stale-scrollscene-geometry-and-fixed-waits); the CI run of
+that follow-up is reported on PR #6. Nothing was merged, versioned, tagged or published;
 `@neshel-ui/animations` stays `private: true` at `0.0.0`. Sections below are dated; earlier stages
 are kept as history where marked.
 
@@ -133,15 +137,16 @@ from the stale local `main` (no changeset was added).
 
 ## GitHub Actions (PR #6)
 
-| Run         | Head      | Result               | Notes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| ----------- | --------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 43878431209 | `5e59ce9` | failure (13/14 jobs) | Only `browsers / ubuntu-latest`, WebKit: the lab case "WAAPI" read `getAnimations()` after two frames and saw 0 because the slow runner had already finished the 300 ms animation (it then completed and committed correctly). Timing assumption in the lab, not a product defect: the count is now read synchronously after `element.animate()`. Chromium and Firefox passed every case on Linux; all three engines passed on macOS; the main job (including `check:animations:consumer` and `check:animations:bundles`) passed on Linux, Windows and macOS. |
+| Run             | Head          | Result                   | Notes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| --------------- | ------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 43878431209     | `5e59ce9`     | failure (13/14 jobs)     | Only `browsers / ubuntu-latest`, WebKit: the lab case "WAAPI" read `getAnimations()` after two frames and saw 0 because the slow runner had already finished the 300 ms animation (it then completed and committed correctly). Timing assumption in the lab, not a product defect: the count is now read synchronously after `element.animate()`. Chromium and Firefox passed every case on Linux; all three engines passed on macOS; the main job (including `check:animations:consumer` and `check:animations:bundles`) passed on Linux, Windows and macOS. |
+| 43882551375     | `c33191f`     | success (14/14 jobs)     | Head after the WAAPI count fix; reviewed by the owner, who then requested the three lifecycle fixes below.                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| **43891329593** | **`ceb71b6`** | **success (14/14 jobs)** | **Final code head.** Linux, Windows and macOS (Node 26) and Linux Node 22/24: `pnpm check` (package tests 286/286), `check:pack --with animations`, `check:browser:animations` 20/20, `check:animations:consumer`, `check:animations:bundles`; browsers job on Linux and macOS: `check:animations:engines` in Chromium, Firefox and WebKit; docs, Next + starters, Vercel build.                                                                                                                                                                              |
 
-| 43882551375 | `c33191f` | success (14/14 jobs) | Head after the WAAPI count fix; reviewed by the owner, who then requested the three lifecycle fixes below. |
-| **43891329593** | **`ceb71b6`** | **success (14/14 jobs)** | **Final code head.** Linux, Windows and macOS (Node 26) and Linux Node 22/24: `pnpm check` (package tests 286/286), `check:pack --with animations`, `check:browser:animations` 20/20, `check:animations:consumer`, `check:animations:bundles`; browsers job on Linux and macOS: `check:animations:engines` in Chromium, Firefox and WebKit; docs, Next + starters, Vercel build. |
+| 43936536735 | `79cedf4` | failure (13/14 jobs; job re-run: same result) | Documentation-only commit (no code change from `ceb71b6`). Only `browsers / ubuntu-latest`, WebKit: "scene: progress follows scroll with the stage pinned" → `{"progress":1,"top":0}`. Stale geometry in the ScrollScene prototype, see [CI follow-up](#ci-follow-up-2026-11-16-stale-scrollscene-geometry-and-fixed-waits). |
 
-Run 43878431209 is kept as history (a lab timing assumption, fixed). The documentation-only commit
-that records this evidence is verified by the run reported on PR #6.
+Runs 43878431209 and 43936536735 are kept as history (lab and prototype defects, fixed). The run of
+the follow-up commit is reported on PR #6.
 
 ## Owner review of PR #6 (2026-11-16): three lifecycle defects (resolved in `ceb71b6`)
 
@@ -164,6 +169,116 @@ Local re-verification: `pnpm check` (package tests 286/286), `check:animations:b
 Contracts updated: controllers §1 (suspended controllers) and §4 (live reduced motion),
 effect-definition §3 (resumption failures, state `failed`), channels-and-arbitration §3 rule 5;
 ADR 0022 §8 and ADR 0023 §5.
+
+## CI follow-up (2026-11-16): stale ScrollScene geometry and fixed waits
+
+Owner authorisation (2026-11-16): fix the ScrollScene playground prototype and the browser lab
+checks; no change to `@neshel-ui/animations`, its API or budgets, the five published packages,
+Changesets or `release.yml`. None of those changed: `git diff ceb71b6 -- packages .changeset
+.github` is empty.
+
+### Failures observed
+
+| Where                        | Run                     | Case                                                                                                 | Result                                                                                           |
+| ---------------------------- | ----------------------- | ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| PR #6, `79cedf4` (docs only) | 43936536735, job re-run | WebKit on Linux (`check:animations:engines`): "scene: progress follows scroll with the stage pinned" | `{"progress":1,"top":0}` twice: stage pinned, progress wrong                                     |
+| `main`, `fd3885c`            | 43810901141             | macOS (`check:browser:animations`): "reduced motion (live change)"                                   | "did not leave reduced state" 100 ms after `prefers-reduced-motion` went back to `no-preference` |
+| `main`, `89665bf`            | 43813368226             | same                                                                                                 | same                                                                                             |
+
+The macOS case passed in PR runs 43805520902, 43891329593 and 43936536735 under the same conditions
+(Chrome 157, `systemPrefersReducedMotion: true`). **`main` stays red on that case until PR #6 is
+merged**: these fixes are on the branch only.
+
+### 1. ScrollScene: stale geometry (reproduced, fixed)
+
+The prototype re-measured its geometry only when its own section, or the viewport, changed size. If
+content above the scene moves it without resizing it, `top` stays stale: the stage remains pinned
+(CSS sticky), but the progress is computed against the old position.
+
+**Reproduced first**, locally in all three engines (lab built from `ceb71b6`): after measurement, a
+spacer above the scene grows by 600 px, then the page scrolls to the scene's real 50 %:
+
+| Engine       | Progress | Real (live layout) | Stage top |
+| ------------ | -------- | ------------------ | --------- |
+| Chromium 158 | 0.8447   | 0.5003             | 0         |
+| Firefox 159  | 0.8444   | 0.5000             | 0         |
+| WebKit 27.2  | 0.8441   | 0.4997             | 0         |
+
+The CI failure has the same signature (pinned stage, progress too high). What moved the content on the
+Linux WebKit runner is not identified, because the old check printed only progress and stage top.
+Failure messages now include the cached and live geometry.
+
+**Fix** (`apps/playground-vite/src/animations/scroll-scene.tsx`): the cache is invalidated by a
+`ResizeObserver` on the section, on the document element and on every element preceding the section
+in flow along its ancestor chain, by a `MutationObserver` on the ancestors' child lists (which
+re-collects the observed elements), and by viewport resize. Every signal requests one coalesced
+measurement in the scheduler's read phase, and scroll still never reads layout. All observers and
+listeners are removed on unmount, and a pending measurement is cancelled. Known limit: a margin
+change on a preceding element, or an ancestor padding change compensated elsewhere, resizes no
+observed box and is not detected. The engine was not changed.
+
+**Observing only `document.documentElement` is not enough**, and the tests show it. With only the
+section and the document element observed, the compensated case (content above grows while content
+below shrinks by the same amount, document height unchanged) **failed in Chromium and WebKit**: for
+example progress 0.834 against a real 0.500 in Chromium. Firefox passed it.
+
+**Regression tests** (`scripts/lib/animations-lab.mjs`, run by both `check:browser:animations` and
+`check:animations:engines`). Each case first checks that its mutation really moves the scene by the
+intended amount, without resizing the section. It then requires that the published progress, and
+`--scene-progress`, equal the progress implied by the live layout (within 1e-3), that the scroll
+reached its target, and that the stage stays pinned:
+
+- content above grows (the document grows);
+- compensated shift (the document height is unchanged);
+- an element inserted above, then removed.
+
+| Prototype                       | Result of the three cases                                                         |
+| ------------------------------- | --------------------------------------------------------------------------------- |
+| Original (`ceb71b6`)            | **fail in every engine (9 of 9)**, e.g. WebKit cached `top` 1272.6 vs live 1692.5 |
+| Section + document element only | compensated case fails in Chromium and WebKit                                     |
+| Fixed                           | pass in Chromium, Firefox, WebKit and the CDP Chrome lab                          |
+
+### 2. Lab checks: conditions instead of fixed waits
+
+Every fixed sleep followed by an assertion was replaced with a condition polled in the page. The
+default ceiling is 5000 ms, and a condition returns as soon as it holds. On timeout the check fails
+with the state that did not satisfy it. Tolerances were not widened; the scene's tolerance went from
+±0.02 on the nominal progress to ±0.001 against the live layout.
+
+- **Reduced motion** (CDP and Playwright): wait until Tilt3D is `reduced`, then until it is back at
+  `rest` with the media query no longer matching. Diagnostics include `matchMedia().matches`.
+- **ScrollScene** (both): progress consistent with the scroll position, scroll at its target, stage
+  pinned. The same applies after a viewport resize and after the smooth scrub converges.
+- **Directly related waits:** tilt pointer, return, composition and focus poses, unmount/remount,
+  corner settling and lab readiness now use conditions.
+- **Kept on purpose:** 16 ms input pacing between pointer moves, and three "must not happen yet"
+  checks, which are now bounded by frame counts instead of milliseconds:
+  - the return is not a snap (2 frames);
+  - no transform while reduced (10 frames);
+  - the smooth scrub lags (3 frames; the spring delta is clamped to 1/15 s per frame).
+
+**Reduced-motion race: not reproduced locally.** Attempts that did not reproduce it:
+
+- Chrome CPU throttling at 1×, 20× and 50× (10 rounds each: the state was `rest` at 100 ms every time);
+- a main thread kept busy for 150 ms and 400 ms when the preference changed;
+- the previous script under 6× and 20× throttling (passed).
+
+The only evidence is the two CI logs. The fix waits for the observable condition. If the controller
+never leaves the reduced state, the check still fails, now with the media-query state.
+
+**Slow-execution runs (new scripts):** `check:browser:animations --cpu-throttle 6` and `--cpu-throttle
+20` passed 23/23, and `check:animations:engines --engine chromium --cpu-throttle 6` passed. CPU
+throttling slows the page's JavaScript, not frame production, so slow CI runners remain the real test.
+
+### Local verification of the follow-up (Windows 11, same machine)
+
+- `pnpm check`: pass (repository tests 107, 0 failures; package tests 286/286; `check:pack` 5 public
+  - animations).
+- `check:browser:animations`: **23/23** (20 + three geometry-invalidation cases).
+- `check:animations:engines`: **14/14 in Chromium 158, Firefox 159 and WebKit 27.2** (11 + three
+  geometry-invalidation cases). WebKit was then run three more times: pass each time.
+- `check:animations:consumer`: pass. `check:animations:bundles`: pass, with unchanged sizes (core
+  8.80, registry + host 4.69, Tilt3D 8.00 KiB).
 
 ## Not run / pending
 

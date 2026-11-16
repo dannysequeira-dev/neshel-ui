@@ -3,6 +3,8 @@ export interface LabState {
   tiltCommits: number;
   sceneProgress: number;
   sceneMeasurements: number;
+  /** ScrollScene cached geometry (diagnostics for failing checks). */
+  sceneGeometry?: { top: number; distance: number };
   cornerAmount: number;
   webgl: "pending" | "ready" | "unavailable";
   /** Phase 009 engine lab (set after mount). */

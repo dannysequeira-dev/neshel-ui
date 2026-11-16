@@ -67,4 +67,6 @@ Approved 2026-11-16.
 - [x] T072 `git diff main` check of untouched packages/Changesets/release.yml (FR-070, SC-006)
 - [x] T073 Owner review fixes: suspended WAAPI `finish()`, failing resumed `setup()`, live reduced motion
   for WAAPI (regression tests; `ceb71b6`)
+- [x] T075 CI follow-up (owner authorisation 2026-11-16): ScrollScene prototype geometry
+  invalidation and condition-based lab checks with regression cases (evidence: CI follow-up)
 - [ ] T074 Owner merge of PR #6

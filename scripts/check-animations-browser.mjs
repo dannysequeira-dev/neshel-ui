@@ -1,14 +1,29 @@
-// pnpm check:browser:animations [--dist <dir>] [--report <file>]
+// pnpm check:browser:animations [--dist <dir>] [--report <file>] [--cpu-throttle <rate>]
 // Feature 008.0 (spec FR-090–FR-099): real-input checks of the animations lab in headless Chrome
 // through the DevTools protocol (scripts/lib/cdp.mjs): Tilt3D pointer, return, composition,
 // keyboard focus, unmount, live reduced-motion changes, zero React commits during movement;
 // CornerRecede techniques; ScrollScene pinning, progress, depth layers, timeline segments, resize
-// re-measurement and smooth scrub; axe. Requires `pnpm build:playground` first.
+// re-measurement, geometry invalidation and smooth scrub; axe. Results are decided by observable
+// conditions with a ceiling (scripts/lib/animations-lab.mjs), never by fixed sleeps; short frame
+// counts only bound "nothing must happen" checks. `--cpu-throttle <rate>` slows the page's main
+// thread to exercise slow-runner timing. Requires `pnpm build:playground` first.
 // Without a browser: fails when CI=true, otherwise prints SKIPPED and exits 0.
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
+import {
+  assertUntil,
+  framesExpression,
+  runSceneShiftCase,
+  sceneConsistentCondition,
+  sceneScrollExpression,
+  sceneShiftCases,
+  sceneStateExpression,
+  scrollSceneTo,
+  tiltStateExpression,
+  untilExpression,
+} from "./lib/animations-lab.mjs";
 import { findBrowser, launchBrowser } from "./lib/cdp.mjs";
 import { repoRoot } from "./lib/workspace.mjs";
 
@@ -18,8 +33,6 @@ function argValue(name, fallback) {
 }
 
 const wait = (ms) => `new Promise((resolve) => setTimeout(resolve, ${ms}))`;
-const rotation = (axis) =>
-  `(() => { const m = /rotate${axis}\\((-?[\\d.]+)deg\\)/.exec(el.style.transform); return m ? Number(m[1]) : 0; })()`;
 
 async function main() {
   const dist = resolve(argValue("--dist", join(repoRoot, "apps", "playground-vite", "dist")));
@@ -59,7 +72,19 @@ async function main() {
     );
     await motionPreference("no-preference");
     await p.goto(pathToFileURL(page).href);
-    await p.evaluate(wait(300));
+    const evaluate = (expression) => p.evaluate(expression);
+    const until = async (label, condition, describe) =>
+      assertUntil(await evaluate(untilExpression(condition, describe)), label);
+    await until(
+      "lab ready",
+      `window.__neshelLab?.engine !== undefined && window.__neshelLab.sceneGeometry !== undefined && document.getElementById("tilt-basic")?.getAttribute("data-neshel-tilt") === "rest"`,
+      "window.__neshelLab",
+    );
+    const throttle = Number(argValue("--cpu-throttle", 0));
+    if (throttle) {
+      await p.send("Emulation.setCPUThrottlingRate", { rate: throttle });
+      notes.cpuThrottle = throttle;
+    }
 
     const run = async (id, fn) => {
       try {
@@ -88,9 +113,13 @@ async function main() {
       p.evaluate(
         `(() => { const r = document.querySelector(${JSON.stringify(selector)}).getBoundingClientRect(); return { left: r.left, top: r.top, right: r.right, bottom: r.bottom, width: r.width, height: r.height }; })()`,
       );
-    const tiltState = (selector) =>
-      p.evaluate(
-        `(() => { const el = document.querySelector(${JSON.stringify(selector)}); return { state: el.getAttribute("data-neshel-tilt"), inline: el.style.transform, rx: ${rotation("X")}, ry: ${rotation("Y")}, computed: getComputedStyle(el).transform, translate: getComputedStyle(el).translate }; })()`,
+    const tiltState = (selector) => evaluate(tiltStateExpression(selector));
+    // Wait until the Tilt3D state of `selector` satisfies `condition` (an expression over `t`).
+    const untilTilt = (label, selector, condition) =>
+      until(
+        label,
+        `((t) => ${condition})(${tiltStateExpression(selector)})`,
+        tiltStateExpression(selector),
       );
     const scrollIntoView = (selector) =>
       p.evaluate(
@@ -114,13 +143,13 @@ async function main() {
           r.left + r.width * (0.5 + step * 0.0495),
           r.top + r.height * (0.5 - step * 0.0495),
         );
-        await p.evaluate(wait(16));
+        await p.evaluate(wait(16)); // input pacing only
       }
-      await p.evaluate(wait(700));
-      const tilt = await tiltState("#tilt-basic");
-      check(tilt.state === "pointer", `state ${tilt.state}`);
-      check(tilt.rx > 8 && tilt.ry > 8, `rotations rx=${tilt.rx} ry=${tilt.ry} (${tilt.inline})`);
-      check(tilt.computed !== "none", "computed transform is none");
+      await untilTilt(
+        "pointer pose",
+        "#tilt-basic",
+        `t.state === "pointer" && t.rx > 8 && t.ry > 8 && t.computed !== "none"`,
+      );
       const after = await p.evaluate("window.__neshelLab.tiltCommits");
       check(
         after === commits,
@@ -130,28 +159,28 @@ async function main() {
 
     await run("tilt: leaving springs back and removes the inline transform", async () => {
       await mouse(2, 2);
-      await p.evaluate(wait(60));
+      // A spring return keeps an inline transform for several frames; a snap clears it at once.
+      await p.evaluate(framesExpression(2));
       const mid = await tiltState("#tilt-basic");
       check(mid.inline !== "", "snapped instead of animating back");
-      await p.evaluate(wait(1500));
-      const tilt = await tiltState("#tilt-basic");
-      check(
-        tilt.state === "rest" && tilt.inline === "",
-        `state ${tilt.state}, inline ${tilt.inline}`,
-      );
+      await untilTilt("back at rest", "#tilt-basic", `t.state === "rest" && t.inline === ""`);
     });
 
     await run("composition: CSS translate lift + JS transform tilt on one element", async () => {
       const r = await rectOf("#tilt-composed");
       await mouse(r.left + r.width * 0.9, r.top + r.height * 0.5);
       await mouse(r.left + r.width * 0.92, r.top + r.height * 0.5);
-      await p.evaluate(wait(700));
-      const tilt = await tiltState("#tilt-composed");
-      check(/rotateY\(/.test(tilt.inline), `inline ${tilt.inline}`);
-      check(/scale\(1\.03\)/.test(tilt.inline), `inline ${tilt.inline}`);
-      check(tilt.translate === "0px -6px", `computed translate ${tilt.translate}`);
+      await untilTilt(
+        "tilt and CSS lift composed",
+        "#tilt-composed",
+        `/rotateY\\(/.test(t.inline) && /scale\\(1\\.03\\)/.test(t.inline) && t.translate === "0px -6px"`,
+      );
       await mouse(2, 2);
-      await p.evaluate(wait(1200));
+      await untilTilt(
+        "composed card at rest",
+        "#tilt-composed",
+        `t.state === "rest" && t.inline === ""`,
+      );
     });
 
     await run(
@@ -159,53 +188,57 @@ async function main() {
       async () => {
         await p.evaluate("document.activeElement?.blur(); window.scrollTo(0, 0)");
         await key("Tab", "Tab", 9);
-        await p.evaluate(wait(800));
         const active = await p.evaluate("document.activeElement?.id");
         check(active === "tilt-focus-target", `active element ${active}`);
-        const focused = await tiltState("#tilt-basic");
-        check(focused.state === "focus", `state ${focused.state}`);
-        check(focused.rx > 3 && focused.ry < -3, `pose rx=${focused.rx} ry=${focused.ry}`);
-        await key("Tab", "Tab", 9);
-        await p.evaluate(wait(1200));
-        const left = await tiltState("#tilt-basic");
-        check(
-          left.state === "rest" && left.inline === "",
-          `after Tab: ${left.state} ${left.inline}`,
+        await untilTilt(
+          "focus pose",
+          "#tilt-basic",
+          `t.state === "focus" && t.rx > 3 && t.ry < -3`,
         );
-        const depth = await tiltState("#tilt-depth");
-        check(depth.state === "focus", `asChild link state ${depth.state}`);
+        await key("Tab", "Tab", 9);
+        await untilTilt("rest after Tab", "#tilt-basic", `t.state === "rest" && t.inline === ""`);
+        await untilTilt("asChild link focused", "#tilt-depth", `t.state === "focus"`);
         await p.evaluate("document.activeElement?.blur()");
-        await p.evaluate(wait(1200));
+        await untilTilt(
+          "link at rest after blur",
+          "#tilt-depth",
+          `t.state === "rest" && t.inline === ""`,
+        );
       },
     );
 
     await run("unmount and remount: no errors, effect re-attached", async () => {
       await p.evaluate(`document.getElementById("tilt-toggle").click()`);
-      await p.evaluate(wait(100));
-      check(await p.evaluate(`!document.getElementById("tilt-basic")`), "card still mounted");
+      await until(
+        "card unmounted",
+        `!document.getElementById("tilt-basic") && !!document.getElementById("tilt-unmounted")`,
+        `document.getElementById("tilt-toggle").textContent`,
+      );
       await p.evaluate(`document.getElementById("tilt-toggle").click()`);
-      await p.evaluate(wait(100));
-      const tilt = await tiltState("#tilt-basic");
-      check(tilt.state === "rest", `state ${tilt.state}`);
+      await untilTilt("card remounted at rest", "#tilt-basic", `t !== null && t.state === "rest"`);
       check(p.errors.length === 0, `page errors: ${p.errors.join(" | ")}`);
     });
 
     await run("reduced motion (live change): flat cards, no transform on hover", async () => {
       await motionPreference("reduce");
-      await p.evaluate(wait(100));
-      const before = await tiltState("#tilt-basic");
-      check(before.state === "reduced", `state ${before.state}`);
+      await untilTilt("entered the reduced state", "#tilt-basic", `t.state === "reduced"`);
       await scrollIntoView("#tilt-basic");
       const r = await rectOf("#tilt-basic");
       await mouse(r.right - 4, r.top + 4);
       await mouse(r.right - 3, r.top + 5);
-      await p.evaluate(wait(400));
+      // Nothing may move while reduced: no transform after several frames of hover.
+      await p.evaluate(framesExpression(10));
       const tilt = await tiltState("#tilt-basic");
       check(tilt.inline === "" && tilt.computed === "none", `inline ${tilt.inline}`);
       await mouse(2, 2);
       await motionPreference("no-preference");
-      await p.evaluate(wait(100));
-      check((await tiltState("#tilt-basic")).state === "rest", "did not leave reduced state");
+      // A fixed 100 ms wait failed on macOS (main runs 43810901141, 43813368226): wait until the
+      // controller has left the reduced state; the diagnostics include the media query result.
+      await untilTilt(
+        "left the reduced state",
+        "#tilt-basic",
+        `t.state === "rest" && !t.reducedQuery`,
+      );
     });
 
     await run("corner: spring-animated amount drives all four techniques", async () => {
@@ -231,7 +264,11 @@ async function main() {
         intermediate >= 3,
         `only ${intermediate} intermediate values in ${samples.length} frames`,
       );
-      await p.evaluate(wait(1000));
+      await until(
+        "corner amount settled at 1",
+        "Math.abs(window.__neshelLab.cornerAmount - 1) < 0.01",
+        "window.__neshelLab.cornerAmount",
+      );
       const state = await p.evaluate(`(() => ({
         amount: window.__neshelLab.cornerAmount,
         range: document.getElementById("corner-amount").value,
@@ -272,29 +309,8 @@ async function main() {
       await motionPreference("no-preference");
     });
 
-    const sceneGeometry = () =>
-      p.evaluate(
-        `(() => { const s = document.getElementById("scene"); const r = s.getBoundingClientRect(); return { top: r.top + window.scrollY, distance: s.offsetHeight - window.innerHeight }; })()`,
-      );
-    const scrollScene = async (fraction) => {
-      const g = await sceneGeometry();
-      await p.evaluate(`window.scrollTo(0, ${g.top + g.distance * fraction})`);
-      await p.evaluate(wait(250));
-    };
-    const sceneState = () =>
-      p.evaluate(`(() => {
-        const stage = document.getElementById("scene-stage");
-        const ty = (id) => new DOMMatrix(getComputedStyle(document.getElementById(id)).transform).m42;
-        return {
-          progress: window.__neshelLab.sceneProgress,
-          css: Number(stage.style.getPropertyValue("--scene-progress")),
-          stageTop: stage.getBoundingClientRect().top,
-          far: ty("scene-layer-far"),
-          front: ty("scene-layer-front"),
-          caption: Number(getComputedStyle(document.getElementById("scene-caption")).opacity),
-          measurements: window.__neshelLab.sceneMeasurements,
-        };
-      })()`);
+    const sceneState = () => evaluate(sceneStateExpression);
+    const scrollScene = (fraction) => scrollSceneTo(evaluate, fraction);
 
     await run(
       "scene: pinned stage, synchronised progress, depth ordering, timeline segment",
@@ -328,37 +344,36 @@ async function main() {
     await run("scene: viewport resize re-measures and keeps progress consistent", async () => {
       const before = await sceneState();
       await p.setViewport(800, 600);
-      await p.evaluate(wait(400));
-      const g = await sceneGeometry();
-      const expected = Math.min(
-        1,
-        Math.max(0, ((await p.evaluate("window.scrollY")) - g.top) / g.distance),
-      );
-      const after = await sceneState();
-      check(after.measurements > before.measurements, "no re-measurement after resize");
-      check(
-        Math.abs(after.progress - expected) < 0.02,
-        `progress ${after.progress}, expected ${expected}`,
+      // Consistent: re-measured, the cached geometry equals the live one, the published progress
+      // equals the one the live layout implies, and the stage stays pinned.
+      const consistent = `(() => { const s = ${sceneStateExpression}; return Math.abs(s.progress - s.real) < 1e-3 && Math.abs(s.stageTop) < 1 && Math.abs(s.cached.top - s.live.top) < 0.5 && Math.abs(s.cached.distance - s.live.distance) < 0.5; })()`;
+      await until(
+        "re-measured after resize",
+        `window.__neshelLab.sceneMeasurements > ${before.measurements} && window.innerHeight === 600 && ${consistent}`,
+        sceneStateExpression,
       );
       await p.setViewport(1280, 900);
-      await p.evaluate(wait(300));
+      await until(
+        "consistent after restoring the viewport",
+        `window.innerHeight === 900 && ${consistent}`,
+        sceneStateExpression,
+      );
     });
+
+    for (const item of sceneShiftCases) {
+      await run(item.id, () => runSceneShiftCase(evaluate, item));
+    }
 
     await run("scene: smooth scrub lags behind then converges", async () => {
       await p.evaluate(`document.getElementById("scene-smooth").click()`);
-      await scrollScene(0.1);
-      await p.evaluate(wait(1500));
-      const g = await sceneGeometry();
-      await p.evaluate(`window.scrollTo(0, ${g.top + g.distance * 0.9})`);
-      await p.evaluate(wait(50));
+      await scrollScene(0.1); // the spring settles on its target, so consistency is reached
+      const y = await evaluate(sceneScrollExpression(0.9));
+      // Lag is measured in frames, not milliseconds: the spring cannot cover 0.8 in 3 frames
+      // (delta is clamped to 1/15 s per frame), however slow the runner is.
+      await p.evaluate(framesExpression(3));
       const lagging = await sceneState();
-      check(lagging.progress < 0.8, `progress after 50 ms: ${lagging.progress}`);
-      await p.evaluate(wait(2500));
-      const settled = await sceneState();
-      check(
-        Math.abs(settled.progress - 0.9) < 0.02,
-        `progress after settling: ${settled.progress}`,
-      );
+      check(lagging.progress < 0.8, `progress after 3 frames: ${lagging.progress}`);
+      await until("smooth scrub converged", sceneConsistentCondition(y), sceneStateExpression);
       await p.evaluate(`document.getElementById("scene-smooth").click()`);
     });
 
