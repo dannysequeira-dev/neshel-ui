@@ -99,6 +99,29 @@ breakpoint and font-metric validation, component stylesheets from installed pack
 manifests, declarations, Tailwind `@theme` breakpoints, Capsize fallback fonts; runtime dependency
 `@capsizecss/core`.
 
+## `@neshel-ui/animations` (experimental, private)
+
+**Implemented in feature 008.0 as a private, unpublished package** (`private: true`, 0.0.0;
+[contracts](../specs/008-animations/contracts/), ADR 0018–0020). Not part of the published set, the
+Changesets fixed group or the release workflow. Peer `react ^19.0.0`; runtime dependency
+`@radix-ui/react-slot`.
+
+- Exports: `.` (`Tilt3D`, `useTilt3D`, `createTilt3D`, `NeshelAnimationsError`, types), `./core`
+  (framework-free engine: frame scheduler, springs, transform composer, reduced-motion policy) and
+  `./styles.css` (opt-in, `@layer components.neshel`).
+- Tilt3D: pointer-driven 3D tilt with spring return, no React render per pointer move, keyboard focus
+  pose, live `prefers-reduced-motion`, `asChild`, SSR-safe markup.
+- Verified locally (unit, type, contract, packed tarball, Chrome lab); three-OS CI pending. The
+  157-entry catalogue and phases 009–016 are planned only.
+
+```tsx
+<Tilt3D maxTilt={10} asChild>
+  <a href="/pricing" className="card">
+    Pricing
+  </a>
+</Tilt3D>;
+```
+
 ## Distribution contract (implemented in milestone 001.2)
 
 Status: **implemented and CI-verified** with `pnpm check:pack` and `pnpm check:consumer`
@@ -106,14 +129,15 @@ Status: **implemented and CI-verified** with `pnpm check:pack` and `pnpm check:c
 public packages are **published on npm as 0.1.0** (feature 007, [evidence](../specs/007-first-publication/evidence.md));
 `@neshel-ui/core` stays private and unpublished.
 
-| Package                 | Intended public | Runtime deps                                                            | Peer deps                                         | Exports                                                                        |
-| ----------------------- | --------------- | ----------------------------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------ |
-| `@neshel-ui/config`     | Yes             | none                                                                    | none                                              | `.` (types + import), `./tokens.css`, `./tailwind.css`, `./styles.css` (alias) |
-| `@neshel-ui/layout`     | Yes             | `@radix-ui/react-slot`, `tailwind-variants`                             | `react ^19.0.0`, `@neshel-ui/config`              | `.` (types + import), `./styles.css`, `./style-manifest.json`                  |
-| `@neshel-ui/typography` | Yes             | `@radix-ui/react-slot`, `tailwind-variants`                             | `react ^19.0.0`, `@neshel-ui/config`              | `.` (types + import), `./styles.css`, `./style-manifest.json`                  |
-| `@neshel-ui/components` | Yes             | Radix ×6, `@radix-ui/react-slot`, `@base-ui/react`, `tailwind-variants` | `react`, `react-dom ^19.0.0`, `@neshel-ui/config` | `.` (types + import), `./styles.css`, `./style-manifest.json`                  |
-| `@neshel-ui/cli`        | Yes             | `jiti`, `colorjs.io`, `@capsizecss/core`                                | `@neshel-ui/config` (`workspace:^`)               | `.` (types + import); bin `neshel`                                             |
-| `@neshel-ui/core`       | No (internal)   | none                                                                    | none                                              | `.` (never packed for publication)                                             |
+| Package                 | Intended public                | Runtime deps                                                            | Peer deps                                         | Exports                                                                         |
+| ----------------------- | ------------------------------ | ----------------------------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------- |
+| `@neshel-ui/config`     | Yes                            | none                                                                    | none                                              | `.` (types + import), `./tokens.css`, `./tailwind.css`, `./styles.css` (alias)  |
+| `@neshel-ui/layout`     | Yes                            | `@radix-ui/react-slot`, `tailwind-variants`                             | `react ^19.0.0`, `@neshel-ui/config`              | `.` (types + import), `./styles.css`, `./style-manifest.json`                   |
+| `@neshel-ui/typography` | Yes                            | `@radix-ui/react-slot`, `tailwind-variants`                             | `react ^19.0.0`, `@neshel-ui/config`              | `.` (types + import), `./styles.css`, `./style-manifest.json`                   |
+| `@neshel-ui/components` | Yes                            | Radix ×6, `@radix-ui/react-slot`, `@base-ui/react`, `tailwind-variants` | `react`, `react-dom ^19.0.0`, `@neshel-ui/config` | `.` (types + import), `./styles.css`, `./style-manifest.json`                   |
+| `@neshel-ui/cli`        | Yes                            | `jiti`, `colorjs.io`, `@capsizecss/core`                                | `@neshel-ui/config` (`workspace:^`)               | `.` (types + import); bin `neshel`                                              |
+| `@neshel-ui/core`       | No (internal)                  | none                                                                    | none                                              | `.` (never packed for publication)                                              |
+| `@neshel-ui/animations` | Not yet (private, feature 008) | `@radix-ui/react-slot`                                                  | `react ^19.0.0`                                   | `.`, `./core` (types + import), `./styles.css`; tarball validated with `--with` |
 
 - **Intended public** = `"publishConfig": { "access": "public" }`. Only these five may omit
   `private: true`; every other workspace package, core included, keeps it (`pnpm check:workspace`).
