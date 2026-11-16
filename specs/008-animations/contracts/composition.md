@@ -1,7 +1,7 @@
 # Contract — composing several animations on one element
 
 **Status:** transform composer **implemented and verified** (008.0); channel metadata and conflict
-diagnostics **planned** (009). Decision record: [ADR 0019](../../../docs/decisions/0019-motion-composition-and-property-ownership.md).
+diagnostics **planned** (009 — Motion Engine). Decision record: [ADR 0019](../../../docs/decisions/0019-motion-composition-and-property-ownership.md).
 
 ## §1 Channels and owners
 
@@ -69,7 +69,7 @@ channel on one element produce a development warning naming both; for composable
 priority orders layers only where order matters (e.g. future matrix layers). No silent last-write
 wins.
 
-## §6 Timelines and orchestration (planned 012)
+## §6 Timelines and orchestration (planned 013)
 
 A timeline owns its targets' channels for its duration through the same composers; scrubbing writes
 values for a progress, never appends layers.

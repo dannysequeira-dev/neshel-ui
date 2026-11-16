@@ -56,7 +56,7 @@ the current velocity (interruptible motion).
 
 ## Planned (not implemented; phase in brackets)
 
-Interpolation/easing helpers and `springEasing()` → CSS `linear()` [009]; effect registry with
-channel metadata [009]; visibility/intersection observer and scroll-progress source [010]; presence,
-FLIP measurer and gesture recogniser [011]; timeline with labels, overlaps and scrub [012]; text
-splitter and path utilities [013]; GPU surface manager in a separate entry [015].
+Effect registry with channel metadata, conflict detection, motion controllers, interpolation/easing
+helpers and `springEasing()` → CSS `linear()` [009 — Motion Engine]; visibility/intersection observer and scroll-progress source [011]; presence,
+FLIP measurer and gesture recogniser [012]; timeline with labels, overlaps and scrub [013]; text
+splitter and path utilities [014]; GPU surface manager in a separate entry [016].

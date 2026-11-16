@@ -16,7 +16,7 @@ range input sets it directly. Reduced motion jumps without animation.
 | Segmented   | 8×8 tiles with a static depth field, `translateZ(amount·z)`                                                                         | No (stepped planes)                                  |
 | WebGL mesh  | 32×24 plane, vertex-shader displacement, canvas texture                                                                             | **Yes**, raster only                                 |
 
-A future `CornerRecede` API (015) would expose the fold technique for live content
+A future `CornerRecede` API (016) would expose the fold technique for live content
 (`<CornerRecede corner="top-right" size={96} amount={…}>`, structure `L`) and the mesh technique
 for media in the GPU entry. Not approved.
 
@@ -31,7 +31,7 @@ for media in the GPU entry. Not approved.
 
 Engine: cached geometry (measured in the read phase on mount, `ResizeObserver` and resize);
 progress in the update phase from `scrollY`; one `--scene-progress` write per frame; optional spring
-smoothing. A future API (010) could be:
+smoothing. A future API (011) could be:
 
 ```tsx
 <ScrollScene height="300vh" smooth>
@@ -40,6 +40,6 @@ smoothing. A future API (010) could be:
 // + useScrollProgress(ref) and a core scroll-progress source
 ```
 
-Not approved. Open questions for 010: per-layer writes vs one inherited custom property for large
+Not approved. Open questions for 011: per-layer writes vs one inherited custom property for large
 scenes; nested scroll containers; horizontal scenes; integration with native scroll-driven
 animations where supported (choose SDA automatically, JS as fallback).

@@ -69,7 +69,15 @@ The brief pre-authorises autonomous execution of 008.0 within its limits. Ambigu
 - Q: Where does the engine live, given `core` is private? → A: inside the package as the
   framework-free `./core` subpath (R0, ADR 0018).
 - Q: Which entry points now? → A: only implemented ones: `.`, `./core`, `./styles.css`; the family
-  subpaths of the brief are evaluated, not created (R10, D3).
+  subpaths of the brief are evaluated, not created (R10). Owner decision D3: family subpaths are
+  added as each family is implemented.
+
+### Session 2026-11-15 (owner review of 008.0)
+
+- D1: no publication until the agreed initial scope, including advanced families, is complete and
+  verified. D2: independent version line. D3: family subpaths as implemented. D5: motion defaults
+  inside Animations, future additive integration with Config. D7: Tilt3D inward by default, `reverse`
+  inverts. Push of `feature/008-animations` and a PR against `main` authorised; no merge.
 - Q: How do several animations share one element? → A: CSS effects own the individual transform
   properties; JS effects contribute layers to one per-element composer that owns `transform`
   (R5, ADR 0019).
@@ -186,7 +194,7 @@ the progress bar follows; resizing keeps progress consistent; smooth scrub lags 
 
 As specified in [tilt-3d.md](contracts/tilt-3d.md):
 
-- **FR-050**: Pointer position maps to rotations; default "press away" signs (top-right →
+- **FR-050**: Pointer position maps to rotations; default inward signs (D7) (top-right →
   `rotateX > 0`, `rotateY > 0`).
 - **FR-051**: `maxTilt` (0–45°, default 10) and `perspective` (≥ 100 px, default 1000) control
   intensity and depth.

@@ -27,13 +27,13 @@ adoption time.
    dependency tree); applications may still use it alongside Neshel-UI.
 4. **Smooth-scroll libraries are not used by default** (scroll hijacking, accessibility); an opt-in
    adapter may be considered later.
-5. **WebGL libraries** may only enter through the optional `./gpu` entry (015), as optional peers or
+5. **WebGL libraries** may only enter through the optional `./gpu` entry (016), as optional peers or
    bundled after the benchmark, never in other entries.
 
 ## Consequences
 
 - Smaller, predictable bundles and one composition model; more implementation work for physics,
-  layout projection and gestures (re-evaluated in 011, decision D6).
+  layout projection and gestures (re-evaluated in 012, decision D6).
 - Users who already use Motion/GSAP can keep them on separate elements; the composer warns when an
   inline `transform` it does not own is present.
 

@@ -97,7 +97,7 @@ exact for one rotating layer, approximate for several (3D rotations do not commu
 - Measurement: the untransformed size (`offsetWidth/offsetHeight`) and the bounding-box centre,
   measured once per hover and again only after scroll/resize, so the tilt never feeds back into the
   measurement.
-- **Hit area (found by the browser check)**: with the default "press away" direction the region under
+- **Hit area (found by the browser check)**: with the default inward direction the region under
   the pointer recedes, the projected shape moves away from the pointer and Chrome fires
   `pointerleave` although the pointer is still over the card's layout box — the classic enter/leave
   oscillation of tilt effects. The first browser run failed exactly there. Fix: the hit area is the
@@ -111,7 +111,8 @@ exact for one rotating layer, approximate for several (3D rotations do not commu
   removed.
 - Reduced motion: `"user"` (default) follows the media query live; `"always"`/`"never"` override.
   With reduced motion the element stays flat and no frame is scheduled.
-- Default direction "press away" (the pointed region recedes) with `reverse` for "toward".
+- Default direction **inward** (the pointed region recedes), approved by the owner (D7); `reverse`
+  is the explicit option for the outward direction.
 
 ## R7 — CornerRecede techniques (experiment B)
 
@@ -127,7 +128,7 @@ range input). Screenshots: [visual-verification/](visual-verification/README.md)
 
 Conclusion: only technique 4 deforms geometry, and only pixels. Techniques 1–3 are rigid planes and
 must never be described as deformation. Recommendation for the D05 effect: hinged fold (2) for live
-content, WebGL mesh (4) for images in the optional graphics entry (015); segmented (3) rejected.
+content, WebGL mesh (4) for images in the optional graphics entry (016); segmented (3) rejected.
 
 ## R8 — ScrollScene design (experiment C)
 
@@ -140,11 +141,11 @@ content, WebGL mesh (4) for images in the optional graphics entry (015); segment
 - **Output**: one `--scene-progress` custom property per frame; layers and timeline segments derive
   in CSS (`translateY`, `scale`, `opacity` with `min()/max()` segments). Trade-off: an inherited
   custom property restyles the stage subtree each frame — fine for a small scene; large scenes should
-  write per-layer transforms (planned option in 010).
+  write per-layer transforms (planned option in 011).
 - **Scrub**: direct (progress = scroll) or smoothed by a spring that lags then converges. Verified
   in the browser. Smooth scrub is disabled under reduced motion.
 - **Timelines**: segments are pure functions of progress (fade in 0–0.3, hold, fade out 0.7–1), so
-  scrubbing backwards is exact. A sequencer with labels/overlaps is the C01 primitive (012).
+  scrubbing backwards is exact. A sequencer with labels/overlaps is the C01 primitive (013).
 - **Native SDA**: `animation-timeline: view()` demo under `@supports` and
   `prefers-reduced-motion: no-preference`; content stays visible when unsupported.
 - **Rejected**: scroll-jacking/smooth-scroll libraries by default (they replace native scrolling,
@@ -155,7 +156,7 @@ content, WebGL mesh (4) for images in the optional graphics entry (015); segment
 
 | Level         | Shape                                                                    | 008.0 status                         |
 | ------------- | ------------------------------------------------------------------------ | ------------------------------------ |
-| Declarative   | `<Tilt3D maxTilt={10}>…</Tilt3D>`, `asChild`; presets by name (009)      | Tilt3D implemented                   |
+| Declarative   | `<Tilt3D maxTilt={10}>…</Tilt3D>`, `asChild`; presets by name (010)      | Tilt3D implemented                   |
 | Compositional | Several effects on one element through the composer and channel metadata | Composer implemented; registry 009   |
 | Programmatic  | `useTilt3D(ref, options)`, `createTilt3D(element)` controller; `./core`  | Implemented for Tilt3D; core exposed |
 
@@ -168,7 +169,7 @@ for 008.0: implement `.` and `./core` (+ `./styles.css`). Proposal for later pha
 entry-points.md): keep families in `.` (tree-shaken, budgets enforced by bundle checks), add
 `./gpu` (015, WebGL) and possibly `./boot` (tiny inline script for pre-hydration entrance states);
 `/hover`, `/scroll`, `/cinematic` are not justified unless bundle checks show leakage. Pending
-owner decision D3.
+owner decision D3 — **approved 2026-11-15: family subpaths as each family is implemented**.
 
 ## R11 — SSR, RSC and hydration
 
@@ -182,9 +183,10 @@ fails: planned rule "hidden only under `@media (scripting: enabled)` plus a boot
 
 ## R12 — CSS distribution and tokens
 
-`./styles.css` (opt-in) holds only `.neshel-*` rules in `@layer components.neshel`. Motion tokens
-(durations, easings, distances) are planned for `config` as CSS custom properties in 009 (they must
-pass the token contract of ADR 0006 and stay theme-independent); until then effects take options.
+`./styles.css` (opt-in) holds only `.neshel-*` rules in `@layer components.neshel`. Motion defaults
+(durations, easings, distances) stay inside Animations first (owner decision D5, 2026-11-15) as
+`--neshel-motion-*` custom properties in its stylesheet plus typed defaults; a later integration
+with `@neshel-ui/config` must be additive (new optional keys/tokens, existing contracts unchanged).
 Presets will be precompiled classes, never runtime-generated utilities.
 
 ## R13 — Performance budgets and comparative benchmark

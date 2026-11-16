@@ -32,7 +32,7 @@ Only implemented capabilities are exported (brief §6). Proposed future subpaths
 - `./core` imports only its own relative modules (no React, no Slot).
 - The root entry imports only `react`, `react/jsx-runtime`, `@radix-ui/react-slot`.
 - No import of `@neshel-ui/core` (private, ADR 0002) or `@neshel-ui/components`; the package does
-  not depend on `config` in 008.0 (motion tokens are planned for 009, see research R12).
+  not depend on `config` in 008.0 (motion defaults stay inside Animations, D5; see research R12).
 - React modules start with `"use client"`; nothing reads browser globals at import time.
 
 ## Enforcement

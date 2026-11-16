@@ -1,7 +1,7 @@
 "use client";
 /**
  * `<Tilt3D>` (contracts/tilt-3d.md §1): a `<div>` (or, with `asChild`, your own single element)
- * that tilts in 3D toward the pointer and springs back to rest. Server-rendered markup is only the
+ * that tilts in 3D under the pointer (inward by default) and springs back to rest. Server-rendered markup is only the
  * element with the `neshel-tilt` class; the effect starts after hydration.
  */
 import { Slot } from "@radix-ui/react-slot";

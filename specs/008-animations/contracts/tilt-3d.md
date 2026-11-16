@@ -25,7 +25,7 @@ hydration.
 | `perspective`   | number (px)                       | `1000`             | 100–100 000                              |
 | `scale`         | number                            | `1`                | 0.5–2, while pointer or focus is active  |
 | `axis`          | `"both" \| "x" \| "y"`            | `"both"`           | `"x"`: rotateX only; `"y"`: rotateY only |
-| `reverse`       | boolean                           | `false`            | tilt toward the pointer                  |
+| `reverse`       | boolean                           | `false`            | invert the inward default (outward)      |
 | `spring`        | `SpringOptions`                   | core defaults      | validated by `resolveSpring`             |
 | `pointerTypes`  | `("mouse" \| "pen" \| "touch")[]` | `["mouse", "pen"]` | touch opt-in                             |
 | `focusTilt`     | boolean                           | `true`             | focus pose = 35 % of `maxTilt`           |
@@ -38,7 +38,7 @@ during render on server and client.
 ## §3 Behaviour
 
 - Normalised pointer `x, y ∈ [-1, 1]` relative to the untransformed box centre.
-  Default ("press away"): `rotateX = −y · maxTilt`, `rotateY = x · maxTilt` (top-right → both
+  Default **inward** (owner decision D7): `rotateX = −y · maxTilt`, `rotateY = x · maxTilt` (top-right → both
   positive: that corner recedes). `reverse` negates both.
 - Three springs (rotateX, rotateY, scale) follow the target; the transform composer writes
   `perspective(p) rotateX() rotateY() scale()` once per frame; at rest the inline `transform` and

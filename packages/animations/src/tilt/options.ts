@@ -18,7 +18,7 @@ export interface Tilt3DOptions {
   scale?: number;
   /** Which rotation axes follow the pointer (default `"both"`). */
   axis?: Tilt3DAxis;
-  /** Tilt toward the pointer instead of pressing away from it (default false). */
+  /** Invert the inward default: the region under the pointer comes forward (default false). */
   reverse?: boolean;
   /** Spring used to follow the pointer and to return to rest. */
   spring?: SpringOptions;

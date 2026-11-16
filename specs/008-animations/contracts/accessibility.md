@@ -41,9 +41,9 @@
 - One shared frame loop; phase-separated reads and writes; no layout read per scroll or pointer
   event (cached geometry, re-measured on resize/scroll invalidation).
 - `will-change` only while animating; removed at rest.
-- Off-screen or hidden-page ambient effects pause (IntersectionObserver, `visibilitychange`) [010].
-- GPU contexts are created lazily, limited in number and released on unmount [015].
-- Bundle budgets per effect family enforced by `check:bundles` once published APIs exist [009].
+- Off-screen or hidden-page ambient effects pause (IntersectionObserver, `visibilitychange`) [011].
+- GPU contexts are created lazily, limited in number and released on unmount [016].
+- Bundle budgets per effect family enforced by `check:bundles` once published APIs exist [010].
 
 ## §6 SSR and hydration
 
