@@ -22,6 +22,13 @@ export function devWarnOnce(key: string, message: string): void {
   console.warn(`[@neshel-ui/animations] ${message}`);
 }
 
+/** Report an error without throwing into the caller (`reportError`, else `console.error`). */
+export function reportError(error: unknown): void {
+  const host = globalThis as { reportError?: (error: unknown) => void };
+  if (typeof host.reportError === "function") host.reportError(error);
+  else console.error(error);
+}
+
 /** Short, stable description of an element for messages: `<div#id.class>`. */
 export function describeElement(element: unknown): string {
   const node = element as { tagName?: string; id?: string; classList?: ArrayLike<string> };

@@ -65,6 +65,14 @@ always reject (and are never swallowed). Each run has its own promise; it settle
 Springs have no `seek` (a spring has no fixed duration); `reverse()` retargets to the origin keeping
 velocity; completion = at rest on the current target.
 
+### Suspended WAAPI controllers (owner review 2026-11-16)
+
+A WAAPI controller whose channel claim is waiting (another effect owns the channel with equal or
+higher priority) owns nothing and never writes. `finish()` on it does **not** commit the end
+keyframe — that would overwrite the owner's value and its restoration baseline — and settles
+`{ status: "interrupted" }` (the run could not apply because the channel belongs to another effect),
+releasing the waiting claim. `cancel()` settles `cancelled` and also releases it.
+
 ## §2 Transitions
 
 ```ts
@@ -105,6 +113,9 @@ animateElement(element, channel: ExclusiveChannel, keyframes: string[], transiti
   cancelled (no fill-forever); on cancel/interrupt the channel is released and the captured value
   restored.
 - Spring transitions are converted with `springEasing()`.
+- While running or paused it follows `prefers-reduced-motion` live: a switch to reduced motion finishes
+  the run immediately (`completed`, end state committed); the subscription is removed when the run
+  settles.
 
 ## §5 Reduced motion
 

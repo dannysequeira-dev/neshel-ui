@@ -391,3 +391,80 @@ test("no unhandled rejection was produced by normal outcomes in this file", asyn
   await tick();
   assert.deepEqual(unhandled, []);
 });
+
+test("WAAPI: finish() on a suspended controller never touches the owner's style or baseline (review 1)", async () => {
+  const element = document.createElement("div");
+  element.style.filter = "blur(1px)";
+  withAnimate(element);
+  const owner = defineEffect({
+    id: "media/owner",
+    family: "media",
+    channels: [{ channel: "filter", mode: "exclusive" }],
+    priority: 5,
+    reducedMotion: "static",
+    resolve: () => ({}),
+    setup(context) {
+      context.channels.exclusive("filter").set("grayscale(1)");
+      return { update() {}, destroy() {} };
+    },
+  });
+  const a = attachEffect(element, owner, {}, { conflicts: "silent" });
+  frames.flush();
+  assert.equal(element.style.filter, "grayscale(1)");
+  const b = animateElement(element, "filter", ["none", "invert(1)"], undefined, {
+    effectId: "media/b",
+    conflicts: "silent",
+  });
+  b.finish();
+  assert.equal(element.style.filter, "grayscale(1)", "suspended finish wrote the owner's channel");
+  const result = await b.finished;
+  assert.deepEqual(result, { status: "interrupted", direction: "forward", value: 0 });
+  frames.flush();
+  assert.equal(element.style.filter, "grayscale(1)");
+  a.destroy();
+  frames.flush();
+  assert.equal(
+    element.style.filter,
+    "blur(1px)",
+    "original baseline must survive the suspended finish",
+  );
+});
+
+test("WAAPI: a live switch to reduced motion completes a running animation (review 3)", async () => {
+  const element = document.createElement("div");
+  const animations = withAnimate(element);
+  const control = animateElement(
+    element,
+    "filter",
+    ["blur(0px)", "blur(6px)"],
+    { type: "tween", duration: 1000 },
+    { effectId: "media/live" },
+  );
+  assert.equal(control.state, "running");
+  media.set(true);
+  assert.deepEqual(await control.finished, { status: "completed", direction: "forward", value: 1 });
+  assert.equal(animations[0].playState, "idle", "browser animation cancelled");
+  frames.flush();
+  assert.equal(element.style.filter, "blur(6px)", "end state committed");
+  const before = media.listenerCount;
+  media.set(false);
+  assert.equal(before, media.listenerCount);
+  // Initial preference still honoured, and settled controls leave no subscription behind.
+  const listeners = media.listenerCount;
+  media.set(true);
+  const instant = animateElement(
+    document.createElement("div"),
+    "filter",
+    ["none", "sepia(1)"],
+    undefined,
+    { effectId: "media/instant" },
+  );
+  assert.equal((await instant.finished).status, "completed");
+  media.set(false);
+  const cancelled = animateElement(element, "filter", ["none", "sepia(1)"], undefined, {
+    effectId: "media/cancel",
+  });
+  cancelled.cancel();
+  assert.equal((await cancelled.finished).status, "cancelled");
+  assert.equal(media.listenerCount, listeners, "no reduced-motion listener leaks");
+});

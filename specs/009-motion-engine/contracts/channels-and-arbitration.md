@@ -44,6 +44,9 @@ One host per element (weakly held), created on first attach:
    discarded; when the owner releases, the highest-priority waiting claim (earliest on ties) is
    granted and resumes.
 4. An instance needing several exclusive channels is granted all or none (no partial effects).
+5. If a resumed claim's grant callback throws, its claim is released immediately, the error is
+   reported (`reportError`), and resumption continues with the remaining waiting claims; the error is
+   never thrown into the caller that released the channel.
 
 `compose` and `multiply` channels never conflict.
 

@@ -7,6 +7,7 @@
  * it, so their bundles do not include arbitration code.
  */
 import type { Arbiter, ConflictPolicy } from "./arbiter.js";
+import { reportError } from "./dev.js";
 import type {
   ChannelHandles,
   EffectContext,
@@ -57,6 +58,7 @@ export function attachWith<Options, Resolved>(
   let instance: EffectInstance<Resolved> | undefined;
   let paused = false;
   let destroyed = false;
+  let failed = false;
   let systemReduced = prefersReducedMotion();
   const reducedListeners = new Set<(reduced: boolean) => void>();
   const reduced = () =>
@@ -78,7 +80,20 @@ export function attachWith<Options, Resolved>(
     priority: config.priority ?? definition.priority ?? 0,
     channels: exclusive,
     onGrant: () => {
-      if (!destroyed) start();
+      if (destroyed) return;
+      try {
+        start();
+      } catch (error) {
+        // Resumption failure (owner review 2): clean up everything this attachment holds, keep the
+        // handle in the "failed" state and report the error instead of throwing it into the effect
+        // whose release triggered the resumption.
+        failed = destroyed = true;
+        unsubscribe();
+        reducedListeners.clear();
+        stop();
+        arbiter?.release(host, claim);
+        reportError(error);
+      }
     },
     onRevoke: () => stop(),
   };
@@ -159,6 +174,7 @@ export function attachWith<Options, Resolved>(
 
   return {
     get state() {
+      if (failed) return "failed";
       if (destroyed) return "destroyed";
       if (arbiter && exclusive.length > 0 && !arbiter.isGranted(host, claim)) return "suspended";
       if (paused) return "paused";

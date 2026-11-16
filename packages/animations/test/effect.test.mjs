@@ -343,3 +343,62 @@ test("the arbiter-free attachment path rejects definitions with exclusive channe
     /declares exclusive channels; attach it with attachEffect/,
   );
 });
+
+test("resumed setup() that throws: no claim, listener or style leak; error reported; element stays usable (review 2)", async () => {
+  const { media } = await setupDom();
+  const element = document.createElement("div");
+  element.style.filter = "blur(1px)";
+  const listeners = media.listenerCount;
+  const owner = attachEffect(element, filterEffect("media/owner2", 5), {}, { conflicts: "silent" });
+  let failNext = true;
+  const fragile = defineEffect({
+    id: "media/fragile",
+    family: "media",
+    channels: [{ channel: "filter", mode: "exclusive" }],
+    reducedMotion: "static",
+    resolve: () => ({}),
+    setup(context) {
+      if (failNext) throw new Error("setup exploded on resume");
+      context.channels.exclusive("filter").set("invert(1)");
+      return { update() {}, destroy() {} };
+    },
+  });
+  const waiting = attachEffect(element, fragile, {}, { conflicts: "silent" });
+  const third = attachEffect(
+    element,
+    filterEffect("media/third", 0),
+    { amount: 0.4 },
+    { conflicts: "silent" },
+  );
+  assert.equal(waiting.state, "suspended");
+  const reported = [];
+  const original = globalThis.reportError;
+  globalThis.reportError = (error) => reported.push(error.message);
+  try {
+    assert.doesNotThrow(() => owner.destroy(), "the releasing effect must not receive B's error");
+  } finally {
+    globalThis.reportError = original;
+  }
+  assert.deepEqual(reported, ["setup exploded on resume"]);
+  assert.equal(waiting.state, "failed");
+  assert.equal(media.listenerCount, listeners + 1, "only the third effect remains subscribed");
+  assert.equal(third.state, "active", "the next waiting effect still gets the channel");
+  frames.flush();
+  assert.equal(element.style.filter, "grayscale(0.4)");
+  assert.deepEqual(
+    getMotionDebugInfo(element).channels.find((c) => c.channel === "filter").waiting,
+    [],
+  );
+  waiting.destroy();
+  third.destroy();
+  frames.flush();
+  assert.equal(element.style.filter, "blur(1px)", "original style restored");
+  assert.equal(media.listenerCount, listeners);
+  failNext = false;
+  const later = attachEffect(element, fragile, {}, { conflicts: "silent" });
+  frames.flush();
+  assert.equal(element.style.filter, "invert(1)", "element still usable");
+  later.destroy();
+  frames.flush();
+  assert.equal(element.style.filter, "blur(1px)");
+});

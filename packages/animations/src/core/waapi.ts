@@ -19,7 +19,11 @@ import {
 import { resolveEasing, springEasing, toCssEasing } from "./easing.js";
 import { NeshelAnimationsError } from "./errors.js";
 import { type Claim, type ExclusiveChannel, getMotionHost, isExclusiveChannel } from "./host.js";
-import { prefersReducedMotion, shouldReduceMotion } from "./reduced-motion.js";
+import {
+  prefersReducedMotion,
+  shouldReduceMotion,
+  subscribeReducedMotion,
+} from "./reduced-motion.js";
 
 export interface AnimateElementOptions extends ControlOptions {
   effectId: string;
@@ -82,7 +86,11 @@ export function animateElement(
       : Math.min(1, Math.max(0, time / duration));
   };
 
+  let unsubscribeReduced: (() => void) | undefined;
+
   function teardown(): void {
+    unsubscribeReduced?.();
+    unsubscribeReduced = undefined;
     if (animation) {
       animation.onfinish = null;
       animation.cancel();
@@ -111,6 +119,11 @@ export function animateElement(
   };
 
   function complete(): void {
+    // Only the owner may commit: a suspended (or never granted) run must not touch the channel.
+    if (!granted) {
+      settle("interrupted", progressOf());
+      return;
+    }
     const end = core.direction === "forward" ? last : first;
     host.commit(channel, end);
     settle("completed", core.direction === "forward" ? 1 : 0);
@@ -135,6 +148,11 @@ export function animateElement(
       );
       if (core.direction === "reverse") animation.reverse();
       animation.onfinish = () => complete();
+      // Live preference change: a switch to reduced motion finishes the run immediately (§5).
+      unsubscribeReduced = subscribeReducedMotion((reduced) => {
+        const active = core.state === "running" || core.state === "paused";
+        if (active && shouldReduceMotion(options.reducedMotion ?? "user", reduced)) complete();
+      });
     } catch (error) {
       teardown();
       granted = false;

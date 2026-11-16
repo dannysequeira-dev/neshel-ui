@@ -55,7 +55,7 @@ An instance never touches `element.style` directly for claimed channels; writes 
 attachEffect<O, R>(element, definition: EffectDefinition<O, R>, options?: O, host?: { conflicts?: ConflictPolicy }): EffectHandle<O>;
 
 interface EffectHandle<O> {
-  readonly state: "active" | "suspended" | "reduced" | "paused" | "destroyed";
+  readonly state: "active" | "suspended" | "reduced" | "paused" | "destroyed" | "failed";
   update(options?: O): void;
   pause(): void; resume(): void;
   destroy(): void;                        // idempotent
@@ -65,6 +65,13 @@ interface EffectHandle<O> {
 Lifecycle: `resolve` → claims checked by the host → `setup` (only if every claim is granted;
 otherwise `suspended` until granted) → updates → `destroy` releases claims, which may resume a
 suspended instance of another effect.
+
+Failures: a `setup()` that throws during the initial attach throws from `attachEffect` after releasing
+everything. A `setup()` that throws when a suspended attachment is **resumed** (owner review
+2026-11-16) cannot throw into the effect whose release caused the resumption: the attachment releases
+its claim, contributions and reduced-motion subscription, enters the state `"failed"` (terminal;
+`destroy()` stays safe), and reports the error with `reportError` (or `console.error`); the next
+waiting claim is then considered, so other effects keep using the element.
 
 ## §4 Registries
 

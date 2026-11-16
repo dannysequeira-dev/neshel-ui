@@ -134,7 +134,8 @@ export function createEffectRegistry(definitions: readonly AnyEffectDefinition[]
   };
 }
 
-export type EffectState = "active" | "suspended" | "reduced" | "paused" | "destroyed";
+/** `failed`: a resumed `setup()` threw; the attachment released everything and reported the error. */
+export type EffectState = "active" | "suspended" | "reduced" | "paused" | "destroyed" | "failed";
 
 export interface EffectHandle<Options> {
   readonly state: EffectState;

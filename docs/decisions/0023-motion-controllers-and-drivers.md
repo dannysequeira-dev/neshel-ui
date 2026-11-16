@@ -28,6 +28,10 @@ Without a shared interface each driver (CSS, WAAPI, JS) exposes different semant
 4. Reduced motion is applied by the controller from the declared behaviour (`off`, `fade`, `instant`,
    `static`, `reduced`).
 
+5. **Lifecycle hardening** (owner review 2026-11-16): only the channel owner may commit; `finish()` on
+   a suspended WAAPI controller settles `interrupted` without writing; WAAPI runs follow
+   `prefers-reduced-motion` live while running or paused.
+
 ## Consequences
 
 - One mental model for programmatic motion; effects reuse controllers instead of hand-written loops.

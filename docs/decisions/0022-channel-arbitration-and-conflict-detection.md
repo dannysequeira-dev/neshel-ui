@@ -40,6 +40,10 @@ before effects are implemented at scale.
    may be attached without the arbiter, and warnings are development-only code removed by production
    builds (`error` still throws).
 
+8. **Resumption failures** (owner review 2026-11-16): a grant callback (e.g. a resumed `setup()`)
+   that throws releases its claim, is reported with `reportError`, leaves the attachment `failed`, and
+   never propagates into the releasing caller; resumption continues for other waiting claims.
+
 ## Consequences
 
 - No silent overrides between Neshel effects; behaviour is deterministic and testable.

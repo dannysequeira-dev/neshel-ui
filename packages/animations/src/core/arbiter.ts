@@ -6,7 +6,7 @@
  * all-or-none. Reporting follows the conflict policy (`warn` / `error` / `silent`). Kept apart from
  * the style ledger (`host.ts`) so effects that only compose do not bundle it.
  */
-import { describeElement, devWarnOnce, elementKey, isProduction } from "./dev.js";
+import { describeElement, devWarnOnce, elementKey, isProduction, reportError } from "./dev.js";
 import { animationsError } from "./errors.js";
 import type { Claim, ClaimRecord, ExclusiveChannel, MotionHost } from "./host.js";
 
@@ -66,9 +66,17 @@ function resumeWaiting(host: MotionHost): void {
     .filter((record) => !record.granted)
     .sort((a, b) => b.claim.priority - a.claim.priority || a.seq - b.seq);
   for (const record of waiting) {
+    // Skip claims granted or released by a nested resumption during this loop.
+    if (record.granted || host.records.get(record.claim) !== record) continue;
     if (record.claim.channels.every((channel) => !host.owners.has(channel))) {
       grant(host, record);
-      record.claim.onGrant();
+      try {
+        record.claim.onGrant();
+      } catch (error) {
+        // A failing resumption must not leak its claim nor throw into the releasing caller.
+        releaseChannels(host, record.claim);
+        reportError(error);
+      }
     }
   }
 }
