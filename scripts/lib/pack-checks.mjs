@@ -430,6 +430,8 @@ export function checkPackageContract(manifest, files, context = {}) {
       errors.push("dist/styles.css must be byte-identical to dist/tailwind.css (0.x alias)");
     }
   }
+  if (manifest.name === "@neshel-ui/animations")
+    errors.push(...checkAnimationsContract(manifest, files));
   if (manifest.name === "@neshel-ui/cli") {
     if (!sameKeys(manifest.dependencies, ["@capsizecss/core", "colorjs.io", "jiti"])) {
       errors.push(
@@ -438,6 +440,45 @@ export function checkPackageContract(manifest, files, context = {}) {
     }
     if (!manifest.peerDependencies?.["@neshel-ui/config"]) {
       errors.push("peerDependencies must include @neshel-ui/config (token contract)");
+    }
+  }
+  return errors;
+}
+
+/**
+ * Contract of the private, experimental `@neshel-ui/animations` package (feature 008.0, ADR 0018):
+ * still private, exports exactly `.`, `./core` and `./styles.css`, React as the only peer,
+ * `@radix-ui/react-slot` as the only runtime dependency, a framework-free `./core` entry (relative
+ * imports only) and a root entry that imports nothing beyond React and the slot.
+ */
+export function checkAnimationsContract(manifest, files) {
+  const errors = [];
+  if (manifest.private !== true) {
+    errors.push("must stay private until the owner approves its first publication (feature 008)");
+  }
+  const expected = [".", "./core", "./styles.css"];
+  if (!sameKeys(manifest.exports, expected)) {
+    errors.push(`exports must be exactly ${expected.join(", ")}`);
+  }
+  if (!sameKeys(manifest.peerDependencies, ["react"])) {
+    errors.push("peerDependencies must be exactly react");
+  }
+  if (!sameKeys(manifest.dependencies, ["@radix-ui/react-slot"])) {
+    errors.push(
+      `dependencies must be exactly @radix-ui/react-slot; found ${Object.keys(manifest.dependencies ?? {}).join(", ") || "none"}`,
+    );
+  }
+  const allowed = new Set(["react", "react/jsx-runtime", "@radix-ui/react-slot"]);
+  for (const [path, contents] of files) {
+    if (!/^dist\/.*\.js$/.test(path)) continue;
+    for (const specifier of bareImports(contents.toString("utf8"))) {
+      if (path.startsWith("dist/core/")) {
+        errors.push(
+          `${path} imports "${specifier}"; the core entry may import only relative modules`,
+        );
+      } else if (!allowed.has(specifier)) {
+        errors.push(`${path} imports "${specifier}", outside the declared dependencies`);
+      }
     }
   }
   return errors;

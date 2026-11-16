@@ -1,0 +1,68 @@
+{
+  "name": "@neshel-ui/animations",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Modular, accessible motion primitives and effects for Neshel-UI (experimental, unpublished)",
+  "keywords": [
+    "neshel-ui",
+    "design-system",
+    "react",
+    "animation",
+    "motion",
+    "tilt",
+    "reduced-motion"
+  ],
+  "homepage": "https://github.com/dannysequeira-dev/neshel-ui/tree/main/packages/animations#readme",
+  "bugs": {
+    "url": "https://github.com/dannysequeira-dev/neshel-ui/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dannysequeira-dev/neshel-ui.git",
+    "directory": "packages/animations"
+  },
+  "author": "Neshel-UI maintainers",
+  "type": "module",
+  "license": "MIT",
+  "sideEffects": [
+    "**/*.css"
+  ],
+  "files": [
+    "dist",
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "!src/**/*.test.ts",
+    "!src/**/*.test.tsx",
+    "!src/**/*.stories.tsx",
+    "README.md",
+    "LICENSE"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./core": {
+      "types": "./dist/core/index.d.ts",
+      "import": "./dist/core/index.js"
+    },
+    "./styles.css": "./dist/styles.css"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json && node ../../scripts/copy-css.mjs src/styles.css dist/styles.css",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "devDependencies": {
+    "typescript": "catalog:",
+    "@types/react": "catalog:",
+    "@types/react-dom": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:"
+  },
+  "peerDependencies": {
+    "react": "^19.0.0"
+  },
+  "dependencies": {
+    "@radix-ui/react-slot": "catalog:"
+  }
+}

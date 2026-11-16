@@ -4,6 +4,8 @@
 @import "@neshel-ui/layout/styles.css";
 @import "@neshel-ui/typography/styles.css";
 @import "@neshel-ui/components/styles.css";
+/* Experimental animations package (feature 008.0, private). */
+@import "@neshel-ui/animations/styles.css";
 /* `neshel generate` output: custom breakpoints for layout, typography and components, Tailwind @theme. */
 @import "./neshel.generated.css";
 @import "./themes.css";

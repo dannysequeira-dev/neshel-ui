@@ -1,0 +1,11 @@
+/*
+ * @neshel-ui/animations/styles.css (feature 008.0). Explicit, opt-in import; no global selectors,
+ * no resets, only `.neshel-*` classes inside the shared `components.neshel` layer (ADR 0008).
+ * Effects work without this file; it adds the 3D context that depth children need.
+ */
+@layer components.neshel {
+  /* Children with translateZ() keep their depth inside a tilted card. */
+  .neshel-tilt {
+    transform-style: preserve-3d;
+  }
+}

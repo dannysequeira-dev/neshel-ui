@@ -4,12 +4,13 @@ import { join } from "node:path";
 import test from "node:test";
 import { listWorkspacePackages, repoRoot } from "../scripts/lib/workspace.mjs";
 
-// The six-package layout is a spec contract (FR-002); everything else derives from the workspace.
-const EXPECTED = ["cli", "components", "config", "core", "layout", "typography"];
+// The package layout is a spec contract (feature 001 FR-002, extended by feature 008 FR-001 with the
+// private `animations` package); everything else derives from the workspace.
+const EXPECTED = ["animations", "cli", "components", "config", "core", "layout", "typography"];
 const EXPECTED_PUBLIC = ["cli", "components", "config", "layout", "typography"];
 const packages = listWorkspacePackages();
 
-test("workspace discovery finds exactly the six specified packages", () => {
+test("workspace discovery finds exactly the specified packages", () => {
   assert.deepEqual(
     packages.map((pkg) => pkg.dirName),
     EXPECTED,

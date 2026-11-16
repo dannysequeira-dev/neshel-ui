@@ -1,6 +1,9 @@
-// pnpm check:pack [--no-build]
+// pnpm check:pack [--no-build] [--with <package-dir>]...
 // Validates every intended public package from its real `pnpm pack` tarball (ADR 0004 §5,
 // research R11/R12). Cross-platform: Node standard library only, no shell built-ins.
+// `--with <dir>` adds a private, not-yet-public workspace package (feature 008: `animations`) to the
+// same checks, except the publication metadata rule (`publishConfig.access`); it never lifts or
+// relaxes anything for the five public packages, and `core` can never be added (ADR 0002).
 import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import {
@@ -211,9 +214,26 @@ export const modules = [${typed.map((_, index) => `m${index}`).join(", ")}];
   return { errors, imports: specifiers.length, typed: typed.length };
 }
 
+/** Private packages requested with `--with <dir>` (validated, never `core`, never public ones). */
+function candidatePackages(packages) {
+  const names = process.argv.flatMap((arg, index) =>
+    arg === "--with" ? [process.argv[index + 1]] : [],
+  );
+  return names.map((dirName) => {
+    const pkg = packages.find((item) => item.dirName === dirName);
+    if (!pkg) throw new Error(`--with ${dirName}: no such workspace package`);
+    if (dirName === "core") throw new Error("--with core: core is internal (ADR 0002)");
+    if (pkg.intendedPublic)
+      throw new Error(`--with ${dirName}: already an intended public package`);
+    if (pkg.manifest.private !== true) throw new Error(`--with ${dirName}: must be private`);
+    return pkg;
+  });
+}
+
 async function main() {
   const packages = listWorkspacePackages();
-  const publicPackages = packages.filter((pkg) => pkg.intendedPublic);
+  const candidates = candidatePackages(packages);
+  const publicPackages = [...packages.filter((pkg) => pkg.intendedPublic), ...candidates];
   const internalNames = packages.filter((pkg) => !pkg.intendedPublic).map((pkg) => pkg.name);
   const publicNames = publicPackages.map((pkg) => pkg.name);
   if (publicPackages.length === 0) throw new Error("No intended public packages found.");
@@ -260,7 +280,9 @@ async function main() {
         ...checkUnexpectedFiles(files),
         ...checkLifecycleScripts(manifest),
         ...checkPublicPeers(manifest, publicNames),
-        ...checkReleaseMetadata(manifest, `packages/${pkg.dirName}`),
+        ...checkReleaseMetadata(manifest, `packages/${pkg.dirName}`).filter(
+          (error) => !(candidates.includes(pkg) && error.startsWith("publishConfig.access")),
+        ),
         ...checkPackageContract(manifest, files, {
           sourceCss: readOptional(join(pkg.dir, "src", "styles.css")),
           sourceManifest: readOptional(join(pkg.dir, "src", "style-manifest.json")),
@@ -324,7 +346,12 @@ async function main() {
     console.error("check:pack failed. Fix the errors above; see ADR 0004 for the rules.");
     process.exitCode = 1;
   } else {
-    console.info(`check:pack passed for ${publicPackages.length} intended public packages.`);
+    const extra = candidates.length
+      ? ` and ${candidates.length} private candidate(s) (${candidates.map((pkg) => pkg.name).join(", ")})`
+      : "";
+    console.info(
+      `check:pack passed for ${publicPackages.length - candidates.length} intended public packages${extra}.`,
+    );
   }
 }
 

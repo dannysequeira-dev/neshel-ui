@@ -1,0 +1,316 @@
+/* Animations lab (feature 008.0). Plain CSS on the config tokens; no Tailwind utilities needed. */
+@import "@neshel-ui/config/tokens.css";
+@import "@neshel-ui/animations/styles.css";
+
+body {
+  margin: 0;
+  background: var(--neshel-background);
+  color: var(--neshel-foreground);
+  font-family: system-ui, sans-serif;
+}
+
+.lab {
+  max-width: 72rem;
+  margin: 0 auto;
+  padding: 2rem 1rem 6rem;
+}
+
+.lab-eyebrow {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--neshel-primary);
+}
+
+.lab-section {
+  margin-top: 3rem;
+}
+
+.lab-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  gap: 2rem;
+  margin: 1.5rem 0;
+}
+
+.lab-card {
+  display: block;
+  min-height: 11rem;
+  padding: 1.25rem;
+  border: 1px solid var(--neshel-border);
+  border-radius: 1rem;
+  background: var(--neshel-surface);
+  color: var(--neshel-surface-foreground);
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.12);
+  text-decoration: none;
+}
+
+.lab-card h3 {
+  margin-top: 0;
+}
+
+.lab-card-empty {
+  display: grid;
+  place-items: center;
+  color: var(--neshel-muted-foreground);
+}
+
+/* CSS-driven lift on the individual `translate` property: composes with the JS `transform`. */
+.lab-lift {
+  transition: translate 200ms ease;
+}
+
+.lab-lift:hover {
+  translate: 0 -6px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lab-lift {
+    transition: none;
+  }
+
+  .lab-lift:hover {
+    translate: none;
+  }
+}
+
+.lab-depth {
+  position: relative;
+  overflow: visible;
+}
+
+.lab-depth-back {
+  position: absolute;
+  inset: 1.5rem;
+  border-radius: 0.75rem;
+  background: var(--neshel-primary);
+  opacity: 0.25;
+  transform: translateZ(12px);
+}
+
+.lab-depth-front {
+  position: relative;
+  display: inline-block;
+  font-weight: 600;
+  transform: translateZ(40px);
+}
+
+/* B · CornerRecede */
+.corner-controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.corner-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 2rem;
+  margin-top: 1.5rem;
+}
+
+.corner-grid figure {
+  margin: 0;
+}
+
+.corner-grid figcaption {
+  margin-top: 0.75rem;
+  font-size: 0.875rem;
+  color: var(--neshel-muted-foreground);
+}
+
+.corner-stage {
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  border-radius: 1rem;
+  background: var(--neshel-muted);
+  perspective: 700px;
+}
+
+.corner-card {
+  --card-w: 240px;
+  --card-h: 180px;
+  --card-bg: linear-gradient(135deg, #1e3a8a, #7c3aed);
+  position: relative;
+  width: var(--card-w);
+  height: var(--card-h);
+  border-radius: 0.5rem;
+}
+
+.corner-face {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background: var(--card-bg);
+  color: #ffffff;
+}
+
+/* 1 · Rigid: rotation about an axis parallel to the TL→BR diagonal through the bottom-left corner. */
+.corner-rigid {
+  transform-origin: 0% 100%;
+  transform: rotate3d(4, 3, 0, calc(var(--corner) * 38deg));
+}
+
+/* 2 · Fold: base without the corner triangle + flap rotating about the crease (1,1 direction). */
+.corner-fold {
+  --fold: 96px;
+  /* Collapses to 0 at rest: two anti-aliased clip edges would otherwise show a hairline seam. */
+  --fold-now: calc(var(--fold) * min(1, var(--corner) * 50));
+}
+
+.corner-fold-base,
+.corner-fold-flap {
+  position: absolute;
+  inset: 0;
+}
+
+.corner-fold-base {
+  clip-path: polygon(0 0, calc(100% - var(--fold-now)) 0, 100% var(--fold-now), 100% 100%, 0 100%);
+}
+
+.corner-fold-flap {
+  clip-path: polygon(calc(100% - var(--fold-now)) 0, 100% 0, 100% var(--fold-now));
+  transform-origin: calc(100% - var(--fold-now)) 0;
+  transform: rotate3d(1, 1, 0, calc(var(--corner) * 80deg));
+}
+
+.corner-fold-shade {
+  position: absolute;
+  inset: 0;
+  background: #000000;
+  opacity: calc(var(--corner) * 0.35);
+}
+
+/* 3 · Segmented: tiles share one background; each recedes by its static depth. */
+.corner-segmented {
+  transform-style: preserve-3d;
+}
+
+.corner-tile {
+  position: absolute;
+  left: calc(var(--col) * var(--card-w) / 8);
+  top: calc(var(--row) * var(--card-h) / 8);
+  width: calc(var(--card-w) / 8);
+  height: calc(var(--card-h) / 8);
+  background: var(--card-bg);
+  background-size: var(--card-w) var(--card-h);
+  background-position: calc(var(--col) * var(--card-w) / -8) calc(var(--row) * var(--card-h) / -8);
+  transform: translateZ(calc(var(--corner) * var(--z)));
+}
+
+.corner-mesh {
+  width: var(--card-w);
+  height: var(--card-h);
+}
+
+/* C · ScrollScene */
+.scene-toggle {
+  display: inline-flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.scene {
+  position: relative;
+  height: 300vh;
+  margin-top: 1rem;
+}
+
+.scene-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow: hidden;
+  border-radius: 1rem;
+  background: linear-gradient(180deg, #0f172a, #1e293b);
+  color: #f8fafc;
+}
+
+.scene-layer {
+  position: absolute;
+  left: calc(10% + var(--depth) * 18%);
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: calc(4rem + var(--depth) * 3rem);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: rgb(148 163 184 / calc(0.25 + var(--depth) * 0.3));
+  font-weight: 600;
+  transform: translateY(calc((0.5 - var(--scene-progress)) * var(--depth) * 40vh))
+    scale(calc(1 + var(--scene-progress) * var(--depth) * 0.15));
+}
+
+/* Timeline segment: fade in over 0–0.3, hold, fade out over 0.7–1. */
+.scene-caption {
+  position: absolute;
+  inset: auto 0 12% 0;
+  margin: 0;
+  text-align: center;
+  font-size: 1.5rem;
+  opacity: min(1, max(0, var(--scene-progress) / 0.3), max(0, (1 - var(--scene-progress)) / 0.3));
+}
+
+.scene-progress {
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 4px;
+  background: #38bdf8;
+  transform-origin: 0 50%;
+  transform: scaleX(var(--scene-progress));
+}
+
+.scene-native {
+  margin-top: 3rem;
+}
+
+.scene-native-box {
+  display: grid;
+  place-items: center;
+  width: 10rem;
+  height: 6rem;
+  border-radius: 0.75rem;
+  background: var(--neshel-primary);
+  color: var(--neshel-primary-foreground);
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .scene-native-box {
+      animation: scene-reveal linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 40%;
+    }
+  }
+}
+
+@keyframes scene-reveal {
+  from {
+    opacity: 0;
+    transform: translateY(3rem) scale(0.9);
+  }
+
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.scene-after {
+  height: 60vh;
+  display: grid;
+  place-items: center;
+  color: var(--neshel-muted-foreground);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scene-layer {
+    transform: none;
+  }
+}

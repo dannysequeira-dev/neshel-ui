@@ -80,9 +80,11 @@ jobs:
         run: pnpm check:exports
 
       # Packs every intended public package and validates the real tarballs
-      # (manifest, targets, source maps, publint, attw, external consumer).
+      # (manifest, targets, source maps, publint, attw, external consumer). Feature 008: the
+      # private, experimental animations package is validated too (`--with`), without lifting
+      # its publishing guard.
       - name: Verify packed artifacts
-        run: pnpm check:pack --no-build
+        run: pnpm check:pack --no-build --with animations
 
       # Installs packed tarballs into generated React 19 + Vite apps outside the workspace:
       # Tailwind v4 and plain CSS (layout + typography), component labs (feature 005: Tailwind,
@@ -106,6 +108,11 @@ jobs:
 
       - name: Build Vite consumer
         run: pnpm --filter @neshel-ui/playground-vite build
+
+      # Feature 008.0: Tilt3D, CornerRecede and ScrollScene experiments in headless Chrome (real
+      # pointer/keyboard input, live reduced-motion changes, scroll, resize, axe).
+      - name: Browser animations lab check
+        run: pnpm check:browser:animations
 
       - name: Build Storybook
         run: pnpm --filter @neshel-ui/storybook build
