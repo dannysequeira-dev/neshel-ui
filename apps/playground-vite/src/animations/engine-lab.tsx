@@ -146,11 +146,13 @@ export function EngineLab() {
         await frames(2);
         check(api.state("grayscale") === "suspended", `grayscale state ${api.state("grayscale")}`);
         check(filter().startsWith("sepia(1)"), `alert ${filter()}`);
+        // Development builds warn; production builds strip the warning code (ADR 0022 §3).
+        const warned = warnings.some(
+          (w) => w.includes('"media/grayscale" is suspended') && w.includes('"feedback/alert"'),
+        );
         check(
-          warnings.some(
-            (w) => w.includes('"media/grayscale" is suspended') && w.includes('"feedback/alert"'),
-          ),
-          `warnings ${warnings.join(" | ")}`,
+          import.meta.env.PROD ? warnings.length === 0 : warned,
+          `${import.meta.env.PROD ? "production" : "development"} warnings: ${warnings.join(" | ")}`,
         );
         api.detach("alert");
         await frames(2);

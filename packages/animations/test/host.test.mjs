@@ -5,7 +5,22 @@ import test from "node:test";
 import { frames, setupDom } from "./helpers.mjs";
 
 await setupDom();
-const { getMotionHost, resolveConflictPolicy } = await import("../dist/core/host.js");
+const { getMotionHost: rawHost } = await import("../dist/core/host.js");
+const { isGranted, releaseChannels, requestChannels, resolveConflictPolicy, setExclusive } =
+  await import("../dist/core/arbiter.js");
+/** The ledger host plus the arbiter functions (split in Phase 009 optimisation, same behaviour). */
+const getMotionHost = (element) => {
+  const host = rawHost(element);
+  return Object.assign(Object.create(host), {
+    setLayer: host.setLayer,
+    setOpacity: host.setOpacity,
+    commit: host.commit,
+    request: (claim, policy) => requestChannels(host, claim, policy),
+    release: (claim) => releaseChannels(host, claim),
+    isGranted: (claim) => isGranted(host, claim),
+    setExclusive: (claim, channel, value) => setExclusive(host, claim, channel, value),
+  });
+};
 const { getMotionDebugInfo } = await import("../dist/core/debug.js");
 const { NeshelAnimationsError } = await import("../dist/index.js");
 

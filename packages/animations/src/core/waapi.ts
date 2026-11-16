@@ -5,6 +5,8 @@
  * completion the final keyframe is committed as the new baseline and the browser animation is
  * cancelled (no fill-forever); on cancel/interruption the captured inline value is restored.
  */
+
+import { type ConflictPolicy, releaseChannels, requestChannels } from "./arbiter.js";
 import {
   type ControlOptions,
   createRunCore,
@@ -16,13 +18,7 @@ import {
 } from "./controls.js";
 import { resolveEasing, springEasing, toCssEasing } from "./easing.js";
 import { NeshelAnimationsError } from "./errors.js";
-import {
-  type Claim,
-  type ConflictPolicy,
-  type ExclusiveChannel,
-  getMotionHost,
-  isExclusiveChannel,
-} from "./host.js";
+import { type Claim, type ExclusiveChannel, getMotionHost, isExclusiveChannel } from "./host.js";
 import { prefersReducedMotion, shouldReduceMotion } from "./reduced-motion.js";
 
 export interface AnimateElementOptions extends ControlOptions {
@@ -96,7 +92,7 @@ export function animateElement(
   function settle(status: MotionResult["status"], value: number): void {
     teardown();
     granted = false;
-    host.release(claim); // also drops a waiting (suspended) request
+    releaseChannels(host, claim); // also drops a waiting (suspended) request
     core.settle(status, value);
   }
 
@@ -142,14 +138,14 @@ export function animateElement(
     } catch (error) {
       teardown();
       granted = false;
-      host.release(claim);
+      releaseChannels(host, claim);
       core.fail(error);
     }
   }
 
   function start(): void {
     core.state = "running";
-    granted = host.request(claim, options.conflicts);
+    granted = requestChannels(host, claim, options.conflicts);
     if (granted) begin();
   }
 
@@ -203,7 +199,7 @@ export function animateElement(
       if (settled()) {
         core.newRun();
         core.state = "running";
-        granted = host.request(claim, options.conflicts);
+        granted = requestChannels(host, claim, options.conflicts);
         if (granted) begin();
         core.state = "paused";
         animation?.pause();

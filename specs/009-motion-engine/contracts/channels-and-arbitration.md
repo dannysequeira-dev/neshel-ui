@@ -59,7 +59,10 @@ type ConflictPolicy = "warn" | "error" | "silent";
 | `error`  | throws `NeshelAnimationsError` with the same message at attach time                                                                                                         | opt-in (tests, CI)          |
 | `silent` | arbitration only                                                                                                                                                            | `NODE_ENV === "production"` |
 
-The policy is an option of `attachEffect` / `useMotionEffect`; no provider. Arbitration is identical
+Warnings are development diagnostics: their code is guarded by `process.env.NODE_ENV` and removed
+from production builds by application bundlers, so in a production build `warn` behaves like
+`silent`; `error` (strict mode) throws in every build. The policy is an option of `attachEffect` /
+`useMotionEffect`; no provider. Arbitration is identical
 under every policy (reporting changes, behaviour does not), except `error`, which throws instead of
 suspending.
 

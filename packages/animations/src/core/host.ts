@@ -1,18 +1,21 @@
 /**
  * Motion host (ADR 0022; contracts/channels-and-arbitration.md, contracts/style-ownership.md).
  *
- * One host per element is the only engine writer of the element's managed inline styles:
- * - channels: `transform` composes layers, `opacity` multiplies contributions, every other channel is
- *   exclusive (one owner, arbitrated by priority; ties keep the existing owner; losers wait and resume);
- * - style ledger: the original inline value and priority of each property are captured on first use,
- *   combined while animating (transform prefix, opacity factor, will-change union) and restored
- *   exactly on release; external inline changes become the new baseline; each property is written at
- *   most once per frame and only when its value changes.
+ * One host per element is the only engine writer of the element's managed inline styles. This module
+ * holds the **style ledger** and the composable channels:
+ * - the original inline value and priority of each property are captured on first use, combined
+ *   while animating (transform prefix, opacity factor, will-change union) and restored exactly on
+ *   release; external inline changes become the new baseline; each property is written at most once
+ *   per frame and only when its value changes;
+ * - `transform` composes layers and `opacity` multiplies contributions.
+ * Exclusive channels store their owners and values here, but the arbitration logic lives in
+ * `arbiter.ts`, so effects that only compose (Tilt3D) do not bundle it.
  */
 import { composeTransform, type TransformLayer } from "./compose.js";
-import { describeElement, devWarnOnce, isProduction } from "./dev.js";
-import { animationsError } from "./errors.js";
+import { describeElement, devWarnOnce, elementKey } from "./dev.js";
 import { type FrameScheduler, getFrameScheduler } from "./scheduler.js";
+
+declare const process: { env: { NODE_ENV?: string } } | undefined;
 
 export const EXCLUSIVE_CHANNELS = [
   "translate",
@@ -23,7 +26,6 @@ export const EXCLUSIVE_CHANNELS = [
   "mask",
 ] as const;
 export type ExclusiveChannel = (typeof EXCLUSIVE_CHANNELS)[number] | `--neshel-${string}`;
-export type ConflictPolicy = "warn" | "error" | "silent";
 
 export function isExclusiveChannel(channel: unknown): channel is ExclusiveChannel {
   return (
@@ -31,15 +33,6 @@ export function isExclusiveChannel(channel: unknown): channel is ExclusiveChanne
     ((EXCLUSIVE_CHANNELS as readonly string[]).includes(channel) ||
       /^--neshel-[a-z0-9-]+$/.test(channel))
   );
-}
-
-/** Conflict policy: explicit, else `warn` in development and `silent` in production. */
-export function resolveConflictPolicy(policy: ConflictPolicy | undefined): ConflictPolicy {
-  if (policy === undefined) return isProduction() ? "silent" : "warn";
-  if (policy !== "warn" && policy !== "error" && policy !== "silent") {
-    throw animationsError("conflicts", `invalid policy ${JSON.stringify(policy)}`);
-  }
-  return policy;
 }
 
 /** A request for exclusive channels (all granted or none). */
@@ -53,7 +46,7 @@ export interface Claim {
   onRevoke(): void;
 }
 
-interface ClaimRecord {
+export interface ClaimRecord {
   claim: Claim;
   seq: number;
   granted: boolean;
@@ -68,48 +61,40 @@ interface PropState {
   written: string | undefined;
 }
 
+type Styled = { readonly style: CSSStyleDeclaration };
+
+/** Engine-internal host (not exported from the package entry points). */
 export interface MotionHost {
+  readonly element: Styled;
+  readonly layers: Map<symbol, TransformLayer>;
+  readonly opacities: Map<symbol, number>;
+  /** Exclusive claims (granted and waiting), owners per channel and owners' values. */
+  readonly records: Map<Claim, ClaimRecord>;
+  readonly owners: Map<string, ClaimRecord>;
+  readonly values: Map<string, string>;
+  readonly writes: number;
+  nextSeq(): number;
+  capture(property: string): void;
+  schedule(): void;
   setLayer(key: symbol, layer: TransformLayer | undefined): void;
   setOpacity(key: symbol, value: number | undefined): void;
-  /** Request exclusive channels; `true` when granted now, `false` when waiting. */
-  request(claim: Claim, policy?: ConflictPolicy): boolean;
-  release(claim: Claim): void;
-  isGranted(claim: Claim): boolean;
-  setExclusive(claim: Claim, channel: ExclusiveChannel, value: string | undefined): void;
   /** Adopt `value` as the property's baseline (a completed animation hands over its end state). */
   commit(property: string, value: string): void;
   /** Write pending changes now (normally done in the scheduler's write phase). */
   flush(): void;
-  /** Engine-internal state, read by debug.ts only (kept out of bundles that do not import it). */
-  readonly internals: HostInternals;
 }
-
-export interface HostInternals {
-  readonly layers: ReadonlyMap<symbol, unknown>;
-  readonly opacities: ReadonlyMap<symbol, number>;
-  readonly records: ReadonlyMap<
-    Claim,
-    { readonly claim: Claim; readonly seq: number; readonly granted: boolean }
-  >;
-  readonly owners: ReadonlyMap<string, { readonly claim: Claim }>;
-  readonly values: ReadonlyMap<string, string>;
-  readonly writes: number;
-}
-
-type Styled = { readonly style: CSSStyleDeclaration };
 
 const hosts = new WeakMap<object, MotionHost>();
-const elementIds = new WeakMap<object, number>();
-let nextElementId = 1;
 
 export function getMotionHost(
   element: Styled,
   scheduler: FrameScheduler = getFrameScheduler(),
 ): MotionHost {
-  const existing = hosts.get(element);
-  if (existing) return existing;
-  const host = createHost(element, scheduler);
-  hosts.set(element, host);
+  let host = hosts.get(element);
+  if (!host) {
+    host = createHost(element, scheduler);
+    hosts.set(element, host);
+  }
   return host;
 }
 
@@ -129,15 +114,6 @@ function createHost(element: Styled, scheduler: FrameScheduler): MotionHost {
   let seq = 0;
   let scheduled = false;
   let writes = 0;
-
-  const elementKey = () => {
-    let id = elementIds.get(element);
-    if (id === undefined) {
-      id = nextElementId++;
-      elementIds.set(element, id);
-    }
-    return id;
-  };
 
   function capture(property: string): PropState {
     let state = props.get(property);
@@ -160,50 +136,47 @@ function createHost(element: Styled, scheduler: FrameScheduler): MotionHost {
   }
 
   /** Desired value of a property, or `null` to restore the baseline. */
-  function compute(property: string, state: PropState): string | null {
+  function compute(property: string, state: PropState, composed: string): string | null {
     if (property === "transform") {
-      if (layers.size === 0) return null;
-      const composed = composeTransform(layers.values());
       if (composed === "none") return null;
       return state.base ? `${state.base} ${composed}` : composed;
     }
     if (property === "opacity") {
       if (opacities.size === 0) return null;
-      let product = 1;
+      let product = Number.parseFloat(state.base);
+      if (!Number.isFinite(product)) product = 1;
       for (const value of opacities.values()) product *= value;
-      const parsed = Number.parseFloat(state.base);
-      const base = Number.isFinite(parsed) ? parsed : 1;
-      return String(Math.round(Math.min(1, Math.max(0, product * base)) * 10000) / 10000);
+      return String(Math.round(Math.min(1, Math.max(0, product)) * 10000) / 10000);
     }
     if (property === "will-change") {
-      const tokens: string[] = [];
-      if (layers.size > 0 && composeTransform(layers.values()) !== "none") tokens.push("transform");
+      const tokens = state.base
+        .split(",")
+        .map((token) => token.trim())
+        .filter((token) => token && token !== "auto");
+      const before = tokens.length;
+      if (composed !== "none") tokens.push("transform");
       if (opacities.size > 0) tokens.push("opacity");
       for (const channel of owners.keys()) {
         if (values.has(channel) && !channel.startsWith("--")) tokens.push(channel);
       }
-      if (tokens.length === 0) return null;
-      const baseTokens = state.base
-        .split(",")
-        .map((token) => token.trim())
-        .filter((token) => token && token !== "auto");
-      return [...new Set([...baseTokens, ...tokens])].join(", ");
+      return tokens.length === before ? null : [...new Set(tokens)].join(", ");
     }
-    return owners.has(property) && values.has(property) ? (values.get(property) as string) : null;
+    return owners.has(property) ? (values.get(property) ?? null) : null;
   }
 
   function active(property: string): boolean {
     if (property === "transform") return layers.size > 0;
     if (property === "opacity") return opacities.size > 0;
-    if (property === "will-change") return layers.size > 0 || opacities.size > 0 || owners.size > 0;
-    return (
-      owners.has(property) ||
-      [...records.values()].some((r) => r.claim.channels.includes(property as ExclusiveChannel))
-    );
+    if (property === "will-change") return layers.size + opacities.size + owners.size > 0;
+    for (const record of records.values()) {
+      if (record.claim.channels.includes(property as ExclusiveChannel)) return true;
+    }
+    return false;
   }
 
   function flush(): void {
     scheduled = false;
+    const composed = layers.size > 0 ? composeTransform(layers.values()) : "none";
     for (const [property, state] of [...props]) {
       // External inline modification since our last write: adopt it as the baseline (§5).
       if (state.written !== undefined) {
@@ -211,26 +184,24 @@ function createHost(element: Styled, scheduler: FrameScheduler): MotionHost {
         if (current !== state.written) {
           state.base = current;
           state.priority = style.getPropertyPriority(property);
-          state.desired = undefined;
-          state.written = undefined;
-          devWarnOnce(
-            `external:${elementKey()}:${property}`,
-            `"${property}" on ${describeElement(element)} changed outside the engine; kept as the baseline to restore.`,
-          );
+          state.desired = state.written = undefined;
+          if (typeof process !== "undefined" && process.env.NODE_ENV !== "production") {
+            devWarnOnce(
+              `external:${elementKey(element)}:${property}`,
+              `"${property}" on ${describeElement(element)} changed outside the engine; kept as the baseline to restore.`,
+            );
+          }
         }
       }
-      const desired = compute(property, state);
+      const desired = compute(property, state, composed);
       if (desired === null) {
         if (state.written !== undefined || state.desired !== undefined) {
           if (state.base) style.setProperty(property, state.base, state.priority);
           else style.removeProperty(property);
           writes++;
         }
-        if (!active(property)) props.delete(property);
-        else {
-          state.desired = undefined;
-          state.written = undefined;
-        }
+        if (active(property)) state.desired = state.written = undefined;
+        else props.delete(property);
         continue;
       }
       if (desired === state.desired) continue; // no duplicate write
@@ -240,57 +211,26 @@ function createHost(element: Styled, scheduler: FrameScheduler): MotionHost {
       state.written = style.getPropertyValue(property);
     }
     if (
-      props.size === 0 &&
-      layers.size === 0 &&
-      opacities.size === 0 &&
-      records.size === 0 &&
+      props.size + layers.size + opacities.size + records.size === 0 &&
       hosts.get(element) === host
     ) {
       hosts.delete(element);
     }
   }
 
-  function report(policy: ConflictPolicy, loser: Claim, winner: Claim, channel: string): void {
-    const message = `"${loser.id}" is suspended: "${channel}" on ${describeElement(element)} is owned by "${winner.id}" (priority ${winner.priority} vs ${loser.priority}).`;
-    if (policy === "error") throw animationsError("conflict", message);
-    if (policy === "warn") {
-      devWarnOnce(`conflict:${elementKey()}:${channel}:${loser.id}:${winner.id}`, message);
-    }
-  }
-
-  function grant(record: ClaimRecord): void {
-    record.granted = true;
-    for (const channel of record.claim.channels) {
-      owners.set(channel, record);
-      capture(channel);
-    }
-    capture("will-change");
-  }
-
-  function free(record: ClaimRecord): void {
-    record.granted = false;
-    for (const channel of record.claim.channels) {
-      if (owners.get(channel) === record) {
-        owners.delete(channel);
-        values.delete(channel);
-      }
-    }
-    schedule();
-  }
-
-  function resumeWaiting(): void {
-    const waiting = [...records.values()]
-      .filter((record) => !record.granted)
-      .sort((a, b) => b.claim.priority - a.claim.priority || a.seq - b.seq);
-    for (const record of waiting) {
-      if (record.claim.channels.every((channel) => !owners.has(channel))) {
-        grant(record);
-        record.claim.onGrant();
-      }
-    }
-  }
-
   const host: MotionHost = {
+    element,
+    layers,
+    opacities,
+    records,
+    owners,
+    values,
+    get writes() {
+      return writes;
+    },
+    nextSeq: () => ++seq,
+    capture,
+    schedule,
     setLayer(key, layer) {
       if (layer) {
         capture("transform");
@@ -308,70 +248,15 @@ function createHost(element: Styled, scheduler: FrameScheduler): MotionHost {
       } else if (!opacities.delete(key)) return;
       schedule();
     },
-    request(claim, policy) {
-      const resolved = resolveConflictPolicy(policy);
-      if (records.has(claim)) return records.get(claim)?.granted ?? false;
-      // Blocking owners: equal or higher priority (ties keep the existing owner).
-      for (const channel of claim.channels) {
-        const owner = owners.get(channel);
-        if (owner && owner.claim.priority >= claim.priority) {
-          report(resolved, claim, owner.claim, channel);
-          records.set(claim, { claim, seq: ++seq, granted: false });
-          return false;
-        }
-      }
-      // Lower-priority owners are preempted (all-or-none: they lose every channel).
-      const preempted = new Set<ClaimRecord>();
-      for (const channel of claim.channels) {
-        const owner = owners.get(channel);
-        if (owner) {
-          report(resolved, owner.claim, claim, channel);
-          preempted.add(owner);
-        }
-      }
-      const record: ClaimRecord = { claim, seq: ++seq, granted: false };
-      records.set(claim, record);
-      for (const owner of preempted) {
-        free(owner);
-        owner.claim.onRevoke();
-      }
-      grant(record);
-      schedule();
-      if (preempted.size > 0) resumeWaiting();
-      return true;
-    },
-    release(claim) {
-      const record = records.get(claim);
-      if (!record) return;
-      records.delete(claim);
-      if (record.granted) {
-        free(record);
-        resumeWaiting();
-      }
-    },
-    isGranted(claim) {
-      return records.get(claim)?.granted ?? false;
-    },
-    setExclusive(claim, channel, value) {
-      const owner = owners.get(channel);
-      if (!owner || owner.claim !== claim) return; // writes of suspended claims are discarded
-      if (value === undefined) values.delete(channel);
-      else values.set(channel, value);
-      schedule();
-    },
     commit(property, value) {
       const state = capture(property);
       state.base = value;
-      state.desired = undefined;
-      state.written = undefined;
+      state.desired = state.written = undefined;
       style.setProperty(property, value, state.priority);
       writes++;
       schedule();
     },
     flush,
-    get internals() {
-      return { layers, opacities, records, owners, values, writes };
-    },
   };
   return host;
 }

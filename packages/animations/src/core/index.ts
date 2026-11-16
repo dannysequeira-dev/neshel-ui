@@ -2,6 +2,8 @@
  * `@neshel-ui/animations/core`: framework-free motion engine (experimental; features 008–009).
  * No React and no DOM access at import time; nothing registers at import time; safe on the server.
  */
+
+export type { ConflictPolicy } from "./arbiter.js";
 export { composeTransform, type TransformLayer } from "./compose.js";
 export {
   animateValue,
@@ -46,7 +48,7 @@ export {
   type ReducedBehaviour,
 } from "./effect.js";
 export { NeshelAnimationsError } from "./errors.js";
-export type { ConflictPolicy, ExclusiveChannel } from "./host.js";
+export type { ExclusiveChannel } from "./host.js";
 export { clamp, mapRange, mix, progress } from "./interpolate.js";
 export { type MotionValue, motionValue } from "./motion-value.js";
 export {

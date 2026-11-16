@@ -119,6 +119,11 @@ jobs:
       - name: Animations packed consumer (SSR + hydration)
         run: pnpm check:animations:consumer --no-build
 
+      # Phase 009: bundle budgets measured from the packed animations tarball (same method as
+      # check:bundles) plus tree-shaking markers (no arbiter in Tilt3D, no dev strings in production).
+      - name: Animations bundle budgets (packed tarball)
+        run: pnpm check:animations:bundles --no-build
+
       - name: Build Storybook
         run: pnpm --filter @neshel-ui/storybook build
 

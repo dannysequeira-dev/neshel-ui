@@ -6,12 +6,8 @@
  * which writes `transform` once per frame through its style ledger (the element's own inline
  * transform is kept and restored). No React state, no re-render, no layout read per pointer move.
  */
-import {
-  attachEffect,
-  defineEffect,
-  type EffectContext,
-  type EffectInstance,
-} from "../../core/effect.js";
+import { attachWith } from "../../core/attach.js";
+import { defineEffect, type EffectContext, type EffectInstance } from "../../core/effect.js";
 import type { FrameInfo } from "../../core/scheduler.js";
 import { type SpringState, stepSpring } from "../../core/spring.js";
 import { type ResolvedTilt3DOptions, resolveTilt3DOptions, type Tilt3DOptions } from "./options.js";
@@ -289,9 +285,12 @@ export const tilt3D = /* @__PURE__ */ defineEffect<Tilt3DOptions, ResolvedTilt3D
   setup: setupTilt3D,
 });
 
-/** Imperative controller: `attachEffect(element, tilt3D, options)` with a Tilt3D-shaped handle. */
+/**
+ * Imperative controller with a Tilt3D-shaped handle. Tilt3D only composes `transform`, so it is attached
+ * without the exclusive-channel arbiter (smaller bundle); behaviour equals `attachEffect`.
+ */
 export function createTilt3D(element: HTMLElement, options: Tilt3DOptions = {}): Tilt3DController {
-  const handle = attachEffect(element, tilt3D, options);
+  const handle = attachWith(element, tilt3D, options, {}, undefined);
   return {
     update: (next = {}) => handle.update(next),
     destroy: () => handle.destroy(),

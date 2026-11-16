@@ -327,3 +327,19 @@ test("useMotionValue is stable and useMotionValueEvent subscribes without re-ren
   value.set(4);
   assert.deepEqual(seen, [2, 3], "unsubscribed on unmount");
 });
+
+test("the arbiter-free attachment path rejects definitions with exclusive channels", async () => {
+  await setupDom();
+  const { attachWith } = await import("../dist/core/attach.js");
+  assert.throws(
+    () =>
+      attachWith(
+        document.createElement("div"),
+        filterEffect("media/needs-arbiter"),
+        {},
+        {},
+        undefined,
+      ),
+    /declares exclusive channels; attach it with attachEffect/,
+  );
+});

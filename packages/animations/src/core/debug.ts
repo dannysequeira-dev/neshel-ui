@@ -15,7 +15,7 @@ export interface MotionDebugInfo {
 export function getMotionDebugInfo(element: object): MotionDebugInfo | undefined {
   const host = peekMotionHost(element);
   if (!host) return undefined;
-  const { layers, opacities, records, owners, values, writes } = host.internals;
+  const { layers, opacities, records, owners, values, writes } = host;
   const channels: MotionDebugInfo["channels"] = [];
   if (layers.size > 0) {
     channels.push({

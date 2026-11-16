@@ -1,6 +1,9 @@
 {
-  "core (entire entry)": 8192,
-  "registry + host (defineEffect, createEffectRegistry, attachEffect)": 3072,
+  "core (entire entry)": 9728,
+  "registry + host (defineEffect, createEffectRegistry, attachEffect)": 5120,
   "composeTransform": 614,
-  "hover: Tilt3D": 7168
+  "controllers (motionValue, animateValue)": 3891,
+  "hover: Tilt3D": 8960,
+  "hover: createTilt3D (no React)": 6758,
+  "root: React bindings": 5018
 }

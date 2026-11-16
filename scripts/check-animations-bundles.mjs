@@ -35,7 +35,14 @@ export const ENTRIES = {
   },
   "registry + host (defineEffect, createEffectRegistry, attachEffect)": {
     source: `export { defineEffect, createEffectRegistry, attachEffect } from "${A}/core";`,
-    markers: { react: false, slot: false, waapi: false, easing: false },
+    markers: {
+      react: false,
+      slot: false,
+      waapi: false,
+      easing: false,
+      arbiter: true,
+      devWarnings: true,
+    },
   },
   composeTransform: {
     source: `export { composeTransform } from "${A}/core";`,
@@ -47,11 +54,18 @@ export const ENTRIES = {
   },
   "hover: Tilt3D": {
     source: `export { Tilt3D } from "${A}/hover";`,
-    markers: { react: true, slot: true, waapi: false },
+    markers: { react: true, slot: true, waapi: false, arbiter: false },
   },
   "hover: createTilt3D (no React)": {
     source: `export { createTilt3D } from "${A}/hover";`,
-    markers: { react: false, slot: false },
+    markers: { react: false, slot: false, arbiter: false },
+  },
+  // Informational, not budgeted: an application production build replaces process.env.NODE_ENV,
+  // which must remove development diagnostics (warning strings) from the bundle.
+  "registry + host, production define (info)": {
+    source: `export { defineEffect, createEffectRegistry, attachEffect } from "${A}/core";`,
+    markers: { devWarnings: false, arbiter: true },
+    define: { "process.env.NODE_ENV": JSON.stringify("production") },
   },
   "root: React bindings": {
     source: `export * from "${A}";`,
@@ -66,6 +80,8 @@ const MARKERS = {
   scheduler: (code) => /requestAnimationFrame/.test(code),
   tilt: (code) => /data-neshel-tilt/.test(code),
   easing: (code) => /cubic-bezier\(/.test(code),
+  arbiter: (code) => /is suspended/.test(code),
+  devWarnings: (code) => /changed outside the engine/.test(code),
 };
 
 function link(from, to) {
@@ -97,7 +113,7 @@ async function main() {
       join(PACKAGE, "node_modules", "@radix-ui", "react-slot"),
       join(dir, "app", "node_modules", "@radix-ui", "react-slot"),
     );
-    for (const [name, { source, markers }] of Object.entries(ENTRIES)) {
+    for (const [name, { source, markers, define }] of Object.entries(ENTRIES)) {
       const slug = name.replace(/[^a-z0-9]+/gi, "-").toLowerCase();
       const entry = join(dir, "app", `${slug}.js`);
       writeFileSync(entry, source);
@@ -106,6 +122,7 @@ async function main() {
         configFile: false,
         logLevel: "silent",
         root: join(dir, "app"),
+        ...(define ? { define } : {}),
         build: {
           outDir,
           emptyOutDir: true,

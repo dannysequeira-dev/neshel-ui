@@ -4,17 +4,13 @@
  * `finished` resolves with a typed result for normal outcomes — `completed`, `cancelled`,
  * `interrupted` — and rejects only on real errors (state `failed`). Each run has its own promise.
  */
+
+import { type ConflictPolicy, releaseChannels, requestChannels, setExclusive } from "./arbiter.js";
 import type { TransformLayer } from "./compose.js";
 import { type DurationPreset, motionDefaults, type SpringPreset } from "./defaults.js";
 import { type Easing, type EasingPreset, resolveEasing } from "./easing.js";
 import { NeshelAnimationsError } from "./errors.js";
-import {
-  type Claim,
-  type ConflictPolicy,
-  type ExclusiveChannel,
-  getMotionHost,
-  isExclusiveChannel,
-} from "./host.js";
+import { type Claim, type ExclusiveChannel, getMotionHost, isExclusiveChannel } from "./host.js";
 import { clamp, mix } from "./interpolate.js";
 import { driveValue, type MotionValue } from "./motion-value.js";
 import {
@@ -367,8 +363,8 @@ export function bindChannel(
       onRevoke: () => {},
     };
     claim = exclusive;
-    host.request(exclusive, options.conflicts);
-    apply = (current) => host.setExclusive(exclusive, channel, format(current));
+    requestChannels(host, exclusive, options.conflicts);
+    apply = (current) => setExclusive(host, exclusive, channel, format(current));
   } else {
     throw new NeshelAnimationsError(
       `[@neshel-ui/animations] bindChannel: unknown channel ${JSON.stringify(binding.channel)}`,
@@ -381,7 +377,7 @@ export function bindChannel(
     if (released) return;
     released = true;
     unsubscribe();
-    if (claim) host.release(claim);
+    if (claim) releaseChannels(host, claim);
     else if (binding.channel === "opacity") host.setOpacity(key, undefined);
     else host.setLayer(key, undefined);
   };

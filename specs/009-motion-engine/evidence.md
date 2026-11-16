@@ -39,7 +39,7 @@ identical to the backup and `git diff origin/main` touches only Phase 009 files 
 
 | Gate                               | Command                                                                                                                                                                            | Result                                                                                                                                                                                                                                        |
 | ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Full gate                          | `pnpm check`                                                                                                                                                                       | **pass** — repository tests 106/107 (1 pre-existing platform skip); package tests 282/282 (animations 78); `check:pack` 5 public + animations (exports `.`, `./core`, `./hover`, `./styles.css`; module-boundary rules)                       |
+| Full gate                          | `pnpm check`                                                                                                                                                                       | **pass** — repository tests 106/107 (1 pre-existing platform skip); package tests 283/283 (animations 79); `check:pack` 5 public + animations (exports `.`, `./core`, `./hover`, `./styles.css`; module-boundary rules)                       |
 | Chrome lab (CDP, real input)       | `pnpm check:browser:animations`                                                                                                                                                    | **pass — 20/20** (14 from 008 + 6 engine cases)                                                                                                                                                                                               |
 | Three engines (Playwright)         | `pnpm check:animations:engines`                                                                                                                                                    | **pass — 11/11 in Chromium 158, Firefox 159 and WebKit 27.2**; all report SDA, View Transitions, `linear()` and individual transforms supported, WebGL ready                                                                                  |
 | Packed external consumer           | `pnpm check:animations:consumer`                                                                                                                                                   | **pass — 7/7**: SSR markup from the packed package, no motion state in SSR, hydration without recoverable errors, no page errors, Tilt3D attached, custom `defineEffect` from the packed engine applied, real pointer tilts the hydrated card |
@@ -84,24 +84,46 @@ identical to the backup and `git diff origin/main` touches only Phase 009 files 
    check) minifies identifiers but keeps whitespace in ES output; fully minified sizes are listed for
    context only. Budgets are enforced on the repository's method.
 
-### Bundle budgets (owner-approved; packed tarball, React external, gzip -9)
+### Bundle optimisation (owner decision 2026-11-16: option B, then A)
 
-| Entry                                                                    | Budget   | Measured (repo method) | Fully minified (context) | Result |
-| ------------------------------------------------------------------------ | -------- | ---------------------- | ------------------------ | ------ |
-| core (entire entry)                                                      | 8.00 KiB | **8.53 KiB**           | 7.71 KiB                 | over   |
-| registry + host (`defineEffect`, `createEffectRegistry`, `attachEffect`) | 3.00 KiB | **4.45 KiB**           | 3.98 KiB                 | over   |
-| hover: `Tilt3D` (incl. Slot)                                             | 7.00 KiB | **8.40 KiB**           | 7.39 KiB                 | over   |
-| `composeTransform`                                                       | 0.60 KiB | 0.50 KiB               | 0.38 KiB                 | ok     |
-| controllers (`motionValue`, `animateValue`)                              | —        | 3.45 KiB               | 2.96 KiB                 | info   |
-| hover: `createTilt3D` (no React)                                         | —        | 6.41 KiB               | 5.73 KiB                 | info   |
-| root: React bindings                                                     | —        | 4.26 KiB               | 3.73 KiB                 | info   |
+Method unchanged: packed tarball, Vite library build (the repository's `check:bundles` method),
+React external, gzip -9. Changes, none of which removes a feature, contract or accessibility behaviour:
 
-Tree-shaking markers pass for every entry (core and registry entries contain no React, Slot, WAAPI
-or easing code; `composeTransform` alone contains no scheduler; the root contains no Tilt3D or Slot).
-A conservative optimisation pass (diagnostics moved to `debug.ts`, redundant validation removed,
-shorter messages) reduced registry + host from 4.68 to 4.45 KiB and Tilt3D from 8.63 to 8.40 KiB.
-Meeting the budgets needs structural changes or a budget/metric decision — **pending owner decision**
-(see the report). The check is not wired into CI until then; budgets were not changed.
+1. **Arbitration decoupled** — `host.ts` keeps the style ledger and composable channels;
+   `arbiter.ts` holds exclusive-channel arbitration and the conflict policy; `attach.ts` holds the
+   lifecycle, which receives the arbiter. `attachEffect`/`useMotionEffect` pass it; Tilt3D (only
+   `transform`) attaches without it, so its bundles no longer contain arbitration code (verified by a
+   tree-shaking marker). Attaching a definition with exclusive channels without the arbiter throws.
+2. **Development diagnostics separated** — conflict and external-change warnings are guarded by
+   `process.env.NODE_ENV`, so application production builds drop them (verified by a production
+   build marker; `warn` behaves like `silent` in production, `error` still throws).
+3. **Diagnostics module** — `getMotionDebugInfo` lives in `debug.ts`, outside other bundles.
+4. **Redundancy removed** — duplicated channel validation in the host; shorter messages that still
+   name both effects, the channel and the element.
+
+| Entry                                     | Before (dbd935f) | After        | Change              | Provisional max | **Definitive budget** |
+| ----------------------------------------- | ---------------- | ------------ | ------------------- | --------------- | --------------------- |
+| core (entire entry)                       | 8.51 KiB         | 8.69 KiB     | +0.18               | 9.50 KiB        | **9.50 KiB**          |
+| registry + host                           | 4.68 KiB         | 4.60 KiB     | −0.08               | 5.00 KiB        | **5.00 KiB**          |
+| hover: Tilt3D (incl. Slot)                | 8.63 KiB         | **7.99 KiB** | **−0.64**           | 9.50 KiB        | **8.75 KiB**          |
+| hover: createTilt3D (no React)            | 6.65 KiB         | **5.98 KiB** | **−0.67**           | —               | **6.60 KiB**          |
+| controllers (motionValue, animateValue)   | 3.45 KiB         | 3.45 KiB     | 0                   | —               | **3.80 KiB**          |
+| root: React bindings                      | 4.57 KiB         | 4.43 KiB     | −0.14               | —               | **4.90 KiB**          |
+| composeTransform                          | 0.50 KiB         | 0.50 KiB     | 0                   | 0.60 KiB        | **0.60 KiB**          |
+| registry + host, production define (info) | —                | 4.40 KiB     | dev strings removed | —               | not budgeted          |
+
+Definitive budgets = measurement + ~10 % headroom (the convention of `scripts/bundle-budgets.json`),
+never above the provisional maxima; entries that were informational are now budgeted to catch
+regressions. Core grows slightly because splitting into modules adds cross-module property accesses;
+its definitive budget still keeps ~9 % headroom. `pnpm check:animations:bundles` passes and runs in CI.
+
+## Synchronisation with `main` (2026-11-16, owner request)
+
+`origin/main` `89665bf` (PR #5, README badges) was merged into the branch as `a77814f` (merge commit,
+no conflicts; the only shared file, `packages/animations/README.md`, kept both the badges and the
+Phase 009 text). Backup `backup/009-before-main-merge`. Local `main` was fast-forwarded to
+`89665bf`; `pnpm changeset:status` then passes with nothing to bump — the earlier failure came only
+from the stale local `main` (no changeset was added).
 
 ## Not run / pending
 

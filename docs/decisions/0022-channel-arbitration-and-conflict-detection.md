@@ -35,6 +35,11 @@ before effects are implemented at scale.
    once per frame. This supersedes the 008 behaviour where the composer replaced an inline
    `transform` with a warning.
 
+7. **Module split** (bundle optimisation, 2026-11-16): the style ledger (`host.ts`), the arbitration
+   (`arbiter.ts`) and the lifecycle (`attach.ts`) are separate modules; definitions that only compose
+   may be attached without the arbiter, and warnings are development-only code removed by production
+   builds (`error` still throws).
+
 ## Consequences
 
 - No silent overrides between Neshel effects; behaviour is deterministic and testable.

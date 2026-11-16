@@ -2,23 +2,14 @@
  * Effect definitions, explicit registries and attachment (ADR 0021; contracts/effect-definition.md).
  * Definitions are frozen values; nothing registers at import time.
  */
+
+import { arbiter } from "./arbiter.js";
+import { type AttachConfig, attachWith } from "./attach.js";
 import type { TransformLayer } from "./compose.js";
 import { animationsError } from "./errors.js";
-import {
-  type Claim,
-  type ConflictPolicy,
-  type ExclusiveChannel,
-  getMotionHost,
-  isExclusiveChannel,
-  resolveConflictPolicy,
-} from "./host.js";
-import {
-  prefersReducedMotion,
-  type ReducedMotion,
-  shouldReduceMotion,
-  subscribeReducedMotion,
-} from "./reduced-motion.js";
-import { type FrameScheduler, getFrameScheduler } from "./scheduler.js";
+import { type ExclusiveChannel, isExclusiveChannel } from "./host.js";
+import type { ReducedMotion } from "./reduced-motion.js";
+import type { FrameScheduler } from "./scheduler.js";
 
 export const FAMILIES = [
   "entrance",
@@ -154,162 +145,14 @@ export interface EffectHandle<Options> {
   destroy(): void;
 }
 
-export interface AttachConfig {
-  conflicts?: ConflictPolicy;
-  /** Overrides the definition's priority for this attachment. */
-  priority?: number;
-  /** Overrides the policy carried by the options. */
-  reducedMotion?: ReducedMotion;
-}
+export type { AttachConfig } from "./attach.js";
 
+/** Attach a definition to an element (full engine: composition and exclusive-channel arbitration). */
 export function attachEffect<Options, Resolved>(
   element: Element & { readonly style: CSSStyleDeclaration },
   definition: EffectDefinition<Options, Resolved>,
   options?: Options,
   config: AttachConfig = {},
 ): EffectHandle<Options> {
-  const policy = resolveConflictPolicy(config.conflicts);
-  let resolved = definition.resolve(options);
-  const host = getMotionHost(element);
-  const scheduler = getFrameScheduler();
-  const key = Symbol(definition.id);
-  const exclusive = definition.channels
-    .filter((claim) => claim.mode === "exclusive")
-    .map((claim) => claim.channel as ExclusiveChannel);
-  const declared = new Set(definition.channels.map((claim) => claim.channel));
-  let instance: EffectInstance<Resolved> | undefined;
-  let paused = false;
-  let destroyed = false;
-  let systemReduced = prefersReducedMotion();
-  const reducedListeners = new Set<(reduced: boolean) => void>();
-  const reduced = () =>
-    shouldReduceMotion(
-      config.reducedMotion ?? definition.policy?.(resolved) ?? "user",
-      systemReduced,
-    );
-
-  const guard = (channel: string) => {
-    if (!declared.has(channel as never)) {
-      throw animationsError(
-        definition.id,
-        `wrote "${channel}", which it did not declare in channels`,
-      );
-    }
-  };
-  const claim: Claim = {
-    id: definition.id,
-    priority: config.priority ?? definition.priority ?? 0,
-    channels: exclusive,
-    onGrant: () => {
-      if (!destroyed) start();
-    },
-    onRevoke: () => stop(),
-  };
-  const channels: ChannelHandles = {
-    transform: {
-      set: (layer) => {
-        guard("transform");
-        host.setLayer(key, layer);
-      },
-      clear: () => host.setLayer(key, undefined),
-    },
-    opacity: {
-      set: (value) => {
-        guard("opacity");
-        host.setOpacity(key, value);
-      },
-      clear: () => host.setOpacity(key, undefined),
-    },
-    exclusive: (channel) => {
-      guard(channel);
-      return {
-        set: (value) => host.setExclusive(claim, channel, value),
-        clear: () => host.setExclusive(claim, channel, undefined),
-      };
-    },
-  };
-  const context: EffectContext<Resolved> = {
-    element,
-    get options() {
-      return resolved;
-    },
-    channels,
-    scheduler,
-    get reduced() {
-      return reduced();
-    },
-    onReducedChange(listener) {
-      reducedListeners.add(listener);
-      return () => reducedListeners.delete(listener);
-    },
-  };
-
-  function start(): void {
-    instance = definition.setup(context);
-    if (paused) instance.pause?.();
-  }
-  function stop(): void {
-    instance?.destroy();
-    instance = undefined;
-    host.setLayer(key, undefined);
-    host.setOpacity(key, undefined);
-  }
-
-  // Request first: the "error" policy throws before anything is subscribed or set up.
-  const granted = exclusive.length === 0 || host.request(claim, policy);
-  let last = reduced();
-  const unsubscribe = subscribeReducedMotion((value) => {
-    systemReduced = value;
-    notify();
-  });
-  function notify(): void {
-    const now = reduced();
-    if (now === last) return;
-    last = now;
-    for (const listener of [...reducedListeners]) listener(now);
-  }
-  if (granted) {
-    try {
-      start();
-    } catch (error) {
-      // A throwing setup must not leave subscriptions, contributions or claims behind.
-      unsubscribe();
-      stop();
-      if (exclusive.length > 0) host.release(claim);
-      throw error;
-    }
-  }
-
-  return {
-    get state() {
-      if (destroyed) return "destroyed";
-      if (exclusive.length > 0 && !host.isGranted(claim)) return "suspended";
-      if (paused) return "paused";
-      return reduced() ? "reduced" : "active";
-    },
-    update(next) {
-      if (destroyed) return;
-      resolved = definition.resolve(next);
-      instance?.update(resolved);
-      notify();
-    },
-    pause() {
-      if (destroyed || paused) return;
-      paused = true;
-      instance?.pause?.();
-    },
-    resume() {
-      if (destroyed || !paused) return;
-      paused = false;
-      instance?.resume?.();
-    },
-    destroy() {
-      if (destroyed) return;
-      destroyed = true;
-      unsubscribe();
-      reducedListeners.clear();
-      stop();
-      if (exclusive.length > 0) host.release(claim);
-    },
-  };
+  return attachWith(element, definition, options, config, arbiter);
 }

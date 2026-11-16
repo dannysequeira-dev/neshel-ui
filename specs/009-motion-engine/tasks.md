@@ -55,8 +55,8 @@ Approved 2026-11-16.
 - [x] T060 Engine lab page: lab-defined conflicting effects, controllers, WAAPI (FR-061)
 - [x] T061 `check:browser:animations` extended; Playwright Chromium/Firefox/WebKit engine check (FR-061)
 - [x] T062 Packed external consumer variant (Vite + SSR + hydration) (FR-062)
-- [x] T063 `check:animations:bundles` with the approved budgets (FR-063, SC-003) — implemented; 3 of 4
-  budgets exceeded, **owner decision pending**, not wired into CI
+- [x] T063 `check:animations:bundles` (FR-063, SC-003): option B optimisation (arbiter split, dev-only
+  diagnostics), definitive budgets (A), wired into CI
 - [ ] T064 CI steps written (consumer in the main job, three engines in the browsers job); three-OS run
   pending an authorised push (SC-005)
 

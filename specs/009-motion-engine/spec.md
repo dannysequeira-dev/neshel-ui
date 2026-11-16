@@ -4,7 +4,7 @@
 
 **Created**: 2026-11-15
 
-**Status**: **Approved (2026-11-16); implemented and verified locally (009.1–009.6); CI pending a push; bundle budgets pending an owner decision.** See [evidence.md](evidence.md) for what is
+**Status**: **Approved (2026-11-16); implemented and verified locally; definitive bundle budgets set; PR and three-OS CI in progress.** See [evidence.md](evidence.md) for what is
 implemented and verified. `@neshel-ui/animations` stays private (0.0.0).
 
 **Input**: Owner direction 2026-11-15, summarised in [brief.md](brief.md).
@@ -204,8 +204,9 @@ unavailable (JS fallback for opacity/transform, documented); `finished` awaited 
 
 - **SC-001**: `pnpm check` passes with the engine and the migrated Tilt3D.
 - **SC-002**: Conflict scenarios (US2) pass in unit tests and in three browser engines.
-- **SC-003**: Bundle budgets (proposed): `./core` full ≤ 8 KiB gzip; `./hover` Tilt3D ≤ 7 KiB gzip
-  incl. Slot; `defineEffect` + `attachEffect` alone ≤ 3 KiB gzip; `composeTransform` stays ≤ 0.6 KiB.
+- **SC-003**: Bundle budgets — definitive (2026-11-16, after option B then A): core ≤ 9.5 KiB,
+  registry + host ≤ 5 KiB, Tilt3D ≤ 8.75 KiB, `createTilt3D` ≤ 6.6 KiB, controllers ≤ 3.8 KiB, root
+  bindings ≤ 4.9 KiB, `composeTransform` ≤ 0.6 KiB gzip, measured from the packed tarball.
 - **SC-004**: Packed consumer builds, server-renders and hydrates without errors.
 - **SC-005**: Three-OS CI green on the 009 PR (when authorised).
 - **SC-006**: `git diff main -- packages/{config,layout,typography,components,cli,core} .changeset
