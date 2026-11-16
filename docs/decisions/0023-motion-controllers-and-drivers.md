@@ -1,6 +1,6 @@
 # ADR 0023 — Motion controllers and drivers
 
-- Status: **Proposed** (2026-11-15, Phase 009.0); awaiting owner approval, not implemented
+- Status: **Accepted** (owner approval 2026-11-16); implementation in Phase 009
 - Date: 2026-11-15
 - Feature: [009](../../specs/009-motion-engine/spec.md); research R6–R8;
   [contracts/controllers.md](../../specs/009-motion-engine/contracts/controllers.md)
@@ -13,12 +13,15 @@ Without a shared interface each driver (CSS, WAAPI, JS) exposes different semant
 
 ## Decision
 
-1. One `MotionControl` interface for every driver: states `idle | running | paused | finished |
-   cancelled`; `play`, `pause`, `reverse`, `finish`, `cancel`, optional `seek`; `finished` resolves
-   with `"finished"` or `"cancelled"` and **never rejects**.
+1. One `MotionControl` interface for every driver: states `idle | running | paused | completed |
+   cancelled | interrupted | failed`; `play`, `pause`, `reverse`, `finish`, `cancel`, and `seek` for
+   tweens/WAAPI. `finished` (owner requirement 3.2) resolves with a typed result
+   `{ status: "completed" | "cancelled" | "interrupted", direction, value }` for normal outcomes and
+   **rejects only on real errors** (state `failed`), so errors are never hidden and cancellation never
+   produces an unhandled rejection. Each run has its own promise.
 2. Drivers in Phase 009: **JS** (motion values driven by springs or tweens on the shared scheduler) and
-   **WAAPI** (`animateElement`, claiming channels through the motion host, committing the final value,
-   springs converted with `springEasing`). The CSS-class driver arrives with presets (010).
+   **WAAPI** (`animateElement`, exclusive channels only, claiming channels through the motion host,
+   committing the final value through the style ledger, springs converted with `springEasing`). The CSS-class driver arrives with presets (010).
 3. Interruption: a new animation on the same target cancels the previous one and continues from the
    current value; springs keep velocity.
 4. Reduced motion is applied by the controller from the declared behaviour (`off`, `fade`, `instant`,

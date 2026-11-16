@@ -1,6 +1,6 @@
 # Contract — channels, composition and conflict arbitration (proposed, Phase 009)
 
-**Status: proposed, not implemented** (the transform composer itself is implemented since 008.0).
+**Status: approved 2026-11-16; implemented in 009.2.**
 Decisions: [ADR 0019](../../../docs/decisions/0019-motion-composition-and-property-ownership.md)
 (ownership), [ADR 0022](../../../docs/decisions/0022-channel-arbitration-and-conflict-detection.md)
 (arbitration).
@@ -32,8 +32,8 @@ One host per element (weakly held), created on first attach:
   for `compose`/`multiply` channels;
 - exposes `ChannelHandles` to granted instances: `transform.set(layer)/clear()`,
   `opacity.set(value)/clear()`, `exclusive(channel).set(value)/clear()`;
-- performs at most one write per channel per frame (scheduler write phase) and removes inline values
-  when the last contribution/owner releases, restoring the element's own CSS.
+- writes through the style ledger ([style-ownership.md](style-ownership.md)): at most one write per
+  property per frame, original inline values and priorities captured and restored on release.
 
 ## §3 Arbitration (exclusive channels)
 

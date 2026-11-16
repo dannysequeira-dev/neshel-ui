@@ -1,6 +1,6 @@
 # ADR 0024 — Motion defaults and future Config integration
 
-- Status: **Proposed** (2026-11-15, Phase 009.0) implementing owner decision D5; not implemented
+- Status: **Accepted** (owner approval 2026-11-16); implementation in Phase 009
 - Date: 2026-11-15
 - Feature: [009](../../specs/009-motion-engine/spec.md); research R9;
   [contracts/motion-defaults.md](../../specs/009-motion-engine/contracts/motion-defaults.md)

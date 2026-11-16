@@ -1,11 +1,11 @@
 # Feature Specification: Motion Engine (`@neshel-ui/animations`, Phase 009)
 
-**Feature Branch**: `feature/009-motion-engine` (local; based on `feature/008-animations`)
+**Feature Branch**: `feature/009-motion-engine` (replayed onto `main` after the PR #4 squash merge `fd3885c`)
 
 **Created**: 2026-11-15
 
-**Status**: **Proposed — awaiting owner approval. Not implemented.** No code of this phase exists.
-Depends on Phase 008.0 (PR #4) being accepted.
+**Status**: **Approved by the owner (2026-11-16); implementation in progress.** See [evidence.md](evidence.md) for what is
+implemented and verified. `@neshel-ui/animations` stays private (0.0.0).
 
 **Input**: Owner direction 2026-11-15, summarised in [brief.md](brief.md).
 
@@ -13,7 +13,7 @@ Companion documents: [research.md](research.md) (R1–R12), [plan.md](plan.md), 
 [analysis.md](analysis.md); contracts [effect-definition.md](contracts/effect-definition.md),
 [channels-and-arbitration.md](contracts/channels-and-arbitration.md),
 [controllers.md](contracts/controllers.md), [motion-defaults.md](contracts/motion-defaults.md),
-[react-bindings.md](contracts/react-bindings.md); ADRs
+[react-bindings.md](contracts/react-bindings.md), [style-ownership.md](contracts/style-ownership.md); ADRs
 [0021](../../docs/decisions/0021-effect-definitions-and-explicit-registries.md),
 [0022](../../docs/decisions/0022-channel-arbitration-and-conflict-detection.md),
 [0023](../../docs/decisions/0023-motion-controllers-and-drivers.md),
@@ -50,6 +50,26 @@ scroll engine (011); colour interpolation (015); GPU entry (016); changes to `@n
 pushes without authorisation; lifting the `private` guard.
 
 ## Clarifications
+
+### Session 2026-11-16 — owner approval
+
+- Approved: start Phase 009; D1, D2, D3, D5, D7 confirmed; D4 (content visible by default in SSR; any
+  pre-hydration hiding optional, limited, with a safe fallback when JavaScript fails); D6 (own engine
+  first, benchmarks before external engines, especially layout and gestures); D8 (progressive native
+  scroll-driven animations and View Transitions with per-browser verified fallbacks); D9 (experimental
+  docs in Storybook and Playground; full public docs before publication).
+- Q1 Tilt3D to `./hover` without a compatibility layer: approved. Q2 conflict policy (dev warnings,
+  production silent, configurable strict mode) with deterministic resolution, priorities and correct
+  resumption: approved. Q3 budgets (core ≤ 8 KiB, Tilt3D ≤ 7 KiB, registry + host ≤ 3 KiB gzip) measured
+  on real packed bundles: approved. Q4 automated accessibility during development; manual screen-reader
+  review before publication.
+- New mandatory requirement 3.1: explicit style ownership with capture/restoration of original inline
+  values and priorities, cleanup on cancel/interrupt/unmount, composition, external modifications,
+  exclusive properties, no duplicate writes per frame; limits documented
+  ([style-ownership.md](contracts/style-ownership.md)).
+- New mandatory requirement 3.2: `MotionControl.finished` distinguishes `completed`, `cancelled`,
+  `interrupted`; normal outcomes resolve, real errors reject; documented semantics of `play`, `pause`,
+  `reverse`, `seek`, `cancel`, `finish` ([controllers.md](contracts/controllers.md)).
 
 ### Session 2026-11-15 — owner direction and agent proposals
 
@@ -119,7 +139,16 @@ unavailable (JS fallback for opacity/transform, documented); `finished` awaited 
 - **FR-011**: Channel handles are the only write path for claimed channels.
 - **FR-012**: `transform` composes (008 rules), `opacity` multiplies, others are exclusive.
 - **FR-013**: At most one style write per channel per element per frame (write phase).
-- **FR-014**: Releasing the last contribution/owner removes the inline value.
+- **FR-014**: Releasing the last contribution/owner restores the captured inline value and priority, or
+  removes the property when none was captured.
+- **FR-015**: Original inline values and priorities are captured on first claim; `transform` keeps the
+  captured value before the composed layers, `opacity` multiplies it, `will-change` unions tokens
+  (style-ownership.md §3).
+- **FR-016**: Cleanup restores styles after completion, cancellation, interruption, effect destroy and
+  React unmount.
+- **FR-017**: External inline modifications during animation become the new baseline (never lost) with
+  a development warning (style-ownership.md §5).
+- **FR-018**: A property is written at most once per frame and only when its value changes.
 
 ### Arbitration and conflicts
 
@@ -133,10 +162,11 @@ unavailable (JS fallback for opacity/transform, documented); `finished` awaited 
 
 ### Controllers and drivers
 
-- **FR-030**: `MotionControl` state machine and methods per controllers.md; `finished` never rejects.
+- **FR-030**: `MotionControl` states and methods per controllers.md §1; `finished` resolves with
+  `completed`, `cancelled` or `interrupted` and rejects only on real errors (state `failed`).
 - **FR-031**: Motion values (`get/set/getVelocity/subscribe`), `animateValue` with spring and tween
   transitions; interruption keeps velocity/current value.
-- **FR-032**: `animateElement` (WAAPI) claims channels through the host, converts springs with
+- **FR-032**: `animateElement` (WAAPI, exclusive channels only) claims channels through the host, converts springs with
   `springEasing`, commits the final value, releases on cancel, honours reduced-motion behaviour.
 - **FR-033**: `bindChannel` writes a motion value into an `opacity` or `--neshel-*` channel.
 

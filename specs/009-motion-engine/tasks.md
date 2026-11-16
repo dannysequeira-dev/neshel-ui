@@ -1,14 +1,15 @@
 # Tasks: Motion Engine (Phase 009)
 
 Dependency-ordered. `[P]` = parallel with the previous task. `[x]` done, `[ ]` open.
-**Only 009.0 is done; nothing below 009.0 may start before owner approval.**
+Approved 2026-11-16.
 
 ## 009.0 — Proposal
 
 - [x] T001 Brief, spec (FR-001–FR-070), research R1–R12
 - [x] T002 Contracts: effect-definition, channels-and-arbitration, controllers, motion-defaults, react-bindings
 - [x] T003 ADRs 0021–0024 (proposed); plan, tasks, analysis
-- [ ] T004 Owner review and approval (open questions in plan.md)
+- [x] T004 Owner review and approval (2026-11-16; Q1–Q4 answered; requirements 3.1 and 3.2 added)
+- [x] T005 Replay the branch onto `main` after the PR #4 squash merge; contracts style-ownership and controllers (3.1, 3.2)
 
 ## 009.1 — Easing, interpolation, defaults
 
@@ -25,6 +26,8 @@ Dependency-ordered. `[P]` = parallel with the previous task. `[x]` done, `[ ]` o
 - [ ] T022 Arbitration: priority, ties, suspension/resume, all-or-none (FR-020, FR-021)
 - [ ] T023 Conflict policy + messages + once-per-pair; `getMotionDebugInfo` (FR-022, FR-023)
 - [ ] T024 Conflict matrix tests (positive and negative), restoration tests
+- [ ] T025 Style ledger: capture/restore value + priority, transform prefix, opacity factor, will-change union,
+  external modification adoption, no duplicate writes (FR-014–FR-018)
 
 ## 009.3 — Definitions, registries, React
 
@@ -36,7 +39,7 @@ Dependency-ordered. `[P]` = parallel with the previous task. `[x]` done, `[ ]` o
 ## 009.4 — Controllers and drivers
 
 - [ ] T040 Motion values; `animateValue` spring/tween; interruption semantics (FR-031)
-- [ ] T041 `MotionControl` state machine; `finished` never rejects (FR-030)
+- [ ] T041 `MotionControl` state machine; typed `finished` results, rejection only on real errors (FR-030)
 - [ ] T042 `bindChannel` (FR-033)
 - [ ] T043 `animateElement` WAAPI driver; reduced-motion behaviours; commit/release (FR-032)
 

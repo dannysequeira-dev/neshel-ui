@@ -1,6 +1,6 @@
 # ADR 0022 — Channel arbitration and conflict detection
 
-- Status: **Proposed** (2026-11-15, Phase 009.0); awaiting owner approval, not implemented
+- Status: **Accepted** (owner approval 2026-11-16); implementation in Phase 009
 - Date: 2026-11-15
 - Feature: [009](../../specs/009-motion-engine/spec.md); research R4–R5;
   [contracts/channels-and-arbitration.md](../../specs/009-motion-engine/contracts/channels-and-arbitration.md);
@@ -26,6 +26,13 @@ before effects are implemented at scale.
    `silent` (production default). Arbitration does not depend on the policy except that `error` throws.
 4. `getMotionDebugInfo(element)` exposes the ledger for development and tests.
 5. No provider: the policy comes from the call or `NODE_ENV`.
+6. **Style ownership** (owner requirement 3.1, [style-ownership.md](../../specs/009-motion-engine/contracts/style-ownership.md)):
+   every managed property is written only through the host's style ledger, which captures the original
+   inline value and priority on first claim, combines it (`transform` prefix, `opacity` factor,
+   `will-change` union), restores it exactly on release (completion, cancel, interrupt, destroy,
+   unmount), adopts external inline changes as the new baseline, and writes each property at most
+   once per frame. This supersedes the 008 behaviour where the composer replaced an inline
+   `transform` with a warning.
 
 ## Consequences
 

@@ -1,32 +1,75 @@
-# Contract — motion controllers, motion values and drivers (proposed, Phase 009)
+# Contract — motion controllers, motion values and drivers (Phase 009)
 
-**Status: proposed, not implemented.** Decision: [ADR 0023](../../../docs/decisions/0023-motion-controllers-and-drivers.md).
-Exported from `@neshel-ui/animations/core`.
+**Status: approved 2026-11-16 (with owner requirement 3.2); implemented in 009.4.** Decision:
+[ADR 0023](../../../docs/decisions/0023-motion-controllers-and-drivers.md). Exported from
+`@neshel-ui/animations/core`.
 
-## §1 MotionControl (all drivers)
+## §1 MotionControl
 
 ```ts
-interface MotionControl {
-  readonly state: "idle" | "running" | "paused" | "finished" | "cancelled";
-  readonly finished: Promise<"finished" | "cancelled">; // never rejects
-  play(): void; // from idle or paused
-  pause(): void; // running → paused (no-op otherwise)
-  reverse(): void; // tween: plays back to the origin; spring: retargets to the origin
-  finish(): void; // jump to the end state, resolve "finished"
-  cancel(): void; // stop where it is, resolve "cancelled"
-  seek?(progress: number): void; // tweens and keyframe animations, progress in [0, 1]
+type MotionState =
+  | "idle"
+  | "running"
+  | "paused"
+  | "completed"
+  | "cancelled"
+  | "interrupted"
+  | "failed";
+
+interface MotionResult {
+  status: "completed" | "cancelled" | "interrupted";
+  direction: "forward" | "reverse"; // direction of the run when it settled
+  value: number; // final value (JS driver) or progress 0..1 (WAAPI)
 }
+
+interface MotionControl {
+  readonly state: MotionState;
+  readonly finished: Promise<MotionResult>; // promise of the current run
+  play(): void;
+  pause(): void;
+  reverse(): void;
+  finish(): void;
+  cancel(): void;
+}
+interface TweenControl extends MotionControl {
+  seek(progress: number): void;
+} // tweens and WAAPI
 ```
 
-State machine: `idle → running ⇄ paused → finished | cancelled`; terminal states ignore further calls
-(except `reverse` from `finished`, which starts a new run). Starting a new animation on the same
-target cancels the previous one and starts from the current value (and velocity, for springs).
+### Settlement
+
+| Outcome                                                                                                              | `finished`                           | state         |
+| -------------------------------------------------------------------------------------------------------------------- | ------------------------------------ | ------------- |
+| Reached the end of the current direction, or `finish()`                                                              | resolves `{ status: "completed" }`   | `completed`   |
+| `cancel()` by the caller                                                                                             | resolves `{ status: "cancelled" }`   | `cancelled`   |
+| Superseded by another animation of the same target, channel lost to a higher-priority claim, owning effect destroyed | resolves `{ status: "interrupted" }` | `interrupted` |
+| Unexpected error (a subscriber or driver throws, invalid keyframes rejected by the browser)                          | **rejects** with the error           | `failed`      |
+
+Normal outcomes never reject, so fire-and-forget usage produces no unhandled rejection; real errors
+always reject (and are never swallowed). Each run has its own promise; it settles exactly once.
+
+### Methods
+
+| Method      | From                                    | Effect                                                                                      |
+| ----------- | --------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `play()`    | `idle`, `paused`                        | runs in the current direction                                                               |
+|             | `completed`, `cancelled`, `interrupted` | starts a **new run** from the start of the current direction (new `finished`)               |
+|             | `running`, `failed`                     | no-op                                                                                       |
+| `pause()`   | `running`                               | `paused` (value/progress kept); otherwise no-op                                             |
+| `reverse()` | `running`, `paused`                     | flips direction, keeps state; the run completes at the other end (`direction: "reverse"`)   |
+|             | `idle`, settled                         | flips direction and starts a new run                                                        |
+| `seek(p)`   | any (tweens/WAAPI)                      | sets progress `p ∈ [0, 1]` (clamped); from a settled state it becomes `paused` in a new run |
+| `finish()`  | `idle`, `running`, `paused`             | jumps to the end of the current direction, settles `completed`; otherwise no-op             |
+| `cancel()`  | `idle`, `running`, `paused`             | stops where it is, settles `cancelled`; otherwise no-op                                     |
+
+Springs have no `seek` (a spring has no fixed duration); `reverse()` retargets to the origin keeping
+velocity; completion = at rest on the current target.
 
 ## §2 Transitions
 
 ```ts
 type Transition =
-  | { type: "spring"; spring?: SpringOptions | SpringPreset; velocity?: number }
+  | { type: "spring"; spring?: SpringOptions | SpringPreset }
   | {
       type: "tween";
       duration?: number | DurationPreset;
@@ -35,37 +78,37 @@ type Transition =
     };
 ```
 
-Presets come from `motionDefaults` ([motion-defaults.md](motion-defaults.md)).
-
 ## §3 Motion values (JS driver)
 
 ```ts
-interface MotionValue {
-  get(): number; set(value: number): void; getVelocity(): number;
-  subscribe(listener: (value: number) => void): () => void;
-}
-motionValue(initial: number): MotionValue;
-animateValue(value: MotionValue, target: number, transition?: Transition): MotionControl;
-bindChannel(value: MotionValue, element: Element, channel: "opacity" | `--neshel-${string}`, effectId: EffectId): () => void;
+motionValue(initial: number): MotionValue;            // get, set, getVelocity, subscribe
+animateValue(value, target, transition?, options?: { reducedMotion?: ReducedMotion }): MotionControl | TweenControl;
+bindChannel(value, element, binding, options: { effectId; priority? }): () => void;
+// binding: { channel: "opacity" } | { channel: "transform"; layer(v): TransformLayer } | { channel: ExclusiveChannel; format(v): string }
 ```
 
-Listeners run in the scheduler's update phase; channel writes in the write phase. No React state.
+A new `animateValue` on a value interrupts the previous control (`interrupted`) and starts from the
+current value (springs keep velocity). Subscribers run in the update phase; channel writes in the
+write phase through the style ledger.
 
 ## §4 WAAPI driver
 
 ```ts
-animateElement(element, channel: ChannelClaim["channel"], keyframes: Keyframe[] | PropertyIndexedKeyframes,
-  transition: Transition, options: { effectId: EffectId; priority?: number }): MotionControl;
+animateElement(element, channel: ExclusiveChannel, keyframes: string[], transition, options: { effectId; priority?; conflicts? }): TweenControl;
 ```
 
-- Claims the channel through the element's host (arbitration and conflict policy apply).
-- Spring transitions are converted with `springEasing()`; tweens map duration/easing/delay directly.
-- Reduced motion follows the definition's or call's `reducedMotion` behaviour: `instant` jumps to the
-  last keyframe, `fade` replaces keyframes with an opacity fade, `off` does nothing.
-- On finish, the final value is committed through the channel handle (no fill-forever animations);
-  on cancel, the channel is released.
+- Limited to **exclusive** channels in 009: a WAAPI animation on `transform` or `opacity` would override
+  the composed inline value of other effects (documented limit; those channels use motion values).
+- Claims the channel through the host (arbitration and conflict policy apply; losing a claim settles
+  `interrupted`).
+- On completion the final keyframe is committed through the style ledger and the browser animation is
+  cancelled (no fill-forever); on cancel/interrupt the channel is released and the captured value
+  restored.
+- Spring transitions are converted with `springEasing()`.
 
-## §5 Out of scope for 009
+## §5 Reduced motion
 
-CSS-class driver (presets, 010), timelines/sequencing (013), scroll-linked values (011), colour and
-unit-string interpolation (015), GPU driver (016).
+Option `reducedMotion: ReducedMotion` (`"user"` default, `"always"`, `"never"`). When motion must be
+reduced, the control jumps to the final value of the run and settles `completed` without frames (the
+state change stays visible; contracts/accessibility.md §1). `"never"` runs normally. A preference
+change while running finishes the run immediately.
