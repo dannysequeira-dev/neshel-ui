@@ -211,11 +211,27 @@ async function main() {
     await run("corner: spring-animated amount drives all four techniques", async () => {
       await scrollIntoView("#corner-grid, .corner-grid");
       notes.webgl = await p.evaluate("window.__neshelLab.webgl");
-      await p.evaluate(`document.getElementById("corner-toggle").click()`);
-      await p.evaluate(wait(80));
-      const mid = await p.evaluate("window.__neshelLab.cornerAmount");
-      check(mid > 0 && mid < 1, `animated amount after 80 ms: ${mid}`);
-      await p.evaluate(wait(2000));
+      // Sample the amount on every animation frame (independent of runner speed; a fixed 80 ms read
+      // was flaky on a loaded macOS runner, run 43804188974): an animation shows intermediate values,
+      // a jump does not.
+      const samples = await p.evaluate(`new Promise((resolve) => {
+        const values = [];
+        const start = performance.now();
+        document.getElementById("corner-toggle").click();
+        const sample = () => {
+          const amount = window.__neshelLab.cornerAmount;
+          values.push(amount);
+          if (Math.abs(amount - 1) < 0.001 || performance.now() - start > 5000) resolve(values);
+          else requestAnimationFrame(sample);
+        };
+        requestAnimationFrame(sample);
+      })`);
+      const intermediate = samples.filter((value) => value > 0.01 && value < 0.99).length;
+      check(
+        intermediate >= 3,
+        `only ${intermediate} intermediate values in ${samples.length} frames`,
+      );
+      await p.evaluate(wait(1000));
       const state = await p.evaluate(`(() => ({
         amount: window.__neshelLab.cornerAmount,
         range: document.getElementById("corner-amount").value,
