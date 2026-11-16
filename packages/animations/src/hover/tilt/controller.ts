@@ -1,21 +1,15 @@
 /**
- * Tilt3D controller (contracts/tilt-3d.md §3): the imperative, framework-agnostic implementation
- * behind `useTilt3D` and `<Tilt3D>`.
+ * Tilt3D as an engine definition (Phase 009; contracts/tilt-3d.md §3, ADR 0021).
  *
- * Performance model: pointer events only record a target; one frame task advances three springs
- * (rotateX, rotateY, scale) and hands a layer to the element's transform composer, which writes
- * `transform` once per frame. No React state, no re-render, no layout read per pointer move (the
- * untransformed box is measured once per hover and again only after scroll or resize). The frame
- * task stops when the springs rest, so a still card costs nothing.
+ * Performance model (unchanged from 008.0): pointer events only record a target; one frame task
+ * advances three springs (rotateX, rotateY, scale) and hands a layer to the element's motion host,
+ * which writes `transform` once per frame through its style ledger (the element's own inline
+ * transform is kept and restored). No React state, no re-render, no layout read per pointer move.
  */
-import { getTransformComposer, type TransformComposer } from "../core/compose.js";
-import {
-  prefersReducedMotion,
-  shouldReduceMotion,
-  subscribeReducedMotion,
-} from "../core/reduced-motion.js";
-import { type FrameInfo, getFrameScheduler } from "../core/scheduler.js";
-import { type SpringState, stepSpring } from "../core/spring.js";
+import { attachWith } from "../../core/attach.js";
+import { defineEffect, type EffectContext, type EffectInstance } from "../../core/effect.js";
+import type { FrameInfo } from "../../core/scheduler.js";
+import { type SpringState, stepSpring } from "../../core/spring.js";
 import { type ResolvedTilt3DOptions, resolveTilt3DOptions, type Tilt3DOptions } from "./options.js";
 
 /** Value of the `data-neshel-tilt` attribute (styling and test hook). */
@@ -50,17 +44,18 @@ function matchesFocusVisible(element: Element): boolean {
   }
 }
 
-export function createTilt3D(element: HTMLElement, options: Tilt3DOptions = {}): Tilt3DController {
-  let o: ResolvedTilt3DOptions = resolveTilt3DOptions(options);
-  const scheduler = getFrameScheduler();
-  const composer: TransformComposer = getTransformComposer(element, scheduler);
-  const layerKey = Symbol("tilt-3d");
+function setupTilt3D(
+  context: EffectContext<ResolvedTilt3DOptions>,
+): EffectInstance<ResolvedTilt3DOptions> {
+  const element = context.element as HTMLElement;
+  let o = context.options;
+  const scheduler = context.scheduler;
+  const layer = context.channels.transform;
   const springs: Record<keyof Pose, SpringState> = {
     rotateX: { value: 0, velocity: 0 },
     rotateY: { value: 0, velocity: 0 },
     scale: { value: 1, velocity: 0 },
   };
-  let systemReduced = prefersReducedMotion();
   let pointer: { x: number; y: number } | undefined; // normalised, -1..1
   let focused = false;
   let box: { cx: number; cy: number; hw: number; hh: number } | undefined;
@@ -68,7 +63,7 @@ export function createTilt3D(element: HTMLElement, options: Tilt3DOptions = {}):
   let state: Tilt3DState | undefined;
   let destroyed = false;
 
-  const inactive = () => o.disabled || shouldReduceMotion(o.reducedMotion, systemReduced);
+  const inactive = () => o.disabled || context.reduced;
 
   function setState(next: Tilt3DState): void {
     if (state === next) return;
@@ -110,7 +105,7 @@ export function createTilt3D(element: HTMLElement, options: Tilt3DOptions = {}):
     springs.rotateX = { value: 0, velocity: 0 };
     springs.rotateY = { value: 0, velocity: 0 };
     springs.scale = { value: 1, velocity: 0 };
-    composer.delete(layerKey);
+    layer.clear();
   }
 
   function tick({ delta }: FrameInfo): boolean {
@@ -121,9 +116,9 @@ export function createTilt3D(element: HTMLElement, options: Tilt3DOptions = {}):
     }
     const atRest =
       springs.rotateX.value === 0 && springs.rotateY.value === 0 && springs.scale.value === 1;
-    if (atRest && settled) composer.delete(layerKey);
+    if (atRest && settled) layer.clear();
     else {
-      composer.set(layerKey, {
+      layer.set({
         perspective: o.perspective,
         rotateX: springs.rotateX.value,
         rotateY: springs.rotateY.value,
@@ -245,10 +240,7 @@ export function createTilt3D(element: HTMLElement, options: Tilt3DOptions = {}):
     animate();
   }
 
-  const unsubscribe = subscribeReducedMotion((reduced) => {
-    systemReduced = reduced;
-    animate();
-  });
+  const unsubscribe = context.onReducedChange(() => animate());
   element.addEventListener("pointerenter", startHover);
   element.addEventListener("pointermove", onElementMove);
   element.addEventListener("pointerleave", onPointerLeave);
@@ -258,9 +250,9 @@ export function createTilt3D(element: HTMLElement, options: Tilt3DOptions = {}):
   refreshState();
 
   return {
-    update(next = {}) {
+    update(next) {
       if (destroyed) return;
-      o = resolveTilt3DOptions(next);
+      o = next;
       animate();
     },
     destroy() {
@@ -278,8 +270,32 @@ export function createTilt3D(element: HTMLElement, options: Tilt3DOptions = {}):
       snapToRest();
       element.removeAttribute(STATE_ATTRIBUTE);
     },
+  };
+}
+
+/** The Tilt3D definition (`hover/tilt-3d`): one composable `transform` layer, no exclusive channel. */
+export const tilt3D = /* @__PURE__ */ defineEffect<Tilt3DOptions, ResolvedTilt3DOptions>({
+  id: "hover/tilt-3d",
+  family: "hover",
+  channels: [{ channel: "transform", mode: "compose" }],
+  priority: 0,
+  reducedMotion: "off",
+  resolve: (options) => resolveTilt3DOptions(options),
+  policy: (options) => options.reducedMotion,
+  setup: setupTilt3D,
+});
+
+/**
+ * Imperative controller with a Tilt3D-shaped handle. Tilt3D only composes `transform`, so it is attached
+ * without the exclusive-channel arbiter (smaller bundle); behaviour equals `attachEffect`.
+ */
+export function createTilt3D(element: HTMLElement, options: Tilt3DOptions = {}): Tilt3DController {
+  const handle = attachWith(element, tilt3D, options, {}, undefined);
+  return {
+    update: (next = {}) => handle.update(next),
+    destroy: () => handle.destroy(),
     get state() {
-      return state ?? "rest";
+      return (element.getAttribute(STATE_ATTRIBUTE) as Tilt3DState | null) ?? "rest";
     },
   };
 }

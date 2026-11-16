@@ -3,6 +3,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { CornerRecedeLab } from "./corner-recede";
+import { EngineLab } from "./engine-lab";
 import "./lab.css";
 import { ScrollSceneLab } from "./scroll-scene";
 import { TiltLab } from "./tilt-lab";
@@ -23,6 +24,7 @@ createRoot(root).render(
       <TiltLab />
       <CornerRecedeLab />
       <ScrollSceneLab />
+      <EngineLab />
     </main>
   </StrictMode>,
 );

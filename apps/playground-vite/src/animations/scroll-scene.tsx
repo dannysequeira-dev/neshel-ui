@@ -1,8 +1,23 @@
 // Experiment C: ScrollScene. A tall section whose stage is pinned with `position: sticky` (CSS, no
 // JavaScript pinning). Progress 0–1 is computed from cached geometry (no layout read per scroll),
 // optionally smoothed by a spring ("smooth scrub"), and written once per frame as
-// `--scene-progress`; depth layers and timeline segments derive from it in CSS. Geometry is
-// re-measured by a ResizeObserver and on viewport resize. Prototype only; no package API.
+// `--scene-progress`; depth layers and timeline segments derive from it in CSS. Prototype only; no
+// package API.
+//
+// Geometry invalidation. The section's document position can change without its own size changing
+// (content above it grows, shrinks, is inserted or removed; late fonts or images), so observing only
+// the section leaves a stale `top` (CI run 43936536735: stage pinned, progress 1). The cache is
+// invalidated by:
+//   - a ResizeObserver on the section, on the document element (any change of the document's size)
+//   - and on every element that precedes the section in flow along its ancestor chain, which also
+//     catches compensated changes (content above grows while content below shrinks by the same
+//     amount: the document size does not change);
+//   - a MutationObserver on the ancestors' child lists (insertions and removals above), which
+//     re-collects the observed elements;
+//   - viewport resize.
+// Every signal only requests one coalesced measurement in the scheduler's read phase; scroll never
+// reads layout. Known limit: a margin change on a preceding element, or a change of an ancestor's
+// padding compensated elsewhere, resizes no observed box and is not detected.
 import {
   getFrameScheduler,
   prefersReducedMotion,
@@ -41,13 +56,16 @@ export function ScrollSceneLab() {
     const progress = { value: 0, velocity: 0 };
     let target = 0;
     let cancel: (() => void) | undefined;
+    let pendingMeasure: (() => void) | undefined;
 
-    // read phase: the only layout reads, once per resize (not per scroll).
+    // read phase: the only layout reads, once per invalidation (never per scroll).
     const measure = () => {
       const rect = element.getBoundingClientRect();
       geometry.top = rect.top + window.scrollY;
       geometry.distance = Math.max(1, element.offsetHeight - window.innerHeight);
-      labState().sceneMeasurements++;
+      const state = labState();
+      state.sceneMeasurements++;
+      state.sceneGeometry = { ...geometry };
     };
     const write = (value: number) => {
       pinned.style.setProperty("--scene-progress", value.toFixed(4));
@@ -70,24 +88,56 @@ export function ScrollSceneLab() {
     const request = () => {
       cancel ??= scheduler.schedule(tick, "update");
     };
+    // Coalesced: any number of signals in a frame cause one measurement in the next read phase.
     const remeasure = () => {
-      scheduler.schedule(() => {
+      pendingMeasure ??= scheduler.schedule(() => {
+        pendingMeasure = undefined;
         measure();
         request();
       }, "read");
     };
 
-    measure();
-    request();
+    // Elements whose size change can move the section: the section, the document element, and
+    // every preceding element sibling of the section and of each ancestor up to <body>.
+    const ancestors: Element[] = [];
+    const targets = (): Element[] => {
+      const list: Element[] = [element, document.documentElement];
+      ancestors.length = 0;
+      for (let node: Element = element; node.parentElement; node = node.parentElement) {
+        ancestors.push(node.parentElement);
+        for (let sibling = node.previousElementSibling; sibling; ) {
+          list.push(sibling);
+          sibling = sibling.previousElementSibling;
+        }
+        if (node.parentElement === document.body) break;
+      }
+      return list;
+    };
+    const resize = typeof ResizeObserver === "function" ? new ResizeObserver(remeasure) : undefined;
+    const observeTargets = () => {
+      const list = targets(); // also refreshes `ancestors`
+      resize?.disconnect();
+      for (const target of list) resize?.observe(target);
+    };
+    const mutations =
+      typeof MutationObserver === "function"
+        ? new MutationObserver(() => {
+            observeTargets(); // ResizeObserver reports newly observed elements: one remeasure
+            remeasure();
+          })
+        : undefined;
+
+    observeTargets();
+    for (const ancestor of ancestors) mutations?.observe(ancestor, { childList: true });
+    remeasure();
     window.addEventListener("scroll", request, { passive: true });
     window.addEventListener("resize", remeasure, { passive: true });
-    const observer =
-      typeof ResizeObserver === "function" ? new ResizeObserver(remeasure) : undefined;
-    observer?.observe(element);
     return () => {
       window.removeEventListener("scroll", request);
       window.removeEventListener("resize", remeasure);
-      observer?.disconnect();
+      resize?.disconnect();
+      mutations?.disconnect();
+      pendingMeasure?.();
       cancel?.();
     };
   }, []);

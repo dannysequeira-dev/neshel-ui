@@ -1,6 +1,6 @@
 // Negative type fixtures: each `@ts-expect-error` must be needed, or `pnpm typecheck` fails.
 import { createFrameScheduler } from "../src/core/index.js";
-import { Tilt3D, useTilt3D } from "../src/index.js";
+import { Tilt3D, useTilt3D } from "../src/hover/index.js";
 
 export function Invalid() {
   return (

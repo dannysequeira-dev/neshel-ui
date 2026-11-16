@@ -14,8 +14,9 @@ import {
   trackListeners,
 } from "./helpers.mjs";
 
-const animations = await import("../dist/index.js");
-const { Tilt3D, createTilt3D, useTilt3D, NeshelAnimationsError } = animations;
+const animations = await import("../dist/hover/index.js");
+const { Tilt3D, createTilt3D, useTilt3D } = animations;
+const { NeshelAnimationsError } = await import("../dist/index.js");
 
 /** A consumer component that renders its own element and attaches the hook. */
 function HookedCard() {
@@ -29,11 +30,11 @@ const rotation = (element, axis) => {
   return match ? Number(match[1]) : 0;
 };
 
-test("root runtime exports are exactly the implemented API (FR-010)", () => {
+test("hover subpath runtime exports are exactly the Tilt3D API (009 FR-052)", () => {
   assert.deepEqual(Object.keys(animations).sort(), [
-    "NeshelAnimationsError",
     "Tilt3D",
     "createTilt3D",
+    "tilt3D",
     "useTilt3D",
   ]);
 });
@@ -323,19 +324,24 @@ test("useTilt3D works on an element rendered by the consumer, with a callback re
 
 test("Tilt3D composes with another JavaScript layer on the same element (FR-033)", async () => {
   await setupDom();
-  const { getTransformComposer } = await import("../dist/core/index.js");
+  const { bindChannel, motionValue } = await import("../dist/core/index.js");
   const { container, unmount } = await mount(h(Tilt3D, { maxTilt: 10 }, "Card"));
   const element = container.firstChild;
   layoutBox(element);
-  const lift = Symbol("lift");
-  getTransformComposer(element).set(lift, { translateY: -6 });
+  const lift = motionValue(-6);
+  const release = bindChannel(
+    lift,
+    element,
+    { channel: "transform", layer: (y) => ({ translateY: y }) },
+    { effectId: "hover/lift" },
+  );
   pointer(element, "pointerenter", { x: 200, y: 50 });
   frames.flush(60);
   assert.match(element.style.transform, /translate3d\(0px, -6px, 0px\) rotateY\(/);
   pointer(element, "pointerleave", { x: 400, y: 400 });
   frames.settle();
   assert.equal(element.style.transform, "translate3d(0px, -6px, 0px)", "other layer survives");
-  getTransformComposer(element).delete(lift);
+  release();
   frames.flush();
   await unmount();
 });

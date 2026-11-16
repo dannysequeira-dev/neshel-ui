@@ -14,6 +14,8 @@
  * so an idle page costs nothing. On the server (no `requestAnimationFrame`) scheduling is a no-op.
  */
 
+import { reportError } from "./dev.js";
+
 export type FramePhase = "read" | "update" | "write";
 
 export interface FrameInfo {
@@ -121,12 +123,6 @@ export function createFrameScheduler(options: FrameSchedulerOptions = {}): Frame
       return size();
     },
   };
-}
-
-function reportError(error: unknown): void {
-  const host = globalThis as { reportError?: (error: unknown) => void };
-  if (typeof host.reportError === "function") host.reportError(error);
-  else console.error(error);
 }
 
 let shared: FrameScheduler | undefined;

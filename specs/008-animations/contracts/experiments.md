@@ -29,7 +29,9 @@ for media in the GPU entry. Not approved.
     caption: opacity segments of var(--scene-progress)
 ```
 
-Engine: cached geometry (measured in the read phase on mount, `ResizeObserver` and resize);
+Engine: cached geometry (measured in the read phase on mount, `ResizeObserver` and resize;
+since the Phase 009 CI follow-up also when content above the scene moves it without resizing it —
+see `specs/009-motion-engine/evidence.md`);
 progress in the update phase from `scrollY`; one `--scene-progress` write per frame; optional spring
 smoothing. A future API (011) could be:
 

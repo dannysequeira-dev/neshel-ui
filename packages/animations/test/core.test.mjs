@@ -4,27 +4,40 @@ import test from "node:test";
 import { frames, setupDom } from "./helpers.mjs";
 
 const core = await import("../dist/core/index.js");
-const {
-  composeTransform,
-  createFrameScheduler,
-  getTransformComposer,
-  resolveSpring,
-  shouldReduceMotion,
-  stepSpring,
-} = core;
+const { composeTransform, createFrameScheduler, resolveSpring, shouldReduceMotion, stepSpring } =
+  core;
 
-test("core exports exactly the documented engine API (FR-020)", () => {
+test("core exports exactly the documented engine API (008 FR-020, 009 contracts)", () => {
   assert.deepEqual(Object.keys(core).sort(), [
     "DEFAULT_SPRING",
+    "NeshelAnimationsError",
+    "animateElement",
+    "animateValue",
+    "attachEffect",
+    "bindChannel",
+    "clamp",
     "composeTransform",
+    "createEffectRegistry",
     "createFrameScheduler",
+    "cubicBezier",
+    "defineEffect",
+    "easings",
     "getFrameScheduler",
-    "getTransformComposer",
+    "getMotionDebugInfo",
+    "linear",
+    "mapRange",
+    "mix",
+    "motionDefaults",
+    "motionValue",
     "prefersReducedMotion",
+    "progress",
     "resolveSpring",
     "shouldReduceMotion",
+    "springEasing",
     "stepSpring",
+    "steps",
     "subscribeReducedMotion",
+    "toCssEasing",
   ]);
 });
 
@@ -165,48 +178,6 @@ test("frame delta is clamped so a background tab does not jump", async () => {
   assert.equal(deltas[0], 0);
   assert.ok(Math.abs(deltas[1] - 0.016) < 1e-9);
   assert.ok(Math.abs(deltas[2] - 1 / 15) < 1e-9);
-});
-
-test("composer: one write per frame, layers compose, removal restores the element (FR-031–FR-033)", async () => {
-  await setupDom();
-  const element = document.createElement("div");
-  const scheduler = createFrameScheduler();
-  const composer = getTransformComposer(element, scheduler);
-  assert.equal(getTransformComposer(element, scheduler), composer, "one composer per element");
-  const tilt = Symbol("tilt");
-  const lift = Symbol("lift");
-  composer.set(tilt, { perspective: 1000, rotateX: 5 });
-  composer.set(lift, { translateY: -8 });
-  assert.equal(element.style.transform, "", "nothing written before the write phase");
-  frames.flush();
-  assert.equal(
-    element.style.transform,
-    "perspective(1000px) translate3d(0px, -8px, 0px) rotateX(5deg)",
-  );
-  assert.equal(element.style.willChange, "transform");
-  composer.delete(tilt);
-  frames.flush();
-  assert.equal(element.style.transform, "translate3d(0px, -8px, 0px)");
-  composer.delete(lift);
-  frames.flush();
-  assert.equal(element.style.transform, "");
-  assert.equal(element.style.willChange, "");
-  assert.equal(frames.pending, 0);
-});
-
-test("composer warns once when it replaces an inline transform it does not own", async () => {
-  await setupDom();
-  const element = document.createElement("div");
-  element.style.transform = "translateX(3px)";
-  const warnings = [];
-  const original = console.warn;
-  console.warn = (message) => warnings.push(message);
-  const composer = getTransformComposer(element, createFrameScheduler());
-  composer.set(Symbol("a"), { rotateZ: 1 });
-  frames.flush();
-  console.warn = original;
-  assert.equal(warnings.length, 1);
-  assert.match(warnings[0], /inline `transform`/);
 });
 
 test("reduced-motion policy (FR-040)", () => {

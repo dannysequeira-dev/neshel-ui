@@ -1,7 +1,8 @@
 # Contract — `@neshel-ui/animations` package (008.0)
 
 **Status: implemented and verified locally** (unit + contract tests, `check:pack --with animations`).
-Private and unpublished; this contract may change before the first publication.
+Private and unpublished; this contract may change before the first publication. **Superseded in Phase 009**: Tilt3D moved to
+`./hover` and the root became the React engine bindings ([009 react-bindings](../../009-motion-engine/contracts/react-bindings.md)).
 
 ## Manifest
 

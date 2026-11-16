@@ -1,7 +1,7 @@
 // Positive type fixtures (pnpm typecheck).
 import { useRef } from "react";
 import { composeTransform, createFrameScheduler, type TransformLayer } from "../src/core/index.js";
-import { createTilt3D, Tilt3D, type Tilt3DProps, useTilt3D } from "../src/index.js";
+import { createTilt3D, Tilt3D, type Tilt3DProps, useTilt3D } from "../src/hover/index.js";
 
 const props: Tilt3DProps = { maxTilt: 12, axis: "x", spring: { stiffness: 200 }, id: "card" };
 

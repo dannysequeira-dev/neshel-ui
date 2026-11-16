@@ -15,7 +15,7 @@ import {
   useCallback,
   useRef,
 } from "react";
-import { animationsError } from "../errors.js";
+import { animationsError } from "../../core/errors.js";
 import type { Tilt3DOptions } from "./options.js";
 import { useTilt3D } from "./use-tilt-3d.js";
 

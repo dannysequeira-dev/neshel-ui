@@ -38,8 +38,8 @@ test("publishing guard: private, unversioned, outside the public release set (FR
 });
 
 test("exports only implemented entry points, types first (FR-002)", () => {
-  assert.deepEqual(Object.keys(manifest.exports), [".", "./core", "./styles.css"]);
-  for (const subpath of [".", "./core"]) {
+  assert.deepEqual(Object.keys(manifest.exports), [".", "./core", "./hover", "./styles.css"]);
+  for (const subpath of [".", "./core", "./hover"]) {
     assert.deepEqual(Object.keys(manifest.exports[subpath]), ["types", "import"]);
   }
   assert.deepEqual(manifest.sideEffects, ["**/*.css"]);
@@ -84,6 +84,7 @@ test("no module touches window, document or matchMedia at import time (FR-007)",
   // Importing in plain Node (no DOM) must not throw; the SSR tests render with these modules.
   await import("../dist/index.js");
   await import("../dist/core/index.js");
+  await import("../dist/hover/index.js");
   assert.equal(typeof globalThis.window, "undefined");
 });
 
@@ -101,4 +102,32 @@ test("stylesheet: one layer, only .neshel-* selectors, no resets or global rules
       assert.match(part.trim(), /^\.neshel-[a-z0-9-]+/, `global selector "${part.trim()}"`);
     }
   }
+});
+
+test("module boundaries: core imports only core; root/react never import families (009 FR-051)", () => {
+  const relativeTargets = (file) =>
+    [...readFileSync(file, "utf8").matchAll(/(?:from|import)\s*["'](\.{1,2}\/[^"']+)["']/g)].map(
+      (m) =>
+        relative(join(root, "dist"), join(file, "..", m[1]))
+          .split("\\")
+          .join("/"),
+    );
+  for (const file of files(join(root, "dist"), ".js")) {
+    const where = relative(join(root, "dist"), file).split("\\").join("/");
+    for (const target of relativeTargets(file)) {
+      if (where.startsWith("core/")) assert.ok(target.startsWith("core/"), `${where} -> ${target}`);
+      if (!where.startsWith("hover/"))
+        assert.ok(!target.startsWith("hover/"), `${where} -> ${target}`);
+    }
+  }
+});
+
+test("no global motion custom properties are declared by the stylesheet (009 FR-042, ADR 0024)", () => {
+  const css = readFileSync(join(root, "dist", "styles.css"), "utf8");
+  assert.doesNotMatch(
+    css,
+    /--neshel-motion-[a-z-]+\s*:/,
+    "read with fallbacks only, never declared",
+  );
+  assert.doesNotMatch(css, /:root|:where\(\s*:root/);
 });
