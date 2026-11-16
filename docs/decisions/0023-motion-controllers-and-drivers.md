@@ -1,6 +1,7 @@
 # ADR 0023 — Motion controllers and drivers
 
-- Status: **Accepted** (owner approval 2026-11-16); implementation in Phase 009
+- Status: **Accepted** (owner approval 2026-11-16); implemented and verified locally in Phase 009
+  ([evidence](../../specs/009-motion-engine/evidence.md))
 - Date: 2026-11-15
 - Feature: [009](../../specs/009-motion-engine/spec.md); research R6–R8;
   [contracts/controllers.md](../../specs/009-motion-engine/contracts/controllers.md)
@@ -37,7 +38,7 @@ Without a shared interface each driver (CSS, WAAPI, JS) exposes different semant
 Expose raw WAAPI `Animation` objects (inconsistent with JS motion, rejecting promises); JS-only
 (loses compositor-driven keyframes); adopt a third-party engine's controls (ADR 0020).
 
-## Verification (planned)
+## Verification
 
 State-machine unit tests per driver (jsdom shim for WAAPI), interruption/velocity tests, browser cases
 in three engines.

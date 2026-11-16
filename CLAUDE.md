@@ -3,8 +3,9 @@
 **Current phase:** features 001–007 are closed (PASS). Feature 007 published 0.1.0 on 2026-11-10
 (tag `v0.1.0`, release run 42843343125; evidence: `specs/007-first-publication/`). Feature 008
 (animations) milestone 008.0 — architecture, contracts, catalogue and spikes — is implemented and
-verified locally and in CI (PR #4, run 43800110693, not merged), awaiting owner review
-(`specs/008-animations/`).
+merged into `main` as the squash commit `fd3885c` (PR #4). Phase 009 (Motion Engine) is approved and
+implemented on `feature/009-motion-engine` (`specs/009-motion-engine/`), verified locally; CI pending a
+push; bundle budgets pending an owner decision.
 `@neshel-ui/animations` is **private** (0.0.0) and must stay private until the owner approves its
 first publication; it is outside the Changesets fixed group and the release scripts. The five public
 packages are on npm with provenance; `@neshel-ui/core` stays private. `v0.1.0` is immutable: never
@@ -44,8 +45,8 @@ install without monorepo internals. **Do not implement the entire library in one
 - `config` is CSS/token infrastructure; `core` stays private; `layout` and `typography`
   must not depend on `components`; shared behavior flows toward `core`.
 - `animations` (ADR 0018–0020): engine in its framework-free `./core` subpath (never in the private
-  `@neshel-ui/core`); CSS effects own `translate`/`rotate`/`scale`, JS effects go through the
-  per-element transform composer; no motion-engine dependency without a benchmark and an ADR; GSAP
+  `@neshel-ui/core`); every managed style write goes through the per-element motion host (style
+  ownership with capture/restore, channel arbitration; ADR 0022); no motion-engine dependency without a benchmark and an ADR; GSAP
   never as a dependency; every effect honours `prefers-reduced-motion` live.
 - No `@neshel-ui/components` import from `@neshel-ui/layout` or `@neshel-ui/typography`.
 - Do not dynamically concatenate Tailwind class names. Prefer static variants,
@@ -83,8 +84,11 @@ install without monorepo internals. **Do not implement the entire library in one
   installed from npm and built.
 - `pnpm check` — doctor, lint, typecheck, test, build, check:exports, check:pack (offline; includes
   `--with animations`, which validates the private animations tarball without lifting its guard).
-- `pnpm check:browser:animations` — feature 008 lab (Tilt3D, CornerRecede, ScrollScene) in headless
+- `pnpm check:browser:animations` — animations lab (Tilt3D, CornerRecede, ScrollScene, engine) in headless
   Chrome with real input and axe; requires `pnpm build:playground`.
+- `pnpm check:animations:engines` — the same lab in Playwright Chromium, Firefox and WebKit.
+- `pnpm check:animations:consumer` — external app from the packed animations tarball (SSR + hydration).
+- `pnpm check:animations:bundles` — packed-tarball bundle sizes against the approved budgets.
 - `pnpm test` — `node:test` suites (scripts, tarball reader, validators, portability).
 - `pnpm typecheck` — workspace typecheck.
 - `pnpm lint` / `pnpm format` — Biome.

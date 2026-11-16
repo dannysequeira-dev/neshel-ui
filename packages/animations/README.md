@@ -2,24 +2,26 @@
 
 Modular, accessible motion primitives and effects for Neshel-UI.
 
-**Status: experimental, private, unpublished (feature 008.0).** This package is not on npm and its
+**Status: experimental, private, unpublished (features 008.0–009).** This package is not on npm and its
 API may change before the owner approves a first publication. Specification, catalogue and
 decisions: [`specs/008-animations/`](../../specs/008-animations/spec.md), ADRs 0018–0020.
 
 ## What exists today
 
-- `Tilt3D` — tilts an element in 3D toward the pointer and springs back; keyboard focus inside shows a
-  gentle pose; `prefers-reduced-motion` keeps it flat (live); no React render per pointer move;
-  `asChild`; SSR-safe.
-- `useTilt3D(ref, options)` and `createTilt3D(element, options)` — the same effect on your own
-  element, from React or plain DOM code.
-- `@neshel-ui/animations/core` — the framework-free engine: frame scheduler (read/update/write
-  phases), springs, per-element transform composer, reduced-motion policy.
-- `@neshel-ui/animations/styles.css` — optional; adds `transform-style: preserve-3d` for depth
-  children.
+- `@neshel-ui/animations/core` — the framework-free motion engine: frame scheduler, springs, easing
+  (`cubicBezier`, presets, `springEasing`), `motionDefaults`; effect definitions (`defineEffect`),
+  explicit registries, `attachEffect`; a per-element motion host that owns managed inline styles
+  (captures and restores original values and priorities, composes `transform`, multiplies `opacity`,
+  arbitrates exclusive channels by priority with suspension and resumption, warns on conflicts in
+  development); controllers (`animateValue`, `animateElement` for WAAPI, `bindChannel`) whose
+  `finished` resolves `completed` / `cancelled` / `interrupted` and rejects only on real errors.
+- `@neshel-ui/animations` — React bindings: `useMotionEffect`, `useMotionValue`, `useMotionValueEvent`.
+- `@neshel-ui/animations/hover` — `Tilt3D`, `useTilt3D`, `createTilt3D`, `tilt3D` (inward by default,
+  `reverse` inverts; keyboard focus pose; live reduced motion; `asChild`; SSR-safe).
+- `@neshel-ui/animations/styles.css` — optional; `transform-style: preserve-3d` for depth children.
 
 ```tsx
-import { Tilt3D } from "@neshel-ui/animations";
+import { Tilt3D } from "@neshel-ui/animations/hover";
 import "@neshel-ui/animations/styles.css"; // optional
 
 <Tilt3D maxTilt={10} asChild>
@@ -33,9 +35,9 @@ Peer dependency: `react ^19.0.0`. Runtime dependency: `@radix-ui/react-slot`.
 
 ## Composition rule
 
-JavaScript effects never write `transform` directly: they add layers to the element's transform
-composer. CSS effects use the individual `translate` / `rotate` / `scale` properties. Both combine on
-one element without conflicts (ADR 0019).
+Effects never write managed styles directly: they go through the element's motion host (ADR 0019,
+ADR 0022). `transform` layers compose, `opacity` multiplies, other channels have one owner at a time;
+original inline styles are restored when effects end.
 
 ## License
 

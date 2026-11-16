@@ -1,6 +1,6 @@
 # Contract — motion controllers, motion values and drivers (Phase 009)
 
-**Status: approved 2026-11-16 (with owner requirement 3.2); implemented in 009.4.** Decision:
+**Status: approved 2026-11-16 (with owner requirement 3.2); implemented and verified locally in 009.4** ([evidence](../evidence.md)). Decision:
 [ADR 0023](../../../docs/decisions/0023-motion-controllers-and-drivers.md). Exported from
 `@neshel-ui/animations/core`.
 

@@ -1,6 +1,7 @@
 # ADR 0022 — Channel arbitration and conflict detection
 
-- Status: **Accepted** (owner approval 2026-11-16); implementation in Phase 009
+- Status: **Accepted** (owner approval 2026-11-16); implemented and verified locally in Phase 009
+  ([evidence](../../specs/009-motion-engine/evidence.md))
 - Date: 2026-11-15
 - Feature: [009](../../specs/009-motion-engine/spec.md); research R4–R5;
   [contracts/channels-and-arbitration.md](../../specs/009-motion-engine/contracts/channels-and-arbitration.md);
@@ -45,7 +46,7 @@ before effects are implemented at scale.
 Last-write-wins (status quo); always throw (one decorative effect could break a page); merge every
 channel (meaningless for `filter` chains or `clip-path` shapes).
 
-## Verification (planned)
+## Verification
 
 Conflict matrix unit tests (priority, ties, suspension/resume, all-or-none, policies, messages),
 lab engine page in Chromium, Firefox and WebKit.

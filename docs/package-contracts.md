@@ -106,15 +106,17 @@ manifests, declarations, Tailwind `@theme` breakpoints, Capsize fallback fonts; 
 Changesets fixed group or the release workflow. Peer `react ^19.0.0`; runtime dependency
 `@radix-ui/react-slot`.
 
-- Exports: `.` (`Tilt3D`, `useTilt3D`, `createTilt3D`, `NeshelAnimationsError`, types), `./core`
-  (framework-free engine: frame scheduler, springs, transform composer, reduced-motion policy) and
-  `./styles.css` (opt-in, `@layer components.neshel`).
+- Exports (Phase 009): `.` (React engine bindings `useMotionEffect`, `useMotionValue`,
+  `useMotionValueEvent`, `NeshelAnimationsError`), `./core` (framework-free engine: scheduler, springs,
+  easing, defaults, `defineEffect`, registries, `attachEffect`, motion host with style ownership and
+  channel arbitration, controllers), `./hover` (Tilt3D family subpath) and `./styles.css` (opt-in).
 - Tilt3D: pointer-driven 3D tilt with spring return, no React render per pointer move, keyboard focus
   pose, live `prefers-reduced-motion`, `asChild`, SSR-safe markup.
 - Verified locally (unit, type, contract, packed tarball, Chrome lab); three-OS CI green (PR #4, run 43800110693). The
   157-entry catalogue and phases 009–016 are planned only.
 
 ```tsx
+// import { Tilt3D } from "@neshel-ui/animations/hover";
 <Tilt3D maxTilt={10} asChild>
   <a href="/pricing" className="card">
     Pricing
@@ -129,15 +131,15 @@ Status: **implemented and CI-verified** with `pnpm check:pack` and `pnpm check:c
 public packages are **published on npm as 0.1.0** (feature 007, [evidence](../specs/007-first-publication/evidence.md));
 `@neshel-ui/core` stays private and unpublished.
 
-| Package                 | Intended public                | Runtime deps                                                            | Peer deps                                         | Exports                                                                         |
-| ----------------------- | ------------------------------ | ----------------------------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------- |
-| `@neshel-ui/config`     | Yes                            | none                                                                    | none                                              | `.` (types + import), `./tokens.css`, `./tailwind.css`, `./styles.css` (alias)  |
-| `@neshel-ui/layout`     | Yes                            | `@radix-ui/react-slot`, `tailwind-variants`                             | `react ^19.0.0`, `@neshel-ui/config`              | `.` (types + import), `./styles.css`, `./style-manifest.json`                   |
-| `@neshel-ui/typography` | Yes                            | `@radix-ui/react-slot`, `tailwind-variants`                             | `react ^19.0.0`, `@neshel-ui/config`              | `.` (types + import), `./styles.css`, `./style-manifest.json`                   |
-| `@neshel-ui/components` | Yes                            | Radix ×6, `@radix-ui/react-slot`, `@base-ui/react`, `tailwind-variants` | `react`, `react-dom ^19.0.0`, `@neshel-ui/config` | `.` (types + import), `./styles.css`, `./style-manifest.json`                   |
-| `@neshel-ui/cli`        | Yes                            | `jiti`, `colorjs.io`, `@capsizecss/core`                                | `@neshel-ui/config` (`workspace:^`)               | `.` (types + import); bin `neshel`                                              |
-| `@neshel-ui/core`       | No (internal)                  | none                                                                    | none                                              | `.` (never packed for publication)                                              |
-| `@neshel-ui/animations` | Not yet (private, feature 008) | `@radix-ui/react-slot`                                                  | `react ^19.0.0`                                   | `.`, `./core` (types + import), `./styles.css`; tarball validated with `--with` |
+| Package                 | Intended public                | Runtime deps                                                            | Peer deps                                         | Exports                                                                                    |
+| ----------------------- | ------------------------------ | ----------------------------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| `@neshel-ui/config`     | Yes                            | none                                                                    | none                                              | `.` (types + import), `./tokens.css`, `./tailwind.css`, `./styles.css` (alias)             |
+| `@neshel-ui/layout`     | Yes                            | `@radix-ui/react-slot`, `tailwind-variants`                             | `react ^19.0.0`, `@neshel-ui/config`              | `.` (types + import), `./styles.css`, `./style-manifest.json`                              |
+| `@neshel-ui/typography` | Yes                            | `@radix-ui/react-slot`, `tailwind-variants`                             | `react ^19.0.0`, `@neshel-ui/config`              | `.` (types + import), `./styles.css`, `./style-manifest.json`                              |
+| `@neshel-ui/components` | Yes                            | Radix ×6, `@radix-ui/react-slot`, `@base-ui/react`, `tailwind-variants` | `react`, `react-dom ^19.0.0`, `@neshel-ui/config` | `.` (types + import), `./styles.css`, `./style-manifest.json`                              |
+| `@neshel-ui/cli`        | Yes                            | `jiti`, `colorjs.io`, `@capsizecss/core`                                | `@neshel-ui/config` (`workspace:^`)               | `.` (types + import); bin `neshel`                                                         |
+| `@neshel-ui/core`       | No (internal)                  | none                                                                    | none                                              | `.` (never packed for publication)                                                         |
+| `@neshel-ui/animations` | Not yet (private, feature 008) | `@radix-ui/react-slot`                                                  | `react ^19.0.0`                                   | `.`, `./core`, `./hover` (types + import), `./styles.css`; tarball validated with `--with` |
 
 - **Intended public** = `"publishConfig": { "access": "public" }`. Only these five may omit
   `private: true`; every other workspace package, core included, keeps it (`pnpm check:workspace`).

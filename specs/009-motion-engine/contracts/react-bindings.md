@@ -1,6 +1,6 @@
 # Contract — React bindings and package entry points (proposed, Phase 009)
 
-**Status: proposed, not implemented.** Owner decision D3 (family subpaths as implemented).
+**Status: approved 2026-11-16; implemented and verified locally in Phase 009** ([evidence](../evidence.md)). Owner decision D3 (family subpaths as implemented).
 
 ## §1 Entry points after Phase 009
 

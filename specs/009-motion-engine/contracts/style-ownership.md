@@ -1,6 +1,6 @@
 # Contract — style ownership and restoration (Phase 009, owner requirement 3.1)
 
-**Status: approved 2026-11-16; implemented in 009.2** (see [evidence](../evidence.md)). Applies to
+**Status: approved 2026-11-16; implemented and verified locally in 009.2** ([evidence](../evidence.md)). Applies to
 every property the motion host writes: `transform`, `opacity`, `filter`, `clip-path`, `mask`,
 `translate`, `rotate`, `scale`, `will-change` and `--neshel-*` custom properties.
 

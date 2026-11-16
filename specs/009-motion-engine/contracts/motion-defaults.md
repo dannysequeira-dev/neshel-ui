@@ -1,6 +1,6 @@
 # Contract — motion defaults, easing and interpolation (proposed, Phase 009)
 
-**Status: proposed, not implemented.** Decision: [ADR 0024](../../../docs/decisions/0024-motion-defaults-and-config-integration.md)
+**Status: approved 2026-11-16; implemented and verified locally in Phase 009** ([evidence](../evidence.md)). Decision: [ADR 0024](../../../docs/decisions/0024-motion-defaults-and-config-integration.md)
 (owner decision D5). Exported from `@neshel-ui/animations/core`.
 
 ## §1 Typed defaults

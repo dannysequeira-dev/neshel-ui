@@ -1,6 +1,6 @@
 # Contract — effect definitions and registries (proposed, Phase 009)
 
-**Status: proposed, not implemented.** Decision: [ADR 0021](../../../docs/decisions/0021-effect-definitions-and-explicit-registries.md).
+**Status: approved 2026-11-16; implemented and verified locally in Phase 009** ([evidence](../evidence.md)). Decision: [ADR 0021](../../../docs/decisions/0021-effect-definitions-and-explicit-registries.md).
 Exported from `@neshel-ui/animations/core`.
 
 ## §1 Definition

@@ -1,6 +1,7 @@
 # ADR 0024 — Motion defaults and future Config integration
 
-- Status: **Accepted** (owner approval 2026-11-16); implementation in Phase 009
+- Status: **Accepted** (owner approval 2026-11-16); implemented and verified locally in Phase 009
+  ([evidence](../../specs/009-motion-engine/evidence.md))
 - Date: 2026-11-15
 - Feature: [009](../../specs/009-motion-engine/spec.md); research R9;
   [contracts/motion-defaults.md](../../specs/009-motion-engine/contracts/motion-defaults.md)
@@ -34,7 +35,7 @@ Add motion tokens to Config now (owner chose otherwise, D5); declare defaults on
 package stylesheet (global rule, rejected by ADR 0008); JavaScript-only defaults (not overridable
 from CSS).
 
-## Verification (planned)
+## Verification
 
 Stylesheet hygiene test (no `:root`/global declarations), fallback tests in the lab, documentation of
 the integration contract.

@@ -20,7 +20,7 @@ config (independently usable CSS/tokens)
 core   (private implementation details; never an external dependency)
 
 animations (feature 008, private, experimental)
-   .  React API (Tilt3D)  -->  ./core framework-free engine (no React)
+   ./hover (Tilt3D) -->  .  React bindings  -->  ./core framework-free engine (no React)
    runtime: react (peer), @radix-ui/react-slot; imports no other Neshel package
 ```
 
@@ -178,6 +178,20 @@ Status of each decision (implemented / locally verified / CI-verified) is tracke
   GSAP never as a dependency ([ADR 0020](decisions/0020-motion-engine-dependency-policy.md)).
 - `animations` imports no other Neshel package; `layout`, `typography` and `components` do not import
   `animations`. Status and evidence: `specs/008-animations/evidence.md`.
+
+## Phase 009 decisions (2026-11-16, accepted)
+
+- Effects are frozen definitions (`defineEffect`); registries are explicit values; nothing registers at
+  import time ([ADR 0021](decisions/0021-effect-definitions-and-explicit-registries.md)).
+- One motion host per element owns managed inline styles: capture/restore of values and priorities,
+  `transform` composition, `opacity` multiplication, exclusive channels arbitrated by priority with
+  suspension/resumption; conflict policy warn/error/silent
+  ([ADR 0022](decisions/0022-channel-arbitration-and-conflict-detection.md)).
+- Controllers share `MotionControl`; `finished` resolves typed outcomes and rejects only on errors
+  ([ADR 0023](decisions/0023-motion-controllers-and-drivers.md)); motion defaults inside Animations
+  ([ADR 0024](decisions/0024-motion-defaults-and-config-integration.md)).
+- Family subpaths as implemented (D3): `./hover` is the first. Evidence:
+  `specs/009-motion-engine/evidence.md`.
 
 ## Open decisions
 

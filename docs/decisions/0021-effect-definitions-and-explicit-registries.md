@@ -1,6 +1,7 @@
 # ADR 0021 — Effect definitions and explicit registries
 
-- Status: **Accepted** (owner approval 2026-11-16); implementation in Phase 009
+- Status: **Accepted** (owner approval 2026-11-16); implemented and verified locally in Phase 009
+  ([evidence](../../specs/009-motion-engine/evidence.md))
 - Date: 2026-11-15
 - Feature: [009](../../specs/009-motion-engine/spec.md); research R2–R3;
   [contracts/effect-definition.md](../../specs/009-motion-engine/contracts/effect-definition.md)
@@ -34,7 +35,7 @@ SSR requests.
 Global side-effect registry (rejected: tree-shaking, SSR, duplicates); class hierarchy (heavier, no
 benefit); untyped plain functions per effect (no metadata for arbitration or docs).
 
-## Verification (planned)
+## Verification
 
 Unit tests for validation and registries, a contract test that `dist` modules have no top-level
 registration calls, bundle measurement of `defineEffect` + `attachEffect` alone (spec SC-003).
