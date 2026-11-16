@@ -233,7 +233,8 @@ export function EngineLab() {
         "WAAPI: real browser animation, end state committed, no animation left",
         async () => {
           const c = api.waapi();
-          await frames(2);
+          // Registered synchronously by element.animate(): no frame wait, so a slow runner cannot
+          // finish the 300 ms animation before the count is read (CI run 43878431209, WebKit/Linux).
           check(
             waapiElement.getAnimations().length === 1,
             `animations ${waapiElement.getAnimations().length}`,

@@ -125,11 +125,18 @@ Phase 009 text). Backup `backup/009-before-main-merge`. Local `main` was fast-fo
 `89665bf`; `pnpm changeset:status` then passes with nothing to bump — the earlier failure came only
 from the stale local `main` (no changeset was added).
 
+## GitHub Actions (PR #6)
+
+| Run         | Head      | Result               | Notes                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| ----------- | --------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 43878431209 | `5e59ce9` | failure (13/14 jobs) | Only `browsers / ubuntu-latest`, WebKit: the lab case "WAAPI" read `getAnimations()` after two frames and saw 0 because the slow runner had already finished the 300 ms animation (it then completed and committed correctly). Timing assumption in the lab, not a product defect: the count is now read synchronously after `element.animate()`. Chromium and Firefox passed every case on Linux; all three engines passed on macOS; the main job (including `check:animations:consumer` and `check:animations:bundles`) passed on Linux, Windows and macOS. |
+
+The run for the fixed head is reported in the PR description.
+
 ## Not run / pending
 
-| Check                                   | Why                                                               |
-| --------------------------------------- | ----------------------------------------------------------------- |
-| GitHub Actions on Linux, Windows, macOS | Requires pushing `feature/009-motion-engine` (not yet authorised) |
-| Bundle budgets                          | Over budget; owner decision pending                               |
-| Manual screen-reader review             | Owner, before publication (Q4)                                    |
-| Real Safari                             | Playwright WebKit is not Safari                                   |
+| Check                       | Why                                 |
+| --------------------------- | ----------------------------------- |
+| Bundle budgets              | Over budget; owner decision pending |
+| Manual screen-reader review | Owner, before publication (Q4)      |
+| Real Safari                 | Playwright WebKit is not Safari     |
