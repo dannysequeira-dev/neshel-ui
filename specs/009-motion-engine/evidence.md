@@ -1,8 +1,11 @@
 # Evidence — Phase 009 (Motion Engine)
 
 Status vocabulary: **implemented**, **verified locally** (named machine), **verified in GitHub
-Actions** (named run), **planned**. Nothing was pushed, merged, versioned, tagged or published;
-`@neshel-ui/animations` stays `private: true` at `0.0.0`.
+Actions** (named run), **planned**. **Current status: verified in GitHub Actions — CI run
+`43891329593`, 14/14 jobs, on commit `ceb71b6` (PR #6, branch pushed with owner authorisation);
+awaiting the owner's merge.** Nothing was merged, versioned, tagged or published;
+`@neshel-ui/animations` stays `private: true` at `0.0.0`. Sections below are dated; earlier stages
+are kept as history where marked.
 
 Machine: Windows 11 Home 10.0.26300, Node 26.13.0, pnpm 12.16.1, Chrome 157.0.8103.51 (CDP),
 Playwright Chromium 158.0.8127.18, Firefox 159.0, WebKit 27.2 (Playwright build, not Safari).
@@ -19,23 +22,23 @@ identical to the backup and `git diff origin/main` touches only Phase 009 files 
 
 ## Inventory
 
-| Item                                                                                          | Status                                                      |
-| --------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
-| Motion host + style ledger (requirement 3.1)                                                  | implemented, verified locally                               |
-| Channels compose/multiply/exclusive, arbitration, suspension/resumption, conflict policy      | implemented, verified locally                               |
-| `defineEffect`, `createEffectRegistry`, `attachEffect`, `getMotionDebugInfo`                  | implemented, verified locally                               |
-| Controllers: `motionValue`, `animateValue`, `bindChannel`, `animateElement` (requirement 3.2) | implemented, verified locally                               |
-| Easing, `springEasing`, interpolation, `motionDefaults` (D5)                                  | implemented, verified locally                               |
-| React: `useMotionEffect`, `useMotionValue`, `useMotionValueEvent`                             | implemented, verified locally                               |
-| Tilt3D as `tilt3D` definition, moved to `./hover` (Q1, no compatibility layer)                | implemented, verified locally                               |
-| Engine lab section, `check:browser:animations` (20 cases)                                     | implemented, verified locally                               |
-| `check:animations:engines` (Chromium, Firefox, WebKit)                                        | implemented, verified locally                               |
-| `check:animations:consumer` (packed tarball, SSR, hydration)                                  | implemented, verified locally                               |
-| `check:animations:bundles` (packed tarball vs budgets)                                        | implemented; **3 of 4 budgets exceeded** (decision pending) |
-| CI steps (consumer in the main job; three engines in the browsers job)                        | implemented, **not verified** (no push)                     |
-| Manual screen-reader review                                                                   | planned before publication (owner Q4)                       |
+| Item                                                                                          | Status                                                                |
+| --------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| Motion host + style ledger (requirement 3.1)                                                  | implemented, verified locally and in CI (run 43891329593)             |
+| Channels compose/multiply/exclusive, arbitration, suspension/resumption, conflict policy      | implemented, verified locally and in CI (run 43891329593)             |
+| `defineEffect`, `createEffectRegistry`, `attachEffect`, `getMotionDebugInfo`                  | implemented, verified locally and in CI (run 43891329593)             |
+| Controllers: `motionValue`, `animateValue`, `bindChannel`, `animateElement` (requirement 3.2) | implemented, verified locally and in CI (run 43891329593)             |
+| Easing, `springEasing`, interpolation, `motionDefaults` (D5)                                  | implemented, verified locally and in CI (run 43891329593)             |
+| React: `useMotionEffect`, `useMotionValue`, `useMotionValueEvent`                             | implemented, verified locally and in CI (run 43891329593)             |
+| Tilt3D as `tilt3D` definition, moved to `./hover` (Q1, no compatibility layer)                | implemented, verified locally and in CI (run 43891329593)             |
+| Engine lab section, `check:browser:animations` (20 cases)                                     | implemented, verified locally and in CI (run 43891329593)             |
+| `check:animations:engines` (Chromium, Firefox, WebKit)                                        | implemented, verified locally and in CI (run 43891329593)             |
+| `check:animations:consumer` (packed tarball, SSR, hydration)                                  | implemented, verified locally and in CI (run 43891329593)             |
+| `check:animations:bundles` (packed tarball vs budgets)                                        | implemented; **all budgets pass** locally and in CI (run 43891329593) |
+| CI steps (consumer + bundles in the main job; three engines in the browsers job)              | implemented, verified in CI (run 43891329593)                         |
+| Manual screen-reader review                                                                   | planned before publication (owner Q4)                                 |
 
-## Local verification (2026-11-16)
+## Local verification (2026-11-16, final head `ceb71b6`)
 
 | Gate                               | Command                                                                                                                                                                            | Result                                                                                                                                                                                                                                        |
 | ---------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -43,12 +46,12 @@ identical to the backup and `git diff origin/main` touches only Phase 009 files 
 | Chrome lab (CDP, real input)       | `pnpm check:browser:animations`                                                                                                                                                    | **pass — 20/20** (14 from 008 + 6 engine cases)                                                                                                                                                                                               |
 | Three engines (Playwright)         | `pnpm check:animations:engines`                                                                                                                                                    | **pass — 11/11 in Chromium 158, Firefox 159 and WebKit 27.2**; all report SDA, View Transitions, `linear()` and individual transforms supported, WebGL ready                                                                                  |
 | Packed external consumer           | `pnpm check:animations:consumer`                                                                                                                                                   | **pass — 7/7**: SSR markup from the packed package, no motion state in SSR, hydration without recoverable errors, no page errors, Tilt3D attached, custom `defineEffect` from the packed engine applied, real pointer tilts the hydrated card |
-| Bundle budgets (packed tarball)    | `pnpm check:animations:bundles`                                                                                                                                                    | **fail** — see below                                                                                                                                                                                                                          |
+| Bundle budgets (packed tarball)    | `pnpm check:animations:bundles`                                                                                                                                                    | **pass** — definitive budgets and tree-shaking markers (see below)                                                                                                                                                                            |
 | Storybook / playground builds      | `pnpm build:storybook`, playground build                                                                                                                                           | pass; generated declarations unchanged                                                                                                                                                                                                        |
 | Docs, API data, Changesets, guards | `check:docs`, `docs:api --check`, `changeset status`, `release-guards --tag v0.1.0`                                                                                                | pass; nothing to bump                                                                                                                                                                                                                         |
 | Untouched                          | `git diff origin/main -- packages/{config,layout,typography,components,cli,core} .changeset .github/workflows/release.yml scripts/release-guards.mjs scripts/publish-tarballs.mjs` | empty                                                                                                                                                                                                                                         |
 
-### Unit and type coverage (packages/animations, 78 tests + 3 type fixtures)
+### Unit and type coverage (packages/animations, 82 tests + 3 type fixtures)
 
 - **Style ownership (3.1)** — `test/host.test.mjs` (14): capture/restore value **and priority**
   (`!important`), removal when nothing was captured (no residue, host released), inline transform kept
@@ -56,22 +59,25 @@ identical to the backup and `git diff origin/main` touches only Phase 009 files 
   external changes adopted as baseline with one warning (transform and exclusive), one write per
   property per frame and none when unchanged, arbitration ties/preemption/resumption order,
   all-or-none, policies `error`/`silent`, production default, `commit`.
-- **Definitions and lifecycle** — `test/effect.test.mjs` (9): validation and freezing, registries,
+- **Definitions and lifecycle** — `test/effect.test.mjs` (11): validation and freezing, registries,
   attach/update/pause/resume/destroy restoring styles, conflicting effects resume with their latest
   options in deterministic order, strict mode throws without side effects, a throwing `setup` leaves
   no subscription (bug found and fixed in this phase), live reduced motion through the context, React
-  hook SSR/hydration/update/unmount, motion-value hooks without re-render.
-- **Controllers (3.2)** — `test/controls.test.mjs` (18): typed `finished` for completed/cancelled/
+  hook SSR/hydration/update/unmount, motion-value hooks without re-render, the arbiter-free path
+  rejecting exclusive definitions, and a failing resumed `setup()` contained (review fix 2).
+- **Controllers (3.2)** — `test/controls.test.mjs` (20): typed `finished` for completed/cancelled/
   interrupted, rejection only on a real error (`failed` is terminal), `play`/`pause`/`reverse`/`seek`/
   `cancel`/`finish` semantics including new runs from settled states, spring velocity kept on
   interruption, reduced motion (immediate completion; live change finishes), `bindChannel` restore,
   WAAPI commit/cancel/interrupt/failure/no-WAAPI paths, easing reference values, `springEasing`,
-  defaults, interpolation; and no unhandled rejection from normal outcomes.
-- **Tilt3D** — all 008 behaviours (17 tests) unchanged on the engine, now imported from `./hover`.
+  defaults, interpolation; no unhandled rejection from normal outcomes; suspended `finish()` and live
+  reduced motion for WAAPI (review fixes 1 and 3).
+- **Tilt3D** — all 008 behaviours (16 tests) unchanged on the engine, now imported from `./hover`.
+- **Core and contract** — `test/core.test.mjs` (11), `test/contract.test.mjs` (10).
 - **Mutation controls** — dropping the restored priority, disabling the duplicate-write guard,
   making `cancel` reject and removing the WAAPI commit each made the suites fail.
 
-### Findings during implementation
+### Findings during implementation (history)
 
 1. **`attachEffect` leak on a throwing `setup`** — the reduced-motion subscription and claim stayed
    registered; fixed with cleanup-and-rethrow; regression test added.
@@ -84,7 +90,7 @@ identical to the backup and `git diff origin/main` touches only Phase 009 files 
    check) minifies identifiers but keeps whitespace in ES output; fully minified sizes are listed for
    context only. Budgets are enforced on the repository's method.
 
-### Bundle optimisation (owner decision 2026-11-16: option B, then A)
+### Bundle optimisation (owner decision 2026-11-16: option B, then A) — history; current sizes below
 
 Method unchanged: packed tarball, Vite library build (the repository's `check:bundles` method),
 React external, gzip -9. Changes, none of which removes a feature, contract or accessibility behaviour:
@@ -131,9 +137,13 @@ from the stale local `main` (no changeset was added).
 | ----------- | --------- | -------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 43878431209 | `5e59ce9` | failure (13/14 jobs) | Only `browsers / ubuntu-latest`, WebKit: the lab case "WAAPI" read `getAnimations()` after two frames and saw 0 because the slow runner had already finished the 300 ms animation (it then completed and committed correctly). Timing assumption in the lab, not a product defect: the count is now read synchronously after `element.animate()`. Chromium and Firefox passed every case on Linux; all three engines passed on macOS; the main job (including `check:animations:consumer` and `check:animations:bundles`) passed on Linux, Windows and macOS. |
 
-The run for the fixed head is reported in the PR description.
+| 43882551375 | `c33191f` | success (14/14 jobs) | Head after the WAAPI count fix; reviewed by the owner, who then requested the three lifecycle fixes below. |
+| **43891329593** | **`ceb71b6`** | **success (14/14 jobs)** | **Final code head.** Linux, Windows and macOS (Node 26) and Linux Node 22/24: `pnpm check` (package tests 286/286), `check:pack --with animations`, `check:browser:animations` 20/20, `check:animations:consumer`, `check:animations:bundles`; browsers job on Linux and macOS: `check:animations:engines` in Chromium, Firefox and WebKit; docs, Next + starters, Vercel build. |
 
-## Owner review of PR #6 (2026-11-16): three lifecycle defects
+Run 43878431209 is kept as history (a lab timing assumption, fixed). The documentation-only commit
+that records this evidence is verified by the run reported on PR #6.
+
+## Owner review of PR #6 (2026-11-16): three lifecycle defects (resolved in `ceb71b6`)
 
 All three hypotheses from the static review were **confirmed** by regression tests written first and
 run against `c33191f` (they failed), then fixed:
@@ -144,7 +154,7 @@ run against `c33191f` (they failed), then fixed:
 | 2   | A resumed `setup()` that throws escaped through `resumeWaiting()`     | the error was thrown from the **owner's** `destroy()`; the failing claim stayed granted and later waiting claims were skipped | `attach.ts` catches resumption failures: releases claim, contributions and subscription, state `failed`, `reportError`; `arbiter.ts` also guards every grant callback and skips records changed by nested resumptions | `effect.test.mjs` "resumed setup() that throws…" (no claim/listener/style leak, error reported once, next waiting effect gets the channel, element reusable) |
 | 3   | `animateElement()` checked `prefers-reduced-motion` only at start     | a live switch to `reduce` left the run active (test timed out)                                                                | live subscription while running/paused finishes the run (`completed`, end state committed); removed on settle                                                                                                         | `controls.test.mjs` "a live switch to reduced motion…" (also initial preference and no listener leak)                                                        |
 
-Bundle impact of the fixes (budgets unchanged, all pass): core 8.69 → 8.80 KiB (budget 9.50),
+Current sizes, after the fixes (budgets unchanged, **all pass**, locally and in CI run 43891329593): core 8.69 → 8.80 KiB (budget 9.50),
 registry + host 4.60 → 4.68 (5.00), Tilt3D 7.99 → 8.00 (8.75), createTilt3D 5.98 → 6.01 (6.60),
 controllers 3.45 → 3.47 (3.80), root bindings 4.43 → 4.50 (4.90), composeTransform 0.50 (0.60).
 Local re-verification: `pnpm check` (package tests 286/286), `check:animations:bundles`,
@@ -157,8 +167,7 @@ ADR 0022 §8 and ADR 0023 §5.
 
 ## Not run / pending
 
-| Check                       | Why                                 |
-| --------------------------- | ----------------------------------- |
-| Bundle budgets              | Over budget; owner decision pending |
-| Manual screen-reader review | Owner, before publication (Q4)      |
-| Real Safari                 | Playwright WebKit is not Safari     |
+| Check                       | Why                             |
+| --------------------------- | ------------------------------- |
+| Manual screen-reader review | Owner, before publication (Q4)  |
+| Real Safari                 | Playwright WebKit is not Safari |

@@ -1,4 +1,4 @@
-# Contract — channels, composition and conflict arbitration (proposed, Phase 009)
+# Contract — channels, composition and conflict arbitration (Phase 009)
 
 **Status: approved 2026-11-16; implemented and verified locally in 009.2** ([evidence](../evidence.md)).
 Decisions: [ADR 0019](../../../docs/decisions/0019-motion-composition-and-property-ownership.md)

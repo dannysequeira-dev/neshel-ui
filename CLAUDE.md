@@ -4,8 +4,8 @@
 (tag `v0.1.0`, release run 42843343125; evidence: `specs/007-first-publication/`). Feature 008
 (animations) milestone 008.0 — architecture, contracts, catalogue and spikes — is implemented and
 merged into `main` as the squash commit `fd3885c` (PR #4). Phase 009 (Motion Engine) is approved and
-implemented on `feature/009-motion-engine` (`specs/009-motion-engine/`), verified locally with definitive
-bundle budgets; PR and CI in progress.
+implemented on `feature/009-motion-engine` (`specs/009-motion-engine/`), verified in CI (PR #6, run
+43891329593, 14/14); pending only the owner's merge.
 `@neshel-ui/animations` is **private** (0.0.0) and must stay private until the owner approves its
 first publication; it is outside the Changesets fixed group and the release scripts. The five public
 packages are on npm with provenance; `@neshel-ui/core` stays private. `v0.1.0` is immutable: never

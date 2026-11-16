@@ -57,11 +57,14 @@ Approved 2026-11-16.
 - [x] T062 Packed external consumer variant (Vite + SSR + hydration) (FR-062)
 - [x] T063 `check:animations:bundles` (FR-063, SC-003): option B optimisation (arbiter split, dev-only
   diagnostics), definitive budgets (A), wired into CI
-- [ ] T064 CI steps written (consumer in the main job, three engines in the browsers job); three-OS run
-  pending an authorised push (SC-005)
+- [x] T064 CI steps (consumer + bundles in the main job, three engines in the browsers job); three-OS run
+  green on PR #6: run 43891329593, 14/14, commit `ceb71b6` (SC-005)
 
 ## 009.7 — Evidence and docs
 
 - [x] T070 evidence.md; roadmap, architecture, package contracts, CLAUDE.md, ADR statuses
 - [ ] T071 Owner screen-reader pass (FR-064) — before publication (owner Q4)
 - [x] T072 `git diff main` check of untouched packages/Changesets/release.yml (FR-070, SC-006)
+- [x] T073 Owner review fixes: suspended WAAPI `finish()`, failing resumed `setup()`, live reduced motion
+  for WAAPI (regression tests; `ceb71b6`)
+- [ ] T074 Owner merge of PR #6

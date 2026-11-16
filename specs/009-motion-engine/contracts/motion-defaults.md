@@ -1,4 +1,4 @@
-# Contract — motion defaults, easing and interpolation (proposed, Phase 009)
+# Contract — motion defaults, easing and interpolation (Phase 009)
 
 **Status: approved 2026-11-16; implemented and verified locally in Phase 009** ([evidence](../evidence.md)). Decision: [ADR 0024](../../../docs/decisions/0024-motion-defaults-and-config-integration.md)
 (owner decision D5). Exported from `@neshel-ui/animations/core`.
@@ -14,7 +14,7 @@ const motionDefaults = Object.freeze({
 });
 ```
 
-Values are proposals to be tuned in 009 with the lab (reduced-motion and vestibular review included).
+These are the values implemented in Phase 009; later phases may tune them with the lab (reduced-motion and vestibular review included), which is a contract change.
 
 ## §2 CSS custom properties
 

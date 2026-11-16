@@ -1,7 +1,7 @@
 # Implementation Plan: Motion Engine (Phase 009)
 
 **Branch**: `feature/009-motion-engine` | **Date**: 2026-11-15 | **Spec**: [spec.md](spec.md)
-**Status**: proposed; implementation starts only after owner approval.
+**Status**: approved 2026-11-16; implemented and verified in CI (PR #6, run 43891329593, 14/14, `ceb71b6`). The milestone table below is the original plan, kept as history.
 
 ## Summary
 

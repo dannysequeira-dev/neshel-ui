@@ -1,10 +1,10 @@
 # Feature Specification: Motion Engine (`@neshel-ui/animations`, Phase 009)
 
-**Feature Branch**: `feature/009-motion-engine` (replayed onto `main` after the PR #4 squash merge `fd3885c`)
+**Feature Branch**: `feature/009-motion-engine` (replayed onto `main` after the PR #4 squash merge `fd3885c`; PR #6)
 
 **Created**: 2026-11-15
 
-**Status**: **Approved (2026-11-16); implemented and verified locally; definitive bundle budgets set; PR and three-OS CI in progress.** See [evidence.md](evidence.md) for what is
+**Status**: **Approved (2026-11-16); implemented; verified locally and in CI (run 43891329593, 14/14, `ceb71b6`); awaiting the owner's merge of PR #6.** See [evidence.md](evidence.md) for what is
 implemented and verified. `@neshel-ui/animations` stays private (0.0.0).
 
 **Input**: Owner direction 2026-11-15, summarised in [brief.md](brief.md).
@@ -208,11 +208,11 @@ unavailable (JS fallback for opacity/transform, documented); `finished` awaited 
   registry + host ≤ 5 KiB, Tilt3D ≤ 8.75 KiB, `createTilt3D` ≤ 6.6 KiB, controllers ≤ 3.8 KiB, root
   bindings ≤ 4.9 KiB, `composeTransform` ≤ 0.6 KiB gzip, measured from the packed tarball.
 - **SC-004**: Packed consumer builds, server-renders and hydrates without errors.
-- **SC-005**: Three-OS CI green on the 009 PR (when authorised).
+- **SC-005**: Three-OS CI green on the 009 PR — **met** (PR #6, run 43891329593, 14/14).
 - **SC-006**: `git diff main -- packages/{config,layout,typography,components,cli,core} .changeset
   .github/workflows/release.yml` empty.
 
 ## Assumptions
 
-React 19 only; Playwright engines installable in CI (as feature 006); budgets in SC-003 are initial
-proposals to be confirmed by measurement in 009.1.
+React 19 only; Playwright engines installable in CI (as feature 006); budgets in SC-003 were
+finalised from packed-tarball measurements (option B then A, 2026-11-16).
