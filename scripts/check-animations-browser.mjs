@@ -43,7 +43,21 @@ async function main() {
   try {
     const p = await browser.newPage();
     await p.setViewport(1280, 900);
-    await p.emulateColorScheme("light");
+    // One call sets both features (each setEmulatedMedia call replaces the previous feature list).
+    const motionPreference = (value) =>
+      p.send("Emulation.setEmulatedMedia", {
+        features: [
+          { name: "prefers-color-scheme", value: "light" },
+          { name: "prefers-reduced-motion", value },
+        ],
+      });
+    // The host OS preference leaks into headless Chrome (GitHub's macOS images enable "Reduce
+    // motion"), so record it and pin `no-preference`; the reduced cases emulate `reduce` explicitly.
+    await p.goto("about:blank");
+    notes.systemPrefersReducedMotion = await p.evaluate(
+      `matchMedia("(prefers-reduced-motion: reduce)").matches`,
+    );
+    await motionPreference("no-preference");
     await p.goto(pathToFileURL(page).href);
     await p.evaluate(wait(300));
 
@@ -177,9 +191,7 @@ async function main() {
     });
 
     await run("reduced motion (live change): flat cards, no transform on hover", async () => {
-      await p.send("Emulation.setEmulatedMedia", {
-        features: [{ name: "prefers-reduced-motion", value: "reduce" }],
-      });
+      await motionPreference("reduce");
       await p.evaluate(wait(100));
       const before = await tiltState("#tilt-basic");
       check(before.state === "reduced", `state ${before.state}`);
@@ -191,9 +203,7 @@ async function main() {
       const tilt = await tiltState("#tilt-basic");
       check(tilt.inline === "" && tilt.computed === "none", `inline ${tilt.inline}`);
       await mouse(2, 2);
-      await p.send("Emulation.setEmulatedMedia", {
-        features: [{ name: "prefers-reduced-motion", value: "no-preference" }],
-      });
+      await motionPreference("no-preference");
       await p.evaluate(wait(100));
       check((await tiltState("#tilt-basic")).state === "rest", "did not leave reduced state");
     });
@@ -239,15 +249,11 @@ async function main() {
     });
 
     await run("corner: reduced motion jumps without animation", async () => {
-      await p.send("Emulation.setEmulatedMedia", {
-        features: [{ name: "prefers-reduced-motion", value: "reduce" }],
-      });
+      await motionPreference("reduce");
       await p.evaluate(`document.getElementById("corner-toggle").click()`);
       const amount = await p.evaluate("window.__neshelLab.cornerAmount");
       check(amount === 0, `amount right after the click: ${amount}`);
-      await p.send("Emulation.setEmulatedMedia", {
-        features: [{ name: "prefers-reduced-motion", value: "no-preference" }],
-      });
+      await motionPreference("no-preference");
     });
 
     const sceneGeometry = () =>
