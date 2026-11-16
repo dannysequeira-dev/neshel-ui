@@ -18,6 +18,10 @@ apps/storybook   apps/docs   apps/playground-vite   check:next (isolated Next.js
 
 config (independently usable CSS/tokens)
 core   (private implementation details; never an external dependency)
+
+animations (feature 008, private, experimental)
+   .  React API (Tilt3D)  -->  ./core framework-free engine (no React)
+   runtime: react (peer), @radix-ui/react-slot; imports no other Neshel package
 ```
 
 The diagram expresses the API and dependency direction. Since feature 002, `cli` imports
@@ -160,10 +164,27 @@ Status of each decision (implemented / locally verified / CI-verified) is tracke
 - `components` depends on no other Neshel runtime package (`config` is a type-only peer);
   `layout` and `typography` still never import `components`.
 
+## Feature 008.0 decisions (2026-11-15, proposed)
+
+- `@neshel-ui/animations` is a new, **private** package (0.0.0) outside the fixed release group; its
+  tarball is validated with `pnpm check:pack --with animations`
+  ([ADR 0018](decisions/0018-animation-system-architecture.md)).
+- Layers: React API → effect controllers/presets → core engine (`./core`: frame scheduler with
+  read/update/write phases, springs, transform composer, reduced-motion policy) → drivers (CSS →
+  WAAPI → JS → optional GPU) → composition. The engine lives in the package, not in the private core.
+- Composition: CSS effects own `translate`/`rotate`/`scale`; JS effects add layers to one transform
+  composer per element ([ADR 0019](decisions/0019-motion-composition-and-property-ownership.md)).
+- No motion-engine dependency in 008.0; per-capability adoption only after a benchmark and an ADR;
+  GSAP never as a dependency ([ADR 0020](decisions/0020-motion-engine-dependency-policy.md)).
+- `animations` imports no other Neshel package; `layout`, `typography` and `components` do not import
+  `animations`. Status and evidence: `specs/008-animations/evidence.md`.
+
 ## Open decisions
 
 - `text-box-trim` as a progressive enhancement once cross-browser.
 - Per-component subpath exports (evaluated in feature 005 research R2; not needed while
   tree-shaking of the single entry is verified).
+- Animations: entry points, version line, first publication scope, motion tokens in `config`
+  (decisions D1–D9 in `specs/008-animations/plan.md`).
 
 See [`docs/decisions/`](decisions/0001-architecture.md).

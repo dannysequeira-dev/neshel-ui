@@ -400,3 +400,55 @@ test("release guards: tag must match every public version, guards lifted, core p
   );
   assert.match(guardProblems("v0.1.0", five, {}).join(), /core must remain private/);
 });
+
+const animationsManifest = {
+  name: "@neshel-ui/animations",
+  private: true,
+  exports: {
+    ".": { types: "./dist/index.d.ts", import: "./dist/index.js" },
+    "./core": { types: "./dist/core/index.d.ts", import: "./dist/core/index.js" },
+    "./styles.css": "./dist/styles.css",
+  },
+  peerDependencies: { react: "^19.0.0" },
+  dependencies: { "@radix-ui/react-slot": "^1.5.0" },
+};
+
+test("animations package contract: private, exact exports, peers and framework-free core (feature 008)", () => {
+  const good = files({
+    "dist/index.js": 'export { Tilt3D } from "./tilt/tilt-3d.js";',
+    "dist/tilt/tilt-3d.js":
+      '"use client";\nimport { jsx } from "react/jsx-runtime";\nimport { Slot } from "@radix-ui/react-slot";\nimport { useRef } from "react";',
+    "dist/core/index.js": 'export { stepSpring } from "./spring.js";',
+  });
+  assert.deepEqual(checkPackageContract(animationsManifest, good), []);
+});
+
+test("negative: animations contract detects lifted guard, extra exports/deps and impure core", () => {
+  const bad = files({
+    "dist/core/scheduler.js": 'import { useEffect } from "react";',
+    "dist/index.js": 'import { animate } from "motion";',
+  });
+  const errors = checkPackageContract(
+    {
+      ...animationsManifest,
+      private: undefined,
+      exports: { ...animationsManifest.exports, "./scroll": "./dist/scroll.js" },
+      peerDependencies: { react: "^19.0.0", "react-dom": "^19.0.0" },
+      dependencies: { "@radix-ui/react-slot": "^1.5.0", motion: "^12.0.0" },
+    },
+    bad,
+  );
+  for (const pattern of [
+    /private/,
+    /exports/,
+    /peerDependencies/,
+    /dependencies must/,
+    /core entry/,
+    /"motion"/,
+  ]) {
+    assert.ok(
+      errors.some((error) => pattern.test(error)),
+      `${pattern}: ${errors.join(" | ")}`,
+    );
+  }
+});

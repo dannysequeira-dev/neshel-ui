@@ -10,6 +10,7 @@
     "check:generated": "neshel generate --check"
   },
   "dependencies": {
+    "@neshel-ui/animations": "workspace:*",
     "@neshel-ui/components": "workspace:*",
     "@neshel-ui/config": "workspace:*",
     "@neshel-ui/layout": "workspace:*",

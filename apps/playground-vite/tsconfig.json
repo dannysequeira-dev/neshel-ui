@@ -4,7 +4,9 @@
     "types": ["vite/client"],
     "paths": {
       "@neshel-ui/config": ["../../packages/config/src/index.ts"],
-      "@neshel-ui/typography": ["../../packages/typography/src/index.ts"]
+      "@neshel-ui/typography": ["../../packages/typography/src/index.ts"],
+      "@neshel-ui/animations": ["../../packages/animations/src/index.ts"],
+      "@neshel-ui/animations/core": ["../../packages/animations/src/core/index.ts"]
     }
   },
   "include": ["src", "vite.config.ts", "neshel.config.ts"]
