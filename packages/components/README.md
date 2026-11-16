@@ -1,5 +1,8 @@
 # @neshel-ui/components
 
+[![@neshel-ui/components npm version](https://img.shields.io/npm/v/@neshel-ui/components?style=flat-square&logo=npm&label=npm)](https://www.npmjs.com/package/@neshel-ui/components) [![@neshel-ui/components monthly downloads](https://img.shields.io/npm/dm/@neshel-ui/components?style=flat-square&logo=npm&label=downloads%2Fmonth)](https://www.npmjs.com/package/@neshel-ui/components)
+![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?style=flat-square&logo=typescript&logoColor=white) ![React 19](https://img.shields.io/badge/React-19-61DAFB?style=flat-square&logo=react&logoColor=0D1B39) [![MIT License](https://img.shields.io/github/license/dannysequeira-dev/neshel-ui?style=flat-square&color=D9B86A)](https://github.com/dannysequeira-dev/neshel-ui/blob/main/LICENSE)
+
 Accessible React components, navigation and a responsive application shell for Neshel-UI.
 
 **Status:** 0.1.0, the first public release (pre-1.0: breaking changes bump the minor version and are called out in the [changelog](./CHANGELOG.md)). Verified from the packed tarball in external applications on Linux, Windows and macOS. Documentation (English and Spanish): https://neshel-ui.vercel.app

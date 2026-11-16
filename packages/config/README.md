@@ -1,5 +1,8 @@
 # @neshel-ui/config
 
+[![@neshel-ui/config npm version](https://img.shields.io/npm/v/@neshel-ui/config?style=flat-square&logo=npm&label=npm)](https://www.npmjs.com/package/@neshel-ui/config) [![@neshel-ui/config monthly downloads](https://img.shields.io/npm/dm/@neshel-ui/config?style=flat-square&logo=npm&label=downloads%2Fmonth)](https://www.npmjs.com/package/@neshel-ui/config)
+![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?style=flat-square&logo=typescript&logoColor=white) ![Tailwind CSS v4 optional](https://img.shields.io/badge/Tailwind_CSS-v4%20optional-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white) [![MIT License](https://img.shields.io/github/license/dannysequeira-dev/neshel-ui?style=flat-square&color=D9B86A)](https://github.com/dannysequeira-dev/neshel-ui/blob/main/LICENSE)
+
 CSS-first design tokens, semantic themes and typed theme configuration for Neshel-UI.
 
 **Status:** 0.1.0, the first public release (pre-1.0: breaking changes bump the minor version and are called out in the [changelog](./CHANGELOG.md)). Verified from the packed tarball in external applications on Linux, Windows and macOS. Documentation (English and Spanish): https://neshel-ui.vercel.app
