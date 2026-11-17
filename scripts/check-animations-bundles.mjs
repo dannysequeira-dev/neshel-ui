@@ -124,10 +124,44 @@ export const ENTRIES = {
     source: `export * from "${A}/press";`,
     markers: { tilt: false, hoverCode: false },
   },
+  // Phase 011 (FR-045): scroll family.
+  "scroll: createScrollProgress (engine, no React)": {
+    source: `export { createScrollProgress } from "${A}/scroll";`,
+    markers: { react: false, slot: false, waapi: false, entranceCode: false, hoverCode: false },
+  },
+  "scroll: depthParallax definition (no React)": {
+    source: `export { depthParallax } from "${A}/scroll";`,
+    markers: { react: false, slot: false, waapi: false, entranceCode: false },
+  },
+  "scroll: revealOnEnter definition (no React)": {
+    source: `export { revealOnEnter } from "${A}/scroll";`,
+    markers: { react: false, slot: false, entranceCode: false, hoverCode: false },
+  },
+  "scroll: ScrollScene + ScrollLayer": {
+    source: `export { ScrollScene, ScrollLayer } from "${A}/scroll";`,
+    markers: { react: true, entranceCode: false, hoverCode: false, pressCode: false },
+  },
+  "scroll: RevealOnScroll": {
+    source: `export { RevealOnScroll } from "${A}/scroll";`,
+    markers: { react: true, entranceCode: false, hoverCode: false, pressCode: false },
+  },
+  "scroll: HorizontalScroll": {
+    source: `export { HorizontalScroll } from "${A}/scroll";`,
+    markers: { react: true, entranceCode: false, hoverCode: false, pressCode: false },
+  },
+  "scroll: entire entry": {
+    source: `export * from "${A}/scroll";`,
+    markers: { tilt: false, entranceCode: false, hoverCode: false, pressCode: false },
+  },
 };
 
 /** Stylesheets measured from the packed tarball (gzip of the file as shipped). */
-export const STYLESHEETS = ["dist/hover.css", "dist/press.css", "dist/styles.css"];
+export const STYLESHEETS = [
+  "dist/hover.css",
+  "dist/press.css",
+  "dist/scroll.css",
+  "dist/styles.css",
+];
 
 const MARKERS = {
   react: (code) => /from\s*["']react/.test(code),
@@ -141,6 +175,7 @@ const MARKERS = {
   // Family fingerprints (strings that only that family's code contains).
   hoverCode: (code) => /hover\/lift|hover\/glow|hover\/spotlight/.test(code),
   pressCode: (code) => /press\/scale|press\/ripple|press\/number-tick/.test(code),
+  entranceCode: (code) => /entrance\/fade-in|entrance\/fade-slide|entrance\/clip-reveal/.test(code),
 };
 
 function link(from, to) {
