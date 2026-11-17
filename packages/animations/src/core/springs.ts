@@ -129,9 +129,7 @@ export function whenSettled(
     if (state === "running" || state === "idle") return true;
     if (state === "paused") return false;
     done = true;
-    callback(
-      state === "completed" || state === "cancelled" ? state : "interrupted",
-    );
+    callback(state === "completed" || state === "cancelled" ? state : "interrupted");
     return false;
   }, "write");
   return () => {

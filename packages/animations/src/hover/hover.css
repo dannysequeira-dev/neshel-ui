@@ -83,10 +83,7 @@
     inset: 0;
     border-radius: inherit;
     pointer-events: none;
-    box-shadow:
-      var(--neshel-lift-shadow),
-      var(--neshel-glow-ring),
-      var(--neshel-glow-halo);
+    box-shadow: var(--neshel-lift-shadow), var(--neshel-glow-ring), var(--neshel-glow-halo);
     background-image:
       var(--neshel-spotlight-image), var(--neshel-shine-image), var(--neshel-underline-image);
     background-repeat: no-repeat;

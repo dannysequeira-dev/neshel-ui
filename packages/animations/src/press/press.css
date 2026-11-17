@@ -58,11 +58,13 @@
     background: var(--neshel-toggle-thumb, #fff);
     box-shadow: 0 1px 3px rgb(0 0 0 / 0.3);
     translate: calc(
-        var(--neshel-toggle-p, 0) * var(--neshel-toggle-direction) *
-          (var(--neshel-toggle-width) - var(--neshel-toggle-height))
+        var(--neshel-toggle-p, 0) *
+        var(--neshel-toggle-direction) *
+        (var(--neshel-toggle-width) - var(--neshel-toggle-height))
       )
       0;
-    scale: calc(1 + var(--neshel-toggle-stretch, 0)) calc(1 - var(--neshel-toggle-stretch, 0) * 0.25);
+    scale: calc(1 + var(--neshel-toggle-stretch, 0))
+      calc(1 - var(--neshel-toggle-stretch, 0) * 0.25);
   }
 
   .neshel-toggle[data-state="on"] > .neshel-toggle-thumb {
@@ -86,6 +88,12 @@
     overflow: visible;
   }
 
+  [data-neshel-fx~="checkbox-draw"] > .neshel-checkbox-box {
+    transition:
+      fill var(--neshel-motion-duration-fast, 120ms) linear,
+      stroke var(--neshel-motion-duration-fast, 120ms) linear;
+  }
+
   .neshel-checkbox:not([data-state="unchecked"]) > .neshel-checkbox-box {
     fill: var(--neshel-checkbox-on, var(--neshel-primary, #4f46e5));
     stroke: var(--neshel-checkbox-on, var(--neshel-primary, #4f46e5));
@@ -95,12 +103,6 @@
     stroke: var(--neshel-checkbox-mark, #fff);
     stroke-dasharray: 1;
     stroke-dashoffset: calc(1 - var(--neshel-check-progress, 1));
-  }
-
-  [data-neshel-fx~="checkbox-draw"] > .neshel-checkbox-box {
-    transition:
-      fill var(--neshel-motion-duration-fast, 120ms) linear,
-      stroke var(--neshel-motion-duration-fast, 120ms) linear;
   }
 
   /* P10 — Content swap: stacked slots; the inactive one is [hidden]. */
@@ -119,9 +121,9 @@
   [data-neshel-fx~="content-swap"] > [data-slot] {
     transition:
       opacity var(--neshel-motion-duration-normal, 200ms)
-        var(--neshel-motion-ease-standard, cubic-bezier(0.2, 0, 0, 1)),
+      var(--neshel-motion-ease-standard, cubic-bezier(0.2, 0, 0, 1)),
       translate var(--neshel-motion-duration-normal, 200ms)
-        var(--neshel-motion-ease-standard, cubic-bezier(0.2, 0, 0, 1)),
+      var(--neshel-motion-ease-standard, cubic-bezier(0.2, 0, 0, 1)),
       display var(--neshel-motion-duration-normal, 200ms) allow-discrete;
   }
 

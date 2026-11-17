@@ -74,7 +74,11 @@ export const lift = /* @__PURE__ */ defineEffect<LiftOptions, ResolvedLift>({
       target: () => ({ p: 1 }),
       render({ p }, o, reduced) {
         if (reduced || near(p, 0)) context.channels.transform.clear();
-        else context.channels.transform.set({ translateY: -o.distance * p, scale: 1 + (o.scale - 1) * p });
+        else
+          context.channels.transform.set({
+            translateY: -o.distance * p,
+            scale: 1 + (o.scale - 1) * p,
+          });
         progress(o.shadow && !near(p, 0) ? fixed(p) : undefined);
       },
     });
@@ -329,11 +333,15 @@ export const borderSweep = /* @__PURE__ */ defineEffect<BorderSweepOptions, Reso
   resolve(input) {
     const o = sweepV.options(input);
     const colors = o.colors ?? SWEEP_COLORS;
-    if (!Array.isArray(colors) || colors.length !== 2) sweepV.fail('"colors" must be two CSS colours.');
+    if (!Array.isArray(colors) || colors.length !== 2)
+      sweepV.fail('"colors" must be two CSS colours.');
     return {
       ...resolveHover(o, sweepV),
       width: sweepV.number("width", o.width, 2, 1, 8),
-      colors: [sweepV.css("colors", colors[0], SWEEP_COLORS[0]), sweepV.css("colors", colors[1], SWEEP_COLORS[1])],
+      colors: [
+        sweepV.css("colors", colors[0], SWEEP_COLORS[0]),
+        sweepV.css("colors", colors[1], SWEEP_COLORS[1]),
+      ],
       duration: sweepV.number("duration", o.duration, 3000, 500, 20_000),
     };
   },
@@ -471,8 +479,9 @@ export const mediaZoom = /* @__PURE__ */ defineEffect<MediaZoomOptions, Resolved
   setup(context) {
     const key = Symbol("hover/media-zoom");
     const media = () =>
-      (context.element.querySelector("[data-neshel-media]") ??
-        context.element.firstElementChild) as (Element & { style: CSSStyleDeclaration }) | null;
+      (context.element.querySelector("[data-neshel-media]") ?? context.element.firstElementChild) as
+        | (Element & { style: CSSStyleDeclaration })
+        | null;
     let target = media();
     const driver = createHoverDriver(context, {
       token: "media-zoom",
@@ -532,7 +541,12 @@ export const parallax = /* @__PURE__ */ defineEffect<ParallaxOptions, ResolvedPa
       layers = [...context.element.querySelectorAll("[data-neshel-depth]")].flatMap((element) => {
         const depth = Number(element.getAttribute("data-neshel-depth"));
         return "style" in element && Number.isFinite(depth)
-          ? [{ element: element as Element & { style: CSSStyleDeclaration }, depth: clamp(depth, -2, 2) }]
+          ? [
+              {
+                element: element as Element & { style: CSSStyleDeclaration },
+                depth: clamp(depth, -2, 2),
+              },
+            ]
           : [];
       });
     };

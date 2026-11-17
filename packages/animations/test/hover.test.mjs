@@ -7,8 +7,18 @@ const hover = await import("../dist/hover/index.js");
 const core = await import("../dist/core/index.js");
 const { NeshelAnimationsError } = await import("../dist/index.js");
 const { fadeIn } = await import("../dist/entrance/index.js");
-const { Hover, lift, glow, magnetic, spotlight, borderSweep, underline, mediaZoom, parallax, shine } =
-  hover;
+const {
+  Hover,
+  lift,
+  glow,
+  magnetic,
+  spotlight,
+  borderSweep,
+  underline,
+  mediaZoom,
+  parallax,
+  shine,
+} = hover;
 const { attachEffect, definePreset } = core;
 
 test("hoverEffects lists H01–H10 in catalogue order; every definition is frozen", () => {
@@ -48,13 +58,19 @@ test("invalid hover usage throws NeshelAnimationsError on the server", () => {
     [() => markup(h(Hover, { preset: glow, options: { color: "red; x: y" } })), /"color"/],
     [() => markup(h(Hover, { preset: underline, options: { origin: "top" } })), /"origin"/],
     [() => markup(h(Hover, { preset: borderSweep, options: { colors: ["red"] } })), /"colors"/],
-    [() => markup(h(Hover, { preset: lift, options: { pointerTypes: ["finger"] } })), /"pointerTypes"/],
+    [
+      () => markup(h(Hover, { preset: lift, options: { pointerTypes: ["finger"] } })),
+      /"pointerTypes"/,
+    ],
     [() => markup(h(Hover, { preset: [lift, glow], options: {} })), /single preset/],
     [() => markup(h(Hover, { preset: [] })), /must not be empty/],
     [() => markup(h(Hover, { preset: fadeIn })), /belongs to the "entrance" family/],
   ];
   for (const [run, message] of cases) {
-    assert.throws(run, (error) => error instanceof NeshelAnimationsError && message.test(error.message));
+    assert.throws(
+      run,
+      (error) => error instanceof NeshelAnimationsError && message.test(error.message),
+    );
   }
 });
 
@@ -71,7 +87,9 @@ function host(tag = "div") {
   return node;
 }
 const move = (x, y, pointerType = "mouse") =>
-  window.dispatchEvent(new window.PointerEvent("pointermove", { clientX: x, clientY: y, pointerType }));
+  window.dispatchEvent(
+    new window.PointerEvent("pointermove", { clientX: x, clientY: y, pointerType }),
+  );
 function enter(node, x = 100, y = 50, pointerType = "mouse") {
   pointer(node, "pointerenter", { x, y, pointerType });
 }
@@ -293,7 +311,11 @@ test("border sweep: owns ::after through the sentinel channel; active and reduce
     console.warn = original;
   }
   assert.equal(folded.state, "suspended");
-  assert.ok(warnings.some((w) => w.includes('"3d/fold" is suspended') && w.includes("--neshel-layer-after")));
+  assert.ok(
+    warnings.some(
+      (w) => w.includes('"3d/fold" is suspended') && w.includes("--neshel-layer-after"),
+    ),
+  );
   handle.destroy();
   assert.equal(folded.state, "active", "resumes when the ring is released");
   folded.destroy();
@@ -418,7 +440,10 @@ test("Tilt3D + lift + glow compose on one element; destroying one keeps the othe
   enter(node, 100, 50);
   move(200, 0);
   frames.settle();
-  assert.match(node.style.transform, /^perspective\(1000px\) translate3d\(0px, -5px, 0px\) rotateX\(10deg\) rotateY\(10deg\)$/);
+  assert.match(
+    node.style.transform,
+    /^perspective\(1000px\) translate3d\(0px, -5px, 0px\) rotateX\(10deg\) rotateY\(10deg\)$/,
+  );
   assert.equal(prop(node, "--neshel-glow-progress"), "1");
   lifted.destroy();
   frames.flush(1);
@@ -442,7 +467,9 @@ test("<Hover preset={[lift, glow]}> attaches both on mount and cleans up on unmo
   assert.equal(fx(node), "lift decor glow");
   frames.flush(1);
   assert.equal(prop(node, "--neshel-glow-size"), "6px");
-  await app.render(h(Hover, { preset: [lift, definePreset("strong", glow, { size: 7 })], id: "h" }, "Card"));
+  await app.render(
+    h(Hover, { preset: [lift, definePreset("strong", glow, { size: 7 })], id: "h" }, "Card"),
+  );
   frames.flush(1);
   assert.equal(prop(node, "--neshel-glow-size"), "7px", "option change updates without re-attach");
   await app.unmount();

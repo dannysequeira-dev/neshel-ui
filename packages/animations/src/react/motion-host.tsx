@@ -82,7 +82,10 @@ export function presetEntries(
   const list = Array.isArray(preset) ? preset : [preset];
   if (list.length === 0) throw animationsError(name, '"preset" must not be empty.');
   if (Array.isArray(preset) && options !== undefined) {
-    throw animationsError(name, '"options" applies to a single preset; use definePreset for lists.');
+    throw animationsError(
+      name,
+      '"options" applies to a single preset; use definePreset for lists.',
+    );
   }
   return list.map((input: AnyPresetInput) => {
     const effect: AnyEffectDefinition | undefined = isEffectPreset(input) ? input.effect : input;

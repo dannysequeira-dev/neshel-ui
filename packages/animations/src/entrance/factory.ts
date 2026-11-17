@@ -148,7 +148,9 @@ export function createEntrance<Options extends EntranceOptions, Extra>(
       let mode: "full" | "fade" | "none" = "full";
       let runId = 0;
       let destroyed = false;
-      const exclusive = paint.map((channel) => [channel, context.channels.exclusive(channel)] as const);
+      const exclusive = paint.map(
+        (channel) => [channel, context.channels.exclusive(channel)] as const,
+      );
 
       function render(value: number): void {
         if (mode === "none") return;

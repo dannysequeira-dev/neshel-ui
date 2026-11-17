@@ -29,8 +29,8 @@ Three facts of the CSS cascade decide it (observed in the lab spike cases `spike
    `transition: background-color …` (unlayered author CSS beats the package layer — ADR 0008), so the
    effect stops animating without any error; the engine cannot see or arbitrate it.
 
-Decision (ADR 0025 §2, rule **R-1**): *CSS never declares a transition or an animation on the consumer's
-element.* Properties of the consumer's element are animated only by the engine through the motion host.
+Decision (ADR 0025 §2, rule **R-1**): _CSS never declares a transition or an animation on the consumer's
+element._ Properties of the consumer's element are animated only by the engine through the motion host.
 Entrances therefore run as one progress tween (or spring) rendered through the host: a `transform` layer
 (composes with Tilt3D, hover and press layers), an `opacity` contribution (multiplies) and, for blur /
 clip / mask, one exclusive channel. Cost: one style write per animated element per frame for ≤ 500 ms on

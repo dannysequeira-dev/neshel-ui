@@ -31,11 +31,11 @@ packages/animations/src/
 
 ## Risks
 
-| Risk                                                | Mitigation                                                                                   |
-| --------------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| jsdom has no WAAPI, layout or CSS cascade            | WAAPI stub in units; CSS rendering and layer computation asserted in real engines (lab)       |
-| `@starting-style` / `allow-discrete` support          | progressive (instant swap without); final states asserted, not intermediate frames           |
-| `color-mix` + `calc()` percentages in decor          | asserted in the lab computed styles in three engines                                         |
-| Flicker on hydration                                 | `appear="client"`; consumer check asserts no inline style after hydration                    |
-| Bundle growth of family primitives (arbiter)          | measured per entry; Tilt3D path keeps arbiter-free                                           |
-| Slow CI runners                                     | condition-based waits (`untilExpression`), never fixed sleeps deciding results              |
+| Risk                                         | Mitigation                                                                              |
+| -------------------------------------------- | --------------------------------------------------------------------------------------- |
+| jsdom has no WAAPI, layout or CSS cascade    | WAAPI stub in units; CSS rendering and layer computation asserted in real engines (lab) |
+| `@starting-style` / `allow-discrete` support | progressive (instant swap without); final states asserted, not intermediate frames      |
+| `color-mix` + `calc()` percentages in decor  | asserted in the lab computed styles in three engines                                    |
+| Flicker on hydration                         | `appear="client"`; consumer check asserts no inline style after hydration               |
+| Bundle growth of family primitives (arbiter) | measured per entry; Tilt3D path keeps arbiter-free                                      |
+| Slow CI runners                              | condition-based waits (`untilExpression`), never fixed sleeps deciding results          |

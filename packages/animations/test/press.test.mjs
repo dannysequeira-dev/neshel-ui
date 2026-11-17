@@ -2,7 +2,16 @@
 import assert from "node:assert/strict";
 import test, { mock } from "node:test";
 import { Profiler } from "react";
-import { frames, h, layoutBox, markup, mount, pointer, renderToString, setupDom, stubAnimate } from "./helpers.mjs";
+import {
+  frames,
+  h,
+  layoutBox,
+  markup,
+  mount,
+  renderToString,
+  setupDom,
+  stubAnimate,
+} from "./helpers.mjs";
 
 const press = await import("../dist/press/index.js");
 const core = await import("../dist/core/index.js");
@@ -70,9 +79,15 @@ test("SSR: decorative components render their static state; no motion state (acc
     '<span aria-hidden="true" data-state="on" class="neshel-toggle"><span class="neshel-toggle-thumb"></span></span>',
   );
   const box = markup(h(CheckboxDraw, { checked: false }));
-  assert.match(box, /^<svg[^>]*aria-hidden="true"[^>]*focusable="false"[^>]*data-state="unchecked"/);
+  assert.match(
+    box,
+    /^<svg[^>]*aria-hidden="true"[^>]*focusable="false"[^>]*data-state="unchecked"/,
+  );
   assert.doesNotMatch(box, /neshel-checkbox-mark/, "no mark while unchecked (correct without CSS)");
-  assert.match(markup(h(CheckboxDraw, { checked: true })), /data-state="checked"[\s\S]*neshel-checkbox-mark/);
+  assert.match(
+    markup(h(CheckboxDraw, { checked: true })),
+    /data-state="checked"[\s\S]*neshel-checkbox-mark/,
+  );
   assert.match(
     markup(h(CheckboxDraw, { checked: false, indeterminate: true })),
     /data-state="indeterminate"[\s\S]*d="M7.5 12h9"/,
@@ -98,7 +113,10 @@ test("invalid press usage throws NeshelAnimationsError on the server", () => {
     [() => markup(h(ToggleMorph, { checked: true, stretch: 2 })), /"stretch"/],
   ];
   for (const [run, message] of cases) {
-    assert.throws(run, (error) => error instanceof NeshelAnimationsError && message.test(error.message));
+    assert.throws(
+      run,
+      (error) => error instanceof NeshelAnimationsError && message.test(error.message),
+    );
   }
 });
 
@@ -117,8 +135,17 @@ function host(tag = "button") {
 const scaleOf = (node) => Number(/scale\(([\d.]+)\)/.exec(node.style.transform)?.[1] ?? 1);
 const release = () => window.dispatchEvent(new window.PointerEvent("pointerup", { button: 0 }));
 const down = (node, x = 10, y = 10) =>
-  node.dispatchEvent(new window.PointerEvent("pointerdown", { button: 0, isPrimary: true, clientX: x, clientY: y, bubbles: true }));
-const key = (node, type, name) => node.dispatchEvent(new window.KeyboardEvent(type, { key: name, bubbles: true }));
+  node.dispatchEvent(
+    new window.PointerEvent("pointerdown", {
+      button: 0,
+      isPrimary: true,
+      clientX: x,
+      clientY: y,
+      bubbles: true,
+    }),
+  );
+const key = (node, type, name) =>
+  node.dispatchEvent(new window.KeyboardEvent(type, { key: name, bubbles: true }));
 
 test("press scale: pointer and Space/Enter press; release anywhere; disabled never presses", () => {
   const node = host();
@@ -210,9 +237,15 @@ test("ripple: owned aria-hidden inert layer, circle from the press point, remove
     const radius = Math.hypot(100, 30); // farthest corner from (20, 10) in a 120×40 box
     assert.equal(circle.style.width, `${radius * 2}px`);
     assert.equal(circle.style.left, `${20 - radius}px`);
-    assert.deepEqual(waapi.calls[0].keyframes.map((frame) => frame.transform), ["scale(0)", "scale(1)"]);
+    assert.deepEqual(
+      waapi.calls[0].keyframes.map((frame) => frame.transform),
+      ["scale(0)", "scale(1)"],
+    );
     release();
-    assert.deepEqual(waapi.calls[1].keyframes.map((frame) => frame.opacity), ["0.22", "0"]);
+    assert.deepEqual(
+      waapi.calls[1].keyframes.map((frame) => frame.opacity),
+      ["0.22", "0"],
+    );
     waapi.finishAll();
     assert.equal(node.querySelector(".neshel-ripple-layer"), null, "removed when idle");
     node.focus();
@@ -308,7 +341,10 @@ test("shake: damped horizontal shake on trigger; warns without error semantics; 
     frames.flush(1);
     xs.push(Number(/translate3d\((-?[\d.]+)px/.exec(node.style.transform)?.[1] ?? 0));
   }
-  assert.ok(Math.max(...xs) > 3 && Math.min(...xs) < -3, `oscillates ${Math.min(...xs)}…${Math.max(...xs)}`);
+  assert.ok(
+    Math.max(...xs) > 3 && Math.min(...xs) < -3,
+    `oscillates ${Math.min(...xs)}…${Math.max(...xs)}`,
+  );
   assert.ok(Math.max(...xs.map(Math.abs)) <= 9);
   assert.equal(node.style.cssText, "");
   node.setAttribute("aria-invalid", "true");
@@ -318,7 +354,9 @@ test("shake: damped horizontal shake on trigger; warns without error semantics; 
     const reduced = [];
     while (frames.pending > 0) {
       frames.flush(1);
-      reduced.push(Math.abs(Number(/translate3d\((-?[\d.]+)px/.exec(node.style.transform)?.[1] ?? 0)));
+      reduced.push(
+        Math.abs(Number(/translate3d\((-?[\d.]+)px/.exec(node.style.transform)?.[1] ?? 0)),
+      );
     }
     assert.ok(Math.max(...reduced) <= 3, `reduced amplitude ${Math.max(...reduced)}`);
   } finally {
@@ -376,9 +414,15 @@ test("<ToggleMorph>: animates the owned thumb on change only; stretch mid-travel
   const samples = [];
   while (frames.pending > 0) {
     frames.flush(1);
-    samples.push({ p: Number(thumb.style.getPropertyValue("--neshel-toggle-p") || 1), s: Number(thumb.style.getPropertyValue("--neshel-toggle-stretch") || 0) });
+    samples.push({
+      p: Number(thumb.style.getPropertyValue("--neshel-toggle-p") || 1),
+      s: Number(thumb.style.getPropertyValue("--neshel-toggle-stretch") || 0),
+    });
   }
-  assert.ok(samples.some(({ p }) => p > 0.2 && p < 0.8), "travels");
+  assert.ok(
+    samples.some(({ p }) => p > 0.2 && p < 0.8),
+    "travels",
+  );
   assert.ok(Math.max(...samples.map(({ s }) => s)) > 0.15, "stretches mid-travel");
   assert.equal(thumb.style.cssText, "", "CSS state takes over at rest");
   media.set(true);
@@ -414,7 +458,11 @@ test("<CheckboxDraw>: draws the mark on check; unchecking is instant", async () 
 test("<NumberTick>: counts in the aria-hidden copy without React renders; the accessible copy is final", async () => {
   let commits = 0;
   const tree = (value) =>
-    h(Profiler, { id: "n", onRender: () => commits++ }, h(NumberTick, { value, id: "n", duration: 300 }));
+    h(
+      Profiler,
+      { id: "n", onRender: () => commits++ },
+      h(NumberTick, { value, id: "n", duration: 300 }),
+    );
   const app = await mount(tree(0));
   const [visual, accessible] = app.container.querySelector("#n").children;
   await app.render(tree(1000));
@@ -430,7 +478,8 @@ test("<NumberTick>: counts in the aria-hidden copy without React renders; the ac
 });
 
 test("<ContentSwap>: hidden inactive slot, CSS token while attached, reduced token live", async () => {
-  const tree = (active) => h(ContentSwap, { active, confirm: "Copied", id: "s", live: "polite" }, "Copy");
+  const tree = (active) =>
+    h(ContentSwap, { active, confirm: "Copied", id: "s", live: "polite" }, "Copy");
   const app = await mount(tree(false));
   const swap = app.container.querySelector("#s");
   assert.equal(swap.getAttribute("data-neshel-fx"), "content-swap");

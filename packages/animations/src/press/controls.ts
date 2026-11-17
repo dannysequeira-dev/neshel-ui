@@ -107,60 +107,68 @@ interface ResolvedCheckboxDraw {
   reducedMotion: ReducedMotion;
 }
 const checkV = /* @__PURE__ */ validator("CheckboxDraw");
-export const checkboxDraw = /* @__PURE__ */ defineEffect<CheckboxDrawOptions, ResolvedCheckboxDraw>({
-  id: "press/checkbox-draw",
-  family: "press",
-  channels: [{ channel: "--neshel-check-progress", mode: "exclusive" }],
-  priority: 0,
-  reducedMotion: "instant",
-  resolve(input) {
-    const o = checkV.options(input);
-    if (o.checked !== undefined && o.checked !== "indeterminate" && typeof o.checked !== "boolean") {
-      checkV.fail(`invalid value ${String(o.checked)} for "checked"; expected a boolean or "indeterminate".`);
-    }
-    return {
-      checked: o.checked ?? false,
-      duration: checkV.duration("duration", o.duration, 240),
-      easing: checkV.easing(o.easing, "decelerate"),
-      reducedMotion: checkV.reducedMotion(o.reducedMotion),
-    };
-  },
-  policy: (o) => o.reducedMotion,
-  setup(context) {
-    const removeToken = addToken(context.element, FX_ATTRIBUTE, "checkbox-draw");
-    const progress = propertyWriter(context.channels.exclusive("--neshel-check-progress"));
-    const value = motionValue(1);
-    const unsubscribe = value.subscribe((p) => progress(p >= 1 ? undefined : fixed(p)));
-    let checked = context.options.checked;
-    let control: MotionControl | undefined;
-    return {
-      update(next) {
-        if (next.checked === checked) return;
-        const drawing = next.checked !== false;
-        checked = next.checked;
-        control?.cancel();
-        control = undefined;
-        if (!drawing || context.reduced) {
-          value.set(1);
-          return;
-        }
-        value.set(0);
-        control = animateValue(
-          value,
-          1,
-          { type: "tween", duration: next.duration, easing: next.easing },
-          { reducedMotion: "never" },
+export const checkboxDraw = /* @__PURE__ */ defineEffect<CheckboxDrawOptions, ResolvedCheckboxDraw>(
+  {
+    id: "press/checkbox-draw",
+    family: "press",
+    channels: [{ channel: "--neshel-check-progress", mode: "exclusive" }],
+    priority: 0,
+    reducedMotion: "instant",
+    resolve(input) {
+      const o = checkV.options(input);
+      if (
+        o.checked !== undefined &&
+        o.checked !== "indeterminate" &&
+        typeof o.checked !== "boolean"
+      ) {
+        checkV.fail(
+          `invalid value ${String(o.checked)} for "checked"; expected a boolean or "indeterminate".`,
         );
-      },
-      destroy() {
-        control?.cancel();
-        unsubscribe();
-        progress(undefined);
-        removeToken();
-      },
-    };
+      }
+      return {
+        checked: o.checked ?? false,
+        duration: checkV.duration("duration", o.duration, 240),
+        easing: checkV.easing(o.easing, "decelerate"),
+        reducedMotion: checkV.reducedMotion(o.reducedMotion),
+      };
+    },
+    policy: (o) => o.reducedMotion,
+    setup(context) {
+      const removeToken = addToken(context.element, FX_ATTRIBUTE, "checkbox-draw");
+      const progress = propertyWriter(context.channels.exclusive("--neshel-check-progress"));
+      const value = motionValue(1);
+      const unsubscribe = value.subscribe((p) => progress(p >= 1 ? undefined : fixed(p)));
+      let checked = context.options.checked;
+      let control: MotionControl | undefined;
+      return {
+        update(next) {
+          if (next.checked === checked) return;
+          const drawing = next.checked !== false;
+          checked = next.checked;
+          control?.cancel();
+          control = undefined;
+          if (!drawing || context.reduced) {
+            value.set(1);
+            return;
+          }
+          value.set(0);
+          control = animateValue(
+            value,
+            1,
+            { type: "tween", duration: next.duration, easing: next.easing },
+            { reducedMotion: "never" },
+          );
+        },
+        destroy() {
+          control?.cancel();
+          unsubscribe();
+          progress(undefined);
+          removeToken();
+        },
+      };
+    },
   },
-});
+);
 
 /* P09 — Number tick ------------------------------------------------------------------------------- */
 export interface NumberTickOptions {
@@ -212,7 +220,8 @@ export const numberTick = /* @__PURE__ */ defineEffect<NumberTickOptions, Resolv
     if (typeof o.value !== "number" || !Number.isFinite(o.value)) {
       numberV.fail(`invalid value ${String(o.value)} for "value"; expected a finite number.`);
     }
-    if (o.locale !== undefined && typeof o.locale !== "string") numberV.fail('"locale" must be a string.');
+    if (o.locale !== undefined && typeof o.locale !== "string")
+      numberV.fail('"locale" must be a string.');
     return {
       value: o.value as number,
       format: numberFormatter(numberV.callback("format", o.format), o.locale, o.formatOptions),

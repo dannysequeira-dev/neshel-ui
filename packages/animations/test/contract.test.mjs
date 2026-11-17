@@ -100,7 +100,8 @@ test("no module touches window, document or matchMedia at import time (FR-007)",
 });
 
 /** Selectors allowed in package stylesheets: package classes and engine tokens only (010 FR-040). */
-const SCOPED = /^(?::where\()?(?:\.neshel-[a-z0-9-]+|\[data-neshel-fx(?:-active|-reduced)?~="[a-z0-9-]+"\])/;
+const SCOPED =
+  /^(?::where\()?(?:\.neshel-[a-z0-9-]+|\[data-neshel-fx(?:-active|-reduced)?~="[a-z0-9-]+"\])/;
 
 for (const name of ["styles.css", "hover.css", "press.css"]) {
   test(`stylesheet ${name}: one layer, scoped selectors, no resets or global rules (FR-008, 010 FR-040)`, () => {
@@ -108,7 +109,11 @@ for (const name of ["styles.css", "hover.css", "press.css"]) {
     const body = css.replace(/\/\*[\s\S]*?\*\//g, "");
     // Top-level at-rules: the shared layer, and namespaced @property registrations only.
     for (const line of body.match(/^@[^\n]*/gm) ?? []) {
-      assert.match(line, /^(?:@layer components\.neshel \{|@property --neshel-[a-z0-9-]+ \{)$/, line);
+      assert.match(
+        line,
+        /^(?:@layer components\.neshel \{|@property --neshel-[a-z0-9-]+ \{)$/,
+        line,
+      );
     }
     const selectors = [...body.matchAll(/([^{};]+)\{/g)]
       .map((match) => match[1].trim())
@@ -130,7 +135,11 @@ test("styles.css is the header plus hover.css and press.css, in order (010 FR-04
     readFileSync(join(root, ...path), "utf8")
       .replace(/\r\n/g, "\n")
       .trimEnd();
-  const parts = [read("src", "styles.css"), read("src", "hover", "hover.css"), read("src", "press", "press.css")];
+  const parts = [
+    read("src", "styles.css"),
+    read("src", "hover", "hover.css"),
+    read("src", "press", "press.css"),
+  ];
   assert.equal(read("dist", "styles.css"), parts.join("\n\n"));
   assert.equal(read("dist", "hover.css"), parts[1]);
   assert.equal(read("dist", "press.css"), parts[2]);
@@ -139,7 +148,10 @@ test("styles.css is the header plus hover.css and press.css, in order (010 FR-04
 test("no CSS transition or animation targets a consumer element (010 FR-042, ADR 0025)", () => {
   // Declarations of transition/animation may only appear in rules whose subject is package-owned:
   // a pseudo-element layer, a package class, or a child of a package component.
-  const css = readFileSync(join(root, "dist", "styles.css"), "utf8").replace(/\/\*[\s\S]*?\*\//g, "");
+  const css = readFileSync(join(root, "dist", "styles.css"), "utf8").replace(
+    /\/\*[\s\S]*?\*\//g,
+    "",
+  );
   for (const [, selector, declarations] of css.matchAll(/([^{};]+)\{([^{}]*)\}/g)) {
     if (!/(?:^|;|\s)(?:transition|animation)(?:-[a-z-]+)?\s*:/.test(declarations)) continue;
     for (const part of selector.trim().split(/,(?![^(]*\))/)) {

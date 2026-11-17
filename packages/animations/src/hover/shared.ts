@@ -44,7 +44,8 @@ export function resolveHover(
   spring: SpringOptions | SpringPreset = "snappy",
 ): ResolvedHover {
   const types = o.pointerTypes ?? ["mouse", "pen"];
-  if (!Array.isArray(types)) v.fail(`"pointerTypes" must be an array of ${POINTER_TYPES.join(", ")}.`);
+  if (!Array.isArray(types))
+    v.fail(`"pointerTypes" must be an array of ${POINTER_TYPES.join(", ")}.`);
   for (const type of types) v.oneOf("pointerTypes", type, POINTER_TYPES, "mouse");
   return {
     pointerTypes: new Set(types),

@@ -39,7 +39,11 @@ export function useMotionPresets(
     try {
       for (const entry of latest.current) {
         created.push(
-          attachEffect(element, entry.effect, entry.options, { conflicts, priority, reducedMotion }),
+          attachEffect(element, entry.effect, entry.options, {
+            conflicts,
+            priority,
+            reducedMotion,
+          }),
         );
       }
     } catch (error) {
@@ -55,7 +59,6 @@ export function useMotionPresets(
     };
   }, [ref, structure, conflicts, priority, reducedMotion]);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: `key` captures every option value.
   useLayoutEffect(() => {
     if (attachedKey.current === undefined || attachedKey.current === key) return;
     attachedKey.current = key;

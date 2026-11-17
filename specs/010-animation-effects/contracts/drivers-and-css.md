@@ -5,12 +5,12 @@ Decision: [ADR 0025](../../../docs/decisions/0025-presets-and-css-token-driver.m
 
 ## §1 Drivers
 
-| Driver          | What it animates                                                                 | Used by                                                     |
-| --------------- | -------------------------------------------------------------------------------- | ----------------------------------------------------------- |
-| **JS (engine)** | the consumer's element, only through motion-host channels (009)                  | E01–E11, H01, H04, H08, H09, P01, P03, P07, P08; decor values |
-| **CSS-token**   | package-owned render targets (pseudo-element layers, package-rendered elements) | H02, H05, H06, H07, H10 render; P04, P05, P10               |
-| **WAAPI-layer** | transient package-owned layer elements                                           | P02, P06                                                    |
-| **Text**        | the text of a package-owned aria-hidden element (write phase)                    | P09                                                         |
+| Driver          | What it animates                                                                | Used by                                                       |
+| --------------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| **JS (engine)** | the consumer's element, only through motion-host channels (009)                 | E01–E11, H01, H04, H08, H09, P01, P03, P07, P08; decor values |
+| **CSS-token**   | package-owned render targets (pseudo-element layers, package-rendered elements) | H02, H05, H06, H07, H10 render; P04, P05, P10                 |
+| **WAAPI-layer** | transient package-owned layer elements                                          | P02, P06                                                      |
+| **Text**        | the text of a package-owned aria-hidden element (write phase)                   | P09                                                           |
 
 No second engine: JS effects use 009 `animateValue`/`motionValue`, the 008 spring integrator through an
 internal spring rig on the shared scheduler, and `afterDelay` on scheduler time.
@@ -33,11 +33,11 @@ internal spring rig on the shared scheduler, and `afterDelay` on scheduler time.
 
 ## §3 Layers
 
-| Layer                    | Owner                                           | Composition                                                                                                        |
-| ------------------------ | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| `::before` decor         | shared by lift, glow, spotlight, shine, underline | `box-shadow` list (lift, glow ring, glow halo) and `background-image` list (spotlight, shine, underline); each item from its effect's custom properties, transparent by default |
-| `::after` ring           | border sweep, exclusively                        | sentinel exclusive channel `--neshel-layer-after`                                                                  |
-| ripple / burst layer     | the effect, transiently                          | own `<span>` (aria-hidden, inert, `pointer-events: none`), removed when idle                                        |
+| Layer                | Owner                                             | Composition                                                                                                                                                                     |
+| -------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `::before` decor     | shared by lift, glow, spotlight, shine, underline | `box-shadow` list (lift, glow ring, glow halo) and `background-image` list (spotlight, shine, underline); each item from its effect's custom properties, transparent by default |
+| `::after` ring       | border sweep, exclusively                         | sentinel exclusive channel `--neshel-layer-after`                                                                                                                               |
+| ripple / burst layer | the effect, transiently                           | own `<span>` (aria-hidden, inert, `pointer-events: none`), removed when idle                                                                                                    |
 
 Decor custom properties are declared on every decor host, so nested hosts never inherit an outer host's
 state. The decor layer paints above the host's in-flow content (`pointer-events: none`); hosts with their
@@ -45,11 +45,11 @@ own `::before` content are unsupported for decor effects (documented limit).
 
 ## §4 Stylesheets
 
-| Export                                 | Contents                                                                           |
-| -------------------------------------- | ---------------------------------------------------------------------------------- |
-| `@neshel-ui/animations/hover.css`      | `.neshel-tilt` (008) + decor/ring layers + `@property --neshel-sweep-angle`         |
-| `@neshel-ui/animations/press.css`      | ripple/burst hosts, toggle, checkbox, content swap                                  |
-| `@neshel-ui/animations/styles.css`     | header + hover.css + press.css (concatenated at build)                              |
+| Export                             | Contents                                                                    |
+| ---------------------------------- | --------------------------------------------------------------------------- |
+| `@neshel-ui/animations/hover.css`  | `.neshel-tilt` (008) + decor/ring layers + `@property --neshel-sweep-angle` |
+| `@neshel-ui/animations/press.css`  | ripple/burst hosts, toggle, checkbox, content swap                          |
+| `@neshel-ui/animations/styles.css` | header + hover.css + press.css (concatenated at build)                      |
 
 Entrance needs no CSS. Every rule lives in `@layer components.neshel` (ADR 0008); outside the layer only
 namespaced `@property` registrations; keyframes are `neshel-*`; selectors are package classes or engine

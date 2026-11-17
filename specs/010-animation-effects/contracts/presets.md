@@ -35,12 +35,12 @@ React state, no render per frame. Used by every Phase 010 primitive and componen
 
 ## §4 Primitives (React)
 
-| Primitive   | Entry        | Accepts                                                     | Server markup                     |
-| ----------- | ------------ | ----------------------------------------------------------- | --------------------------------- |
-| `<Reveal>`  | `./entrance` | one entrance definition or preset + `options`               | element + class `neshel-reveal`   |
-| `<Stagger>` | `./entrance` | one entrance preset applied to each element child           | element + class `neshel-stagger`  |
-| `<Hover>`   | `./hover`    | one hover preset + `options`, or a list of presets          | element + class `neshel-hover`    |
-| `<Press>`   | `./press`    | one press preset + `options`, or a list of presets          | element + class `neshel-press`    |
+| Primitive   | Entry        | Accepts                                            | Server markup                    |
+| ----------- | ------------ | -------------------------------------------------- | -------------------------------- |
+| `<Reveal>`  | `./entrance` | one entrance definition or preset + `options`      | element + class `neshel-reveal`  |
+| `<Stagger>` | `./entrance` | one entrance preset applied to each element child  | element + class `neshel-stagger` |
+| `<Hover>`   | `./hover`    | one hover preset + `options`, or a list of presets | element + class `neshel-hover`   |
+| `<Press>`   | `./press`    | one press preset + `options`, or a list of presets | element + class `neshel-press`   |
 
 Common props: HTML attributes of a `<div>`, `asChild` (Radix Slot: one element child; refs, classes,
 styles and handlers merged; invalid children throw `NeshelAnimationsError`), `conflicts`
@@ -64,11 +64,13 @@ Primitives nest with `asChild` onto one element:
   <Hover preset={[lift, glow]} asChild>
     <Press preset={pressScale} asChild>
       <Tilt3D asChild>
-        <a href="/plan" className="card">…</a>
+        <a href="/plan" className="card">
+          …
+        </a>
       </Tilt3D>
     </Press>
   </Hover>
-</Reveal>
+</Reveal>;
 ```
 
 All attachments target the same element and compose through its motion host

@@ -76,19 +76,31 @@ test("SSR: Reveal and Stagger render visible markup with a class only (accessibi
 
 test("invalid entrance usage throws NeshelAnimationsError on the server (FR-060)", () => {
   const cases = [
-    [() => markup(h(Reveal, { preset: entrance.fadeSlide, options: { direction: "diagonal" } })), /"direction"/],
-    [() => markup(h(Reveal, { preset: entrance.fadeSlide, options: { distance: 999 } })), /"distance"/],
+    [
+      () => markup(h(Reveal, { preset: entrance.fadeSlide, options: { direction: "diagonal" } })),
+      /"direction"/,
+    ],
+    [
+      () => markup(h(Reveal, { preset: entrance.fadeSlide, options: { distance: 999 } })),
+      /"distance"/,
+    ],
     [() => markup(h(Reveal, { preset: entrance.blurIn, options: { amount: -1 } })), /"amount"/],
     [() => markup(h(Reveal, { preset: entrance.fadeIn, options: { delay: 9000 } })), /"delay"/],
     [() => markup(h(Reveal, { preset: entrance.fadeIn, options: { easing: "wobbly" } })), /easing/],
     [() => markup(h(Reveal, { preset: tilt3D })), /"hover\/tilt-3d" belongs to the "hover" family/],
-    [() => markup(h(Reveal, { preset: fadeUp, asChild: true }, "text")), /asChild expects exactly one/],
+    [
+      () => markup(h(Reveal, { preset: fadeUp, asChild: true }, "text")),
+      /asChild expects exactly one/,
+    ],
     [() => markup(h(Stagger, { preset: stagger })), /other than stagger/],
     [() => core.definePreset("Bad Name", entrance.fadeIn, {}), /invalid preset name/],
     [() => core.definePreset("ok", entrance.scaleIn, { from: 3 }), /"from"/],
   ];
   for (const [run, message] of cases) {
-    assert.throws(run, (error) => error instanceof NeshelAnimationsError && message.test(error.message));
+    assert.throws(
+      run,
+      (error) => error instanceof NeshelAnimationsError && message.test(error.message),
+    );
   }
 });
 
@@ -117,15 +129,19 @@ function trace(node, property, limit = 400) {
   return values;
 }
 
-const translateY = (transform) => Number(/translate3d\([^,]+, (-?[\d.]+)px/.exec(transform)?.[1] ?? 0);
-const translateX = (transform) => Number(/translate3d\((-?[\d.]+)px/.exec(transform)?.[1] ?? 0);
+const translateY = (transform) =>
+  Number(/translate3d\([^,]+, (-?[\d.]+)px/.exec(transform)?.[1] ?? 0);
 
 const START_POSES = [
   ["fadeIn", {}, { opacity: "0", transform: "" }],
   ["fadeSlide", {}, { opacity: "0", transform: "translate3d(0px, 16px, 0px)" }],
   ["fadeSlide", { direction: "left", distance: 40 }, { transform: "translate3d(40px, 0px, 0px)" }],
   ["fadeSlide", { direction: "down", distance: 10 }, { transform: "translate3d(0px, -10px, 0px)" }],
-  ["fadeSlide", { direction: "right", distance: 10 }, { transform: "translate3d(-10px, 0px, 0px)" }],
+  [
+    "fadeSlide",
+    { direction: "right", distance: 10 },
+    { transform: "translate3d(-10px, 0px, 0px)" },
+  ],
   ["scaleIn", {}, { opacity: "0", transform: "scale(0.92)" }],
   ["zoomIn", { from: 1.5 }, { opacity: "0", transform: "scale(1.5)" }],
   ["blurIn", {}, { opacity: "0", filter: "blur(12px)" }],
@@ -160,7 +176,8 @@ for (const [name, options, expected] of START_POSES) {
     assert.equal(node.style.cssText, "", "every contribution cleared");
     const info = getMotionDebugInfo(node);
     // Exclusive claims belong to the attachment until destroy; nothing is written at rest.
-    for (const channel of info?.channels ?? []) assert.equal(channel.contributions, 0, channel.channel);
+    for (const channel of info?.channels ?? [])
+      assert.equal(channel.contributions, 0, channel.channel);
     handle.destroy();
     frames.flush(1);
     assert.equal(getMotionDebugInfo(node), undefined, "host released after destroy");
@@ -175,7 +192,8 @@ test("fade-slide progresses monotonically to rest; opacity rises (tween)", () =>
   const ys = trace(node, "transform").map(translateY);
   const nonZero = ys.filter((value) => value > 0);
   assert.ok(nonZero.length >= 8, `animated over ${nonZero.length} frames`);
-  for (let index = 1; index < nonZero.length; index++) assert.ok(nonZero[index] <= nonZero[index - 1]);
+  for (let index = 1; index < nonZero.length; index++)
+    assert.ok(nonZero[index] <= nonZero[index - 1]);
   assert.equal(node.style.cssText, "");
   node.remove();
 });
@@ -218,7 +236,10 @@ test("reduced motion: fade entrances animate opacity only; instant entrances wri
     assert.equal(slide.style.transform, "", "no transform under reduced motion");
     assert.equal(slide.style.opacity, "0");
     const opacities = trace(slide, "opacity");
-    assert.ok(opacities.some((value) => Number(value) > 0 && Number(value) < 1), "fades");
+    assert.ok(
+      opacities.some((value) => Number(value) > 0 && Number(value) < 1),
+      "fades",
+    );
     slide.remove();
 
     for (const name of ["fadeIn", "clipReveal", "maskWipe"]) {
@@ -447,7 +468,12 @@ test("<Reveal> does not replay when hydrating server markup (appear='client'); '
 
 test("<Stagger> animates its children on a client mount", async () => {
   const app = await mount(
-    h(Stagger, { preset: entrance.scaleIn, interval: 30, id: "list" }, h("p", null, "a"), h("p", null, "b")),
+    h(
+      Stagger,
+      { preset: entrance.scaleIn, interval: 30, id: "list" },
+      h("p", null, "a"),
+      h("p", null, "b"),
+    ),
   );
   frames.flush(1);
   const items = [...app.container.querySelectorAll("#list > p")];

@@ -41,8 +41,16 @@ export function useEffectPrimitive<Options, Resolved>(
   className: string,
   props: EffectPrimitiveProps<Options, Resolved>,
 ) {
-  const { preset, options, asChild = false, conflicts, className: extra, ref, children, ...rest } =
-    props;
+  const {
+    preset,
+    options,
+    asChild = false,
+    conflicts,
+    className: extra,
+    ref,
+    children,
+    ...rest
+  } = props;
   const [element, setRef] = useHostRef(ref);
   useMotionPresets(element, presetEntries(name, families, preset, options), { conflicts });
   return renderHost(

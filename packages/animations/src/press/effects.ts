@@ -9,7 +9,7 @@
  */
 import { animateValue, type MotionControl } from "../core/controls.js";
 import type { SpringPreset } from "../core/defaults.js";
-import { devWarnOnce, describeElement, elementKey } from "../core/dev.js";
+import { describeElement, devWarnOnce, elementKey } from "../core/dev.js";
 import { toCssEasing } from "../core/easing.js";
 import { type ChannelClaim, defineEffect, type EffectContext } from "../core/effect.js";
 import { isDisabled, pageHidden, watchPress, watchVisibility } from "../core/interaction.js";
@@ -24,7 +24,22 @@ declare const process: { env: { NODE_ENV?: string } } | undefined;
 
 const TRANSFORM: ChannelClaim = { channel: "transform", mode: "compose" };
 const near = (value: number, target: number) => Math.abs(value - target) < 5e-4;
-const VOID_ELEMENTS = new Set(["AREA", "BR", "COL", "EMBED", "HR", "IMG", "INPUT", "LINK", "META", "SOURCE", "TRACK", "WBR", "TEXTAREA", "SELECT"]);
+const VOID_ELEMENTS = new Set([
+  "AREA",
+  "BR",
+  "COL",
+  "EMBED",
+  "HR",
+  "IMG",
+  "INPUT",
+  "LINK",
+  "META",
+  "SOURCE",
+  "TRACK",
+  "WBR",
+  "TEXTAREA",
+  "SELECT",
+]);
 
 /** Options shared by press effects. */
 export interface PressOptions {
@@ -270,9 +285,16 @@ export const ripple = /* @__PURE__ */ defineEffect<RippleOptions, ResolvedRipple
       if (!entry) return;
       const fade = (entry.node as Animatable).animate?.(
         [{ opacity: String(context.options.opacity) }, { opacity: "0" }],
-        { duration: Math.round(context.options.duration * 0.6), easing: "linear", fill: "forwards" },
+        {
+          duration: Math.round(context.options.duration * 0.6),
+          easing: "linear",
+          fill: "forwards",
+        },
       );
-      if (!fade) return drop(entry);
+      if (!fade) {
+        drop(entry);
+        return;
+      }
       entry.animations.push(fade);
       fade.onfinish = () => drop(entry);
     }
@@ -358,7 +380,8 @@ export const burst = /* @__PURE__ */ defineEffect<BurstOptions, ResolvedBurst>({
   resolve(input) {
     const o = burstV.options(input);
     const colors = o.colors ?? BURST_COLORS;
-    if (!Array.isArray(colors) || colors.length === 0) burstV.fail('"colors" must be a non-empty array.');
+    if (!Array.isArray(colors) || colors.length === 0)
+      burstV.fail('"colors" must be a non-empty array.');
     return {
       ...pressCommon(o, burstV),
       trigger: burstV.key("trigger", o.trigger),

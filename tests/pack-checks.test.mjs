@@ -407,14 +407,18 @@ const animationsManifest = {
   exports: {
     ".": { types: "./dist/index.d.ts", import: "./dist/index.js" },
     "./core": { types: "./dist/core/index.d.ts", import: "./dist/core/index.js" },
+    "./entrance": { types: "./dist/entrance/index.d.ts", import: "./dist/entrance/index.js" },
     "./hover": { types: "./dist/hover/index.d.ts", import: "./dist/hover/index.js" },
+    "./press": { types: "./dist/press/index.d.ts", import: "./dist/press/index.js" },
     "./styles.css": "./dist/styles.css",
+    "./hover.css": "./dist/hover.css",
+    "./press.css": "./dist/press.css",
   },
   peerDependencies: { react: "^19.0.0" },
   dependencies: { "@radix-ui/react-slot": "^1.5.0" },
 };
 
-test("animations package contract: private, exact exports, peers and framework-free core (feature 008)", () => {
+test("animations package contract: private, exact exports, peers and framework-free core (features 008–010)", () => {
   const good = files({
     "dist/index.js": 'export { Tilt3D } from "./tilt/tilt-3d.js";',
     "dist/tilt/tilt-3d.js":
@@ -422,8 +426,26 @@ test("animations package contract: private, exact exports, peers and framework-f
     "dist/core/index.js": 'export { stepSpring } from "./spring.js";',
     "dist/hover/index.js": 'export { tilt3D } from "./tilt/controller.js";',
     "dist/hover/tilt/controller.js": 'import { attachEffect } from "../../core/effect.js";',
+    "dist/press/effects.js": 'import { attachEffect } from "../core/effect.js";',
+    "dist/entrance/reveal.js":
+      '"use client";\nimport { useMotionPresets } from "../react/use-motion-presets.js";',
   });
   assert.deepEqual(checkPackageContract(animationsManifest, good), []);
+});
+
+test("negative: animations families never import each other (010 FR-050)", () => {
+  const errors = checkPackageContract(
+    animationsManifest,
+    files({
+      "dist/press/effects.js": 'import { lift } from "../hover/effects.js";',
+      "dist/entrance/index.js": 'export { glow } from "../hover/index.js";',
+    }),
+  );
+  assert.equal(
+    errors.filter((error) => /reachable only through its own subpath/.test(error)).length,
+    2,
+    errors.join("\n"),
+  );
 });
 
 test("negative: animations contract detects lifted guard, extra exports/deps and impure core", () => {
