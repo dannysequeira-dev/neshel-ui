@@ -10,9 +10,15 @@
 // Without Playwright or a browser: fails when CI=true, otherwise prints SKIPPED for that engine.
 import { createReadStream, existsSync, mkdirSync, statSync, writeFileSync } from "node:fs";
 import { createServer } from "node:http";
+import { createRequire } from "node:module";
 import { extname, join, normalize, resolve, sep } from "node:path";
 import {
   assertUntil,
+  effectsInputCases,
+  fxStateExpression,
+  pressLiveReducedDone,
+  pressLiveReducedStart,
+  pressLiveReducedState,
   runSceneShiftCase,
   sceneShiftCases,
   scrollSceneTo,
@@ -22,6 +28,7 @@ import {
 import { repoRoot } from "./lib/workspace.mjs";
 
 const ENGINES = ["chromium", "firefox", "webkit"];
+const axePath = createRequire(import.meta.url).resolve("axe-core/axe.min.js");
 
 function argValues(name) {
   return process.argv.flatMap((arg, index) => (arg === name ? [process.argv[index + 1]] : []));
@@ -133,6 +140,89 @@ async function runEngine(playwright, engine, url, throttle) {
     });
     for (const item of suite) cases.push(item);
 
+    // Phase 010 effects gallery: in-page rendering suite, then real mouse/keyboard input.
+    const effectSuite = await page.evaluate(async () => {
+      document.getElementById("effects-title").scrollIntoView();
+      return window.__neshelLab.effects.runEffectsSuite();
+    });
+    for (const item of effectSuite) cases.push(item);
+    for (const item of effectsInputCases) {
+      await run(item.id, async () => {
+        const locator = page.locator(item.target);
+        await locator.scrollIntoViewIfNeeded();
+        const box = await locator.boundingBox();
+        const state = fxStateExpression(item.target);
+        const key = (name) => (name === " " ? "Space" : name);
+        for (const [index, step] of item.steps.entries()) {
+          if (step.action === "hover") {
+            await page.mouse.move(box.x + box.width * step.at[0], box.y + box.height * step.at[1], {
+              steps: 4,
+            });
+          } else if (step.action === "leave") await page.mouse.move(2, 2, { steps: 4 });
+          else if (step.action === "down") await page.mouse.down();
+          else if (step.action === "up") await page.mouse.up();
+          else if (step.action === "focus") await locator.focus();
+          else if (step.action === "blur") await locator.evaluate((element) => element.blur());
+          else if (step.action === "keydown") await page.keyboard.down(key(step.key));
+          else if (step.action === "keyup") await page.keyboard.up(key(step.key));
+          if (step.until) {
+            await until(`${item.target} step ${index}`, `((s) => ${step.until})(${state})`, state);
+          }
+        }
+      });
+    }
+
+    await run(
+      "effects: reduced motion switched on mid-animation — toggle and number tick jump to the end",
+      async () => {
+        await evaluate(pressLiveReducedStart);
+        await page.emulateMedia({ reducedMotion: "reduce" });
+        // A 600 ms count and a spring travel cannot finish by themselves within the ceiling below.
+        assertUntil(
+          await evaluate(untilExpression(pressLiveReducedDone, pressLiveReducedState, 300)),
+          "final state right after the preference changed",
+          300,
+        );
+        await page.emulateMedia({ reducedMotion: "no-preference" });
+      },
+    );
+
+    await run(
+      "effects: reduced motion (emulated, live) — the lift renders its shadow without moving",
+      async () => {
+        await page.emulateMedia({ reducedMotion: "reduce" });
+        const state = fxStateExpression("#hover-lift");
+        const locator = page.locator("#hover-lift");
+        await locator.scrollIntoViewIfNeeded();
+        const box = await locator.boundingBox();
+        await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2, { steps: 3 });
+        await until(
+          "shadow without movement",
+          `((s) => s.lift === "1" && s.inline === "" && s.reducedQuery)(${state})`,
+          state,
+        );
+        await page.mouse.move(2, 2);
+        await page.emulateMedia({ reducedMotion: "no-preference" });
+        await until("rest", `((s) => s.lift === "" && !s.reducedQuery)(${state})`, state);
+      },
+    );
+
+    await run("effects: axe finds no violations in the gallery", async () => {
+      await page.addScriptTag({ path: axePath });
+      const violations = await page.evaluate(async () => {
+        const scope = document.getElementById("effects-title").parentElement;
+        const result = await window.axe.run(scope, { resultTypes: ["violations"] });
+        return result.violations.map(
+          (v) =>
+            `${v.id} (${v.impact}): ${v.nodes
+              .slice(0, 3)
+              .map((n) => n.target.join(" "))
+              .join(", ")}`,
+        );
+      });
+      check(violations.length === 0, violations.join(" | "));
+    });
+
     await run("scene: progress follows scroll with the stage pinned", async () => {
       await scrollSceneTo(evaluate, 0.25);
     });
@@ -153,6 +243,8 @@ async function runEngine(playwright, engine, url, throttle) {
         viewTransitions: typeof document.startViewTransition === "function",
         linearEasing: CSS.supports("transition-timing-function", "linear(0, 1)"),
         individualTransforms: CSS.supports("translate", "1px"),
+        startingStyle: CSS.supports("transition-behavior", "allow-discrete"),
+        effects: window.__neshelLab.notes,
       })),
     );
   } finally {

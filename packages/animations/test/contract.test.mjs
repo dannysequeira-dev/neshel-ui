@@ -38,8 +38,17 @@ test("publishing guard: private, unversioned, outside the public release set (FR
 });
 
 test("exports only implemented entry points, types first (FR-002)", () => {
-  assert.deepEqual(Object.keys(manifest.exports), [".", "./core", "./hover", "./styles.css"]);
-  for (const subpath of [".", "./core", "./hover"]) {
+  assert.deepEqual(Object.keys(manifest.exports), [
+    ".",
+    "./core",
+    "./entrance",
+    "./hover",
+    "./press",
+    "./styles.css",
+    "./hover.css",
+    "./press.css",
+  ]);
+  for (const subpath of [".", "./core", "./entrance", "./hover", "./press"]) {
     assert.deepEqual(Object.keys(manifest.exports[subpath]), ["types", "import"]);
   }
   assert.deepEqual(manifest.sideEffects, ["**/*.css"]);
@@ -84,27 +93,80 @@ test("no module touches window, document or matchMedia at import time (FR-007)",
   // Importing in plain Node (no DOM) must not throw; the SSR tests render with these modules.
   await import("../dist/index.js");
   await import("../dist/core/index.js");
+  await import("../dist/entrance/index.js");
   await import("../dist/hover/index.js");
+  await import("../dist/press/index.js");
   assert.equal(typeof globalThis.window, "undefined");
 });
 
-test("stylesheet: one layer, only .neshel-* selectors, no resets or global rules (FR-008)", () => {
-  const css = readFileSync(join(root, "dist", "styles.css"), "utf8");
-  assert.equal(css, readFileSync(join(root, "src", "styles.css"), "utf8"), "dist equals source");
-  const body = css.replace(/\/\*[\s\S]*?\*\//g, "");
-  assert.match(body.trim(), /^@layer components\.neshel \{[\s\S]*\}$/);
-  const selectors = [...body.matchAll(/([^{};]+)\{/g)]
-    .map((match) => match[1].trim())
-    .filter((selector) => !selector.startsWith("@"));
-  assert.ok(selectors.length > 0);
-  for (const selector of selectors) {
-    for (const part of selector.split(",")) {
-      assert.match(part.trim(), /^\.neshel-[a-z0-9-]+/, `global selector "${part.trim()}"`);
+/** Selectors allowed in package stylesheets: package classes and engine tokens only (010 FR-040). */
+const SCOPED =
+  /^(?::where\()?(?:\.neshel-[a-z0-9-]+|\[data-neshel-fx(?:-active|-reduced)?~="[a-z0-9-]+"\])/;
+
+for (const name of ["styles.css", "hover.css", "press.css"]) {
+  test(`stylesheet ${name}: one layer, scoped selectors, no resets or global rules (FR-008, 010 FR-040)`, () => {
+    const css = readFileSync(join(root, "dist", name), "utf8").replace(/\r\n/g, "\n");
+    const body = css.replace(/\/\*[\s\S]*?\*\//g, "");
+    // Top-level at-rules: the shared layer, and namespaced @property registrations only.
+    for (const line of body.match(/^@[^\n]*/gm) ?? []) {
+      assert.match(
+        line,
+        /^(?:@layer components\.neshel \{|@property --neshel-[a-z0-9-]+ \{)$/,
+        line,
+      );
+    }
+    const selectors = [...body.matchAll(/([^{};]+)\{/g)]
+      .map((match) => match[1].trim())
+      .filter((selector) => !selector.startsWith("@") && !/^(?:from|to|\d+%)$/.test(selector));
+    assert.ok(selectors.length > 0);
+    for (const selector of selectors) {
+      for (const part of selector.split(/,(?![^(]*\))/)) {
+        assert.match(part.trim(), SCOPED, `unscoped selector "${part.trim()}" in ${name}`);
+      }
+    }
+    for (const at of body.match(/@keyframes [^{]+/g) ?? []) {
+      assert.match(at, /^@keyframes neshel-[a-z0-9-]+\s*$/, at);
+    }
+  });
+}
+
+test("styles.css is the header plus hover.css and press.css, in order (010 FR-041)", () => {
+  const read = (...path) =>
+    readFileSync(join(root, ...path), "utf8")
+      .replace(/\r\n/g, "\n")
+      .trimEnd();
+  const parts = [
+    read("src", "styles.css"),
+    read("src", "hover", "hover.css"),
+    read("src", "press", "press.css"),
+  ];
+  assert.equal(read("dist", "styles.css"), parts.join("\n\n"));
+  assert.equal(read("dist", "hover.css"), parts[1]);
+  assert.equal(read("dist", "press.css"), parts[2]);
+});
+
+test("no CSS transition or animation targets a consumer element (010 FR-042, ADR 0025)", () => {
+  // Declarations of transition/animation may only appear in rules whose subject is package-owned:
+  // a pseudo-element layer, a package class, or a child of a package component.
+  const css = readFileSync(join(root, "dist", "styles.css"), "utf8").replace(
+    /\/\*[\s\S]*?\*\//g,
+    "",
+  );
+  for (const [, selector, declarations] of css.matchAll(/([^{};]+)\{([^{}]*)\}/g)) {
+    if (!/(?:^|;|\s)(?:transition|animation)(?:-[a-z-]+)?\s*:/.test(declarations)) continue;
+    for (const part of selector.trim().split(/,(?![^(]*\))/)) {
+      const subject = part.trim();
+      assert.ok(
+        /::(?:before|after)$/.test(subject) ||
+          /^\.neshel-[a-z-]+(?::has\(.*\))?$/.test(subject) ||
+          />\s*(?:\[data-slot\]|\.neshel-[a-z-]+)$/.test(subject),
+        `transition/animation on a possibly consumer-owned subject: "${subject}"`,
+      );
     }
   }
 });
 
-test("module boundaries: core imports only core; root/react never import families (009 FR-051)", () => {
+test("module boundaries: core imports only core; root/react/families never import other families (009 FR-051, 010 FR-050)", () => {
   const relativeTargets = (file) =>
     [...readFileSync(file, "utf8").matchAll(/(?:from|import)\s*["'](\.{1,2}\/[^"']+)["']/g)].map(
       (m) =>
@@ -116,8 +178,10 @@ test("module boundaries: core imports only core; root/react never import familie
     const where = relative(join(root, "dist"), file).split("\\").join("/");
     for (const target of relativeTargets(file)) {
       if (where.startsWith("core/")) assert.ok(target.startsWith("core/"), `${where} -> ${target}`);
-      if (!where.startsWith("hover/"))
-        assert.ok(!target.startsWith("hover/"), `${where} -> ${target}`);
+      for (const family of ["entrance", "hover", "press"]) {
+        if (!where.startsWith(`${family}/`))
+          assert.ok(!target.startsWith(`${family}/`), `${where} -> ${target}`);
+      }
     }
   }
 });

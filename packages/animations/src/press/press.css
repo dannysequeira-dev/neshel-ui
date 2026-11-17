@@ -1,0 +1,154 @@
+/*
+ * @neshel-ui/animations/press.css (Phase 010). Explicit, opt-in import; no global selectors, no resets.
+ * Rules select package classes and engine tokens ([data-neshel-fx~="…"]). Transitions exist only on
+ * package-owned elements (toggle, checkbox, content-swap slots); the consumer's element is animated by
+ * the engine (contracts/drivers-and-css.md). Values read --neshel-motion-* with fallbacks.
+ */
+@layer components.neshel {
+  /* P02 / P06: owned layers need a containing block (zero specificity: your positioning wins). */
+  :where([data-neshel-fx~="ripple"], [data-neshel-fx~="burst"]) {
+    position: relative;
+  }
+
+  .neshel-ripple-layer,
+  .neshel-burst-layer {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+  }
+
+  .neshel-ripple-layer {
+    overflow: hidden;
+    contain: paint;
+  }
+
+  /* P04 — Toggle thumb morph (decorative; the native control keeps the state). */
+  .neshel-toggle {
+    --neshel-toggle-width: 2.75rem;
+    --neshel-toggle-height: 1.5rem;
+    --neshel-toggle-gap: 3px;
+    --neshel-toggle-direction: 1;
+    position: relative;
+    display: inline-block;
+    flex: none;
+    inline-size: var(--neshel-toggle-width);
+    block-size: var(--neshel-toggle-height);
+    border-radius: 999px;
+    background: var(--neshel-toggle-off, #94a3b8);
+    vertical-align: middle;
+  }
+
+  .neshel-toggle:dir(rtl) {
+    --neshel-toggle-direction: -1;
+  }
+
+  .neshel-toggle[data-state="on"] {
+    background: var(--neshel-toggle-on, var(--neshel-primary, #4f46e5));
+  }
+
+  .neshel-toggle-thumb {
+    --neshel-toggle-size: calc(var(--neshel-toggle-height) - 2 * var(--neshel-toggle-gap));
+    position: absolute;
+    inset-block-start: var(--neshel-toggle-gap);
+    inset-inline-start: var(--neshel-toggle-gap);
+    inline-size: var(--neshel-toggle-size);
+    block-size: var(--neshel-toggle-size);
+    border-radius: 999px;
+    background: var(--neshel-toggle-thumb, #fff);
+    box-shadow: 0 1px 3px rgb(0 0 0 / 0.3);
+    translate: calc(
+        var(--neshel-toggle-p, 0) *
+        var(--neshel-toggle-direction) *
+        (var(--neshel-toggle-width) - var(--neshel-toggle-height))
+      )
+      0;
+    scale: calc(1 + var(--neshel-toggle-stretch, 0))
+      calc(1 - var(--neshel-toggle-stretch, 0) * 0.25);
+  }
+
+  .neshel-toggle[data-state="on"] > .neshel-toggle-thumb {
+    --neshel-toggle-p: 1;
+  }
+
+  /* Colour change only (not motion); enabled once the engine is attached. */
+  .neshel-toggle:has(> [data-neshel-fx~="toggle-morph"]) {
+    transition: background-color var(--neshel-motion-duration-normal, 200ms)
+      var(--neshel-motion-ease-standard, cubic-bezier(0.2, 0, 0, 1));
+  }
+
+  /* P05 — Checkbox draw (decorative SVG; the native checkbox keeps the state). */
+  .neshel-checkbox {
+    display: inline-block;
+    inline-size: 1.25rem;
+    block-size: 1.25rem;
+    flex: none;
+    vertical-align: middle;
+    color: var(--neshel-checkbox-border, currentColor);
+    overflow: visible;
+  }
+
+  [data-neshel-fx~="checkbox-draw"] > .neshel-checkbox-box {
+    transition:
+      fill var(--neshel-motion-duration-fast, 120ms) linear,
+      stroke var(--neshel-motion-duration-fast, 120ms) linear;
+  }
+
+  .neshel-checkbox:not([data-state="unchecked"]) > .neshel-checkbox-box {
+    fill: var(--neshel-checkbox-on, var(--neshel-primary, #4f46e5));
+    stroke: var(--neshel-checkbox-on, var(--neshel-primary, #4f46e5));
+  }
+
+  .neshel-checkbox > .neshel-checkbox-mark {
+    stroke: var(--neshel-checkbox-mark, #fff);
+    /* px (= user units, scaled by pathLength="1"): Firefox drops unitless calc() here. */
+    stroke-dasharray: 1px;
+    stroke-dashoffset: calc((1 - var(--neshel-check-progress, 1)) * 1px);
+  }
+
+  /* P10 — Content swap: stacked slots; the inactive one is [hidden]. */
+  .neshel-swap {
+    display: inline-grid;
+  }
+
+  .neshel-swap > [data-slot] {
+    grid-area: 1 / 1;
+  }
+
+  .neshel-swap > [data-slot][hidden] {
+    display: none;
+  }
+
+  [data-neshel-fx~="content-swap"] > [data-slot] {
+    transition:
+      opacity var(--neshel-motion-duration-normal, 200ms)
+      var(--neshel-motion-ease-standard, cubic-bezier(0.2, 0, 0, 1)),
+      translate var(--neshel-motion-duration-normal, 200ms)
+      var(--neshel-motion-ease-standard, cubic-bezier(0.2, 0, 0, 1)),
+      display var(--neshel-motion-duration-normal, 200ms) allow-discrete;
+  }
+
+  [data-neshel-fx~="content-swap"] > [data-slot][hidden] {
+    opacity: 0;
+    translate: 0 -0.4em;
+  }
+
+  @starting-style {
+    [data-neshel-fx~="content-swap"] > [data-slot]:not([hidden]) {
+      opacity: 0;
+      translate: 0 0.4em;
+    }
+  }
+
+  /* Reduced motion ("fade"): opacity only. */
+  [data-neshel-fx-reduced~="content-swap"] > [data-slot],
+  [data-neshel-fx-reduced~="content-swap"] > [data-slot][hidden] {
+    translate: none;
+  }
+
+  @starting-style {
+    [data-neshel-fx-reduced~="content-swap"] > [data-slot]:not([hidden]) {
+      translate: none;
+    }
+  }
+}

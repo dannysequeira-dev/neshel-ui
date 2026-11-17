@@ -166,3 +166,42 @@ export async function mount(element) {
     },
   };
 }
+
+/**
+ * Minimal WAAPI stub for jsdom (no Web Animations there): records every `element.animate()` call;
+ * tests finish animations explicitly. Returns { calls, finishAll, restore }.
+ */
+export function stubAnimate() {
+  const calls = [];
+  const proto = window.Element.prototype;
+  const original = proto.animate;
+  proto.animate = function (keyframes, options) {
+    const animation = {
+      element: this,
+      keyframes,
+      options,
+      playState: "running",
+      onfinish: null,
+      cancel() {
+        this.playState = "idle";
+      },
+      finish() {
+        if (this.playState !== "running") return;
+        this.playState = "finished";
+        this.onfinish?.();
+      },
+    };
+    calls.push(animation);
+    return animation;
+  };
+  return {
+    calls,
+    finishAll() {
+      for (const animation of [...calls]) animation.finish();
+    },
+    restore() {
+      if (original) proto.animate = original;
+      else delete proto.animate;
+    },
+  };
+}

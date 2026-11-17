@@ -20,6 +20,13 @@ export interface LabState {
     };
     runEngineSuite(): Promise<Array<{ id: string; ok: boolean; error?: string }>>;
   };
+  /** Phase 010 effects gallery (set after mount). */
+  effects?: {
+    runEffectsSuite(): Promise<Array<{ id: string; ok: boolean; error?: string }>>;
+    replay(): void;
+  };
+  /** Observations reported by in-page suites (not pass/fail). */
+  notes: Record<string, unknown>;
 }
 
 declare global {
@@ -35,6 +42,7 @@ export function labState(): LabState {
     sceneMeasurements: 0,
     cornerAmount: 0,
     webgl: "pending",
+    notes: {},
   };
   return window.__neshelLab;
 }

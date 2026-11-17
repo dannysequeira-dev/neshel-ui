@@ -14,7 +14,12 @@ import { join, resolve } from "node:path";
 import { pathToFileURL } from "node:url";
 import {
   assertUntil,
+  effectsInputCases,
   framesExpression,
+  fxStateExpression,
+  pressLiveReducedDone,
+  pressLiveReducedStart,
+  pressLiveReducedState,
   runSceneShiftCase,
   sceneConsistentCondition,
   sceneScrollExpression,
@@ -399,6 +404,85 @@ async function main() {
       check(result.status === "completed" && result.value === 80, JSON.stringify(result));
       check(result.ms < 500, `took ${result.ms} ms`);
     });
+
+    // Phase 010 effects gallery: in-page rendering suite, then real mouse/keyboard input.
+    await p.evaluate(`document.getElementById("effects-title").scrollIntoView()`);
+    const effectCases = await p.evaluate("window.__neshelLab.effects.runEffectsSuite()");
+    for (const item of effectCases) cases.push(item);
+    let pointerAt = [2, 2];
+    for (const item of effectsInputCases) {
+      await run(item.id, async () => {
+        await scrollIntoView(item.target);
+        const r = await rectOf(item.target);
+        const state = fxStateExpression(item.target);
+        for (const [index, step] of item.steps.entries()) {
+          if (step.action === "hover") {
+            pointerAt = [r.left + r.width * step.at[0], r.top + r.height * step.at[1]];
+            await mouse(...pointerAt);
+          } else if (step.action === "leave") {
+            pointerAt = [2, 2];
+            await mouse(2, 2);
+          } else if (step.action === "down" || step.action === "up") {
+            await p.send("Input.dispatchMouseEvent", {
+              type: step.action === "down" ? "mousePressed" : "mouseReleased",
+              x: pointerAt[0],
+              y: pointerAt[1],
+              button: "left",
+              clickCount: 1,
+            });
+          } else if (step.action === "focus" || step.action === "blur") {
+            await p.evaluate(
+              `document.querySelector(${JSON.stringify(item.target)}).${step.action}()`,
+            );
+          } else if (step.action === "keydown" || step.action === "keyup") {
+            await p.send("Input.dispatchKeyEvent", {
+              type: step.action === "keydown" ? "rawKeyDown" : "keyUp",
+              key: step.key,
+              code: "Space",
+              windowsVirtualKeyCode: 32,
+            });
+          }
+          if (step.until) {
+            await until(`${item.target} step ${index}`, `((s) => ${step.until})(${state})`, state);
+          }
+        }
+      });
+    }
+
+    await run(
+      "effects: reduced motion switched on mid-animation — toggle and number tick jump to the end",
+      async () => {
+        await evaluate(pressLiveReducedStart);
+        await motionPreference("reduce");
+        // A 600 ms count and a spring travel cannot finish by themselves within the ceiling below.
+        assertUntil(
+          await evaluate(untilExpression(pressLiveReducedDone, pressLiveReducedState, 300)),
+          "final state right after the preference changed",
+          300,
+        );
+        await motionPreference("no-preference");
+      },
+    );
+
+    await run(
+      "effects: reduced motion (emulated, live) — the lift renders its shadow without moving",
+      async () => {
+        await motionPreference("reduce");
+        const state = fxStateExpression("#hover-lift");
+        await scrollIntoView("#hover-lift");
+        const r = await rectOf("#hover-lift");
+        await mouse(r.left + r.width / 2, r.top + r.height / 2);
+        await until(
+          "shadow without movement",
+          `((s) => s.lift === "1" && s.inline === "" && s.reducedQuery)(${state})`,
+          state,
+        );
+        await mouse(2, 2);
+        await motionPreference("no-preference");
+        await until("rest", `((s) => s.lift === "" && !s.reducedQuery)(${state})`, state);
+      },
+    );
+    notes.effects = await p.evaluate("window.__neshelLab.notes");
 
     await run("axe: no violations on the lab page", async () => {
       await p.evaluate("window.scrollTo(0, 0)");

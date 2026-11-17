@@ -3,9 +3,11 @@
 **Current phase:** features 001–007 are closed (PASS). Feature 007 published 0.1.0 on 2026-11-10
 (tag `v0.1.0`, release run 42843343125; evidence: `specs/007-first-publication/`). Feature 008
 (animations) milestone 008.0 — architecture, contracts, catalogue and spikes — is implemented and
-merged into `main` as the squash commit `fd3885c` (PR #4). Phase 009 (Motion Engine) is approved and
-implemented on `feature/009-motion-engine` (`specs/009-motion-engine/`), verified in CI (PR #6, run
-43891329593, 14/14); pending only the owner's merge.
+merged into `main` as the squash commit `fd3885c` (PR #4). Phase 009 (Motion Engine) is merged into
+`main` as the squash commit `44dc1c9` (PR #6) and validated by the owner. Phase 010 (Animation Effects &
+Presets: Entrance E01–E11, Hover H01–H02/H04–H10, Press P01–P10) is implemented on
+`feature/010-entrance-hover-press` (`specs/010-animation-effects/`, ADR 0025) and awaits the owner's
+review of its PR; never merge it automatically.
 `@neshel-ui/animations` is **private** (0.0.0) and must stay private until the owner approves its
 first publication; it is outside the Changesets fixed group and the release scripts. The five public
 packages are on npm with provenance; `@neshel-ui/core` stays private. `v0.1.0` is immutable: never
@@ -48,6 +50,9 @@ install without monorepo internals. **Do not implement the entire library in one
   `@neshel-ui/core`); every managed style write goes through the per-element motion host (style
   ownership with capture/restore, channel arbitration; ADR 0022); no motion-engine dependency without a benchmark and an ADR; GSAP
   never as a dependency; every effect honours `prefers-reduced-motion` live.
+- Animations rule R-1 (ADR 0025): package CSS never declares a transition/animation on the consumer's
+  element; CSS only renders package-owned layers (`::before` decor, `::after` ring, package-rendered DOM)
+  keyed on engine tokens (`data-neshel-fx~=…`); family subpaths never import each other.
 - No `@neshel-ui/components` import from `@neshel-ui/layout` or `@neshel-ui/typography`.
 - Do not dynamically concatenate Tailwind class names. Prefer static variants,
   CSS variables and distributed, compiled CSS; Tailwind does not scan node_modules by default.
@@ -84,8 +89,8 @@ install without monorepo internals. **Do not implement the entire library in one
   installed from npm and built.
 - `pnpm check` — doctor, lint, typecheck, test, build, check:exports, check:pack (offline; includes
   `--with animations`, which validates the private animations tarball without lifting its guard).
-- `pnpm check:browser:animations` — animations lab (Tilt3D, CornerRecede, ScrollScene, engine) in headless
-  Chrome with real input and axe; requires `pnpm build:playground`.
+- `pnpm check:browser:animations` — animations lab (Tilt3D, CornerRecede, ScrollScene, engine, Phase 010
+  effects gallery) in headless Chrome with real input and axe; requires `pnpm build:playground`.
 - `pnpm check:animations:engines` — the same lab in Playwright Chromium, Firefox and WebKit.
 - `pnpm check:animations:consumer` — external app from the packed animations tarball (SSR + hydration).
 - `pnpm check:animations:bundles` — packed-tarball bundle sizes against the approved budgets.

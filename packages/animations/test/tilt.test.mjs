@@ -30,11 +30,22 @@ const rotation = (element, axis) => {
   return match ? Number(match[1]) : 0;
 };
 
-test("hover subpath runtime exports are exactly the Tilt3D API (009 FR-052)", () => {
+test("hover subpath runtime exports: Tilt3D API plus the Phase 010 hover family (009 FR-052, 010 FR-020)", () => {
   assert.deepEqual(Object.keys(animations).sort(), [
+    "Hover",
     "Tilt3D",
+    "borderSweep",
     "createTilt3D",
+    "glow",
+    "hoverEffects",
+    "lift",
+    "magnetic",
+    "mediaZoom",
+    "parallax",
+    "shine",
+    "spotlight",
     "tilt3D",
+    "underline",
     "useTilt3D",
   ]);
 });

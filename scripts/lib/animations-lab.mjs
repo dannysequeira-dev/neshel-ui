@@ -190,3 +190,115 @@ export async function runSceneShiftCase(evaluate, item) {
   }
   await scrollSceneTo(evaluate, 0.25, "restored page");
 }
+
+/**
+ * Phase 010 effect state of `selector`: inline transform and engine custom properties, the computed
+ * transform matrix (translation y, scale x), the decor layer's box-shadow and whether an owned ripple
+ * layer exists.
+ */
+export function fxStateExpression(selector) {
+  return `(() => {
+    const el = document.querySelector(${JSON.stringify(selector)});
+    if (!el) return null;
+    const m = new DOMMatrix(getComputedStyle(el).transform);
+    return {
+      inline: el.style.transform,
+      tokens: el.getAttribute("data-neshel-fx"),
+      lift: el.style.getPropertyValue("--neshel-lift-progress"),
+      glow: el.style.getPropertyValue("--neshel-glow-progress"),
+      ty: m.f, tx: m.e, sx: Math.hypot(m.a, m.b), rotated: Math.abs(m.m13) + Math.abs(m.m23) > 1e-4,
+      shadow: getComputedStyle(el, "::before").boxShadow,
+      ripple: !!el.querySelector(".neshel-ripple-layer"),
+      reducedQuery: matchMedia("(prefers-reduced-motion: reduce)").matches,
+    };
+  })()`;
+}
+
+/** Real-input cases of the Phase 010 gallery, shared by the CDP and Playwright harnesses. */
+export const effectsInputCases = [
+  {
+    id: "effects: real mouse lifts #hover-lift and renders the decor shadow; leaving returns to rest",
+    target: "#hover-lift",
+    steps: [
+      { action: "hover", at: [0.5, 0.5] },
+      {
+        until: `s.lift === "1" && Math.abs(s.ty + 6) < 0.5 && /rgba?[(]/.test(s.shadow) && !/^none$/.test(s.shadow)`,
+      },
+      { action: "leave" },
+      { until: `s.inline === "" && s.lift === ""` },
+    ],
+  },
+  {
+    id: "effects: real mouse press on #press-ripple creates the owned ripple layer; release removes it",
+    target: "#press-ripple",
+    steps: [
+      { action: "hover", at: [0.3, 0.5] },
+      { action: "down" },
+      { until: "s.ripple" },
+      { action: "up" },
+      { until: "!s.ripple" },
+      { action: "leave" },
+    ],
+  },
+  {
+    id: "effects: keyboard Space on the focused #press-scale presses; keyup releases",
+    target: "#press-scale",
+    steps: [
+      { action: "focus" },
+      { action: "keydown", key: " " },
+      { until: "Math.abs(s.sx - 0.96) < 0.005" },
+      { action: "keyup", key: " " },
+      { until: `s.inline === ""` },
+      { action: "blur" },
+    ],
+  },
+  {
+    id: "effects: #combo composes lift (translate), Tilt3D (rotation) and press (scale) under real input",
+    target: "#combo",
+    steps: [
+      { action: "hover", at: [0.5, 0.5] },
+      { action: "hover", at: [0.95, 0.1] },
+      { action: "down" },
+      {
+        until: `/translate3d/.test(s.inline) && /rotateX/.test(s.inline) && /scale[(]/.test(s.inline) && s.glow === "1" && s.ripple`,
+      },
+      { action: "up" },
+      { action: "leave" },
+      { until: `s.inline === "" && !s.ripple` },
+    ],
+  },
+  {
+    id: "effects: magnetic follows the real mouse and springs back",
+    target: "#hover-magnetic",
+    steps: [
+      { action: "hover", at: [0.5, 0.5] },
+      { action: "hover", at: [0.98, 0.5] },
+      { until: "s.tx > 4" },
+      { action: "leave" },
+      { until: `s.inline === ""` },
+    ],
+  },
+];
+
+/**
+ * Owner review of PR #7: start a press animation, then the harness switches the emulated preference to
+ * `reduce` mid-run; the condition must hold quickly (the run jumps to its final state).
+ */
+export const pressLiveReducedStart = `(() => {
+  const toggle = document.getElementById("press-toggle");
+  window.__liveReduced = { checked: toggle.getAttribute("aria-checked") };
+  toggle.click();
+  document.getElementById("press-number-add").click();
+  return true;
+})()`;
+export const pressLiveReducedDone = `(() => {
+  const toggle = document.getElementById("press-toggle");
+  const thumb = toggle.querySelector(".neshel-toggle-thumb");
+  const [visual, accessible] = document.getElementById("press-number").children;
+  return toggle.getAttribute("aria-checked") !== window.__liveReduced.checked && thumb.style.cssText === ""
+    && visual.textContent === accessible.textContent && matchMedia("(prefers-reduced-motion: reduce)").matches;
+})()`;
+export const pressLiveReducedState = `(() => ({
+  thumb: document.querySelector("#press-toggle .neshel-toggle-thumb").style.cssText,
+  number: [...document.getElementById("press-number").children].map((el) => el.textContent),
+}))()`;
