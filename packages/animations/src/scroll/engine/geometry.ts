@@ -12,6 +12,7 @@
  * Positions are layout positions from the offset chain, which ignores transforms: an element moved by its
  * own parallax layer is measured where layout put it, so effects never feed on their own output.
  */
+import { isHtml, layoutOffset } from "../../core/layout-box.js";
 import { getFrameScheduler } from "../../core/scheduler.js";
 import { counters } from "./debug.js";
 import type { ScrollAxis, ScrollSourceRecord } from "./source.js";
@@ -29,32 +30,7 @@ export interface Measurable {
   measured?(): void;
 }
 
-type HTML = HTMLElement & { offsetTop: number; offsetLeft: number };
-
-const isHtml = (element: Element): element is HTML =>
-  typeof (element as HTML).offsetTop === "number";
-
-/**
- * Layout offset of an element's border box from the document origin, ignoring transforms (offset chain).
- * Non-HTML elements (SVG) fall back to the bounding box plus the root scroll offset.
- */
-export function layoutOffset(element: Element, axis: ScrollAxis): number {
-  if (!isHtml(element)) {
-    const rect = element.getBoundingClientRect();
-    return axis === "block" ? rect.top + (window.scrollY || 0) : rect.left + (window.scrollX || 0);
-  }
-  let total = 0;
-  let node: HTML | null = element;
-  while (node) {
-    total += axis === "block" ? node.offsetTop : node.offsetLeft;
-    const parent = node.offsetParent as HTML | null;
-    // offsetTop relative to <body> (or a null parent) is already relative to the document.
-    if (!parent || parent === document.body) break;
-    total += axis === "block" ? parent.clientTop : parent.clientLeft;
-    node = parent;
-  }
-  return total;
-}
+export { layoutOffset };
 
 /** Subject start in the source's content coordinates (layout, transforms ignored). */
 export function subjectStart(subject: Element, source: Element | null, axis: ScrollAxis): number {
