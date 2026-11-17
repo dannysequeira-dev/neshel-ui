@@ -4,9 +4,11 @@
 
 Modular, accessible motion primitives and effects for Neshel-UI.
 
-**Status: experimental, private, unpublished (features 008.0–009).** This package is not on npm and its
+**Status: experimental, private, unpublished (features 008.0–010).** This package is not on npm and its
 API may change before the owner approves a first publication. Specification, catalogue and
-decisions: [`specs/008-animations/`](../../specs/008-animations/spec.md), ADRs 0018–0020.
+decisions: [`specs/008-animations/`](../../specs/008-animations/spec.md),
+[`specs/009-motion-engine/`](../../specs/009-motion-engine/spec.md),
+[`specs/010-animation-effects/`](../../specs/010-animation-effects/spec.md), ADRs 0018–0025.
 
 ## What exists today
 
@@ -20,7 +22,16 @@ decisions: [`specs/008-animations/`](../../specs/008-animations/spec.md), ADRs 0
 - `@neshel-ui/animations` — React bindings: `useMotionEffect`, `useMotionValue`, `useMotionValueEvent`.
 - `@neshel-ui/animations/hover` — `Tilt3D`, `useTilt3D`, `createTilt3D`, `tilt3D` (inward by default,
   `reverse` inverts; keyboard focus pose; live reduced motion; `asChild`; SSR-safe).
-- `@neshel-ui/animations/styles.css` — optional; `transform-style: preserve-3d` for depth children.
+  Phase 010 adds `lift`, `glow`, `magnetic`, `spotlight`, `borderSweep`, `underline`, `mediaZoom`,
+  `parallax`, `shine` and the `<Hover>` primitive (catalogue H01–H10).
+- `@neshel-ui/animations/entrance` — `fadeIn`, `fadeSlide` (+ `fadeUp/Down/Left/Right`), `scaleIn`,
+  `zoomIn`, `blurIn`, `clipReveal` (+ `clipCircle`), `maskWipe`, `rotateIn`, `flipIn` (+ `flipX/Y`),
+  `stagger`, `springIn`; `<Reveal>` and `<Stagger>` (E01–E11). No stylesheet needed.
+- `@neshel-ui/animations/press` — `pressScale`, `ripple`, `tapBounce`, `burst`, `shake`, `nudge`;
+  `<Press>`; decorative `ToggleMorph`, `CheckboxDraw`, `NumberTick`, `ContentSwap` (P01–P10).
+- `definePreset` / `attachPreset` (`./core`) — presets are values: a definition plus frozen options.
+- Stylesheets (opt-in): `@neshel-ui/animations/hover.css` (Tilt3D depth + decor layers),
+  `@neshel-ui/animations/press.css` (ripple, burst, toggle, checkbox, swap) or `styles.css` (both).
 
 ```tsx
 import { Tilt3D } from "@neshel-ui/animations/hover";
@@ -33,13 +44,38 @@ import "@neshel-ui/animations/styles.css"; // optional
 </Tilt3D>;
 ```
 
+```tsx
+import { Reveal, fadeUp } from "@neshel-ui/animations/entrance";
+import { Hover, glow, lift } from "@neshel-ui/animations/hover";
+import { Press, pressScale, ripple } from "@neshel-ui/animations/press";
+import "@neshel-ui/animations/styles.css"; // decor layers, ripple, toggle… (plain CSS; Tailwind optional)
+
+<Reveal preset={fadeUp} asChild>
+  <Hover preset={[lift, glow]} asChild>
+    <Press preset={[pressScale, ripple]} asChild>
+      <button type="button" className="card">
+        Choose plan
+      </button>
+    </Press>
+  </Hover>
+</Reveal>;
+```
+
+Entrances play on client mounts and on `replayKey` changes; server-rendered content stays visible and
+is not hidden again while hydrating (`appear="client"`). Hover effects follow mouse/pen and keyboard
+`:focus-visible` (touch is opt-in). `ToggleMorph` and `CheckboxDraw` are decorative visuals for inside
+your native, labelled control. Every effect honours `prefers-reduced-motion` live.
+
 Peer dependency: `react ^19.0.0`. Runtime dependency: `@radix-ui/react-slot`.
 
 ## Composition rule
 
 Effects never write managed styles directly: they go through the element's motion host (ADR 0019,
 ADR 0022). `transform` layers compose, `opacity` multiplies, other channels have one owner at a time;
-original inline styles are restored when effects end.
+original inline styles are restored when effects end. The package stylesheets never declare a
+transition or animation on your element (ADR 0025): CSS only renders package-owned layers, so effects
+compose with each other and with your own styles (`transition`, `translate`, …). Several effects —
+Entrance, Hover, Press and Tilt3D — can share one element through nested `asChild`.
 
 ## License
 

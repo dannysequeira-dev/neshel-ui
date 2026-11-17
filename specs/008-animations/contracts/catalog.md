@@ -1,9 +1,14 @@
 # Contract — effect catalogue (planned)
 
-**Status: planned.** Only `H03 Tilt3D` is implemented (008.0, private). `D05 CornerRecede` and
-`SP05/SP10 ScrollScene` exist as playground prototypes. Every other row is a plan: names, drivers
-and phases may change through the spec of the phase that implements them. Ids are stable
-references for specs and tests, not public API.
+**Status: partially implemented.** Implemented (private package): `H03 Tilt3D` (008.0, on the
+engine since 009) and the 30 Phase 010 entries **E01–E11, H01, H02, H04–H10, P01–P10** (marked
+**✓ 010** below; ids, options, drivers and reduced behaviour in
+[specs/010 contracts/effects-010.md](../../010-animation-effects/contracts/effects-010.md)). Phase 010
+changed the driver of most CSS rows: the consumer's element is animated only by the motion host (rule
+R-1, ADR 0025) and CSS renders package-owned layers; the Driver column below keeps the original plan
+and the 010 contract records each change. `D05 CornerRecede` and `SP05/SP10 ScrollScene` exist as
+playground prototypes. Every other row is a plan: names, drivers and phases may change through the spec
+of the phase that implements them. Ids are stable references for specs and tests, not public API.
 
 157 entries in 15 families. Variants (direction, distance, duration, easing, stagger) are options of
 an entry, not separate entries; presets are named option sets registered for an entry.
@@ -32,17 +37,17 @@ only · `instant` jump to end state · `static` decorative motion removed, conte
 
 | Id  | Effect                            | Driver | Structure | Reduced motion | Phase |
 | --- | --------------------------------- | ------ | --------- | -------------- | ----- |
-| E01 | Fade in                           | CSS    | —         | instant        | 010   |
-| E02 | Fade + slide (up/down/left/right) | CSS    | —         | fade           | 010   |
-| E03 | Scale in                          | CSS    | —         | fade           | 010   |
-| E04 | Zoom out → in                     | CSS    | —         | fade           | 010   |
-| E05 | Blur in                           | CSS    | —         | fade           | 010   |
-| E06 | Clip reveal (inset / circle)      | CSS    | —         | instant        | 010   |
-| E07 | Gradient-mask wipe                | CSS    | —         | instant        | 010   |
-| E08 | Rotate in                         | CSS    | —         | fade           | 010   |
-| E09 | Flip in (X/Y)                     | CSS    | W         | fade           | 010   |
-| E10 | Staggered children                | CSS    | G         | fade           | 010   |
-| E11 | Spring entrance (overshoot)       | CSS¹   | —         | fade           | 010   |
+| E01 | Fade in                           | CSS    | —         | instant        | ✓ 010 |
+| E02 | Fade + slide (up/down/left/right) | CSS    | —         | fade           | ✓ 010 |
+| E03 | Scale in                          | CSS    | —         | fade           | ✓ 010 |
+| E04 | Zoom out → in                     | CSS    | —         | fade           | ✓ 010 |
+| E05 | Blur in                           | CSS    | —         | fade           | ✓ 010 |
+| E06 | Clip reveal (inset / circle)      | CSS    | —         | instant        | ✓ 010 |
+| E07 | Gradient-mask wipe                | CSS    | —         | instant        | ✓ 010 |
+| E08 | Rotate in                         | CSS    | —         | fade           | ✓ 010 |
+| E09 | Flip in (X/Y)                     | CSS    | W         | fade           | ✓ 010 |
+| E10 | Staggered children                | CSS    | G         | fade           | ✓ 010 |
+| E11 | Spring entrance (overshoot)       | CSS¹   | —         | fade           | ✓ 010 |
 
 ¹ Spring curves pre-computed into CSS `linear()` easing (research R4); JS only for interruption.
 
@@ -50,16 +55,16 @@ only · `instant` jump to end state · `static` decorative motion removed, conte
 
 | Id  | Effect                              | Driver | Structure | Reduced motion | Phase |
 | --- | ----------------------------------- | ------ | --------- | -------------- | ----- |
-| H01 | Lift (translate + shadow)           | CSS    | —         | static         | 010   |
-| H02 | Glow / ring                         | CSS    | —         | static         | 010   |
+| H01 | Lift (translate + shadow)           | CSS    | —         | static         | ✓ 010 |
+| H02 | Glow / ring                         | CSS    | —         | static         | ✓ 010 |
 | H03 | **Tilt3D** (implemented, 008.0)     | JS     | —         | off            | 008.0 |
-| H04 | Magnetic pull                       | JS     | —         | off            | 010   |
-| H05 | Spotlight (pointer-follow gradient) | JS     | —         | static         | 010   |
-| H06 | Border gradient sweep               | CSS    | —         | static         | 010   |
-| H07 | Underline grow                      | CSS    | —         | instant        | 010   |
-| H08 | Media zoom inside frame             | CSS    | W         | static         | 010   |
-| H09 | Pointer parallax layers             | JS     | G         | off            | 010   |
-| H10 | Shine / glare sweep                 | CSS    | L²        | static         | 010   |
+| H04 | Magnetic pull                       | JS     | —         | off            | ✓ 010 |
+| H05 | Spotlight (pointer-follow gradient) | JS     | —         | static         | ✓ 010 |
+| H06 | Border gradient sweep               | CSS    | —         | static         | ✓ 010 |
+| H07 | Underline grow                      | CSS    | —         | instant        | ✓ 010 |
+| H08 | Media zoom inside frame             | CSS    | W         | static         | ✓ 010 |
+| H09 | Pointer parallax layers             | JS     | G         | off            | ✓ 010 |
+| H10 | Shine / glare sweep                 | CSS    | L²        | static         | ✓ 010 |
 | H11 | Cursor follower (decorative)        | JS     | W         | off            | 012   |
 
 ² A decorative pseudo-element where possible; an extra element only when the host forbids it.
@@ -68,16 +73,16 @@ only · `instant` jump to end state · `static` decorative motion removed, conte
 
 | Id  | Effect                        | Driver | Structure | Reduced motion | Phase |
 | --- | ----------------------------- | ------ | --------- | -------------- | ----- |
-| P01 | Press scale                   | CSS    | —         | reduced        | 010   |
-| P02 | Ripple                        | WAAPI  | W         | fade           | 010   |
-| P03 | Tap bounce (spring)           | JS     | —         | off            | 010   |
-| P04 | Toggle thumb morph            | CSS    | —         | instant        | 010   |
-| P05 | Checkbox draw                 | CSS    | —         | instant        | 010   |
-| P06 | Burst (like / celebrate)      | WAAPI  | L         | static         | 010   |
-| P07 | Shake (error)                 | CSS    | —         | reduced³       | 010   |
-| P08 | Nudge / attention jiggle      | CSS    | —         | off            | 010   |
-| P09 | Number tick (counter)         | JS     | —         | instant        | 010   |
-| P10 | Content swap confirm (copy ✓) | CSS    | G         | fade           | 010   |
+| P01 | Press scale                   | CSS    | —         | reduced        | ✓ 010 |
+| P02 | Ripple                        | WAAPI  | W         | fade           | ✓ 010 |
+| P03 | Tap bounce (spring)           | JS     | —         | off            | ✓ 010 |
+| P04 | Toggle thumb morph            | CSS    | —         | instant        | ✓ 010 |
+| P05 | Checkbox draw                 | CSS    | —         | instant        | ✓ 010 |
+| P06 | Burst (like / celebrate)      | WAAPI  | L         | static         | ✓ 010 |
+| P07 | Shake (error)                 | CSS    | —         | reduced³       | ✓ 010 |
+| P08 | Nudge / attention jiggle      | CSS    | —         | off            | ✓ 010 |
+| P09 | Number tick (counter)         | JS     | —         | instant        | ✓ 010 |
+| P10 | Content swap confirm (copy ✓) | CSS    | G         | fade           | ✓ 010 |
 | P11 | Long-press progress           | WAAPI  | W         | reduced        | 012   |
 
 ³ The error must also be conveyed by text/ARIA; the shake is never the only signal.
@@ -294,10 +299,10 @@ real deformation and only for raster content (research R7).
 | Spring integrator                    | H, P, G, SP, L, C | implemented (008.0)  |
 | Transform composer                   | H, P, G, SP, D    | implemented (008.0)  |
 | Reduced-motion policy                | all               | implemented (008.0)  |
-| Spring → CSS `linear()` easing       | E, H, P, L, F     | planned (010)        |
-| Interpolation / easing / clamp       | all               | planned (010)        |
-| Effect registry + channel metadata   | all               | planned (010)        |
-| Pointer tracker (box-based hit area) | H, B, G           | spike inside Tilt3D  |
+| Spring → CSS `linear()` easing       | E, H, P, L, F     | implemented (009)    |
+| Interpolation / easing / clamp       | all               | implemented (009)    |
+| Effect registry + channel metadata   | all               | implemented (009)    |
+| Pointer tracker (box-based hit area) | H, B, G           | implemented (010)    |
 | Intersection / visibility observer   | ST, SP, B, M      | planned (011)        |
 | Scroll progress (cached geometry)    | ST, SP, C, M, T   | spike in ScrollScene |
 | Timeline (labels, overlaps, scrub)   | C, PT, T, S       | planned (013)        |
