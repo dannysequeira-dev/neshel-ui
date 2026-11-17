@@ -72,9 +72,7 @@ export function composeTransform(layers: Iterable<TransformLayer>): string {
     sx *= s * (layer.scaleX ?? 1);
     sy *= s * (layer.scaleY ?? 1);
   }
-  if (![tx, ty, tz, rx, ry, rz, kx, ky, sx - 1, sy - 1].some(moved)) return "none";
   const parts: string[] = [];
-  if (Number.isFinite(perspective)) parts.push(`perspective(${round(perspective)}px)`);
   if (moved(tx) || moved(ty) || moved(tz)) {
     parts.push(`translate3d(${round(tx)}px, ${round(ty)}px, ${round(tz)}px)`);
   }
@@ -84,5 +82,8 @@ export function composeTransform(layers: Iterable<TransformLayer>): string {
   if (moved(kx) || moved(ky)) parts.push(`skew(${round(kx)}deg, ${round(ky)}deg)`);
   if (moved(sx - sy)) parts.push(`scale(${round(sx)}, ${round(sy)})`);
   else if (moved(sx - 1)) parts.push(`scale(${round(sx)})`);
+  if (!parts.length) return "none";
+  // Perspective applies first, and only when something moves.
+  if (perspective < Number.POSITIVE_INFINITY) parts.unshift(`perspective(${round(perspective)}px)`);
   return parts.join(" ");
 }

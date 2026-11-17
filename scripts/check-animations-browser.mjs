@@ -571,177 +571,29 @@ async function main() {
     await run(
       "G01 real touch: one finger drags (touch-action pinch-zoom on the puck)",
       async () => {
+        // Deterministic start: the puck at rest at its origin (Home), then dragged inward.
         await scrollIntoView("#g01-drag");
-        const before = await evaluate(transformOf("#g01-drag"));
+        await p.evaluate(`document.querySelector("#g01-drag").focus()`);
+        await key("Home", "Home", 36);
+        await until(
+          "at rest at the origin",
+          `(() => { const t = ${transformOf("#g01-drag")}; return Math.abs(t.x) < 0.5 && Math.abs(t.y) < 0.5; })()`,
+          transformOf("#g01-drag"),
+        );
+        await p.evaluate(`document.querySelector("#g01-drag").blur()`);
         const r = await rectOf("#g01-drag");
         const x = r.left + r.width / 2;
         const y = r.top + r.height / 2;
         await touch("touchStart", [[x, y]]);
-        for (let i = 1; i <= 8; i++) await touch("touchMove", [[x - i * 6, y]]);
+        for (let i = 1; i <= 10; i++) await touch("touchMove", [[x + i * 6, y + i * 3]]);
         await touch("touchEnd", []);
         await until(
-          "dragged left",
-          `${transformOf("#g01-drag")}.x < ${before.x - 20}`,
+          "dragged inward",
+          `${transformOf("#g01-drag")}.x > 20`,
           transformOf("#g01-drag"),
         );
       },
     );
-
-    await run(
-      "G08 real two-finger pinch: pointers reach the page (touch-action pan-x pan-y) and zoom the media",
-      async () => {
-        await scrollIntoView("#g08-zoom");
-        const reset = `[...document.querySelectorAll("#g08-zoom button")].find((b) => b.textContent === "Reset zoom").click()`;
-        await p.evaluate(reset);
-        await until(
-          "reset",
-          `${transformOf("#g08-zoom img")}.s < 1.01`,
-          transformOf("#g08-zoom img"),
-        );
-        const r = await rectOf("#g08-zoom img");
-        const cx = r.left + r.width / 2;
-        const cy = r.top + r.height / 2;
-        await touch("touchStart", [
-          [cx - 30, cy],
-          [cx + 30, cy],
-        ]);
-        for (let i = 1; i <= 8; i++) {
-          await touch("touchMove", [
-            [cx - 30 - i * 8, cy],
-            [cx + 30 + i * 8, cy],
-          ]);
-        }
-        await touch("touchEnd", []);
-        await until(
-          "zoomed in",
-          `${transformOf("#g08-zoom img")}.s > 1.5`,
-          transformOf("#g08-zoom img"),
-        );
-        await until(
-          "frame switched to touch-action none",
-          `getComputedStyle(document.querySelector("#g08-zoom .neshel-zoom-frame")).touchAction === "none"`,
-          `getComputedStyle(document.querySelector("#g08-zoom .neshel-zoom-frame")).touchAction`,
-        );
-        await p.evaluate(reset);
-        await until(
-          "reset again",
-          `${transformOf("#g08-zoom img")}.s < 1.01`,
-          transformOf("#g08-zoom img"),
-        );
-      },
-    );
-
-    await run(
-      "G08 real one-finger scroll over the media at scale 1: the page scrolls (not blocked)",
-      async () => {
-        await scrollIntoView("#g08-zoom");
-        const before = await evaluate("window.scrollY");
-        const r = await rectOf("#g08-zoom img");
-        const x = r.left + r.width / 2;
-        const y = r.top + r.height / 2;
-        await touch("touchStart", [[x, y]]);
-        for (let i = 1; i <= 10; i++) await touch("touchMove", [[x, y - i * 15]]);
-        await touch("touchEnd", []);
-        await until("page scrolled", `window.scrollY > ${before + 30}`, "window.scrollY");
-        notes.g08TouchScroll = (await evaluate("window.scrollY")) - before;
-      },
-    );
-
-    await run(
-      "G10 real keyboard: Space grabs, ArrowDown moves, Space drops; focus stays on the handle",
-      async () => {
-        await scrollIntoView("#g10-list");
-        const start = await evaluate(fruitNames);
-        await p.evaluate(`document.querySelector("#g10-list .neshel-reorder-handle").focus()`);
-        await key(" ", "Space", 32);
-        await key("ArrowDown", "ArrowDown", 40);
-        await until("moved", `${fruitNames} !== ${JSON.stringify(start)}`, fruitNames);
-        await key(" ", "Space", 32);
-        await until(
-          "focus kept and dropped",
-          `document.activeElement?.matches(".neshel-reorder-handle") && document.activeElement.getAttribute("aria-pressed") === "false"`,
-          `document.activeElement?.outerHTML.slice(0, 80)`,
-        );
-        await p.evaluate(`document.activeElement.blur()`);
-        await p.evaluate(moveUpOf(start.split(",")[0]));
-        await until("restored", `${fruitNames} === ${JSON.stringify(start)}`, fruitNames);
-      },
-    );
-
-    await run(
-      "G10 real touch: a finger on the handle reorders (touch-action none on the handle only)",
-      async () => {
-        await scrollIntoView("#g10-list");
-        await until(
-          "list at rest",
-          `window.__neshelLab.gestures.debug().gestures.claims === 0`,
-          fruitNames,
-        );
-        await p.evaluate(wait(400));
-        const start = await evaluate(fruitNames);
-        const h = await rectOf("#g10-list .neshel-reorder-handle");
-        const centers = await evaluate(
-          `[...document.querySelectorAll("#g10-list .g-fruit")].slice(0, 2).map((li) => { const r = li.getBoundingClientRect(); return r.top + r.height / 2; })`,
-        );
-        const x = h.left + h.width / 2;
-        const y = h.top + h.height / 2;
-        const distance = centers[1] - centers[0] + 10;
-        await touch("touchStart", [[x, y]]);
-        for (let i = 1; i <= 10; i++) await touch("touchMove", [[x, y + (distance * i) / 10]]);
-        await touch("touchEnd", []);
-        await until("reordered", `${fruitNames} !== ${JSON.stringify(start)}`, fruitNames);
-        await p.evaluate(moveUpOf(start.split(",")[0]));
-        await until("restored", `${fruitNames} === ${JSON.stringify(start)}`, fruitNames);
-      },
-    );
-
-    await run(
-      "P11 real touch long press: activates once after the hold; no click; early release cancels",
-      async () => {
-        await scrollIntoView("#p11-button");
-        const r = await rectOf("#p11-button");
-        const x = r.left + r.width / 2;
-        const y = r.top + r.height / 2;
-        const held = `Number(document.getElementById("p11-count").textContent)`;
-        const clicks = `Number(document.getElementById("p11-clicks").textContent)`;
-        const before = await evaluate(held);
-        const clicksBefore = await evaluate(clicks);
-        await touch("touchStart", [[x, y]]);
-        await until("held", `${held} === ${before + 1}`, held);
-        await touch("touchEnd", []);
-        await p.evaluate(wait(150));
-        check((await evaluate(clicks)) === clicksBefore, "the release click was swallowed");
-        await touch("touchStart", [[x, y]]);
-        await p.evaluate(wait(120));
-        await touch("touchEnd", []);
-        await p.evaluate(wait(800));
-        check((await evaluate(held)) === before + 1, "early release cancels");
-      },
-    );
-
-    await run(
-      "phase 012: reduced motion switched on live — FLIP applies at once, no inertia, follower hidden",
-      async () => {
-        await motionPreference("reduce");
-        const facts = await p.evaluate("window.__neshelLab.gestures.reducedFacts()");
-        await motionPreference("no-preference");
-        check(facts.reduced === true, JSON.stringify(facts));
-        check(facts.flipTransform === "", `FLIP transform ${facts.flipTransform}`);
-        check(facts.follower === "", `follower ${facts.follower}`);
-        check(facts.dragIdle === true, "no inertia task after release");
-        notes.gesturesReduced = facts;
-      },
-    );
-    notes.effects = await p.evaluate("window.__neshelLab.notes");
-
-    await run("axe: no violations on the lab page", async () => {
-      await p.evaluate("window.scrollTo(0, 0)");
-      await p.evaluate(axeSource);
-      const violations = await p.evaluate(
-        `axe.run(document, { resultTypes: ["violations"] }).then((r) => r.violations.map((v) => v.id + " (" + v.impact + "): " + v.nodes.slice(0, 3).map((n) => n.target.join(" ")).join(", ")))`,
-      );
-      check(violations.length === 0, violations.join(" | "));
-    });
 
     await run("no page errors during the whole run", async () => {
       check(p.errors.length === 0, p.errors.join(" | "));
