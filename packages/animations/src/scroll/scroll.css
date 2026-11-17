@@ -1,0 +1,116 @@
+/*
+ * @neshel-ui/animations/scroll.css — Phase 011 scroll family (optional, precompiled).
+ *
+ * Rule R-1 (ADR 0025): nothing here declares a transition, an animation or a scroll timeline. These rules
+ * only lay out package-rendered elements (scene section/stage, progress bar, horizontal section, stack
+ * slots, parallax frame); motion comes from the engine (motion host or verified native custom-property
+ * animations). Without JavaScript every layout below is usable: the scene is a normal section with a
+ * sticky stage, the horizontal track a native horizontal scroller, the stack plain sticky cards.
+ */
+
+@property --neshel-scroll-progress {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+@property --neshel-scene-progress {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+@property --neshel-view-progress {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+
+@layer components.neshel {
+  /* SP05 — pinned scene: CSS sticky, no JavaScript spacer. */
+  .neshel-scene {
+    position: relative;
+    block-size: calc(var(--neshel-scene-length, 3) * 100vh);
+  }
+  .neshel-scene-stage {
+    position: sticky;
+    inset-block-start: 0;
+    block-size: 100vh;
+    overflow: clip;
+  }
+
+  /* SP03 — decorative scroll progress bar (package-rendered). */
+  .neshel-scroll-progress {
+    block-size: var(--neshel-scroll-progress-size, 3px);
+    inline-size: 100%;
+    background: var(--neshel-scroll-progress-color, currentColor);
+    transform: scaleX(var(--neshel-scroll-progress, 0));
+    transform-origin: 0 50%;
+    pointer-events: none;
+  }
+  .neshel-scroll-progress[data-position="top"],
+  .neshel-scroll-progress[data-position="bottom"] {
+    position: fixed;
+    inset-inline: 0;
+    z-index: var(--neshel-scroll-progress-z, 50);
+  }
+  .neshel-scroll-progress[data-position="top"] {
+    inset-block-start: 0;
+  }
+  .neshel-scroll-progress[data-position="bottom"] {
+    inset-block-end: 0;
+  }
+
+  /* SP04 — horizontal section. Default (server markup, fallback): native horizontal scroller. */
+  .neshel-hscroll {
+    position: relative;
+  }
+  .neshel-hscroll-stage {
+    overflow-x: auto;
+    overscroll-behavior-inline: contain;
+  }
+  .neshel-hscroll-track {
+    display: flex;
+    gap: var(--neshel-hscroll-gap, 1rem);
+    inline-size: max-content;
+  }
+  .neshel-hscroll-track > * {
+    flex: none;
+  }
+  .neshel-hscroll[data-neshel-hscroll="pinned"] {
+    block-size: calc(100vh + var(--neshel-hscroll-distance, 0px));
+  }
+  .neshel-hscroll[data-neshel-hscroll="pinned"] > .neshel-hscroll-stage {
+    position: sticky;
+    inset-block-start: 0;
+    block-size: 100vh;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+  }
+  .neshel-hscroll[data-neshel-hscroll="stacked"] > .neshel-hscroll-stage {
+    overflow: visible;
+  }
+  .neshel-hscroll[data-neshel-hscroll="stacked"] .neshel-hscroll-track {
+    flex-direction: column;
+    inline-size: auto;
+  }
+
+  /* SP09 — sticky stacking card slots (package-rendered wrappers; the index is in the server markup). */
+  .neshel-stack {
+    display: grid;
+    gap: var(--neshel-stack-gap, 1.5rem);
+  }
+  .neshel-stack-item {
+    position: sticky;
+    inset-block-start: calc(
+      var(--neshel-stack-top, 1rem) +
+      var(--neshel-stack-index, 0) *
+      var(--neshel-stack-offset, 1.25rem)
+    );
+    transform-origin: 50% 0;
+  }
+
+  /* SP06 — parallax frame: clips the moving media. */
+  .neshel-parallax-frame {
+    overflow: clip;
+  }
+}

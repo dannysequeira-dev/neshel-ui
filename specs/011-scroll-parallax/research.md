@@ -107,7 +107,7 @@ of content below the fold until it enters. Holding is applied only (a) on client
 paint, or (b) after the first IntersectionObserver report says the element is outside the trigger area
 (hydrated content that is visible stays as rendered). It is never applied under reduced motion, without
 IntersectionObserver, or after `beforeprint`. This needs two additive Entrance options (`hold`,
-`direction: "out"`), documented in contracts/api-011.md §3.
+`playback: "out"`), documented in contracts/api-011.md §3.
 
 ## R9 — Stuck detection and section spy
 

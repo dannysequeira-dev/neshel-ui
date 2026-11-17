@@ -52,7 +52,7 @@ workflow; publication, versions, tags, releases; merging the PR.
 
 - D-1 The engine lives in `./scroll`, not `./core` (core budget and surface unchanged) — ADR 0026.
 - D-2 The native driver writes only registered custom properties (research R2) — ADR 0026.
-- D-3 Entrance gains `hold` and `direction` (additive) so ST01–ST03 reuse Entrance presets (research R8).
+- D-3 Entrance gains `hold` and `playback` (additive) so ST01–ST03 reuse Entrance presets (research R8).
 - D-4 `TransformLayer` gains `skewX/skewY` (additive) for SP11 (research R10).
 - D-5 ST03 (modes) and ST04 (callbacks) are two facets of one trigger state machine; each has its own API
   surface, tests and gallery demo; neither is counted twice in code.

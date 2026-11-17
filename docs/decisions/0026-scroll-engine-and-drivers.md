@@ -35,7 +35,7 @@ Firefox 159 and WebKit 27.2 all run scroll and view timelines correctly, but a n
 6. **No hijacking.** Passive listeners only; pinning is CSS sticky; no wheel/touch/key interception; no
    scroll writes except SP04's focus management.
 7. **Entrance reuse.** ST01–ST03 drive Entrance definitions/presets passed as values through two additive
-   Entrance options (`hold`, `direction`); families still never import each other.
+   Entrance options (`hold`, `playback`); families still never import each other.
 
 ## Consequences
 

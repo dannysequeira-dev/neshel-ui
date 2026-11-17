@@ -20,7 +20,7 @@ Dependency-ordered. `[x]` done, `[ ]` open. Authorised by the owner brief of 202
 
 ## 011.2 — Scroll Triggers
 
-- [ ] T020 Entrance `hold`/`direction` (additive) + stagger forwarding; 010 suites unchanged
+- [ ] T020 Entrance `hold`/`playback` (additive) + stagger forwarding; 010 suites unchanged
 - [ ] T021 ST01 `revealOnEnter`, ST02 `staggerOnEnter`, ST03 modes, ST04 callbacks
 - [ ] T022 ST05 `inViewProgress`, ST06 `directionHeader`, ST07 `stuckState`, ST09 `lazyEffect`
 - [ ] T023 Tests (reduced live, hydration hold rules, print, composition with Hover)

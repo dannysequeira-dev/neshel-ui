@@ -9,6 +9,7 @@
 import { type RefObject, useEffect, useRef, useState } from "react";
 import type { AttachConfig } from "../core/attach.js";
 import type { EffectDefinition, EffectHandle } from "../core/effect.js";
+import { optionsKeyOf } from "../core/options-key.js";
 
 export type AttachFunction = <Options, Resolved>(
   element: Element & { readonly style: CSSStyleDeclaration },
@@ -17,15 +18,9 @@ export type AttachFunction = <Options, Resolved>(
   config: AttachConfig,
 ) => EffectHandle<Options>;
 
-/** Stable key of option values; functions and symbols are keyed by type only. */
+/** Stable key of option values; functions and symbols by type, elements by identity. */
 export function optionsKey(options: unknown): string {
-  try {
-    return JSON.stringify(options ?? null, (_key, value) =>
-      typeof value === "function" || typeof value === "symbol" ? `[${typeof value}]` : value,
-    );
-  } catch {
-    return String(Math.random()); // circular options: update on every render
-  }
+  return optionsKeyOf(options);
 }
 
 export function useAttachment<Options, Resolved>(

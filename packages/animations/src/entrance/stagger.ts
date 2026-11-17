@@ -35,6 +35,10 @@ export interface StaggerOptions<Options extends EntranceOptions = EntranceOption
   replay?: string | number | boolean;
   /** Called once when every child's run has settled (with the last status). */
   onFinish?: (status: MotionResult["status"]) => void;
+  /** Phase 011: forwarded to every child (see `EntranceOptions.hold`). */
+  hold?: boolean;
+  /** Phase 011: forwarded to every child (see `EntranceOptions.playback`). */
+  playback?: "in" | "out";
 }
 
 interface ResolvedStagger {
@@ -49,6 +53,8 @@ interface ResolvedStagger {
   appear: boolean;
   replay: string | number | boolean | undefined;
   onFinish: ((status: MotionResult["status"]) => void) | undefined;
+  hold: boolean;
+  playback: "in" | "out";
 }
 
 const v = /* @__PURE__ */ validator("stagger");
@@ -87,6 +93,8 @@ export const stagger = /* @__PURE__ */ defineEffect<StaggerOptions, ResolvedStag
       appear: v.flag("appear", o.appear, true),
       replay: v.key("replay", o.replay),
       onFinish: v.callback("onFinish", o.onFinish),
+      hold: v.flag("hold", o.hold, false),
+      playback: v.oneOf("playback", o.playback, ["in", "out"] as const, "in"),
     };
   },
   policy: (options) => options.reducedMotion,
@@ -116,6 +124,8 @@ export const stagger = /* @__PURE__ */ defineEffect<StaggerOptions, ResolvedStag
           delay: o.delay + Math.round(staggerRank(index, count, o.order) * interval),
           reducedMotion: o.options.reducedMotion ?? o.reducedMotion,
           appear,
+          hold: o.hold,
+          playback: o.playback,
           onFinish: (status: MotionResult["status"]) => {
             if (gen !== generation) return;
             last = status;
@@ -132,8 +142,10 @@ export const stagger = /* @__PURE__ */ defineEffect<StaggerOptions, ResolvedStag
     return {
       update(next) {
         const replay = next.replay !== o.replay;
+        const hold = next.hold !== o.hold;
         o = next;
         if (replay) attachChildren(true);
+        else if (hold) attachChildren(false);
       },
       pause() {
         for (const handle of handles) handle.pause();

@@ -30,7 +30,7 @@ packages/animations/src/scroll/
 1. 011.0 — docs (this folder, ADR 0026). Commit.
 2. 011.1 — engine + unit tests (sources, ranges, invalidation, laziness, velocity, native selection,
    in-view pool, trigger state machine, debug counters). Commit.
-3. 011.2 — ST01–ST10 (+ Entrance `hold`/`direction`, tests incl. 010 suites unchanged). Commit.
+3. 011.2 — ST01–ST10 (+ Entrance `hold`/`playback`, tests incl. 010 suites unchanged). Commit.
 4. 011.3 — SP01–SP11 (+ compose skew), prototype migration. Commit.
 5. 011.4 — React API, scroll.css, exports/budgets entries, Playground gallery (replaces the prototype),
    lab checks (three engines), Storybook stories, packed consumer pages. Commit(s).

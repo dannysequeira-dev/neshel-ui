@@ -1,6 +1,7 @@
 /*
- * @neshel-ui/animations/styles.css — every family stylesheet in one opt-in import (hover.css + press.css).
+ * @neshel-ui/animations/styles.css — every family stylesheet in one opt-in import (hover.css + press.css +
+ * scroll.css).
  * Explicit import only; no global selectors, no resets; rules live in the shared `components.neshel`
- * layer (ADR 0008). Import a family file instead (`/hover.css`, `/press.css`) to ship less CSS.
+ * layer (ADR 0008). Import a family file instead (`/hover.css`, `/press.css`, `/scroll.css`) to ship less CSS.
  * Entrance effects need no stylesheet.
  */
