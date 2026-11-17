@@ -34,14 +34,14 @@ packages/animations/src/
 
 ## Slices
 
-| Slice | Content                                                                                          | Gate                                       |
-| ----- | ------------------------------------------------------------------------------------------------ | ------------------------------------------ |
-| 012.0 | spec, research (engine probes), contracts, ADR 0027, plan, tasks, analysis                        | documents consistent (analysis.md)         |
-| 012.1 | core additions, pointer session, recogniser, physics, drag motion, controls, FLIP animator        | unit tests; earlier suites unchanged       |
-| 012.2 | G01–G11, H11, P11 + keyboard/touch/reduced tests                                                 | unit tests; typecheck; lint                |
-| 012.3 | layout groups, reflow, height drivers, presence; L01–L10                                          | unit tests incl. StrictMode and cleanup    |
-| 012.4 | React components, Storybook stories, Playground gallery and in-page suite                         | builds; CDP + Playwright suites            |
-| 012.5 | composition tests, packed consumer, bundles, docs, CI                                             | `pnpm check`; all browser checks; 3-OS CI  |
+| Slice | Content                                                                                    | Gate                                      |
+| ----- | ------------------------------------------------------------------------------------------ | ----------------------------------------- |
+| 012.0 | spec, research (engine probes), contracts, ADR 0027, plan, tasks, analysis                 | documents consistent (analysis.md)        |
+| 012.1 | core additions, pointer session, recogniser, physics, drag motion, controls, FLIP animator | unit tests; earlier suites unchanged      |
+| 012.2 | G01–G11, H11, P11 + keyboard/touch/reduced tests                                           | unit tests; typecheck; lint               |
+| 012.3 | layout groups, reflow, height drivers, presence; L01–L10                                   | unit tests incl. StrictMode and cleanup   |
+| 012.4 | React components, Storybook stories, Playground gallery and in-page suite                  | builds; CDP + Playwright suites           |
+| 012.5 | composition tests, packed consumer, bundles, docs, CI                                      | `pnpm check`; all browser checks; 3-OS CI |
 
 ## Test strategy
 

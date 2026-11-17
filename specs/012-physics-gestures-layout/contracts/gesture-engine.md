@@ -72,14 +72,14 @@ contribute nothing.
 
 ## 5 · Physics primitives
 
-| Primitive                                   | Contract                                                                 |
-| ------------------------------------------- | ------------------------------------------------------------------------ |
-| `createVelocityTracker(windowMs = 100)`     | ring buffer; `add(t, x, y)`, `velocity()`, `reset()`; stale → 0 (R4)     |
-| `stepDecay(state, options, dt)`             | exact exponential step; returns `true` at rest (R5)                      |
-| `projectDecay(value, velocity, options)`    | rest position `x₀ + power·v₀·τ`                                          |
-| `rubberband(overshoot, dimension, c=0.55)`  | R6, signed                                                               |
-| `nearestSnap(value, points)`                | nearest point (1-D); 2-D snap in drag picks by Euclidean distance        |
-| springs                                     | the 009 integrator (`stepSpring`) through the 010 spring rig — no copy   |
+| Primitive                                  | Contract                                                               |
+| ------------------------------------------ | ---------------------------------------------------------------------- |
+| `createVelocityTracker(windowMs = 100)`    | ring buffer; `add(t, x, y)`, `velocity()`, `reset()`; stale → 0 (R4)   |
+| `stepDecay(state, options, dt)`            | exact exponential step; returns `true` at rest (R5)                    |
+| `projectDecay(value, velocity, options)`   | rest position `x₀ + power·v₀·τ`                                        |
+| `rubberband(overshoot, dimension, c=0.55)` | R6, signed                                                             |
+| `nearestSnap(value, points)`               | nearest point (1-D); 2-D snap in drag picks by Euclidean distance      |
+| springs                                    | the 009 integrator (`stepSpring`) through the 010 spring rig — no copy |
 
 Decay options: `power` (0–1, default 0.8), `timeConstant` ms (50–2000, default 325), `restSpeed` px/s
 (default 5). Every physics motion runs as tasks of the shared scheduler (update phase) and stops at rest.

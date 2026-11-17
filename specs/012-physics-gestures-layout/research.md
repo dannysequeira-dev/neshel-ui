@@ -43,17 +43,17 @@ toggle, transient animation, no fill). Both drivers are forced in the browser la
 attached gesture** (never on `html`/`body`), through the element's motion host (captured and restored
 exactly), as the intersection of what every attached gesture allows:
 
-| Gesture                               | Allows                                      |
-| ------------------------------------- | ------------------------------------------- |
+| Gesture                                | Allows                                      |
+| -------------------------------------- | ------------------------------------------- |
 | Drag / fling `axis: "x"` (G01/G02/G07) | `pan-y pinch-zoom`                          |
-| Drag / fling `axis: "y"`              | `pan-x pinch-zoom`                          |
-| Drag / fling both axes                | `pinch-zoom`                                |
-| Swipe to dismiss (G03, x)             | `pan-y pinch-zoom`                          |
-| Pinch-zoom (G08) at scale 1           | `pan-x pan-y` (one finger scrolls the page) |
-| Pinch-zoom while zoomed in            | `none` (one finger pans the media)          |
-| Rotate (G09)                          | `pan-x pan-y`                               |
-| Reorder (G10)                         | `none` on the **handle** only               |
-| Pull-to-refresh (G04), elastic (G06)  | nothing — observe-only (R3)                 |
+| Drag / fling `axis: "y"`               | `pan-x pinch-zoom`                          |
+| Drag / fling both axes                 | `pinch-zoom`                                |
+| Swipe to dismiss (G03, x)              | `pan-y pinch-zoom`                          |
+| Pinch-zoom (G08) at scale 1            | `pan-x pan-y` (one finger scrolls the page) |
+| Pinch-zoom while zoomed in             | `none` (one finger pans the media)          |
+| Rotate (G09)                           | `pan-x pan-y`                               |
+| Reorder (G10)                          | `none` on the **handle** only               |
+| Pull-to-refresh (G04), elastic (G06)   | nothing — observe-only (R3)                 |
 
 ## R3 — Observe-only gestures on scroll containers (G04, G06)
 

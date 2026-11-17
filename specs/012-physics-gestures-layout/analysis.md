@@ -2,15 +2,15 @@
 
 Run after 012.0 (2026-11-17), re-checked at 012.5.
 
-| Check                                                                 | Result |
-| --------------------------------------------------------------------- | ------ |
-| Every catalogue entry G01–G11, L01–L10, H11, P11 has an FR, an API row and a task | pass (FR-020/021/034 → api-012 §1–§3 → T020–T035) |
-| Every brief requirement maps to an FR or a non-goal                   | pass (brief §2–§11 → FR-001–FR-055; §5 navigation/VT → non-goal) |
-| Every FR has a task and a planned test                                | pass (plan “Test strategy”, T017/T026/T036/T050/T051) |
-| No second scheduler, integrator or composer in any contract           | pass (gesture-engine §5, layout-engine §3, ADR 0027 §1) |
-| Family isolation (no family imports another)                          | pass (shared internals in `src/core`, D-2) |
-| Accessibility alternatives for every functional gesture               | pass (accessibility-012 §2) |
-| Reduced behaviour per effect consistent between catalogue and api-012 | pass, with one documented change: L03 `fade` (catalogue) kept; P11 `reduced` kept |
-| Additive-only changes to existing entries                             | pass (`TransformLayer.scaleX/scaleY`, Entrance `continuous`, `hoverEffects`/`pressEffects` gain one entry) |
-| Budgets: earlier approved values untouched unless justified           | open until 012.5 (measured in evidence §9) |
-| Catalogue driver changes                                              | L01/L03/L04/L05/L10 animate the consumer's element through the motion host (JS FLIP) instead of WAAPI — WAAPI cannot write the composed `transform` (ADR 0023/0025); L02 uses package-rendered wrappers; recorded in api-012 §2 |
+| Check                                                                             | Result                                                                                                                                                                                                                          |
+| --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Every catalogue entry G01–G11, L01–L10, H11, P11 has an FR, an API row and a task | pass (FR-020/021/034 → api-012 §1–§3 → T020–T035)                                                                                                                                                                               |
+| Every brief requirement maps to an FR or a non-goal                               | pass (brief §2–§11 → FR-001–FR-055; §5 navigation/VT → non-goal)                                                                                                                                                                |
+| Every FR has a task and a planned test                                            | pass (plan “Test strategy”, T017/T026/T036/T050/T051)                                                                                                                                                                           |
+| No second scheduler, integrator or composer in any contract                       | pass (gesture-engine §5, layout-engine §3, ADR 0027 §1)                                                                                                                                                                         |
+| Family isolation (no family imports another)                                      | pass (shared internals in `src/core`, D-2)                                                                                                                                                                                      |
+| Accessibility alternatives for every functional gesture                           | pass (accessibility-012 §2)                                                                                                                                                                                                     |
+| Reduced behaviour per effect consistent between catalogue and api-012             | pass, with one documented change: L03 `fade` (catalogue) kept; P11 `reduced` kept                                                                                                                                               |
+| Additive-only changes to existing entries                                         | pass (`TransformLayer.scaleX/scaleY`, Entrance `continuous`, `hoverEffects`/`pressEffects` gain one entry)                                                                                                                      |
+| Budgets: earlier approved values untouched unless justified                       | open until 012.5 (measured in evidence §9)                                                                                                                                                                                      |
+| Catalogue driver changes                                                          | L01/L03/L04/L05/L10 animate the consumer's element through the motion host (JS FLIP) instead of WAAPI — WAAPI cannot write the composed `transform` (ADR 0023/0025); L02 uses package-rendered wrappers; recorded in api-012 §2 |

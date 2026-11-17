@@ -55,10 +55,10 @@ channel) through the item's motion host.
 
 ## 6 · Height drivers (L02, L06)
 
-| Driver        | Used by          | Mechanism                                                                                   |
-| ------------- | ---------------- | ------------------------------------------------------------------------------------------- |
-| `css`         | L06 (`auto` when supported) | package CSS on the package-rendered panel: `interpolate-size: allow-keywords`; `height: auto` ↔ `0` with a transition (R1, rule R-1 respected) |
-| `js` measured | L02; L06 fallback | read the current and target height (2 reads per change), transient WAAPI `height` animation on the package-rendered wrapper (no fill, `overflow: clip` while running), the final state is the natural CSS state |
+| Driver        | Used by                     | Mechanism                                                                                                                                                                                                       |
+| ------------- | --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `css`         | L06 (`auto` when supported) | package CSS on the package-rendered panel: `interpolate-size: allow-keywords`; `height: auto` ↔ `0` with a transition (R1, rule R-1 respected)                                                                  |
+| `js` measured | L02; L06 fallback           | read the current and target height (2 reads per change), transient WAAPI `height` animation on the package-rendered wrapper (no fill, `overflow: clip` while running), the final state is the natural CSS state |
 
 A change during a running height animation starts from the current computed height (one read) — no
 jump. Reduced motion: instant. Closed panels are `hidden="until-found"` where supported (find-in-page
@@ -68,19 +68,19 @@ opens them) and `inert` otherwise; the panel's content is never removed from the
 
 State per key: `entering → present → exiting → removed`.
 
-| Event                         | Behaviour                                                                    |
-| ----------------------------- | ---------------------------------------------------------------------------- |
-| key added after mount         | enter animation (Entrance definition/preset as a value, or built-in fade)    |
-| key added at first render     | no animation unless `initial`; SSR/hydration output is the plain children   |
-| key removed                   | kept rendered in place; `inert` + `aria-hidden`; exit animation; then removed |
-| key re-added while exiting    | exit interrupted; enter continues from the current progress (Entrance `continuous`) |
-| several keys removed          | independent exits, each removed on its own completion                        |
-| exit fails / never completes  | watchdog: duration + 1000 ms (max 10 s), then removed                        |
-| page hidden                   | running exits complete at once                                               |
-| reduced motion (live)         | exits complete at once; enters show the final state                         |
-| duration 0                    | removed in the same commit cycle                                             |
-| container unmounts            | everything removed; timers and attachments destroyed                         |
-| focus inside an exiting item  | moved to the nearest present sibling item, else to the presence `focusFallback` |
+| Event                        | Behaviour                                                                           |
+| ---------------------------- | ----------------------------------------------------------------------------------- |
+| key added after mount        | enter animation (Entrance definition/preset as a value, or built-in fade)           |
+| key added at first render    | no animation unless `initial`; SSR/hydration output is the plain children           |
+| key removed                  | kept rendered in place; `inert` + `aria-hidden`; exit animation; then removed       |
+| key re-added while exiting   | exit interrupted; enter continues from the current progress (Entrance `continuous`) |
+| several keys removed         | independent exits, each removed on its own completion                               |
+| exit fails / never completes | watchdog: duration + 1000 ms (max 10 s), then removed                               |
+| page hidden                  | running exits complete at once                                                      |
+| reduced motion (live)        | exits complete at once; enters show the final state                                 |
+| duration 0                   | removed in the same commit cycle                                                    |
+| container unmounts           | everything removed; timers and attachments destroyed                                |
+| focus inside an exiting item | moved to the nearest present sibling item, else to the presence `focusFallback`     |
 
 `onExitComplete(key)` fires once per removal. `usePresence()` gives custom children `[isPresent,
 safeToRemove]`; a child that takes over its exit must call `safeToRemove` (the watchdog still applies).

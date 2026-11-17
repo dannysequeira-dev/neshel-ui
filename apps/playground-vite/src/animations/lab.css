@@ -656,6 +656,20 @@ body {
 /* Phase 012 gallery (gestures, layout, H11, P11). */
 .g-grid {
   grid-template-columns: repeat(auto-fill, minmax(min(19rem, 100%), 1fr));
+  align-items: start;
+}
+.g-grid .gallery-tile > .gallery-button,
+.g-grid .gallery-tile > .g-row-buttons {
+  justify-self: start;
+}
+.g-note,
+.g-fruit,
+.g-flip li,
+.g-cell,
+.g-card,
+.g-brick {
+  border: 1px solid var(--neshel-border, #d4d4d8);
+  background: var(--neshel-background, #fff);
 }
 .g-wide {
   grid-column: 1 / -1;
@@ -703,7 +717,6 @@ body {
 .g-note {
   padding: 0.75rem 2.5rem 0.75rem 0.75rem;
   border-radius: 0.5rem;
-  background: var(--neshel-muted, #f1f5f9);
 }
 .g-pull {
   height: 11rem;
@@ -745,7 +758,6 @@ body {
   gap: 0.5rem;
   padding: 0.375rem;
   border-radius: 0.5rem;
-  background: var(--neshel-muted, #f1f5f9);
 }
 .g-fruit-name {
   flex: 1;
@@ -771,7 +783,6 @@ body {
 .g-flip li {
   padding: 0.5rem 0.75rem;
   border-radius: 0.5rem;
-  background: var(--neshel-muted, #f1f5f9);
 }
 .g-box {
   align-self: start;
@@ -826,7 +837,6 @@ body {
   place-items: center;
   height: 2.5rem;
   border-radius: 0.5rem;
-  background: var(--neshel-muted, #f1f5f9);
 }
 .g-accordion {
   margin-top: 0.5rem;
@@ -870,7 +880,6 @@ body {
 .g-card {
   padding: 1rem;
   border-radius: 0.75rem;
-  background: var(--neshel-muted, #f1f5f9);
 }
 .g-masonry {
   max-width: 40rem;
