@@ -620,7 +620,7 @@ test("ST07 stuck state from the pinned edge and the release point (no sentinel)"
     await Promise.resolve(); // the observer is (re)created in a microtask after the measurement
     assert.equal(io.instances.at(-1).options.rootMargin, "-1px 0px 0px 0px");
     scrollAndSettle(800);
-    io.report(bar, { inView: false, ratio: 0.98, top: 0, bottom: 60 });
+    io.report(bar, { inView: true, ratio: 0.98, top: 0, bottom: 60 });
     assert.equal(bar.getAttribute("data-neshel-stuck"), "");
     scrollAndSettle(1950); // release = 500 + 1500 − 60 − 0 = 1940
     assert.equal(bar.getAttribute("data-neshel-stuck"), null, "released at the end of its parent");

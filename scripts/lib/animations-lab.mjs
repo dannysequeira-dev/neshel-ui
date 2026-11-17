@@ -54,12 +54,12 @@ export function tiltStateExpression(selector) {
 }
 
 /**
- * ScrollScene state: the prototype's progress and cached geometry next to the live geometry, the
+ * ScrollScene state (package API since Phase 011): the scene's progress and cached geometry next to the live geometry, the
  * progress the live layout implies (`real`), the stage position and the document height.
  */
 export const sceneStateExpression = `(() => {
   const section = document.getElementById("scene");
-  const stage = document.getElementById("scene-stage");
+  const stage = section.querySelector(".neshel-scene-stage");
   const rect = section.getBoundingClientRect();
   const top = rect.top + window.scrollY;
   const distance = section.offsetHeight - window.innerHeight;
@@ -69,7 +69,7 @@ export const sceneStateExpression = `(() => {
     scrollY: window.scrollY,
     progress: lab.sceneProgress,
     real: Math.min(1, Math.max(0, (window.scrollY - top) / distance)),
-    css: Number(stage.style.getPropertyValue("--scene-progress")),
+    css: Number(getComputedStyle(section).getPropertyValue("--neshel-scene-progress")),
     stageTop: stage.getBoundingClientRect().top,
     far: ty("scene-layer-far"),
     front: ty("scene-layer-front"),

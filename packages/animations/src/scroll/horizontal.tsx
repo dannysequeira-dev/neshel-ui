@@ -173,6 +173,19 @@ export function HorizontalScroll({
     };
   }, [section, mode]);
 
+  // Some engines scroll the clipped stage to reveal focus after the focus event: the track position is
+  // ours, so a pinned stage is always reset (it cannot be scrolled by the user: overflow is hidden).
+  useEffect(() => {
+    const stageElement = stage.current;
+    if (mode !== "pinned" || !stageElement) return;
+    const reset = () => {
+      if (stageElement.scrollLeft !== 0) stageElement.scrollLeft = 0;
+    };
+    reset();
+    stageElement.addEventListener("scroll", reset, { passive: true });
+    return () => stageElement.removeEventListener("scroll", reset);
+  }, [mode]);
+
   function handleFocus(event: FocusEvent<HTMLElement>): void {
     onFocus?.(event);
     const timeline = timelineRef.current;

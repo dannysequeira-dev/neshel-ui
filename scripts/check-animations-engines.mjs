@@ -231,6 +231,30 @@ async function runEngine(playwright, engine, url, throttle) {
       await run(item.id, () => runSceneShiftCase(evaluate, item));
     }
 
+    // Phase 011 scroll gallery (same in-page suite as the Chrome check).
+    const scrollSuite = await page.evaluate(async () => {
+      document.getElementById("scroll-title").scrollIntoView();
+      return window.__neshelLab.scroll.runScrollSuite();
+    });
+    for (const item of scrollSuite) cases.push(item);
+    await run(
+      "scroll: reduced motion switched on live — horizontal section stacks, decorative layers stop",
+      async () => {
+        await page.emulateMedia({ reducedMotion: "reduce" });
+        await until(
+          "static alternatives",
+          `(() => { const f = window.__neshelLab.scroll.reducedFacts(); return f.reduced && f.hscroll === "stacked" && f.dot === "" && f.scene === "" && f.skew === ""; })()`,
+          "window.__neshelLab.scroll.reducedFacts()",
+        );
+        await page.emulateMedia({ reducedMotion: "no-preference" });
+        await until(
+          "pinned again",
+          `window.__neshelLab.scroll.reducedFacts().hscroll === "pinned"`,
+          "window.__neshelLab.scroll.reducedFacts()",
+        );
+      },
+    );
+
     await run("no page errors during the run", async () =>
       check(errors.length === 0, errors.join(" | ")),
     );

@@ -394,7 +394,7 @@ const stuckValidator = /* @__PURE__ */ validator("stuckState");
 
 /**
  * ST07 — `data-neshel-stuck` while a `position: sticky` element (block-start offset `top`) is pinned.
- * An IntersectionObserver with `rootMargin: -(top + 1)px 0 0 0` and threshold 1 reports the pinned edge
+ * An IntersectionObserver with `rootMargin: -(top + 1)px 0 0 0` and thresholds 0/1 reports the pinned edge
  * (no sentinel element); the release point (bottom of the containing block) comes from cached geometry
  * and the source position, so scrolling reads no layout.
  */
@@ -433,9 +433,12 @@ export const stuckState = /* @__PURE__ */ defineEffect<StuckStateOptions, Resolv
       const offset = top;
       stopObserver = observeInView(
         element,
-        { rootMargin: `${-(offset + 1)}px 0px 0px 0px`, threshold: 1, root: sourceElement },
+        // Thresholds 0 and 1: a jump from far away into the pinned state crosses 0, a pinned edge
+        // makes the box cross 1 (its top passes the shrunken root edge).
+        { rootMargin: `${-(offset + 1)}px 0px 0px 0px`, threshold: [0, 1], root: sourceElement },
         (report) => {
-          pinnedEdge = !report.inView && Math.abs(report.top - offset) <= 1.5;
+          pinnedEdge =
+            report.ratio > 0 && report.ratio < 0.999 && Math.abs(report.top - offset) <= 1.5;
           evaluate();
         },
       );
