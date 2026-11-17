@@ -18,7 +18,7 @@ export type AttachFunction = <Options, Resolved>(
 ) => EffectHandle<Options>;
 
 /** Stable key of option values; functions and symbols are keyed by type only. */
-function optionsKey(options: unknown): string {
+export function optionsKey(options: unknown): string {
   try {
     return JSON.stringify(options ?? null, (_key, value) =>
       typeof value === "function" || typeof value === "symbol" ? `[${typeof value}]` : value,

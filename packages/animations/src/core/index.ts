@@ -1,5 +1,5 @@
 /**
- * `@neshel-ui/animations/core`: framework-free motion engine (experimental; features 008–009).
+ * `@neshel-ui/animations/core`: framework-free motion engine (experimental; features 008–010).
  * No React and no DOM access at import time; nothing registers at import time; safe on the server.
  */
 
@@ -51,6 +51,12 @@ export { NeshelAnimationsError } from "./errors.js";
 export type { ExclusiveChannel } from "./host.js";
 export { clamp, mapRange, mix, progress } from "./interpolate.js";
 export { type MotionValue, motionValue } from "./motion-value.js";
+export {
+  attachPreset,
+  definePreset,
+  type EffectPreset,
+  type PresetInput,
+} from "./preset.js";
 export {
   prefersReducedMotion,
   type ReducedMotion,
