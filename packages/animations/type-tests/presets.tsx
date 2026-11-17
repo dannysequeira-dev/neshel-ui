@@ -1,9 +1,16 @@
 // Positive type fixtures for Phase 010 presets and primitives (pnpm typecheck).
 import { useRef } from "react";
-import { attachPreset, definePreset, type EffectPreset } from "../src/core/index.js";
+import {
+  attachPreset,
+  definePreset,
+  type EffectPreset,
+  type PresetInput,
+} from "../src/core/index.js";
 import {
   clipReveal,
+  type EntranceOptions,
   type FadeSlideOptions,
+  fadeIn,
   fadeSlide,
   fadeUp,
   Reveal,
@@ -30,6 +37,13 @@ const softGlow = definePreset("soft-glow", glow, { color: "hotpink", size: 2 });
 attachPreset(document.body, fadeUp, { distance: 8 });
 attachPreset(document.body, clipReveal, { shape: "circle" });
 
+// A heterogeneous list of entrance presets is typed by the shared option interface.
+const entrances: ReadonlyArray<PresetInput<EntranceOptions, unknown>> = [
+  fadeIn,
+  fadeUp,
+  clipReveal,
+];
+
 export function Gallery() {
   const ref = useRef<HTMLDivElement>(null);
   return (
@@ -41,6 +55,9 @@ export function Gallery() {
         appear="always"
       />
       <Reveal preset={fadeFar} className="hero" />
+      {entrances.map((preset, index) => (
+        <Reveal key={String(index)} preset={preset} options={{ delay: index * 50 }} />
+      ))}
       <Reveal preset={springIn} options={{ spring: "gentle", direction: "down" }} asChild>
         <section>Hello</section>
       </Reveal>
