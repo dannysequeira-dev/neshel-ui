@@ -1,5 +1,6 @@
 // pnpm check:animations:bundles [--no-build] [--report <file>]
-// Phase 009 (spec FR-063, SC-003; owner-approved budgets): bundle sizes of @neshel-ui/animations
+// Phase 009 (spec FR-063, SC-003; owner-approved budgets) and Phase 010 (FR-073; family entries,
+// representative imports and stylesheets, budgets proposed from measurements): bundle sizes of @neshel-ui/animations
 // measured from its REAL packed tarball (pnpm pack → extracted outside the workspace), built with
 // Vite (Rolldown) minified, React external, gzip-compressed. Offline: Vite comes from the
 // playground's installed dependencies; @radix-ui/react-slot is linked from the workspace install.
@@ -71,17 +72,75 @@ export const ENTRIES = {
     source: `export * from "${A}";`,
     markers: { slot: false, tilt: false },
   },
+  // Phase 010 (FR-073).
+  "core: definePreset + attachPreset": {
+    source: `export { definePreset, attachPreset } from "${A}/core";`,
+    markers: { react: false, slot: false, waapi: false },
+  },
+  "entrance: Reveal + fadeUp": {
+    source: `export { Reveal, fadeUp } from "${A}/entrance";`,
+    markers: {
+      react: true,
+      slot: true,
+      waapi: false,
+      tilt: false,
+      hoverCode: false,
+      pressCode: false,
+    },
+  },
+  "entrance: fadeIn definition (no React)": {
+    source: `export { fadeIn } from "${A}/entrance";`,
+    markers: { react: false, slot: false, waapi: false },
+  },
+  "entrance: entire entry": {
+    source: `export * from "${A}/entrance";`,
+    markers: { tilt: false, hoverCode: false, pressCode: false },
+  },
+  "hover: Hover + lift": {
+    source: `export { Hover, lift } from "${A}/hover";`,
+    markers: { react: true, slot: true, waapi: false, tilt: false, pressCode: false },
+  },
+  "hover: lift definition (no React)": {
+    source: `export { lift } from "${A}/hover";`,
+    markers: { react: false, slot: false, tilt: false },
+  },
+  "hover: entire entry": {
+    source: `export * from "${A}/hover";`,
+    markers: { pressCode: false },
+  },
+  "press: Press + pressScale": {
+    source: `export { Press, pressScale } from "${A}/press";`,
+    markers: { react: true, slot: true, waapi: false, tilt: false, hoverCode: false },
+  },
+  "press: ripple definition (no React)": {
+    source: `export { ripple } from "${A}/press";`,
+    markers: { react: false, slot: false, waapi: true },
+  },
+  "press: NumberTick": {
+    source: `export { NumberTick } from "${A}/press";`,
+    markers: { react: true, waapi: false, hoverCode: false },
+  },
+  "press: entire entry": {
+    source: `export * from "${A}/press";`,
+    markers: { tilt: false, hoverCode: false },
+  },
 };
+
+/** Stylesheets measured from the packed tarball (gzip of the file as shipped). */
+export const STYLESHEETS = ["dist/hover.css", "dist/press.css", "dist/styles.css"];
 
 const MARKERS = {
   react: (code) => /from\s*["']react/.test(code),
   slot: (code) => /react-slot|createSlot|Slottable/.test(code),
-  waapi: (code) => /\.animate\(/.test(code),
+  waapi: (code) => /\.animate(?:\?\.)?\(/.test(code),
   scheduler: (code) => /requestAnimationFrame/.test(code),
   tilt: (code) => /data-neshel-tilt/.test(code),
   easing: (code) => /cubic-bezier\(/.test(code),
   arbiter: (code) => /is suspended/.test(code),
   devWarnings: (code) => /changed outside the engine/.test(code),
+  // Family fingerprints (strings that only that family's code contains).
+  hoverCode: (code) => /hover\/lift|hover\/glow|hover\/spotlight/.test(code),
+  pressCode: (code) => /press\/scale|press\/ripple|press\/number-tick/.test(code),
 };
 
 function link(from, to) {
@@ -108,6 +167,23 @@ async function main() {
       const file = join(target, ...path.replace(/^package\//, "").split("/"));
       mkdirSync(dirname(file), { recursive: true });
       writeFileSync(file, contents);
+    }
+    for (const sheet of STYLESHEETS) {
+      const code = readFileSync(join(target, ...sheet.split("/")));
+      const name = `css: ${sheet.replace("dist/", "")}`;
+      const gzip = gzipSync(code, { level: 9 }).length;
+      const budget = BUDGETS[name];
+      results[name] = {
+        minBytes: code.length,
+        gzipBytes: gzip,
+        budgetBytes: budget ?? null,
+        markers: {},
+      };
+      if (budget !== undefined && gzip > budget)
+        failures.push(`${name}: ${gzip} B gzip > budget ${budget} B`);
+      console.info(
+        `${budget !== undefined && gzip > budget ? "FAIL" : "ok  "} ${name} — ${(gzip / 1024).toFixed(2)} KiB gzip (${code.length} B raw)${budget !== undefined ? ` / budget ${(budget / 1024).toFixed(2)} KiB` : ""}`,
+      );
     }
     link(
       join(PACKAGE, "node_modules", "@radix-ui", "react-slot"),

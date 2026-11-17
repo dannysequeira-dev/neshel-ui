@@ -1,0 +1,212 @@
+{
+  "css: hover.css": {
+    "minBytes": 4922,
+    "gzipBytes": 1711,
+    "budgetBytes": 1894,
+    "markers": {}
+  },
+  "css: press.css": {
+    "minBytes": 4808,
+    "gzipBytes": 1454,
+    "budgetBytes": 1638,
+    "markers": {}
+  },
+  "css: styles.css": {
+    "minBytes": 10088,
+    "gzipBytes": 2903,
+    "budgetBytes": 3174,
+    "markers": {}
+  },
+  "core (entire entry)": {
+    "minBytes": 29469,
+    "gzipBytes": 9208,
+    "budgetBytes": 9728,
+    "markers": {
+      "react": false,
+      "slot": false
+    }
+  },
+  "registry + host (defineEffect, createEffectRegistry, attachEffect)": {
+    "minBytes": 14108,
+    "gzipBytes": 4798,
+    "budgetBytes": 5120,
+    "markers": {
+      "react": false,
+      "slot": false,
+      "waapi": false,
+      "easing": false,
+      "arbiter": true,
+      "devWarnings": true
+    }
+  },
+  "composeTransform": {
+    "minBytes": 972,
+    "gzipBytes": 517,
+    "budgetBytes": 614,
+    "markers": {
+      "scheduler": false
+    }
+  },
+  "controllers (motionValue, animateValue)": {
+    "minBytes": 10180,
+    "gzipBytes": 3551,
+    "budgetBytes": 3891,
+    "markers": {
+      "react": false,
+      "waapi": false
+    }
+  },
+  "hover: Tilt3D": {
+    "minBytes": 24805,
+    "gzipBytes": 8204,
+    "budgetBytes": 8960,
+    "markers": {
+      "react": true,
+      "slot": true,
+      "waapi": false,
+      "arbiter": false
+    }
+  },
+  "hover: createTilt3D (no React)": {
+    "minBytes": 18616,
+    "gzipBytes": 6160,
+    "budgetBytes": 6758,
+    "markers": {
+      "react": false,
+      "slot": false,
+      "arbiter": false
+    }
+  },
+  "registry + host, production define (info)": {
+    "minBytes": 13509,
+    "gzipBytes": 4588,
+    "budgetBytes": null,
+    "markers": {
+      "devWarnings": false,
+      "arbiter": true
+    }
+  },
+  "root: React bindings": {
+    "minBytes": 14204,
+    "gzipBytes": 4610,
+    "budgetBytes": 5018,
+    "markers": {
+      "slot": false,
+      "tilt": false
+    }
+  },
+  "core: definePreset + attachPreset": {
+    "minBytes": 12959,
+    "gzipBytes": 4331,
+    "budgetBytes": 4710,
+    "markers": {
+      "react": false,
+      "slot": false,
+      "waapi": false
+    }
+  },
+  "entrance: Reveal + fadeUp": {
+    "minBytes": 37245,
+    "gzipBytes": 11678,
+    "budgetBytes": 12544,
+    "markers": {
+      "react": true,
+      "slot": true,
+      "waapi": false,
+      "tilt": false,
+      "hoverCode": false,
+      "pressCode": false
+    }
+  },
+  "entrance: fadeIn definition (no React)": {
+    "minBytes": 19060,
+    "gzipBytes": 6184,
+    "budgetBytes": 6656,
+    "markers": {
+      "react": false,
+      "slot": false,
+      "waapi": false
+    }
+  },
+  "entrance: entire entry": {
+    "minBytes": 44349,
+    "gzipBytes": 13592,
+    "budgetBytes": 14592,
+    "markers": {
+      "tilt": false,
+      "hoverCode": false,
+      "pressCode": false
+    }
+  },
+  "hover: Hover + lift": {
+    "minBytes": 35520,
+    "gzipBytes": 11239,
+    "budgetBytes": 12032,
+    "markers": {
+      "react": true,
+      "slot": true,
+      "waapi": false,
+      "tilt": false,
+      "pressCode": false
+    }
+  },
+  "hover: lift definition (no React)": {
+    "minBytes": 15890,
+    "gzipBytes": 5292,
+    "budgetBytes": 5734,
+    "markers": {
+      "react": false,
+      "slot": false,
+      "tilt": false
+    }
+  },
+  "hover: entire entry": {
+    "minBytes": 57796,
+    "gzipBytes": 16402,
+    "budgetBytes": 17664,
+    "markers": {
+      "pressCode": false
+    }
+  },
+  "press: Press + pressScale": {
+    "minBytes": 31972,
+    "gzipBytes": 10164,
+    "budgetBytes": 11008,
+    "markers": {
+      "react": true,
+      "slot": true,
+      "waapi": false,
+      "tilt": false,
+      "hoverCode": false
+    }
+  },
+  "press: ripple definition (no React)": {
+    "minBytes": 14120,
+    "gzipBytes": 4829,
+    "budgetBytes": 5222,
+    "markers": {
+      "react": false,
+      "slot": false,
+      "waapi": true
+    }
+  },
+  "press: NumberTick": {
+    "minBytes": 27828,
+    "gzipBytes": 8927,
+    "budgetBytes": 9626,
+    "markers": {
+      "react": true,
+      "waapi": false,
+      "hoverCode": false
+    }
+  },
+  "press: entire entry": {
+    "minBytes": 55268,
+    "gzipBytes": 16291,
+    "budgetBytes": 17408,
+    "markers": {
+      "tilt": false,
+      "hoverCode": false
+    }
+  }
+}

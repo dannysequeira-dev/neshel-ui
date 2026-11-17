@@ -5,5 +5,19 @@
   "controllers (motionValue, animateValue)": 3891,
   "hover: Tilt3D": 8960,
   "hover: createTilt3D (no React)": 6758,
-  "root: React bindings": 5018
+  "root: React bindings": 5018,
+  "core: definePreset + attachPreset": 4710,
+  "entrance: Reveal + fadeUp": 12544,
+  "entrance: fadeIn definition (no React)": 6656,
+  "entrance: entire entry": 14592,
+  "hover: Hover + lift": 12032,
+  "hover: lift definition (no React)": 5734,
+  "hover: entire entry": 17664,
+  "press: Press + pressScale": 11008,
+  "press: ripple definition (no React)": 5222,
+  "press: NumberTick": 9626,
+  "press: entire entry": 17408,
+  "css: hover.css": 1894,
+  "css: press.css": 1638,
+  "css: styles.css": 3174
 }
