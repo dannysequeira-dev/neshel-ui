@@ -114,6 +114,8 @@ export async function runEffectsSuite(): Promise<Case[]> {
     for (const host of hosts) {
       if (
         host.classList.contains("neshel-swap") ||
+        // Phase 012: the collapse panel is rendered by <Collapse> (package-owned, CSS height driver).
+        host.classList.contains("neshel-collapse") ||
         host.closest(".neshel-toggle, .neshel-checkbox")
       )
         continue; // package-owned elements

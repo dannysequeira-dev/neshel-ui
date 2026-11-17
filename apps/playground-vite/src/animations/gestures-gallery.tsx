@@ -143,6 +143,8 @@ export function GesturesGallery() {
               id="g01-drag"
               className="g-puck"
               tabIndex={0}
+              role="group"
+              aria-roledescription="draggable"
               aria-label="Draggable puck"
             />
           </div>
@@ -156,6 +158,8 @@ export function GesturesGallery() {
               id="g02-snap"
               className="g-puck"
               tabIndex={0}
+              role="group"
+              aria-roledescription="draggable"
               aria-label="Snapping puck"
             />
           </div>
@@ -194,6 +198,7 @@ export function GesturesGallery() {
             id="g04-pull"
             className="g-pull"
             threshold={56}
+            scrollerLabel="Feed"
             onRefresh={() =>
               new Promise<void>((resolve) =>
                 setTimeout(() => {
@@ -230,7 +235,7 @@ export function GesturesGallery() {
         </figure>
         <figure className="gallery-tile">
           <figcaption>G06 Elastic edge (scroll past the ends)</figcaption>
-          <ElasticScroll id="g06-elastic" className="g-scroller">
+          <ElasticScroll id="g06-elastic" className="g-scroller" label="Elastic rows">
             {Array.from({ length: 10 }, (_, i) => (
               <p key={i}>Row {i + 1}</p>
             ))}
@@ -245,6 +250,8 @@ export function GesturesGallery() {
               id="g07-fling"
               className="g-puck"
               tabIndex={0}
+              role="group"
+              aria-roledescription="draggable"
               aria-label="Throwable puck"
             />
           </div>
@@ -263,6 +270,8 @@ export function GesturesGallery() {
             id="g09-rotate"
             className="g-rotor"
             tabIndex={0}
+            role="group"
+            aria-roledescription="rotatable"
             aria-label="Rotatable dial"
           />
           <span className="g-row-buttons">

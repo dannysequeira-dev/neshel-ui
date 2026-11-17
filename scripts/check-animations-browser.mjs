@@ -3,7 +3,8 @@
 // through the DevTools protocol (scripts/lib/cdp.mjs): Tilt3D pointer, return, composition,
 // keyboard focus, unmount, live reduced-motion changes, zero React commits during movement;
 // CornerRecede techniques; ScrollScene pinning, progress, depth layers, timeline segments, resize
-// re-measurement, geometry invalidation and smooth scrub; axe. Results are decided by observable
+// re-measurement, geometry invalidation and smooth scrub; Phase 010–012 galleries (Phase 012: real mouse,
+// one- and two-finger touch, keyboard, touch scrolling not blocked); axe. Results are decided by observable
 // conditions with a ceiling (scripts/lib/animations-lab.mjs), never by fixed sleeps; short frame
 // counts only bound "nothing must happen" checks. `--cpu-throttle <rate>` slows the page's main
 // thread to exercise slow-runner timing. Requires `pnpm build:playground` first.
@@ -501,6 +502,234 @@ async function main() {
           `(() => { const f = window.__neshelLab.scroll.reducedFacts(); return f.hscroll === "pinned" && f.hscrollPinned === "pinned"; })()`,
           "window.__neshelLab.scroll.reducedFacts()",
         );
+      },
+    );
+
+    // Phase 012 gestures/layout gallery: the in-page suite (synthetic multi-pointer input in real layout),
+    // then REAL input through the DevTools protocol: mouse drag, one-finger and two-finger touch
+    // (Input.dispatchTouchEvent goes through the browser's touch-action and gesture pipeline), keyboard,
+    // a real touch scroll that must not be blocked, and the live reduced-motion switch.
+    await p.evaluate(`document.getElementById("gestures-title").scrollIntoView()`);
+    const gestureCases = await p.evaluate("window.__neshelLab.gestures.runGesturesSuite()");
+    for (const item of gestureCases) cases.push(item);
+    const touch = (type, points) =>
+      p.send("Input.dispatchTouchEvent", {
+        type,
+        touchPoints: points.map(([x, y], id) => ({ x, y, id, radiusX: 2, radiusY: 2, force: 1 })),
+      });
+    const transformOf = (selector) =>
+      `(() => { const m = new DOMMatrix(getComputedStyle(document.querySelector(${JSON.stringify(selector)})).transform); return { x: m.m41, y: m.m42, s: Math.hypot(m.a, m.b) }; })()`;
+    const fruitNames = `[...document.querySelectorAll("#g10-list .g-fruit")].map((li) => li.getAttribute("data-neshel-reorder-label")).join()`;
+    const moveUpOf = (label) =>
+      `[...document.querySelectorAll("#g10-list .g-fruit")].find((li) => li.getAttribute("data-neshel-reorder-label") === ${JSON.stringify(label)}).querySelector("button:not(.neshel-reorder-handle)").click()`;
+
+    await run(
+      "G01 real mouse: press, move and release drag the puck; it coasts and stays in its arena",
+      async () => {
+        await scrollIntoView("#g01-drag");
+        const r = await rectOf("#g01-drag");
+        const x = r.left + r.width / 2;
+        const y = r.top + r.height / 2;
+        await p.send("Input.dispatchMouseEvent", { type: "mouseMoved", x, y });
+        await p.send("Input.dispatchMouseEvent", {
+          type: "mousePressed",
+          x,
+          y,
+          button: "left",
+          clickCount: 1,
+        });
+        for (let i = 1; i <= 10; i++) {
+          await p.send("Input.dispatchMouseEvent", {
+            type: "mouseMoved",
+            x: x + i * 8,
+            y: y + i * 3,
+            button: "left",
+            buttons: 1,
+          });
+        }
+        await p.send("Input.dispatchMouseEvent", {
+          type: "mouseReleased",
+          x: x + 80,
+          y: y + 30,
+          button: "left",
+          clickCount: 1,
+        });
+        await until(
+          "moved",
+          `${transformOf("#g01-drag")}.x > ${r.left - (await rectOf("#g01-arena")).left + 30}`,
+          transformOf("#g01-drag"),
+        );
+        await until(
+          "inside the arena at rest",
+          `(() => { const a = document.getElementById("g01-arena").getBoundingClientRect(); const p = document.getElementById("g01-drag").getBoundingClientRect(); return p.left >= a.left - 1 && p.right <= a.right + 1 && p.top >= a.top - 1 && p.bottom <= a.bottom + 1; })()`,
+          transformOf("#g01-drag"),
+        );
+        await mouse(2, 2);
+      },
+    );
+
+    await run(
+      "G01 real touch: one finger drags (touch-action pinch-zoom on the puck)",
+      async () => {
+        await scrollIntoView("#g01-drag");
+        const before = await evaluate(transformOf("#g01-drag"));
+        const r = await rectOf("#g01-drag");
+        const x = r.left + r.width / 2;
+        const y = r.top + r.height / 2;
+        await touch("touchStart", [[x, y]]);
+        for (let i = 1; i <= 8; i++) await touch("touchMove", [[x - i * 6, y]]);
+        await touch("touchEnd", []);
+        await until(
+          "dragged left",
+          `${transformOf("#g01-drag")}.x < ${before.x - 20}`,
+          transformOf("#g01-drag"),
+        );
+      },
+    );
+
+    await run(
+      "G08 real two-finger pinch: pointers reach the page (touch-action pan-x pan-y) and zoom the media",
+      async () => {
+        await scrollIntoView("#g08-zoom");
+        const reset = `[...document.querySelectorAll("#g08-zoom button")].find((b) => b.textContent === "Reset zoom").click()`;
+        await p.evaluate(reset);
+        await until(
+          "reset",
+          `${transformOf("#g08-zoom img")}.s < 1.01`,
+          transformOf("#g08-zoom img"),
+        );
+        const r = await rectOf("#g08-zoom img");
+        const cx = r.left + r.width / 2;
+        const cy = r.top + r.height / 2;
+        await touch("touchStart", [
+          [cx - 30, cy],
+          [cx + 30, cy],
+        ]);
+        for (let i = 1; i <= 8; i++) {
+          await touch("touchMove", [
+            [cx - 30 - i * 8, cy],
+            [cx + 30 + i * 8, cy],
+          ]);
+        }
+        await touch("touchEnd", []);
+        await until(
+          "zoomed in",
+          `${transformOf("#g08-zoom img")}.s > 1.5`,
+          transformOf("#g08-zoom img"),
+        );
+        await until(
+          "frame switched to touch-action none",
+          `getComputedStyle(document.querySelector("#g08-zoom .neshel-zoom-frame")).touchAction === "none"`,
+          `getComputedStyle(document.querySelector("#g08-zoom .neshel-zoom-frame")).touchAction`,
+        );
+        await p.evaluate(reset);
+        await until(
+          "reset again",
+          `${transformOf("#g08-zoom img")}.s < 1.01`,
+          transformOf("#g08-zoom img"),
+        );
+      },
+    );
+
+    await run(
+      "G08 real one-finger scroll over the media at scale 1: the page scrolls (not blocked)",
+      async () => {
+        await scrollIntoView("#g08-zoom");
+        const before = await evaluate("window.scrollY");
+        const r = await rectOf("#g08-zoom img");
+        const x = r.left + r.width / 2;
+        const y = r.top + r.height / 2;
+        await touch("touchStart", [[x, y]]);
+        for (let i = 1; i <= 10; i++) await touch("touchMove", [[x, y - i * 15]]);
+        await touch("touchEnd", []);
+        await until("page scrolled", `window.scrollY > ${before + 30}`, "window.scrollY");
+        notes.g08TouchScroll = (await evaluate("window.scrollY")) - before;
+      },
+    );
+
+    await run(
+      "G10 real keyboard: Space grabs, ArrowDown moves, Space drops; focus stays on the handle",
+      async () => {
+        await scrollIntoView("#g10-list");
+        const start = await evaluate(fruitNames);
+        await p.evaluate(`document.querySelector("#g10-list .neshel-reorder-handle").focus()`);
+        await key(" ", "Space", 32);
+        await key("ArrowDown", "ArrowDown", 40);
+        await until("moved", `${fruitNames} !== ${JSON.stringify(start)}`, fruitNames);
+        await key(" ", "Space", 32);
+        await until(
+          "focus kept and dropped",
+          `document.activeElement?.matches(".neshel-reorder-handle") && document.activeElement.getAttribute("aria-pressed") === "false"`,
+          `document.activeElement?.outerHTML.slice(0, 80)`,
+        );
+        await p.evaluate(`document.activeElement.blur()`);
+        await p.evaluate(moveUpOf(start.split(",")[0]));
+        await until("restored", `${fruitNames} === ${JSON.stringify(start)}`, fruitNames);
+      },
+    );
+
+    await run(
+      "G10 real touch: a finger on the handle reorders (touch-action none on the handle only)",
+      async () => {
+        await scrollIntoView("#g10-list");
+        await until(
+          "list at rest",
+          `window.__neshelLab.gestures.debug().gestures.claims === 0`,
+          fruitNames,
+        );
+        await p.evaluate(wait(400));
+        const start = await evaluate(fruitNames);
+        const h = await rectOf("#g10-list .neshel-reorder-handle");
+        const centers = await evaluate(
+          `[...document.querySelectorAll("#g10-list .g-fruit")].slice(0, 2).map((li) => { const r = li.getBoundingClientRect(); return r.top + r.height / 2; })`,
+        );
+        const x = h.left + h.width / 2;
+        const y = h.top + h.height / 2;
+        const distance = centers[1] - centers[0] + 10;
+        await touch("touchStart", [[x, y]]);
+        for (let i = 1; i <= 10; i++) await touch("touchMove", [[x, y + (distance * i) / 10]]);
+        await touch("touchEnd", []);
+        await until("reordered", `${fruitNames} !== ${JSON.stringify(start)}`, fruitNames);
+        await p.evaluate(moveUpOf(start.split(",")[0]));
+        await until("restored", `${fruitNames} === ${JSON.stringify(start)}`, fruitNames);
+      },
+    );
+
+    await run(
+      "P11 real touch long press: activates once after the hold; no click; early release cancels",
+      async () => {
+        await scrollIntoView("#p11-button");
+        const r = await rectOf("#p11-button");
+        const x = r.left + r.width / 2;
+        const y = r.top + r.height / 2;
+        const held = `Number(document.getElementById("p11-count").textContent)`;
+        const clicks = `Number(document.getElementById("p11-clicks").textContent)`;
+        const before = await evaluate(held);
+        const clicksBefore = await evaluate(clicks);
+        await touch("touchStart", [[x, y]]);
+        await until("held", `${held} === ${before + 1}`, held);
+        await touch("touchEnd", []);
+        await p.evaluate(wait(150));
+        check((await evaluate(clicks)) === clicksBefore, "the release click was swallowed");
+        await touch("touchStart", [[x, y]]);
+        await p.evaluate(wait(120));
+        await touch("touchEnd", []);
+        await p.evaluate(wait(800));
+        check((await evaluate(held)) === before + 1, "early release cancels");
+      },
+    );
+
+    await run(
+      "phase 012: reduced motion switched on live — FLIP applies at once, no inertia, follower hidden",
+      async () => {
+        await motionPreference("reduce");
+        const facts = await p.evaluate("window.__neshelLab.gestures.reducedFacts()");
+        await motionPreference("no-preference");
+        check(facts.reduced === true, JSON.stringify(facts));
+        check(facts.flipTransform === "", `FLIP transform ${facts.flipTransform}`);
+        check(facts.follower === "", `follower ${facts.follower}`);
+        check(facts.dragIdle === true, "no inertia task after release");
+        notes.gesturesReduced = facts;
       },
     );
     notes.effects = await p.evaluate("window.__neshelLab.notes");

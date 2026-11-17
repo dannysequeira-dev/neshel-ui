@@ -158,6 +158,8 @@ export interface PullToRefreshProps
   refreshButton?: boolean;
   /** Announcements (default "Refreshing…" / "Content updated"). */
   statusLabels?: { refreshing?: string; done?: string };
+  /** Accessible name of the scrollable region (default "Scrollable content"). */
+  scrollerLabel?: string;
   controls?: GestureControls;
   ref?: Ref<HTMLDivElement>;
   children?: ReactNode;
@@ -177,6 +179,7 @@ export function PullToRefresh(props: PullToRefreshProps) {
     refreshLabel = "Refresh",
     refreshButton = true,
     statusLabels,
+    scrollerLabel = "Scrollable content",
     controls: external,
     className,
     ref,
@@ -185,7 +188,7 @@ export function PullToRefresh(props: PullToRefreshProps) {
   } = props;
   const own = useGestureControls();
   const controls = external ?? own;
-  const scroller = useRef<HTMLDivElement | null>(null);
+  const scroller = useRef<HTMLElement | null>(null);
   const [status, setStatus] = useState("");
   const [busy, setBusy] = useState(false);
   const labels = { refreshing: "Refreshing…", done: "Content updated", ...statusLabels };
@@ -218,9 +221,16 @@ export function PullToRefresh(props: PullToRefreshProps) {
           {refreshLabel}
         </button>
       ) : null}
-      <div ref={scroller} className="neshel-pull-scroller">
+      {/* A focusable region so keyboard users can scroll it (WCAG 2.1.1; axe scrollable-region-focusable). */}
+      <section
+        ref={scroller}
+        className="neshel-pull-scroller"
+        aria-label={scrollerLabel}
+        // biome-ignore lint/a11y/noNoninteractiveTabindex: a scrollable region must be keyboard-scrollable.
+        tabIndex={0}
+      >
         {children}
-      </div>
+      </section>
       <span className="neshel-sr-only" role="status" aria-live="polite">
         {status}
       </span>
@@ -229,29 +239,47 @@ export function PullToRefresh(props: PullToRefreshProps) {
 }
 
 /* G06 ---------------------------------------------------------------------------------------------- */
-export interface ElasticScrollProps extends DivProps, ElasticEdgeOptions {
-  ref?: Ref<HTMLDivElement>;
+export interface ElasticScrollProps
+  extends Omit<HTMLAttributes<HTMLElement>, "children">,
+    ElasticEdgeOptions {
+  /** Accessible name of the scrollable region (default "Scrollable content"). */
+  label?: string;
+  ref?: Ref<HTMLElement>;
   children?: ReactNode;
 }
 
 /** A package-rendered scroll container whose content stretches visually at its edges (decorative). */
 export function ElasticScroll(props: ElasticScrollProps) {
-  const { axis, max, reducedMotion, disabled, className, ref, children, ...rest } = props;
+  const {
+    axis,
+    max,
+    reducedMotion,
+    disabled,
+    label = "Scrollable content",
+    className,
+    ref,
+    children,
+    ...rest
+  } = props;
   const content = useRef<HTMLDivElement | null>(null);
   useMotionPresets(content, [
     { effect: elasticEdge, options: { axis, max, reducedMotion, disabled } },
   ]);
+  // A focusable, named region so keyboard users can scroll it (WCAG 2.1.1).
   return (
-    <div
+    <section
       {...rest}
       ref={ref}
+      aria-label={label}
+      // biome-ignore lint/a11y/noNoninteractiveTabindex: a scrollable region must be keyboard-scrollable.
+      tabIndex={0}
       className={joinClass("neshel-elastic", className)}
       data-axis={axis ?? "y"}
     >
       <div ref={content} className="neshel-elastic-content">
         {children}
       </div>
-    </div>
+    </section>
   );
 }
 

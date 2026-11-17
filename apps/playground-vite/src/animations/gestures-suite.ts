@@ -100,12 +100,21 @@ const key = (target: Element, name: string, type = "keydown") =>
 const idle = () => getFrameScheduler().size === 0;
 
 /** Count layout reads (getBoundingClientRect, offset*, client*, scroll extents) during `run`. */
+/** Where unexpected reads came from (first stacks), reported in failure messages. */
+const readSources: string[] = [];
+function source(label: string): void {
+  if (readSources.length >= 3) return;
+  const stack = (new Error().stack ?? "").split(String.fromCharCode(10)).slice(2, 6);
+  readSources.push(`${label}: ${stack.join(" <- ")}`);
+}
 async function countLayoutReads(run: () => Promise<void>) {
   let reads = 0;
+  readSources.length = 0;
   const restore: Array<() => void> = [];
   const rect = Element.prototype.getBoundingClientRect;
   Element.prototype.getBoundingClientRect = function (this: Element) {
     reads++;
+    source("getBoundingClientRect");
     return rect.call(this);
   };
   restore.push(() => {
@@ -127,6 +136,7 @@ async function countLayoutReads(run: () => Promise<void>) {
       ...descriptor,
       get(this: Element) {
         reads++;
+        source(key);
         return get.call(this);
       },
     });
@@ -142,7 +152,15 @@ async function countLayoutReads(run: () => Promise<void>) {
 
 async function show(element: Element) {
   element.scrollIntoView({ block: "center", behavior: "instant" as ScrollBehavior });
-  await frames(2);
+  // Wait until the element stops moving (scroll settled, layout stable) for three frames.
+  let last = Number.NaN;
+  let stable = 0;
+  for (let i = 0; i < 120 && stable < 3; i++) {
+    await frame();
+    const top = element.getBoundingClientRect().top;
+    stable = Math.abs(top - last) < 0.5 ? stable + 1 : 0;
+    last = top;
+  }
 }
 
 export async function runGesturesSuite(): Promise<Case[]> {
@@ -164,6 +182,9 @@ export async function runGesturesSuite(): Promise<Case[]> {
       const puck = byId("g01-drag");
       const arena = byId("g01-arena");
       await show(arena);
+      // Start at rest: other motion (e.g. a closing accordion resizing the page) may make the Phase 011
+      // scroll engine re-measure in its read phase; this case is about reads caused by pointer moves.
+      await until("page at rest", idle, () => getFrameScheduler().size);
       const id = nextPointerId++;
       const start = center(puck);
       pointer(puck, "pointerdown", start.x, start.y, id);
@@ -175,7 +196,8 @@ export async function runGesturesSuite(): Promise<Case[]> {
           pointer(puck, "pointermove", start.x + i * 9, start.y + i * 2, id);
         }
       });
-      check(reads === 0, `${reads} layout reads during pointer moves`);
+      if (reads !== 0) pointer(puck, "pointerup", start.x, start.y, id); // never leave a pointer down
+      check(reads === 0, `${reads} layout reads during pointer moves; ${readSources.join(" || ")}`);
       await frame();
       const moving = tx(puck);
       check(moving > 50, `follows: ${moving}`);
@@ -545,28 +567,28 @@ export async function runGesturesSuite(): Promise<Case[]> {
       const dot = area.querySelector<HTMLElement>(".neshel-cursor-follower");
       check(dot?.getAttribute("aria-hidden") === "true", "aria-hidden");
       check(getComputedStyle(dot as Element).pointerEvents === "none", "pointer-events none");
-      const r = area.getBoundingClientRect();
-      area.dispatchEvent(
-        new PointerEvent("pointerenter", {
-          clientX: r.left + 20,
-          clientY: r.top + 20,
-          pointerType: "mouse",
-        }),
-      );
-      for (let i = 0; i < 4; i++) {
-        window.dispatchEvent(
+      // Synthetic moves are dispatched on the area itself: a move on the element (re)starts the hover
+      // tracking, so the result does not depend on where the REAL mouse is (WebKit re-dispatches the real
+      // mouse position after scrolling/layout, which legitimately ends a hover started synthetically).
+      const move = (i: number) => {
+        const live = area.getBoundingClientRect();
+        area.dispatchEvent(
           new PointerEvent("pointermove", {
-            clientX: r.left + 30 + i * 10,
-            clientY: r.top + 30,
+            clientX: live.left + 30 + (i % 8) * 10,
+            clientY: live.top + 30,
             pointerType: "mouse",
+            bubbles: true,
           }),
         );
-        await frame();
-      }
+      };
+      let step = 0;
       await until(
         "visible",
-        () => Number(getComputedStyle(dot as Element).opacity) > 0.9 || prefersReducedMotion(),
-        () => dot?.style.cssText,
+        () => {
+          move(step++);
+          return Number(getComputedStyle(dot as Element).opacity) > 0.9 || prefersReducedMotion();
+        },
+        () => ({ style: dot?.style.cssText, steps: step }),
       );
       const button = byId("h11-button");
       const hit = document.elementFromPoint(center(button).x, center(button).y);
@@ -622,7 +644,7 @@ export async function runGesturesSuite(): Promise<Case[]> {
       const reads = await countLayoutReads(async () => {
         await frames(6);
       });
-      check(reads === 0, `${reads} layout reads during FLIP frames`);
+      check(reads === 0, `${reads} layout reads during FLIP frames; ${readSources.join(" || ")}`);
       await until(
         "settled",
         () => idle() && [...list.children].every((li) => !(li as HTMLElement).style.transform),
