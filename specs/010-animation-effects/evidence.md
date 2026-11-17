@@ -148,8 +148,10 @@ internal React module for reuse. 009 tests changed only in their exact-export li
 
 ## Not run / pending
 
-- **GitHub Actions on Linux, Windows and macOS** — runs after the push of this branch (PR); result
-  recorded in the PR, not claimed here.
+- (Done) **GitHub Actions on Linux, Windows and macOS** — PR #7, run 44002944207 on `1053fd8`:
+  **14/14 jobs success** (ubuntu Node 22/24/26, windows Node 26, macos Node 26, browsers ubuntu/macos
+  including the animations lab in three engines, the packed consumer and bundle budgets, docs ×3,
+  next + starters ×3, vercel build).
 - **Manual screen-reader pass** (NVDA/VoiceOver) of toggle/checkbox/number tick/content swap — owner
   validation before any publication (automated axe and semantics tests ran).
 - **Real Safari** (Playwright WebKit is not Safari) — pending before publication.
