@@ -1,6 +1,6 @@
 # Contract — accessibility and UX of scroll effects (Phase 011)
 
-**Status: specified (011.0)**; implementation tracked in [tasks.md](../tasks.md). Extends 008 accessibility.md and
+**Status: implemented and verified locally** ([evidence](../evidence.md)). Extends 008 accessibility.md and
 [010 accessibility-010.md](../../010-animation-effects/contracts/accessibility-010.md).
 
 ## 1 · No scroll hijacking

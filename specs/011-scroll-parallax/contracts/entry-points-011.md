@@ -1,6 +1,6 @@
 # Contract — entry points after Phase 011
 
-**Status: specified (011.0)**; implementation tracked in [tasks.md](../tasks.md). Additive over
+**Status: implemented and verified locally** ([evidence](../evidence.md)). Additive over
 [entry-points-010.md](../../010-animation-effects/contracts/entry-points-010.md); no 009/010 export removed.
 
 | Subpath        | Runtime exports                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               | Change   |

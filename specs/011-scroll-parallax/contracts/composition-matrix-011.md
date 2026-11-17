@@ -1,6 +1,6 @@
 # Contract — composition matrix (Phase 011)
 
-**Status: specified (011.0)**; implementation tracked in [tasks.md](../tasks.md). Extends
+**Status: implemented and verified locally** ([evidence](../evidence.md)). Extends
 [010 composition-matrix.md](../../010-animation-effects/contracts/composition-matrix.md).
 
 Scroll effects that move the consumer's element contribute **transform layers** and **opacity factors** to

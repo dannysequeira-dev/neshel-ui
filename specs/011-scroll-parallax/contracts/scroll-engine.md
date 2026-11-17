@@ -1,6 +1,6 @@
 # Contract — scroll engine (Phase 011)
 
-**Status: specified (011.0)**; implementation tracked in [tasks.md](../tasks.md). Framework-free; lives in the `./scroll` subpath
+**Status: implemented and verified locally** ([evidence](../evidence.md)). Framework-free; lives in the `./scroll` subpath
 (`src/scroll/engine/`), never in `./core` (whose budget and React-free surface are unchanged). It uses the
 009 frame scheduler, motion values, spring integrator and motion host; it adds no scheduler and no
 composition system (ADR 0026).

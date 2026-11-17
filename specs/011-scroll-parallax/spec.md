@@ -4,7 +4,8 @@
 
 **Created**: 2026-11-16
 
-**Status**: **In progress** — see [tasks.md](tasks.md) and [evidence.md](evidence.md).
+**Status**: **Implemented; verified locally — see [evidence.md](evidence.md); CI and the owner's review of
+the PR pending.**
 `@neshel-ui/animations` stays private (0.0.0).
 
 **Input**: Owner direction 2026-11-16, summarised in [brief.md](brief.md).

@@ -99,7 +99,8 @@ legitimate third-party licence notices. Check every commit message and PR body b
 - `pnpm check` — doctor, lint, typecheck, test, build, check:exports, check:pack (offline; includes
   `--with animations`, which validates the private animations tarball without lifting its guard).
 - `pnpm check:browser:animations` — animations lab (Tilt3D, CornerRecede, ScrollScene, engine, Phase 010
-  effects gallery) in headless Chrome with real input and axe; requires `pnpm build:playground`.
+  effects gallery, Phase 011 scroll gallery) in headless Chrome with real input and axe; requires
+  `pnpm build:playground`.
 - `pnpm check:animations:engines` — the same lab in Playwright Chromium, Firefox and WebKit.
 - `pnpm check:animations:consumer` — external app from the packed animations tarball (SSR + hydration).
 - `pnpm check:animations:bundles` — packed-tarball bundle sizes against the approved budgets.

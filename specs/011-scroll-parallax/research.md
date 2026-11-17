@@ -69,14 +69,18 @@ three engines.
 animation starts, the engine compares `getComputedTiming().progress` with the JS model's progress for the
 current scroll position; a `null` progress or a difference above 0.02 cancels the native animation and
 switches to the JS driver (`getScrollDebugInfo().nativeFallbacks` counts it). Ranges the native API cannot
-express (explicit px offsets on scroll timelines, smoothing) use the JS driver.
+express (explicit px offsets on scroll timelines, smoothing) use the JS driver. Implementation finding
+(WebKit lab run): the JS side can be the stale one, so a first mismatch re-measures the timeline and the
+decision is taken on the next comparison; `getScrollDebugInfo().lastFallback` records native vs expected.
 
 ## R5 — Geometry invalidation (from the 008.0 prototype, CI run 43936536735)
 
 The prototype learnt that observing only the subject leaves a stale top when content above changes. The
 engine keeps its signal set — ResizeObserver on the subject, the document element and every preceding
 element sibling along the ancestor chain up to the source; MutationObserver on those ancestors' child
-lists; viewport `resize`; `document.fonts` `loadingdone`; `load` — but shares ONE ResizeObserver and ONE
+lists; viewport `resize`; `document.fonts` `loadingdone`; `load`; for whole-range root timelines also `<body>` and its children,
+because a root box with `height: 100%` does not resize when content grows (found by the WebKit lab run) —
+but shares ONE ResizeObserver and ONE
 MutationObserver across all timelines (reference-counted targets), and coalesces every signal into ONE
 measurement pass in the next read phase for all dirty timelines. Undetectable without polling: margin
 changes on preceding elements that resize no observed box, ancestor padding changes compensated
