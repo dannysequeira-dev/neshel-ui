@@ -109,8 +109,14 @@ export function collectTargets(
   const targets: Element[] = [source ?? root];
   const ancestors: Element[] = [];
   if (!subject) {
-    // Whole-range timeline: the content of a container changes its scroll size, not its box.
-    if (source) targets.push(...source.children);
+    // Whole-range timeline: the content changes the scroll size, not necessarily the scroller's box
+    // (e.g. `html, body { height: 100% }`), so the content's top-level boxes are observed too.
+    const content = source ?? document.body;
+    if (content) {
+      if (!source) targets.push(content);
+      targets.push(...content.children);
+      ancestors.push(content);
+    }
     return { targets, ancestors };
   }
   targets.push(subject);

@@ -1,13 +1,16 @@
 # Contract — effect catalogue (planned)
 
 **Status: partially implemented.** Implemented (private package): `H03 Tilt3D` (008.0, on the
-engine since 009) and the 30 Phase 010 entries **E01–E11, H01, H02, H04–H10, P01–P10** (marked
+engine since 009), the 30 Phase 010 entries **E01–E11, H01, H02, H04–H10, P01–P10** (marked
 **✓ 010** below; ids, options, drivers and reduced behaviour in
-[specs/010 contracts/effects-010.md](../../010-animation-effects/contracts/effects-010.md)). Phase 010
+[specs/010 contracts/effects-010.md](../../010-animation-effects/contracts/effects-010.md)) and the 21
+Phase 011 entries **ST01–ST10, SP01–SP11** (marked **✓ 011**; API, drivers and reduced behaviour in
+[specs/011 contracts/api-011.md](../../011-scroll-parallax/contracts/api-011.md) — the scroll driver
+rule of ADR 0026 replaces the SDA column for anything that moves the consumer's element). Phase 010
 changed the driver of most CSS rows: the consumer's element is animated only by the motion host (rule
 R-1, ADR 0025) and CSS renders package-owned layers; the Driver column below keeps the original plan
-and the 010 contract records each change. `D05 CornerRecede` and `SP05/SP10 ScrollScene` exist as
-playground prototypes. Every other row is a plan: names, drivers and phases may change through the spec
+and the 010 contract records each change. `D05 CornerRecede` exists as a
+playground prototype; the 008.0 ScrollScene prototype became SP05/SP01/SP10 in Phase 011. Every other row is a plan: names, drivers and phases may change through the spec
 of the phase that implements them. Ids are stable references for specs and tests, not public API.
 
 157 entries in 15 families. Variants (direction, distance, duration, easing, stagger) are options of
@@ -109,32 +112,32 @@ Every gesture has a keyboard and single-pointer alternative (WCAG 2.5.1, 2.5.7) 
 
 | Id   | Effect                                    | Driver   | Structure | Reduced motion | Phase |
 | ---- | ----------------------------------------- | -------- | --------- | -------------- | ----- |
-| ST01 | Reveal on enter (IntersectionObserver)    | CSS + JS | —         | instant        | 011   |
-| ST02 | Stagger on enter                          | CSS + JS | G         | instant        | 011   |
-| ST03 | Once / repeat / reverse on leave          | JS       | —         | instant        | 011   |
-| ST04 | Enter / leave callbacks                   | JS       | —         | n/a            | 011   |
-| ST05 | In-view progress variable                 | SDA      | —         | static         | 011   |
-| ST06 | Direction-aware header (hide / show)      | JS       | —         | instant        | 011   |
-| ST07 | Stuck-state detection (sticky)            | JS       | —         | n/a            | 011   |
-| ST08 | Section spy (table-of-contents highlight) | JS       | —         | n/a            | 011   |
-| ST09 | Lazy activation of heavy effects          | JS       | —         | n/a            | 011   |
-| ST10 | Threshold / root-margin presets           | JS       | —         | n/a            | 011   |
+| ST01 | Reveal on enter (IntersectionObserver)    | CSS + JS | —         | instant        | ✓ 011 |
+| ST02 | Stagger on enter                          | CSS + JS | G         | instant        | ✓ 011 |
+| ST03 | Once / repeat / reverse on leave          | JS       | —         | instant        | ✓ 011 |
+| ST04 | Enter / leave callbacks                   | JS       | —         | n/a            | ✓ 011 |
+| ST05 | In-view progress variable                 | SDA      | —         | static         | ✓ 011 |
+| ST06 | Direction-aware header (hide / show)      | JS       | —         | instant        | ✓ 011 |
+| ST07 | Stuck-state detection (sticky)            | JS       | —         | n/a            | ✓ 011 |
+| ST08 | Section spy (table-of-contents highlight) | JS       | —         | n/a            | ✓ 011 |
+| ST09 | Lazy activation of heavy effects          | JS       | —         | n/a            | ✓ 011 |
+| ST10 | Threshold / root-margin presets           | JS       | —         | n/a            | ✓ 011 |
 
 ## 6 · Scroll & Parallax (SP)
 
 | Id   | Effect                                   | Driver | Structure | Reduced motion | Phase |
 | ---- | ---------------------------------------- | ------ | --------- | -------------- | ----- |
-| SP01 | Depth-layer parallax (prototype, 008.0)  | SDA/JS | G         | static         | 011   |
-| SP02 | Scrubbed transform (progress → property) | SDA/JS | —         | static         | 011   |
-| SP03 | Scroll progress bar                      | SDA    | —         | reduced        | 011   |
-| SP04 | Horizontal scroll section (pinned)       | JS     | W         | static⁴        | 011   |
-| SP05 | Pinned scene (prototype, 008.0)          | CSS⁵   | W         | static         | 011   |
-| SP06 | Image parallax inside frame              | SDA    | W         | static         | 011   |
-| SP07 | Zoom on scroll                           | SDA    | —         | static         | 011   |
-| SP08 | Scroll-linked theme/colour shift         | SDA/JS | —         | instant        | 011   |
-| SP09 | Sticky stacking cards                    | CSS    | G         | static         | 011   |
-| SP10 | Smooth scrub (spring, prototype, 008.0)  | JS     | —         | off            | 011   |
-| SP11 | Scroll-velocity skew                     | JS     | —         | off            | 011   |
+| SP01 | Depth-layer parallax (prototype, 008.0)  | SDA/JS | G         | static         | ✓ 011 |
+| SP02 | Scrubbed transform (progress → property) | SDA/JS | —         | static         | ✓ 011 |
+| SP03 | Scroll progress bar                      | SDA    | —         | reduced        | ✓ 011 |
+| SP04 | Horizontal scroll section (pinned)       | JS     | W         | static⁴        | ✓ 011 |
+| SP05 | Pinned scene (prototype, 008.0)          | CSS⁵   | W         | static         | ✓ 011 |
+| SP06 | Image parallax inside frame              | SDA    | W         | static         | ✓ 011 |
+| SP07 | Zoom on scroll                           | SDA    | —         | static         | ✓ 011 |
+| SP08 | Scroll-linked theme/colour shift         | SDA/JS | —         | instant        | ✓ 011 |
+| SP09 | Sticky stacking cards                    | CSS    | G         | static         | ✓ 011 |
+| SP10 | Smooth scrub (spring, prototype, 008.0)  | JS     | —         | off            | ✓ 011 |
+| SP11 | Scroll-velocity skew                     | JS     | —         | off            | ✓ 011 |
 
 ⁴ Reduced motion turns the pinned horizontal track into normal vertical content.
 ⁵ Pinning is `position: sticky`; no JavaScript pin spacer (research R8).

@@ -61,7 +61,8 @@ export function expressible(progress: ScrollProgress): boolean {
   if (!info || info.smooth) return false;
   const [a, b] = info.range;
   if (info.subject) return a.kind === "named" && b.kind === "named";
-  return a.kind === "percent" && a.percent === 0 && b.kind === "percent" && b.percent === 100;
+  const startsAtZero = (a.kind === "percent" && a.percent === 0) || (a.kind === "px" && a.px === 0);
+  return startsAtZero && b.kind === "percent" && b.percent === 100;
 }
 
 export interface NativeBinding {
@@ -111,6 +112,7 @@ export function bindNative(
   counters.nativeAnimations++;
   let cancelled = false;
   let attempts = 0;
+  let remeasured = false;
   let checkTask: (() => void) | undefined;
 
   function cancel(): void {
@@ -126,16 +128,28 @@ export function bindNative(
     const native = animation?.effect?.getComputedTiming().progress;
     if ((native === null || native === undefined) && ++attempts < 3) return true;
     checkTask = undefined;
-    stopCheck();
     // Compare at the current position (the user may have scrolled since the last update).
     info.source.readPosition();
     const g = progress.geometry;
     const expected = progressAt(info.source.position[info.axis], g.start, g.end);
-    if (native === null || native === undefined || Math.abs(native - expected) > TOLERANCE) {
+    const mismatch =
+      native === null || native === undefined || Math.abs(native - expected) > TOLERANCE;
+    if (mismatch && !remeasured) {
+      // The JS model may be the stale side (a change no observer reported yet): re-measure once and
+      // compare again after the next update before deciding.
+      remeasured = true;
+      attempts = 0;
+      progress.refresh();
+      return false;
+    }
+    if (mismatch) {
       cancel();
       counters.nativeFallbacks++;
+      counters.lastFallback = { native: native ?? null, expected, property };
       onFallback();
+      return false;
     }
+    stopCheck(); // verified
     return false;
   }
 

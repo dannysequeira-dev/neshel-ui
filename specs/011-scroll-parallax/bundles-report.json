@@ -34,7 +34,7 @@
   },
   "registry + host (defineEffect, createEffectRegistry, attachEffect)": {
     "minBytes": 14228,
-    "gzipBytes": 4839,
+    "gzipBytes": 4840,
     "budgetBytes": 5120,
     "markers": {
       "react": false,
@@ -47,7 +47,7 @@
   },
   "composeTransform": {
     "minBytes": 1092,
-    "gzipBytes": 553,
+    "gzipBytes": 554,
     "budgetBytes": 614,
     "markers": {
       "scheduler": false
@@ -64,7 +64,7 @@
   },
   "hover: Tilt3D": {
     "minBytes": 25207,
-    "gzipBytes": 8303,
+    "gzipBytes": 8301,
     "budgetBytes": 8960,
     "markers": {
       "react": true,
@@ -75,7 +75,7 @@
   },
   "hover: createTilt3D (no React)": {
     "minBytes": 18736,
-    "gzipBytes": 6196,
+    "gzipBytes": 6194,
     "budgetBytes": 6758,
     "markers": {
       "react": false,
@@ -85,7 +85,7 @@
   },
   "registry + host, production define (info)": {
     "minBytes": 13629,
-    "gzipBytes": 4626,
+    "gzipBytes": 4627,
     "budgetBytes": null,
     "markers": {
       "devWarnings": false,
@@ -146,7 +146,7 @@
   },
   "hover: Hover + lift": {
     "minBytes": 35966,
-    "gzipBytes": 11343,
+    "gzipBytes": 11342,
     "budgetBytes": 12032,
     "markers": {
       "react": true,
@@ -176,7 +176,7 @@
   },
   "press: Press + pressScale": {
     "minBytes": 32375,
-    "gzipBytes": 10265,
+    "gzipBytes": 10264,
     "budgetBytes": 11008,
     "markers": {
       "react": true,
@@ -188,7 +188,7 @@
   },
   "press: ripple definition (no React)": {
     "minBytes": 14250,
-    "gzipBytes": 4885,
+    "gzipBytes": 4883,
     "budgetBytes": 5222,
     "markers": {
       "react": false,
@@ -198,7 +198,7 @@
   },
   "press: NumberTick": {
     "minBytes": 28588,
-    "gzipBytes": 9154,
+    "gzipBytes": 9156,
     "budgetBytes": 9626,
     "markers": {
       "react": true,
@@ -208,7 +208,7 @@
   },
   "press: entire entry": {
     "minBytes": 56508,
-    "gzipBytes": 16573,
+    "gzipBytes": 16572,
     "budgetBytes": 17408,
     "markers": {
       "tilt": false,
@@ -216,8 +216,8 @@
     }
   },
   "scroll: createScrollProgress (engine, no React)": {
-    "minBytes": 21154,
-    "gzipBytes": 6842,
+    "minBytes": 21223,
+    "gzipBytes": 6866,
     "budgetBytes": 7168,
     "markers": {
       "react": false,
@@ -228,8 +228,8 @@
     }
   },
   "scroll: depthParallax definition (no React)": {
-    "minBytes": 26421,
-    "gzipBytes": 8444,
+    "minBytes": 26490,
+    "gzipBytes": 8470,
     "budgetBytes": 8960,
     "markers": {
       "react": false,
@@ -240,7 +240,7 @@
   },
   "scroll: revealOnEnter definition (no React)": {
     "minBytes": 26491,
-    "gzipBytes": 8406,
+    "gzipBytes": 8405,
     "budgetBytes": 8960,
     "markers": {
       "react": false,
@@ -250,8 +250,8 @@
     }
   },
   "scroll: ScrollScene + ScrollLayer": {
-    "minBytes": 49950,
-    "gzipBytes": 15446,
+    "minBytes": 50195,
+    "gzipBytes": 15538,
     "budgetBytes": 16128,
     "markers": {
       "react": true,
@@ -272,8 +272,8 @@
     }
   },
   "scroll: HorizontalScroll": {
-    "minBytes": 36280,
-    "gzipBytes": 11418,
+    "minBytes": 36349,
+    "gzipBytes": 11441,
     "budgetBytes": 12032,
     "markers": {
       "react": true,
@@ -283,8 +283,8 @@
     }
   },
   "scroll: entire entry": {
-    "minBytes": 83862,
-    "gzipBytes": 24477,
+    "minBytes": 84178,
+    "gzipBytes": 24574,
     "budgetBytes": 25600,
     "markers": {
       "tilt": false,

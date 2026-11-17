@@ -20,6 +20,8 @@ export interface ScrollDebugInfo {
   nativeFallbacks: number;
   /** Elements watched by the shared ResizeObserver. */
   observedTargets: number;
+  /** Last behavioural-check failure: native progress (`null` = inactive) vs the JS model. */
+  lastFallback?: { native: number | null; expected: number; property: string };
 }
 
 export const counters: ScrollDebugInfo = {
@@ -35,5 +37,8 @@ export const counters: ScrollDebugInfo = {
 
 /** Snapshot of the scroll engine counters. */
 export function getScrollDebugInfo(): ScrollDebugInfo {
-  return { ...counters };
+  return {
+    ...counters,
+    ...(counters.lastFallback ? { lastFallback: { ...counters.lastFallback } } : {}),
+  };
 }

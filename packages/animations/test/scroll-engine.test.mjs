@@ -642,10 +642,21 @@ test("native driver: verified native animation, fallback on mismatch (FR-006, R4
     frames.settle();
     assert.equal(animations.length, 2);
     smooth.destroy();
+    // The page progress (SP03, default range [0, "100%"]) is expressible with a ScrollTimeline.
+    nativeProgress = 0;
+    scrollAndSettle(0);
+    const bar = subject(0, 3);
+    const progressBar = attachEffect(bar, scroll.scrollProgress, {});
+    frames.settle();
+    assert.equal(animations.length, 3);
+    assert.ok(animations[2].options.timeline instanceof host.ScrollTimeline);
+    assert.equal(animations[2].options.rangeStart, undefined);
+    assert.equal(animations[2].cancelled, false);
+    progressBar.destroy();
     // driver: "js" never creates a native animation.
     const js = attachEffect(section, pinnedScene, { driver: "js" });
     frames.settle();
-    assert.equal(animations.length, 2);
+    assert.equal(animations.length, 3);
     js.destroy();
   } finally {
     delete host.ScrollTimeline;

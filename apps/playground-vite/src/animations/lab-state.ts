@@ -29,6 +29,7 @@ export interface LabState {
   scroll?: {
     runScrollSuite(): Promise<Array<{ id: string; ok: boolean; error?: string }>>;
     reducedFacts(): Record<string, unknown>;
+    debug(): unknown;
   };
   /** Observations reported by in-page suites (not pass/fail). */
   notes: Record<string, unknown>;

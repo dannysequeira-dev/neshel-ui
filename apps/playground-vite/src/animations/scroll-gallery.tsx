@@ -8,6 +8,7 @@ import { Press, pressScale } from "@neshel-ui/animations/press";
 import {
   depthParallax,
   directionHeader,
+  getScrollDebugInfo,
   HorizontalScroll,
   inViewProgress,
   lazyEffect,
@@ -92,7 +93,11 @@ function CenterProbe() {
 export function ScrollGallery() {
   const [extra, setExtra] = useState(false);
   useEffect(() => {
-    labState().scroll = { runScrollSuite, reducedFacts: scrollReducedFacts };
+    labState().scroll = {
+      runScrollSuite,
+      reducedFacts: scrollReducedFacts,
+      debug: getScrollDebugInfo,
+    };
   }, []);
   return (
     <section className="lab-section gallery" aria-labelledby="scroll-title">
