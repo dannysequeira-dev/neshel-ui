@@ -45,4 +45,7 @@ Authorised by the owner brief of 2026-11-16 (slices 010.0–010.4).
 - [x] T047 Bundle entries + markers; budgets proposed from measurements (FR-073)
 - [x] T048 Docs: catalogue statuses, roadmap, README, CLAUDE.md, ADR index; evidence.md
 - [x] T049 Push, PR #7, CI on Linux/Windows/macOS (run 44002944207, 14/14) (FR-075)
-- [ ] T050 Owner review of PR #7 — **no automatic merge**
+- [x] T050 Owner review of PR #7 (2026-11-17): ADR 0025 accepted, budgets approved
+- [x] T051 Regressions first, then fixes: live reduced motion in ToggleMorph, CheckboxDraw, NumberTick, ripple, burst, shake; NumberTick first-paint continuity and precision; Firefox `stroke-dashoffset` unit
+- [x] T052 First-paint continuity cases in three engines; visual review captures and recording
+- [ ] T053 CI on the final head; owner's final review — **no automatic merge**

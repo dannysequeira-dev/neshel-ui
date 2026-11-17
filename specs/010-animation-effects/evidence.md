@@ -68,12 +68,12 @@ in-page suite and/or real-input cases in Chrome (CDP) and Chromium/Firefox/WebKi
 
 | Gate                                  | Result                                                                                                                                                                                                                                   |
 | ------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `pnpm check`                          | **pass** — doctor, lint, typecheck, root tests 108 (107 pass, 1 skipped, 0 fail), build, `test:packages` 370/370, `check:exports`, `check:pack --with animations` (10 runtime imports, 10 typed entry points under NodeNext and Bundler) |
-| `packages/animations` unit tests      | **166/166** (009 suites unchanged except the exact-export lists)                                                                                                                                                                         |
+| `pnpm check`                          | **pass** — doctor, lint, typecheck, root tests 108 (107 pass, 1 skipped, 0 fail), build, `test:packages` 384/384, `check:exports`, `check:pack --with animations` (10 runtime imports, 10 typed entry points under NodeNext and Bundler) |
+| `packages/animations` unit tests      | **180/180** (009 suites unchanged except the exact-export lists; owner-review regressions in `press-live.test.mjs`)                                                                                                                      |
 | Type fixtures                         | `type-tests/{valid,invalid,engine,presets,presets-invalid}.tsx` — positive compile, every `@ts-expect-error` needed                                                                                                                      |
 | `pnpm build:playground`               | pass                                                                                                                                                                                                                                     |
-| `pnpm check:browser:animations` (CDP) | **44/44** — Chrome 157.0.8103.51 (008/009 cases + 15 in-page effect cases + 5 real-input cases + live reduced motion + axe on the whole lab page)                                                                                        |
-| `pnpm check:animations:engines`       | **36/36 per engine** — Chromium 158.0.8127.18, Firefox 159.0, WebKit 27.2 (Playwright, not Safari); includes axe on the gallery                                                                                                          |
+| `pnpm check:browser:animations` (CDP) | **48/48** — Chrome 157.0.8103.51 (008/009 cases + 18 in-page effect cases incl. 3 first-paint continuity cases + 5 real-input cases + 2 live reduced-motion cases + axe on the page)                                                     |
+| `pnpm check:animations:engines`       | **40/40 per engine** — Chromium 158.0.8127.18, Firefox 159.0, WebKit 27.2 (Playwright, not Safari); includes axe on the gallery                                                                                                          |
 | `pnpm check:animations:consumer`      | **pass** — packed tarball, plain-CSS Vite app, SSR, hydration without recoverable errors, no entrance replay on hydration, real lift with packed hover.css, real press ripple                                                            |
 | `pnpm check:animations:bundles`       | **pass** — every budget, every tree-shaking marker (table below)                                                                                                                                                                         |
 | `pnpm build:storybook`                | pass (Entrance, Hover, Press, Composition stories)                                                                                                                                                                                       |
@@ -116,13 +116,13 @@ review fixes; press entries +0.05–0.11 KiB, all within budget).
 | hover: Hover + lift                    | 10.98 KiB | 11.75 KiB |
 | hover: lift definition (no React)      | 5.17 KiB  | 5.60 KiB  |
 | hover: entire entry (incl. Tilt3D)     | 16.02 KiB | 17.25 KiB |
-| press: Press + pressScale              | 9.93 KiB  | 10.75 KiB |
-| press: ripple definition (no React)    | 4.72 KiB  | 5.10 KiB  |
-| press: NumberTick                      | 8.72 KiB  | 9.40 KiB  |
-| press: entire entry                    | 15.91 KiB | 17.00 KiB |
+| press: Press + pressScale              | 9.92 KiB  | 10.75 KiB |
+| press: ripple definition (no React)    | 4.77 KiB  | 5.10 KiB  |
+| press: NumberTick                      | 8.83 KiB  | 9.40 KiB  |
+| press: entire entry                    | 16.08 KiB | 17.00 KiB |
 | css: hover.css                         | 1.67 KiB  | 1.85 KiB  |
-| css: press.css                         | 1.42 KiB  | 1.60 KiB  |
-| css: styles.css                        | 2.83 KiB  | 3.10 KiB  |
+| css: press.css                         | 1.48 KiB  | 1.60 KiB  |
+| css: styles.css                        | 2.90 KiB  | 3.10 KiB  |
 
 Deltas of 009 entries against the 009 evidence (8.80 / 4.69 / 8.00 / 4.43 KiB): core +0.19 KiB (the new
 public `definePreset`/`attachPreset` are part of the entire core entry), root +0.07 KiB, Tilt3D +0.01 KiB,
