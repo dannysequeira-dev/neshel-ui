@@ -31,6 +31,12 @@ export interface LabState {
     reducedFacts(): Record<string, unknown>;
     debug(): unknown;
   };
+  /** Phase 012 gestures/layout gallery (set after mount). */
+  gestures?: {
+    runGesturesSuite(): Promise<Array<{ id: string; ok: boolean; error?: string }>>;
+    reducedFacts(): Promise<Record<string, unknown>>;
+    debug(): unknown;
+  };
   /** Observations reported by in-page suites (not pass/fail). */
   notes: Record<string, unknown>;
 }

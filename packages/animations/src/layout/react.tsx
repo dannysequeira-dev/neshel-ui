@@ -169,16 +169,19 @@ function AnimatedListItem({
   duration,
   transition,
   reducedMotion,
+  ref,
   children,
 }: {
   duration?: number;
   transition?: LayoutTransition;
   reducedMotion?: ReducedMotion;
+  /** Forwarded by `<Presence>` (it needs the item's element for inert/focus handling). */
+  ref?: Ref<HTMLElement>;
   children: ReactElement;
 }) {
   const [isPresent, safeToRemove] = usePresence();
   const appear = usePresenceAppear();
-  const element = useRef<HTMLElement | null>(null);
+  const [element, setRef] = useHostRef<HTMLElement>(ref);
   const group = useContext(GroupContext) ?? undefined;
   useMotionPresets(element, [
     {
@@ -190,7 +193,7 @@ function AnimatedListItem({
   return (
     <>
       <Snapshot group={group ?? null} />
-      {renderHost("AnimatedList", true, { ref: element }, children)}
+      {renderHost("AnimatedList", true, { ref: setRef }, children)}
     </>
   );
 }

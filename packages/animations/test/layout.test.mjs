@@ -217,7 +217,11 @@ test("L05 gridReflow: an observed reflow animates children inside the observer c
 test("L10 masonry: row spans from observed heights (exclusive channel), template and cleanup", () => {
   const { container, items } = groupItems(2);
   const handle = attachEffect(container, layout.masonry, { columns: 2, gap: 10, unit: 5 });
-  assert.match(container.getAttribute("data-neshel-fx") ?? "", /masonry/);
+  assert.equal(
+    container.getAttribute("data-neshel-fx"),
+    null,
+    "plain grid until the spans are known",
+  );
   assert.equal(
     container.style.getPropertyValue("--neshel-masonry-template"),
     "repeat(2, minmax(0, 1fr))",
@@ -225,24 +229,36 @@ test("L10 masonry: row spans from observed heights (exclusive channel), template
   resize.notify(items[0], { height: 92 });
   assert.equal(
     items[0].style.getPropertyValue("--neshel-masonry-span"),
+    "",
+    "not in the observer callback",
+  );
+  run(1); // write phase: spans and the masonry token in the same frame
+  assert.equal(
+    items[0].style.getPropertyValue("--neshel-masonry-span"),
     String(Math.ceil((92 + 10) / 5)),
   );
+  assert.match(container.getAttribute("data-neshel-fx") ?? "", /masonry/);
   handle.destroy();
   settle();
   assert.equal(items[0].getAttribute("style") ?? "", "");
   assert.equal(container.getAttribute("style") ?? "", "");
 });
 
-test("L02 autoHeight: observed content growth animates the wrapper with a transient WAAPI animation", () => {
+test("L02 autoHeight: a DOM change animates the wrapper (MutationObserver, before layout); observer sizes only record", async () => {
   const animate = stubAnimate();
   const wrapper = document.createElement("div");
   const content = document.createElement("div");
   wrapper.append(content);
   document.body.append(wrapper);
   const handle = attachEffect(wrapper, layout.autoHeight, { duration: 200 });
+  const mutate = async (height) => {
+    Object.defineProperty(content, "offsetHeight", { value: height, configurable: true });
+    content.append(document.createElement("p"));
+    await Promise.resolve(); // MutationObserver microtask
+  };
   resize.notify(content, { height: 100 });
   assert.equal(animate.calls.length, 0, "first observation only records");
-  resize.notify(content, { height: 180 });
+  await mutate(180);
   assert.equal(animate.calls.length, 1);
   assert.deepEqual(animate.calls[0].keyframes, [{ height: "100px" }, { height: "180px" }]);
   assert.equal(
@@ -253,8 +269,14 @@ test("L02 autoHeight: observed content growth animates the wrapper with a transi
   assert.match(wrapper.getAttribute("data-neshel-fx-active") ?? "", /auto-height/);
   animate.finishAll();
   assert.equal(wrapper.getAttribute("data-neshel-fx-active"), null);
+  resize.notify(content, { height: 220 });
+  assert.equal(
+    animate.calls.length,
+    1,
+    "a size change without a mutation (font, image) is not animated in the observer",
+  );
   media.set(true);
-  resize.notify(content, { height: 300 });
+  await mutate(300);
   assert.equal(animate.calls.length, 1, "reduced: instant");
   media.set(false);
   handle.destroy();

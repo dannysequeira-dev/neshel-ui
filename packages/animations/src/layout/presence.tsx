@@ -66,7 +66,10 @@ export function usePresenceAppear(): boolean {
 const noop = () => {};
 
 export interface PresenceProps {
-  /** Keyed elements, each accepting a ref (rendered without a wrapper). */
+  /**
+   * Keyed elements rendered without a wrapper. Each must accept a ref that reaches its DOM element (host
+   * elements do; components must forward `ref`), so exiting content can be made inert and lose focus.
+   */
   children?: ReactNode;
   /** Entrance definition or preset for entering children (default: the built-in fade). */
   enter?: AnyPreset;

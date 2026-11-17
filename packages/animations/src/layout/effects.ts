@@ -23,6 +23,7 @@ import type { ReducedMotion } from "../core/reduced-motion.js";
 import type { SpringOptions } from "../core/spring.js";
 import { addToken, FX_ATTRIBUTE, FX_REDUCED_ATTRIBUTE, toggleToken } from "../core/tokens.js";
 import { type Validator, validator } from "../core/validate.js";
+import { counters } from "./engine/debug.js";
 import type { LayoutGroup } from "./engine/group.js";
 import { createHeightAnimator, supportsSizeInterpolation } from "./engine/height.js";
 import { createReflow, entryHeight, observeSize } from "./engine/reflow.js";
@@ -284,7 +285,10 @@ export const masonry = /* @__PURE__ */ defineEffect<MasonryOptions, ResolvedMaso
   policy: (o) => o.reducedMotion,
   setup(context) {
     const container = context.element as HTMLElement;
-    const removeToken = addToken(container, FX_ATTRIBUTE, "masonry");
+    // The masonry grid applies only once every span is known (the plain `.neshel-masonry` grid until then),
+    // and that first switch is not animated.
+    let removeToken: (() => void) | undefined;
+    let phase: "init" | "applied" | "settling" | "ready" = "init";
     const template = context.channels.exclusive("--neshel-masonry-template");
     const gap = context.channels.exclusive("--neshel-masonry-gap");
     const unit = context.channels.exclusive("--neshel-masonry-unit");
@@ -323,15 +327,41 @@ export const masonry = /* @__PURE__ */ defineEffect<MasonryOptions, ResolvedMaso
       }
       if (entry.last === span) return;
       entry.last = span;
+      // Written in the scheduler's write phase (never inside the observer callback: a span changes the
+      // container's size, which would be an undelivered ResizeObserver notification).
       setExclusive(host, entry.claim, "--neshel-masonry-span", String(span));
-      host.flush();
+    }
+    const pending = new Map<HTMLElement, number>();
+    let cancelWrite: (() => void) | undefined;
+    function flushSpans(): void {
+      cancelWrite = undefined;
+      for (const [child, height] of pending) writeSpan(child, height);
+      // Already in the write phase: apply now, in the same frame as the token (a host flush scheduled from
+      // here would only run next frame).
+      for (const child of pending.keys()) getMotionHost(child).flush();
+      pending.clear();
+      if (!removeToken) {
+        removeToken = addToken(container, FX_ATTRIBUTE, "masonry");
+        phase = "applied";
+      }
     }
     const animators = childAnimators(context, "layout/masonry");
     const reflow = createReflow(container, {
       animatorOf: animators.of,
-      animate: () => !context.reduced,
+      animate: () => phase === "ready" && !context.reduced,
       onSizes(entries) {
-        for (const entry of entries) writeSpan(entry.target as HTMLElement, entryHeight(entry));
+        if (phase === "applied") {
+          // First pass with the masonry layout: cached, not animated.
+          phase = "settling";
+          context.scheduler.schedule(() => {
+            phase = "ready";
+          }, "write");
+        }
+        for (const entry of entries) {
+          if (entry.target !== container)
+            pending.set(entry.target as HTMLElement, entryHeight(entry));
+        }
+        if (pending.size > 0) cancelWrite ??= context.scheduler.schedule(flushSpans, "write");
       },
     });
     const unsubscribeReduced = context.onReducedChange((reduced) => {
@@ -344,17 +374,19 @@ export const masonry = /* @__PURE__ */ defineEffect<MasonryOptions, ResolvedMaso
           const element = child as HTMLElement;
           const entry = spans.get(child);
           if (entry) entry.last = 0;
-          writeSpan(element, element.offsetHeight);
+          pending.set(element, element.offsetHeight);
         }
+        cancelWrite ??= context.scheduler.schedule(flushSpans, "write");
       },
       destroy() {
         reflow.destroy();
         unsubscribeReduced();
         animators.clear();
+        cancelWrite?.();
         for (const [child, { claim }] of spans)
           releaseChannels(getMotionHost(child as HTMLElement), claim);
         spans.clear();
-        removeToken();
+        removeToken?.();
       },
     };
   },
@@ -395,12 +427,18 @@ export const autoHeight = /* @__PURE__ */ defineEffect<AutoHeightOptions, Resolv
     const removeToken = addToken(wrapper, FX_ATTRIBUTE, "auto-height");
     const animator = createHeightAnimator(wrapper, "auto-height");
     let last: number | undefined;
-    let content = wrapper.firstElementChild;
-    let unobserve = content ? observeSize(content, onSize) : () => {};
-    function onSize(entries: readonly ResizeObserverEntry[]): void {
-      const entry = entries[entries.length - 1];
-      if (!entry) return;
-      const next = entryHeight(entry);
+    let content = wrapper.firstElementChild as HTMLElement | null;
+    /**
+     * DOM-driven content changes are seen by a MutationObserver — a microtask after the change, BEFORE the
+     * frame's layout — where the new height is read once (one forced layout per mutation batch, never per
+     * frame) and the animation starts, so no layout changes happen inside a ResizeObserver callback (which
+     * would be an undelivered notification for other observed elements). Size changes without a mutation
+     * (fonts, images, viewport) are recorded by the ResizeObserver and apply without animation.
+     */
+    function onMutation(): void {
+      if (!content?.isConnected) return;
+      const next = content.offsetHeight;
+      counters.reads++;
       const previous = last;
       last = next;
       if (previous === undefined || Math.abs(next - previous) < 0.5) return;
@@ -411,6 +449,25 @@ export const autoHeight = /* @__PURE__ */ defineEffect<AutoHeightOptions, Resolv
       const from = animator.current() ?? previous;
       animator.run(from, next, context.options.duration, context.options.easing);
     }
+    function onSize(entries: readonly ResizeObserverEntry[]): void {
+      const entry = entries[entries.length - 1];
+      if (entry) last = entryHeight(entry); // record only: never write inside the observer callback
+    }
+    const mutations =
+      typeof MutationObserver === "undefined" ? undefined : new MutationObserver(onMutation);
+    const observe = () => {
+      if (!content) return () => {};
+      mutations?.observe(content, {
+        childList: true,
+        subtree: true,
+        characterData: true,
+        attributes: true,
+        // Not `style`: motion layers inside the content must not trigger a measurement per frame.
+        attributeFilter: ["class", "hidden", "open"],
+      });
+      return observeSize(content, onSize);
+    };
+    let unobserve = observe();
     const unsubscribeReduced = context.onReducedChange((reduced) => {
       if (reduced) animator.cancel();
     });
@@ -418,13 +475,15 @@ export const autoHeight = /* @__PURE__ */ defineEffect<AutoHeightOptions, Resolv
       update() {
         if (wrapper.firstElementChild !== content) {
           unobserve();
-          content = wrapper.firstElementChild;
+          mutations?.disconnect();
+          content = wrapper.firstElementChild as HTMLElement | null;
           last = undefined;
-          unobserve = content ? observeSize(content, onSize) : () => {};
+          unobserve = observe();
         }
       },
       destroy() {
         unobserve();
+        mutations?.disconnect();
         unsubscribeReduced();
         animator.cancel();
         removeToken();
