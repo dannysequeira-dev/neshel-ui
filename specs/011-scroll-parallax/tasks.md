@@ -42,4 +42,4 @@ Dependency-ordered. `[x]` done, `[ ]` open. Authorised by the owner brief of 202
 
 - [x] T050 `pnpm check`, browser lab, engines, consumer, bundles, Storybook/Playground builds
 - [x] T051 Visual review captures; evidence.md; catalogue and roadmap updated
-- [ ] T052 Push, three-OS CI, PR for owner review (no merge)
+- [x] T052 Push, three-OS CI (run 44110787974, 14/14), PR #8 for owner review (no merge)

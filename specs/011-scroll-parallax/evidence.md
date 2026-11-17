@@ -123,7 +123,11 @@ scroll entries contain no Entrance, Hover or Press code. Report: `bundles-report
 
 ## 10 · CI and PR
 
-Recorded after the push (see the PR description).
+PR [#8](https://github.com/dannysequeira-dev/neshel-ui/pull/8). First CI run 44092856532 failed in the
+test matrix: the apps' typecheck runs before the package build and `@neshel-ui/animations/scroll` had no
+source path mapping in the Playground/Storybook `tsconfig` (fixed in `fe8be9e`, verified locally with no
+`dist`). CI run **44110787974: 14/14 jobs passed** — Linux (Node 22/24/26), Windows and macOS (Node 26),
+browsers (Linux, macOS), docs (three OS), Next + starters (three OS), Vercel build.
 
 ## 11 · Known limits and pending verifications
 
