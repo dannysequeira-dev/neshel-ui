@@ -148,7 +148,17 @@ export function createFlipAnimator(
         next.sy = last.height > 0 ? (first.height * value.sy) / last.height : 1;
       }
       Object.assign(target, IDENTITY);
-      if (!cancel && isIdentity(next)) return;
+      if (!cancel && isIdentity(next)) {
+        // Already shown at its new place (e.g. a dragged item dropped exactly into its slot): settle the
+        // offset without animating instead of keeping a stale one.
+        Object.assign(value, IDENTITY);
+        for (const key of KEYS) {
+          springs[key].value = value[key];
+          springs[key].velocity = 0;
+        }
+        render();
+        return;
+      }
       Object.assign(value, next);
       run();
     },

@@ -374,8 +374,10 @@ export const rotateGesture = /* @__PURE__ */ defineEffect<RotateGestureOptions, 
     function onKey(event: KeyboardEvent): void {
       const o = context.options;
       if (o.disabled || !ownKey(element, event)) return;
-      if (event.key === "[") settle(rotation - o.keyStep);
-      else if (event.key === "]") settle(rotation + o.keyStep);
+      // With step snapping, a key moves one step (a smaller key step would snap back).
+      const by = o.step > 0 ? Math.max(o.step, o.keyStep) : o.keyStep;
+      if (event.key === "[") settle(rotation - by);
+      else if (event.key === "]") settle(rotation + by);
       else if (event.key === "0") settle(0);
       else return;
       event.preventDefault();

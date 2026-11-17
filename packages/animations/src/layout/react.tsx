@@ -341,7 +341,8 @@ export function Collapse(props: CollapseProps) {
       ref={setRef}
       className={joinClass("neshel-collapse", className)}
       data-state={initial ? "open" : "closed"}
-      hidden={initial ? undefined : ("until-found" as unknown as boolean)}
+      // Server/no-JS: plainly hidden; after mount the effect upgrades it to `hidden="until-found"`.
+      hidden={initial ? undefined : true}
     >
       <div className="neshel-collapse-content">{children}</div>
     </div>

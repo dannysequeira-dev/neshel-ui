@@ -181,9 +181,21 @@ export const reorder = /* @__PURE__ */ defineEffect<ReorderOptions, ResolvedReor
       entry.animator.setTransition(transition());
       return entry.animator;
     }
+    /**
+     * Focus to keep on a moved item: browsers blur an element that is moved in the DOM (React moves the node
+     * when the order changes), so it is restored after the consumer's update (accessibility-012 §3).
+     */
+    let restoreFocus: HTMLElement | undefined;
+    const restore = () => {
+      const target = restoreFocus;
+      if (target?.isConnected && document.activeElement !== target)
+        target.focus({ preventScroll: true });
+    };
     /** After the consumer's re-render, settle every item from where it is shown (FLIP). */
     function settle(first: Map<Element, Box>): void {
       context.scheduler.schedule(() => {
+        restore();
+        restoreFocus = undefined;
         for (const [item, box] of first) {
           const entry = animators.get(item);
           if (!entry) continue;
@@ -265,8 +277,9 @@ export const reorder = /* @__PURE__ */ defineEffect<ReorderOptions, ResolvedReor
           if (i === from) continue;
           const box = boxes.get(order[i] as Element) as Box;
           const mid = start(box) + size(box) / 2;
-          if (i > from && center > mid) to = Math.max(to, i);
-          if (i < from && center < mid) to = Math.min(to, i);
+          // Reaching a sibling's centre takes its slot (the clamp stops exactly there at the ends).
+          if (i > from && center >= mid) to = Math.max(to, i);
+          if (i < from && center <= mid) to = Math.min(to, i);
         }
         drag.to = to;
         order.forEach((sibling, i) => {
@@ -329,7 +342,10 @@ export const reorder = /* @__PURE__ */ defineEffect<ReorderOptions, ResolvedReor
       if (to === at) return undefined;
       const first = boxesOf(order);
       for (const each of order) animatorOf(each);
+      const focused = document.activeElement as HTMLElement | null;
+      restoreFocus = focused && item.contains(focused) ? focused : restoreFocus;
       context.options.onReorder?.(at, to);
+      restore(); // a synchronous DOM update (framework-free consumers)
       say(context.options.announcements.move(labelOf(item), to + 1, order.length));
       settle(first);
       return to;
@@ -358,7 +374,9 @@ export const reorder = /* @__PURE__ */ defineEffect<ReorderOptions, ResolvedReor
         if (at !== current.from && at !== -1) {
           const first = boxesOf(order);
           for (const item of order) animatorOf(item);
+          restoreFocus = current.handle;
           context.options.onReorder?.(at, current.from);
+          restore();
           settle(first);
         }
         keyboard = undefined;
@@ -404,7 +422,8 @@ export const reorder = /* @__PURE__ */ defineEffect<ReorderOptions, ResolvedReor
       }
     }
     function onFocusOut(event: FocusEvent): void {
-      if (!keyboard) return;
+      // A blur caused by the reorder itself (the node moved) is restored, not a drop.
+      if (!keyboard || restoreFocus) return;
       const next = event.relatedTarget as Node | null;
       // React moves the focused node when the order changes; focus stays on the handle.
       if (next && keyboard.handle.contains(next)) return;
