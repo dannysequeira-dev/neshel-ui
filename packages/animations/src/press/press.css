@@ -101,8 +101,9 @@
 
   .neshel-checkbox > .neshel-checkbox-mark {
     stroke: var(--neshel-checkbox-mark, #fff);
-    stroke-dasharray: 1;
-    stroke-dashoffset: calc(1 - var(--neshel-check-progress, 1));
+    /* px (= user units, scaled by pathLength="1"): Firefox drops unitless calc() here. */
+    stroke-dasharray: 1px;
+    stroke-dashoffset: calc((1 - var(--neshel-check-progress, 1)) * 1px);
   }
 
   /* P10 — Content swap: stacked slots; the inactive one is [hidden]. */

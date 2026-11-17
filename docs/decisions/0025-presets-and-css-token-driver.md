@@ -1,7 +1,7 @@
 # ADR 0025 — Presets, the CSS-token driver and effect composition rules
 
-- Status: **Proposed** (Phase 010; implemented on `feature/010-entrance-hover-press`, pending the owner's
-  review of PR)
+- Status: **Accepted** (owner approval 2026-11-17, review of PR #7; implemented and verified in
+  Phase 010 — [evidence](../../specs/010-animation-effects/evidence.md))
 - Date: 2026-11-16
 - Feature: [010](../../specs/010-animation-effects/spec.md); research R2–R9;
   contracts [presets.md](../../specs/010-animation-effects/contracts/presets.md),

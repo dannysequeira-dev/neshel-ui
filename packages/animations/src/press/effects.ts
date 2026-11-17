@@ -269,11 +269,12 @@ export const ripple = /* @__PURE__ */ defineEffect<RippleOptions, ResolvedRipple
     if (!canHostLayers(context, "ripple")) return { update() {}, destroy() {} };
     const removeToken = addToken(element, FX_ATTRIBUTE, "ripple");
     const layer = ownedLayer(element, "neshel-ripple-layer", "hidden");
-    const live = new Set<{ node: HTMLSpanElement; animations: Animation[] }>();
-    let current: { node: HTMLSpanElement; animations: Animation[] } | undefined;
+    type Entry = { node: HTMLSpanElement; animations: Animation[]; grow?: Animation };
+    const live = new Set<Entry>();
+    let current: Entry | undefined;
     const easing = toCssEasing("decelerate");
 
-    function drop(entry: { node: HTMLSpanElement; animations: Animation[] }): void {
+    function drop(entry: Entry): void {
       for (const animation of entry.animations) animation.cancel();
       entry.node.remove();
       live.delete(entry);
@@ -331,13 +332,26 @@ export const ripple = /* @__PURE__ */ defineEffect<RippleOptions, ResolvedRipple
             ],
         { duration: reduced ? Math.round(o.duration / 2) : o.duration, easing, fill: "forwards" },
       );
-      const entry = { node, animations: grow ? [grow] : [] };
+      const entry: Entry = {
+        node,
+        animations: grow ? [grow] : [],
+        grow: reduced ? undefined : grow,
+      };
       live.add(entry);
       current = entry;
+    });
+    // Live reduced motion ("fade"): a running expansion jumps to its end; only opacity fades remain.
+    const unsubscribeReduced = context.onReducedChange((reduced) => {
+      if (!reduced) return;
+      for (const entry of live) {
+        entry.grow?.finish();
+        entry.grow = undefined;
+      }
     });
     return {
       update() {},
       destroy() {
+        unsubscribeReduced();
         unwatch();
         for (const entry of [...live]) drop(entry);
         layer.remove();
@@ -447,6 +461,15 @@ export const burst = /* @__PURE__ */ defineEffect<BurstOptions, ResolvedBurst>({
       }
       layer.removeIfEmpty();
     }
+    function clear(): void {
+      for (const animation of [...live]) animation.cancel();
+      live.clear();
+      layer.remove();
+    }
+    // Live reduced motion ("static"): running particles are removed at once.
+    const unsubscribeReduced = context.onReducedChange((reduced) => {
+      if (reduced) clear();
+    });
     return {
       update(next) {
         if (next.trigger === trigger) return;
@@ -454,9 +477,8 @@ export const burst = /* @__PURE__ */ defineEffect<BurstOptions, ResolvedBurst>({
         play();
       },
       destroy() {
-        for (const animation of [...live]) animation.cancel();
-        live.clear();
-        layer.remove();
+        unsubscribeReduced();
+        clear();
         removeToken();
       },
     };
@@ -555,6 +577,10 @@ export const shake = /* @__PURE__ */ defineEffect<ShakeOptions, ResolvedShake>({
       },
       () => {},
     );
+    // Live reduced motion ("reduced"): a running shake continues at a third of its amplitude.
+    const unsubscribeReduced = context.onReducedChange((reduced) => {
+      if (reduced) amplitude = Math.min(amplitude, context.options.distance / 3);
+    });
     return {
       update(next) {
         if (next.trigger === trigger) return;
@@ -575,7 +601,10 @@ export const shake = /* @__PURE__ */ defineEffect<ShakeOptions, ResolvedShake>({
         cycles = reduced ? Math.min(2, next.cycles) : next.cycles;
         motion.play(reduced ? Math.round(next.duration * 0.6) : next.duration);
       },
-      destroy: () => motion.destroy(),
+      destroy() {
+        unsubscribeReduced();
+        motion.destroy();
+      },
     };
   },
 });

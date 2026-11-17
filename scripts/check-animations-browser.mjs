@@ -17,6 +17,9 @@ import {
   effectsInputCases,
   framesExpression,
   fxStateExpression,
+  pressLiveReducedDone,
+  pressLiveReducedStart,
+  pressLiveReducedState,
   runSceneShiftCase,
   sceneConsistentCondition,
   sceneScrollExpression,
@@ -445,6 +448,21 @@ async function main() {
         }
       });
     }
+
+    await run(
+      "effects: reduced motion switched on mid-animation — toggle and number tick jump to the end",
+      async () => {
+        await evaluate(pressLiveReducedStart);
+        await motionPreference("reduce");
+        // A 600 ms count and a spring travel cannot finish by themselves within the ceiling below.
+        assertUntil(
+          await evaluate(untilExpression(pressLiveReducedDone, pressLiveReducedState, 300)),
+          "final state right after the preference changed",
+          300,
+        );
+        await motionPreference("no-preference");
+      },
+    );
 
     await run(
       "effects: reduced motion (emulated, live) — the lift renders its shadow without moving",

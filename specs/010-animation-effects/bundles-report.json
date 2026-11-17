@@ -6,20 +6,20 @@
     "markers": {}
   },
   "css: press.css": {
-    "minBytes": 4808,
-    "gzipBytes": 1454,
+    "minBytes": 4909,
+    "gzipBytes": 1518,
     "budgetBytes": 1638,
     "markers": {}
   },
   "css: styles.css": {
-    "minBytes": 10088,
-    "gzipBytes": 2903,
+    "minBytes": 10189,
+    "gzipBytes": 2965,
     "budgetBytes": 3174,
     "markers": {}
   },
   "core (entire entry)": {
     "minBytes": 29469,
-    "gzipBytes": 9208,
+    "gzipBytes": 9205,
     "budgetBytes": 9728,
     "markers": {
       "react": false,
@@ -28,7 +28,7 @@
   },
   "registry + host (defineEffect, createEffectRegistry, attachEffect)": {
     "minBytes": 14108,
-    "gzipBytes": 4798,
+    "gzipBytes": 4795,
     "budgetBytes": 5120,
     "markers": {
       "react": false,
@@ -41,7 +41,7 @@
   },
   "composeTransform": {
     "minBytes": 972,
-    "gzipBytes": 517,
+    "gzipBytes": 515,
     "budgetBytes": 614,
     "markers": {
       "scheduler": false
@@ -49,7 +49,7 @@
   },
   "controllers (motionValue, animateValue)": {
     "minBytes": 10180,
-    "gzipBytes": 3551,
+    "gzipBytes": 3549,
     "budgetBytes": 3891,
     "markers": {
       "react": false,
@@ -58,7 +58,7 @@
   },
   "hover: Tilt3D": {
     "minBytes": 24805,
-    "gzipBytes": 8204,
+    "gzipBytes": 8203,
     "budgetBytes": 8960,
     "markers": {
       "react": true,
@@ -69,7 +69,7 @@
   },
   "hover: createTilt3D (no React)": {
     "minBytes": 18616,
-    "gzipBytes": 6160,
+    "gzipBytes": 6159,
     "budgetBytes": 6758,
     "markers": {
       "react": false,
@@ -79,7 +79,7 @@
   },
   "registry + host, production define (info)": {
     "minBytes": 13509,
-    "gzipBytes": 4588,
+    "gzipBytes": 4584,
     "budgetBytes": null,
     "markers": {
       "devWarnings": false,
@@ -88,7 +88,7 @@
   },
   "root: React bindings": {
     "minBytes": 14204,
-    "gzipBytes": 4610,
+    "gzipBytes": 4607,
     "budgetBytes": 5018,
     "markers": {
       "slot": false,
@@ -97,7 +97,7 @@
   },
   "core: definePreset + attachPreset": {
     "minBytes": 12959,
-    "gzipBytes": 4331,
+    "gzipBytes": 4328,
     "budgetBytes": 4710,
     "markers": {
       "react": false,
@@ -107,7 +107,7 @@
   },
   "entrance: Reveal + fadeUp": {
     "minBytes": 37245,
-    "gzipBytes": 11678,
+    "gzipBytes": 11675,
     "budgetBytes": 12544,
     "markers": {
       "react": true,
@@ -120,7 +120,7 @@
   },
   "entrance: fadeIn definition (no React)": {
     "minBytes": 19060,
-    "gzipBytes": 6184,
+    "gzipBytes": 6182,
     "budgetBytes": 6656,
     "markers": {
       "react": false,
@@ -130,7 +130,7 @@
   },
   "entrance: entire entry": {
     "minBytes": 44349,
-    "gzipBytes": 13592,
+    "gzipBytes": 13589,
     "budgetBytes": 14592,
     "markers": {
       "tilt": false,
@@ -139,8 +139,8 @@
     }
   },
   "hover: Hover + lift": {
-    "minBytes": 35520,
-    "gzipBytes": 11239,
+    "minBytes": 35564,
+    "gzipBytes": 11238,
     "budgetBytes": 12032,
     "markers": {
       "react": true,
@@ -151,8 +151,8 @@
     }
   },
   "hover: lift definition (no React)": {
-    "minBytes": 15890,
-    "gzipBytes": 5292,
+    "minBytes": 15934,
+    "gzipBytes": 5295,
     "budgetBytes": 5734,
     "markers": {
       "react": false,
@@ -161,8 +161,8 @@
     }
   },
   "hover: entire entry": {
-    "minBytes": 57796,
-    "gzipBytes": 16402,
+    "minBytes": 57840,
+    "gzipBytes": 16403,
     "budgetBytes": 17664,
     "markers": {
       "pressCode": false
@@ -170,7 +170,7 @@
   },
   "press: Press + pressScale": {
     "minBytes": 31972,
-    "gzipBytes": 10164,
+    "gzipBytes": 10162,
     "budgetBytes": 11008,
     "markers": {
       "react": true,
@@ -181,8 +181,8 @@
     }
   },
   "press: ripple definition (no React)": {
-    "minBytes": 14120,
-    "gzipBytes": 4829,
+    "minBytes": 14250,
+    "gzipBytes": 4883,
     "budgetBytes": 5222,
     "markers": {
       "react": false,
@@ -191,8 +191,8 @@
     }
   },
   "press: NumberTick": {
-    "minBytes": 27828,
-    "gzipBytes": 8927,
+    "minBytes": 28186,
+    "gzipBytes": 9046,
     "budgetBytes": 9626,
     "markers": {
       "react": true,
@@ -201,8 +201,8 @@
     }
   },
   "press: entire entry": {
-    "minBytes": 55268,
-    "gzipBytes": 16291,
+    "minBytes": 56106,
+    "gzipBytes": 16469,
     "budgetBytes": 17408,
     "markers": {
       "tilt": false,

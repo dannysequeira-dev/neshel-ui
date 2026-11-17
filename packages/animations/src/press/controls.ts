@@ -73,6 +73,10 @@ export const toggleMorph = /* @__PURE__ */ defineEffect<ToggleMorphOptions, Reso
         stretch(fixed(context.options.stretch * mid));
       },
     );
+    // Live reduced motion (owner review of PR #7): a running travel jumps to the end state.
+    const unsubscribe = context.onReducedChange((reduced) => {
+      if (reduced) rig.set({ p: rest() });
+    });
     return {
       update(next) {
         rig.setSpring(next.spring);
@@ -82,6 +86,7 @@ export const toggleMorph = /* @__PURE__ */ defineEffect<ToggleMorphOptions, Reso
         else rig.to({ p: rest() });
       },
       destroy() {
+        unsubscribe();
         rig.stop();
         position(undefined);
         stretch(undefined);
@@ -140,6 +145,13 @@ export const checkboxDraw = /* @__PURE__ */ defineEffect<CheckboxDrawOptions, Re
       const unsubscribe = value.subscribe((p) => progress(p >= 1 ? undefined : fixed(p)));
       let checked = context.options.checked;
       let control: MotionControl | undefined;
+      // The controller runs with reducedMotion "never"; this effect applies the preference live.
+      const unsubscribeReduced = context.onReducedChange((reduced) => {
+        if (!reduced || !control) return;
+        control.cancel();
+        control = undefined;
+        value.set(1);
+      });
       return {
         update(next) {
           if (next.checked === checked) return;
@@ -161,6 +173,7 @@ export const checkboxDraw = /* @__PURE__ */ defineEffect<CheckboxDrawOptions, Re
         },
         destroy() {
           control?.cancel();
+          unsubscribeReduced();
           unsubscribe();
           progress(undefined);
           removeToken();
@@ -208,6 +221,16 @@ export function numberFormatter(
   const instance = formatter;
   return (value) => instance.format(value);
 }
+/** Fraction digits of a number as written (at most 6). */
+const decimals = (value: number): number => {
+  const text = String(value);
+  const dot = text.indexOf(".");
+  return dot < 0 || /e/i.test(text) ? 0 : Math.min(6, text.length - dot - 1);
+};
+const roundTo = (value: number, digits: number) => {
+  const factor = 10 ** digits;
+  return Math.round(value * factor) / factor;
+};
 export const numberTick = /* @__PURE__ */ defineEffect<NumberTickOptions, ResolvedNumberTick>({
   id: "press/number-tick",
   family: "press",
@@ -238,10 +261,13 @@ export const numberTick = /* @__PURE__ */ defineEffect<NumberTickOptions, Resolv
     let pending = false;
     let cancelWrite: (() => void) | undefined;
     let control: MotionControl | undefined;
+    let digits = decimals(target);
     const write = () => {
       pending = false;
       cancelWrite = undefined;
-      const text = context.options.format(control ? shown.get() : target);
+      // Intermediate samples keep the precision of the start and end values (no 1,504.773 while
+      // counting from 1,450 to 1,700).
+      const text = context.options.format(control ? roundTo(shown.get(), digits) : target);
       const node = element.firstChild;
       if (node && node.nodeType === 3 && !node.nextSibling) {
         if (node.nodeValue !== text) node.nodeValue = text;
@@ -252,9 +278,19 @@ export const numberTick = /* @__PURE__ */ defineEffect<NumberTickOptions, Resolv
       pending = true;
       cancelWrite = context.scheduler.schedule(write, "write");
     });
+    // The controller runs with reducedMotion "never"; this effect applies the preference live.
+    const unsubscribeReduced = context.onReducedChange((reduced) => {
+      if (!reduced || !control) return;
+      control.cancel();
+      control = undefined;
+      cancelWrite?.();
+      shown.set(target);
+      write();
+    });
     return {
       update(next) {
         if (next.value === target) return;
+        digits = Math.max(decimals(shown.get()), decimals(next.value));
         target = next.value;
         control?.cancel();
         control = undefined;
@@ -270,6 +306,9 @@ export const numberTick = /* @__PURE__ */ defineEffect<NumberTickOptions, Resolv
           { reducedMotion: "never" },
         );
         control = current;
+        // React has just committed the final text; restore the previous value before the first paint
+        // (the first tween sample equals it and emits nothing).
+        write();
         current.finished.then(() => {
           if (control !== current) return;
           control = undefined;
@@ -279,6 +318,7 @@ export const numberTick = /* @__PURE__ */ defineEffect<NumberTickOptions, Resolv
       destroy() {
         control?.cancel();
         control = undefined;
+        unsubscribeReduced();
         unsubscribe();
         cancelWrite?.();
       },

@@ -59,6 +59,20 @@ function hoverEnd() {
   );
 }
 
+/**
+ * Owner review of PR #7: value of `read()` in the first animation frame after `act()` commits —
+ * the frame the browser paints first. The sampling callback is registered after React's commit (the
+ * engine requested its frame during the commit's layout effects, so its writes run first).
+ */
+async function firstPaint<T>(act: () => void, committed: () => boolean, read: () => T): Promise<T> {
+  act();
+  for (let index = 0; index < 5 && !committed(); index++) await Promise.resolve();
+  check(committed(), "React committed the update synchronously with the event");
+  return new Promise<T>((resolve) => requestAnimationFrame(() => resolve(read())));
+}
+const thumbX = (thumb: HTMLElement) =>
+  new DOMMatrix(`translate(${computed(thumb).translate.split(" ")[0] || "0px"})`).e;
+
 export async function runEffectsSuite(): Promise<Case[]> {
   const cases: Case[] = [];
   const run = async (id: string, fn: () => Promise<void> | void) => {
@@ -402,6 +416,113 @@ export async function runEffectsSuite(): Promise<Case[]> {
       4000,
     );
   });
+
+  await run(
+    "continuity: ToggleMorph's first painted frame starts at the previous thumb position",
+    async () => {
+      const button = byId("press-toggle");
+      const thumb = query(button, ".neshel-toggle-thumb");
+      const before = button.getAttribute("aria-checked");
+      await until(
+        "thumb at rest",
+        () => thumb.style.cssText === "",
+        () => thumb.style.cssText,
+      );
+      const start = thumbX(thumb);
+      const first = await firstPaint(
+        () => button.click(),
+        () => button.getAttribute("aria-checked") !== before,
+        () => thumbX(thumb),
+      );
+      const track = query(button, ".neshel-toggle");
+      const travel = track.offsetWidth - track.offsetHeight;
+      check(
+        // Continues from the previous position (at most one frame of spring progress), never the
+        // new CSS end position.
+        Math.abs(first - start) < travel * 0.5,
+        `first frame ${first}, start ${start}, travel ${travel}`,
+      );
+      await until(
+        "settled",
+        () => thumb.style.cssText === "",
+        () => thumb.style.cssText,
+      );
+      button.click();
+      await until(
+        "back",
+        () => button.getAttribute("aria-checked") === before && thumb.style.cssText === "",
+        () => thumb.style.cssText,
+      );
+    },
+  );
+
+  await run("continuity: CheckboxDraw's first painted frame shows the mark undrawn", async () => {
+    const input = byId("press-checkbox-input") as HTMLInputElement;
+    const svg = byId("press-checkbox");
+    if (input.checked) input.click();
+    await until(
+      "unchecked",
+      () => !svg.querySelector(".neshel-checkbox-mark"),
+      () => svg.outerHTML.slice(0, 120),
+    );
+    // Computed values may be serialised as calc(0.47px).
+    const dash = () =>
+      Number(/-?[\d.]+/.exec(computed(query(svg, ".neshel-checkbox-mark")).strokeDashoffset)?.[0]);
+    const first = await firstPaint(
+      () => input.click(),
+      () => !!svg.querySelector(".neshel-checkbox-mark"),
+      dash,
+    );
+    // 1 = undrawn, 0 = drawn: the first painted frame is never the drawn mark, and it never goes back.
+    check(first > 0.01 && first <= 1, `first frame dash offset ${first}`);
+    let last = first;
+    while (svg.style.cssText !== "") {
+      await frame();
+      const now = dash();
+      check(now <= last + 1e-6, `dash offset went back from ${last} to ${now}`);
+      last = now;
+    }
+    input.click();
+  });
+
+  await run(
+    "continuity: NumberTick keeps the previous value at commit and counts on from it",
+    async () => {
+      const number = byId("press-number");
+      const visual = number.children[0] as HTMLElement;
+      const accessible = number.children[1] as HTMLElement;
+      await until(
+        "idle",
+        () => visual.textContent === accessible.textContent,
+        () => visual.textContent,
+      );
+      const previous = visual.textContent ?? "";
+      const value = (text: string | null) => Number((text ?? "").replace(/,/g, ""));
+      let atCommit = "";
+      const first = await firstPaint(
+        () => byId("press-number-add").click(),
+        () => {
+          const done = accessible.textContent !== previous;
+          if (done) atCommit = visual.textContent ?? "";
+          return done;
+        },
+        () => visual.textContent ?? "",
+      );
+      const final = value(accessible.textContent);
+      check(atCommit === previous, `DOM right after the commit: ${atCommit}, previous ${previous}`);
+      check(
+        value(first) >= value(previous) && value(first) < final && !/\.\d/.test(first),
+        `first frame ${first}, previous ${previous}, final ${accessible.textContent}`,
+      );
+      let last = value(first);
+      while (visual.textContent !== accessible.textContent) {
+        await frame();
+        const now = value(visual.textContent);
+        check(now >= last && !/\.\d/.test(visual.textContent ?? ""), `count ${last} → ${now}`);
+        last = now;
+      }
+    },
+  );
 
   return cases;
 }

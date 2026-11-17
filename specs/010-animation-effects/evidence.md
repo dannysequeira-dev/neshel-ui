@@ -95,7 +95,10 @@ true everywhere.
 
 ## Bundles (packed tarball, Vite/Rolldown minified, React external, gzip -9)
 
-009 budgets unchanged. New budgets proposed from these measurements (≈ +8 %, rounded to 0.05 KiB steps).
+009 budgets unchanged. The Phase 010 budgets were proposed from these measurements (≈ +8 %, rounded
+to 0.05 KiB steps) and **approved by the owner on 2026-11-17** (review of PR #7), together with ADR
+0025; the 009 budgets stay without increases. Measurements below are from the final head (after the
+review fixes; press entries +0.05–0.11 KiB, all within budget).
 
 | Entry                                  | Measured  | Budget    |
 | -------------------------------------- | --------- | --------- |
@@ -126,6 +129,55 @@ public `definePreset`/`attachPreset` are part of the entire core entry), root +0
 registry + host ±0. Markers confirm: family entries never contain another family's code; Tilt3D stays
 arbiter-free; definitions without React contain no React/Slot; WAAPI only where expected (ripple).
 Raw report: [bundles-report.json](bundles-report.json).
+
+## Owner review of PR #7 (2026-11-17): live reduced motion and visual continuity
+
+Owner decisions: ADR 0025 accepted; Phase 010 budgets approved; 009 budgets unchanged; implementation and
+entry points accepted. Two behaviours were investigated before the merge; regression tests were written
+first (`test/press-live.test.mjs`) and **failed before the fixes** (7 of 13 cases), then passed.
+
+### 1. Live reduced motion in the press effects — confirmed, fixed
+
+Several press effects consulted `context.reduced` only when a run started; their controllers run with
+`reducedMotion: "never"` (or are WAAPI layers), so a preference switched on mid-run did not apply. Each
+effect now subscribes to `context.onReducedChange` and applies its catalogue behaviour at once:
+
+| Effect       | Behaviour on a live switch to reduced motion                                            | Regression test (before → after) |
+| ------------ | --------------------------------------------------------------------------------------- | -------------------------------- |
+| ToggleMorph  | travel jumps to the end; inline values cleared; no frame task left (`instant`)          | fail → pass                      |
+| CheckboxDraw | mark completes at once; controller cancelled (`instant`)                                | fail → pass                      |
+| NumberTick   | final value shown at once; controller and pending write cancelled (`instant`)           | fail → pass                      |
+| Ripple       | running scale animation finishes (static highlight); only opacity fades remain (`fade`) | fail → pass                      |
+| Burst        | running particles cancelled and the owned layer removed (`static`)                      | fail → pass                      |
+| Shake        | the running shake continues at a third of its amplitude (`reduced`)                     | fail → pass                      |
+
+Explicit policies verified for each: `"never"` keeps animating when the preference turns on, `"always"`
+never animates. Every subscription is released on destroy (media-query listener count back to the
+baseline). Browser confirmation: a new case in the CDP and Playwright harnesses starts the toggle and the
+counter, switches the emulated preference to `reduce` mid-run and requires the final state within 300 ms
+(the 600 ms count would otherwise still be running at that point).
+
+### 2. Visual continuity on state changes
+
+Mechanism: React commits the new DOM/`data-state`; the effect's `update` runs in a **layout effect**; the
+engine writes in the scheduler's write phase, which runs inside `requestAnimationFrame` — before the
+browser paints the committed DOM. Checked at four moments (before the update, right after the commit,
+first frame, during, end) in jsdom, and the first painted frame in Chromium, Firefox and WebKit (an
+in-page sampler registered after the commit, so it reads the styles the browser paints).
+
+| Component    | Result                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| NumberTick   | **Confirmed jump, fixed.** React committed the final text and the first tween sample equals the previous value, so nothing was written before paint: the first painted frame showed the final value, then counted up from the start. `update` now restores the previous value synchronously in the layout effect. Intermediate samples also showed decimals (`1,504.773`); they now keep the precision of the start/end values. |
+| ToggleMorph  | **No jump (demonstrated).** The new `data-state` would place the thumb at the end, but the first frame writes `--neshel-toggle-p: 0` before paint; first painted position within one frame of spring progress from the start in all engines.                                                                                                                                                                                    |
+| CheckboxDraw | **No jump in Chromium/WebKit; a real Firefox defect found and fixed.** The first frame writes progress `0` before paint, but Firefox drops a unitless `calc()` in `stroke-dashoffset` (computed `0px`), so in Firefox the mark was always drawn and never animated. The rule now uses `px` (user units scaled by `pathLength="1"`); the first painted frame is undrawn and the offset never goes back, in all engines.          |
+
+Note: the first painted frame already contains one frame of time-based progress (e.g. 22 % of a 600 ms
+decelerated count), as with any time-based animation; it is never the final state.
+
+### Visual review
+
+Screenshots at rest, during and at the end for Entrance, Hover, Press and Composition, plus a recording:
+[visual-review/](visual-review/README.md).
 
 ## Findings during implementation
 

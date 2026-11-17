@@ -279,3 +279,26 @@ export const effectsInputCases = [
     ],
   },
 ];
+
+/**
+ * Owner review of PR #7: start a press animation, then the harness switches the emulated preference to
+ * `reduce` mid-run; the condition must hold quickly (the run jumps to its final state).
+ */
+export const pressLiveReducedStart = `(() => {
+  const toggle = document.getElementById("press-toggle");
+  window.__liveReduced = { checked: toggle.getAttribute("aria-checked") };
+  toggle.click();
+  document.getElementById("press-number-add").click();
+  return true;
+})()`;
+export const pressLiveReducedDone = `(() => {
+  const toggle = document.getElementById("press-toggle");
+  const thumb = toggle.querySelector(".neshel-toggle-thumb");
+  const [visual, accessible] = document.getElementById("press-number").children;
+  return toggle.getAttribute("aria-checked") !== window.__liveReduced.checked && thumb.style.cssText === ""
+    && visual.textContent === accessible.textContent && matchMedia("(prefers-reduced-motion: reduce)").matches;
+})()`;
+export const pressLiveReducedState = `(() => ({
+  thumb: document.querySelector("#press-toggle .neshel-toggle-thumb").style.cssText,
+  number: [...document.getElementById("press-number").children].map((el) => el.textContent),
+}))()`;

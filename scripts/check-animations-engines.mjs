@@ -16,6 +16,9 @@ import {
   assertUntil,
   effectsInputCases,
   fxStateExpression,
+  pressLiveReducedDone,
+  pressLiveReducedStart,
+  pressLiveReducedState,
   runSceneShiftCase,
   sceneShiftCases,
   scrollSceneTo,
@@ -168,6 +171,21 @@ async function runEngine(playwright, engine, url, throttle) {
         }
       });
     }
+
+    await run(
+      "effects: reduced motion switched on mid-animation — toggle and number tick jump to the end",
+      async () => {
+        await evaluate(pressLiveReducedStart);
+        await page.emulateMedia({ reducedMotion: "reduce" });
+        // A 600 ms count and a spring travel cannot finish by themselves within the ceiling below.
+        assertUntil(
+          await evaluate(untilExpression(pressLiveReducedDone, pressLiveReducedState, 300)),
+          "final state right after the preference changed",
+          300,
+        );
+        await page.emulateMedia({ reducedMotion: "no-preference" });
+      },
+    );
 
     await run(
       "effects: reduced motion (emulated, live) — the lift renders its shadow without moving",
