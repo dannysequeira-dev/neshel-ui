@@ -54,6 +54,11 @@ export interface EntranceOptions {
   hold?: boolean;
   /** Phase 011: `playback: "out"` plays end -> start and then holds the start pose (reverse on leave). Default `"in"`. */
   playback?: "in" | "out";
+  /**
+   * Phase 012 (presence re-entry): a replay that interrupts a running run continues from the current progress
+   * with the remaining fraction of the duration, instead of restarting from the start pose. Default false.
+   */
+  continuous?: boolean;
 }
 
 export interface EntranceCommon {
@@ -66,6 +71,7 @@ export interface EntranceCommon {
   onFinish: ((status: MotionResult["status"]) => void) | undefined;
   hold: boolean;
   playback: "in" | "out";
+  continuous: boolean;
 }
 
 /** Start pose of the entrance; the end pose is the identity. */
@@ -122,6 +128,7 @@ export function resolveCommon(
     onFinish: v.callback("onFinish", options.onFinish),
     hold: v.flag("hold", options.hold, false),
     playback: v.oneOf("playback", options.playback, ["in", "out"] as const, "in"),
+    continuous: v.flag("continuous", options.continuous, false),
   };
 }
 
@@ -255,11 +262,14 @@ export function createEntrance<Options extends EntranceOptions, Extra>(
 
       function play(direction: "in" | "out" = "in"): void {
         const wasHolding = holding;
+        // Phase 012 `continuous`: an interrupted run continues from where it is.
+        const from =
+          o.continuous && (control || cancelDelay) && mode === "full" ? progress.get() : undefined;
         stopRun();
         const id = runId;
         running = direction;
         if (direction === "out") {
-          playOut(id, wasHolding);
+          playOut(id, wasHolding, from);
           return;
         }
         holding = false;
@@ -270,17 +280,20 @@ export function createEntrance<Options extends EntranceOptions, Extra>(
           o.onFinish?.("completed");
           return;
         }
-        progress.set(0);
-        render(0);
+        if (from === undefined) {
+          progress.set(0);
+          render(0);
+        }
         let fired = false;
-        const cancel = afterDelay(context.scheduler, o.delay, () => {
+        const cancel = afterDelay(context.scheduler, from === undefined ? o.delay : 0, () => {
           fired = true;
           cancelDelay = undefined;
           if (id !== runId) return;
+          const duration = from === undefined ? o.duration : o.duration * (1 - from);
           const transition =
             o.spring && mode === "full"
               ? ({ type: "spring", spring: o.spring } as const)
-              : ({ type: "tween", duration: o.duration, easing: o.easing } as const);
+              : ({ type: "tween", duration, easing: o.easing } as const);
           control = animateValue(progress, 1, transition, { reducedMotion: "never" });
           watch(id);
         });
@@ -289,7 +302,7 @@ export function createEntrance<Options extends EntranceOptions, Extra>(
       }
 
       /** Phase 011: animate from the visible state back to the start pose, then hold it. */
-      function playOut(id: number, wasHolding: boolean): void {
+      function playOut(id: number, wasHolding: boolean, from?: number): void {
         holding = false;
         if (!canHold()) {
           mode = "none";
@@ -303,8 +316,10 @@ export function createEntrance<Options extends EntranceOptions, Extra>(
           o.onFinish?.("completed");
           return;
         }
-        progress.set(1);
-        render(1);
+        if (from === undefined) {
+          progress.set(1);
+          render(1);
+        }
         let fired = false;
         const cancel = afterDelay(context.scheduler, 0, () => {
           fired = true;
@@ -313,7 +328,11 @@ export function createEntrance<Options extends EntranceOptions, Extra>(
           control = animateValue(
             progress,
             0,
-            { type: "tween", duration: o.duration, easing: o.easing },
+            {
+              type: "tween",
+              duration: from === undefined ? o.duration : o.duration * from,
+              easing: o.easing,
+            },
             { reducedMotion: "never" },
           );
           watch(id);

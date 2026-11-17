@@ -32,10 +32,12 @@ const rotation = (element, axis) => {
 
 test("hover subpath runtime exports: Tilt3D API plus the Phase 010 hover family (009 FR-052, 010 FR-020)", () => {
   assert.deepEqual(Object.keys(animations).sort(), [
+    "CursorFollower",
     "Hover",
     "Tilt3D",
     "borderSweep",
     "createTilt3D",
+    "cursorFollower",
     "glow",
     "hoverEffects",
     "lift",

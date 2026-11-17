@@ -1,0 +1,83 @@
+/*
+ * @neshel-ui/animations/layout.css — package-rendered parts of the Layout Animations family (Phase 012):
+ * collapse panel (CSS height driver), tab indicator, cross-fade stack, auto-height wrapper and masonry grid.
+ * Opt-in; transitions are declared only on package-rendered elements (rule R-1, ADR 0025).
+ */
+.neshel-auto-height-content {
+  display: flow-root;
+}
+[data-neshel-fx-active~="auto-height"] {
+  overflow: clip;
+}
+.neshel-collapse {
+  overflow: clip;
+}
+.neshel-collapse[data-state="closed"] {
+  block-size: 0;
+}
+.neshel-collapse-content {
+  display: flow-root;
+}
+.neshel-collapse[data-neshel-fx~="collapse-css"] {
+  interpolate-size: allow-keywords;
+  transition: block-size var(--neshel-collapse-duration, 280ms) var(--neshel-collapse-easing, ease);
+}
+.neshel-collapse[data-neshel-fx-reduced~="collapse"] {
+  transition: none;
+}
+:where([data-neshel-fx~="tab-indicator"]) {
+  position: relative;
+}
+.neshel-tab-indicator {
+  position: absolute;
+  inset-block-end: 0;
+  inset-inline-start: 0;
+  inline-size: 1px;
+  block-size: var(--neshel-indicator-thickness, 2px);
+  background: var(--neshel-indicator-color, currentColor);
+  opacity: 0;
+  transform-origin: 0 0;
+  translate: var(--neshel-indicator-offset, 0) 0;
+  scale: var(--neshel-indicator-size, 0) 1;
+  pointer-events: none;
+}
+.neshel-tab-indicator[data-vertical] {
+  inset-block: 0 auto;
+  inset-inline: auto 0;
+  inline-size: var(--neshel-indicator-thickness, 2px);
+  block-size: 1px;
+  translate: 0 var(--neshel-indicator-offset, 0);
+  scale: 1 var(--neshel-indicator-size, 0);
+}
+.neshel-tab-indicator[data-visible] {
+  opacity: 1;
+}
+.neshel-tab-indicator[data-ready] {
+  transition:
+    translate var(--neshel-indicator-duration, 260ms) var(--neshel-indicator-easing, ease),
+    scale var(--neshel-indicator-duration, 260ms) var(--neshel-indicator-easing, ease);
+}
+[data-neshel-fx-reduced~="tab-indicator"] > .neshel-tab-indicator {
+  transition: none;
+}
+.neshel-crossfade-stack {
+  display: grid;
+}
+.neshel-crossfade-layer {
+  grid-area: 1 / 1;
+}
+.neshel-masonry {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(220px, 100%), 1fr));
+  gap: 16px;
+}
+[data-neshel-fx~="masonry"] {
+  grid-template-columns: var(--neshel-masonry-template);
+  grid-auto-rows: var(--neshel-masonry-unit, 4px);
+  align-items: start;
+  column-gap: var(--neshel-masonry-gap, 16px);
+  row-gap: 0;
+}
+[data-neshel-fx~="masonry"] > * {
+  grid-row-end: span var(--neshel-masonry-span, 1);
+}

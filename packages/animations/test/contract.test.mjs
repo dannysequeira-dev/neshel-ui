@@ -45,12 +45,25 @@ test("exports only implemented entry points, types first (FR-002)", () => {
     "./hover",
     "./press",
     "./scroll",
+    "./gestures",
+    "./layout",
     "./styles.css",
     "./hover.css",
     "./press.css",
     "./scroll.css",
+    "./gestures.css",
+    "./layout.css",
   ]);
-  for (const subpath of [".", "./core", "./entrance", "./hover", "./press", "./scroll"]) {
+  for (const subpath of [
+    ".",
+    "./core",
+    "./entrance",
+    "./hover",
+    "./press",
+    "./scroll",
+    "./gestures",
+    "./layout",
+  ]) {
     assert.deepEqual(Object.keys(manifest.exports[subpath]), ["types", "import"]);
   }
   assert.deepEqual(manifest.sideEffects, ["**/*.css"]);
@@ -153,17 +166,20 @@ test("styles.css is the header plus hover.css, press.css and scroll.css, in orde
 test("no CSS transition or animation targets a consumer element (010 FR-042, ADR 0025)", () => {
   // Declarations of transition/animation may only appear in rules whose subject is package-owned:
   // a pseudo-element layer, a package class, or a child of a package component.
-  const css = readFileSync(join(root, "dist", "styles.css"), "utf8").replace(
-    /\/\*[\s\S]*?\*\//g,
-    "",
-  );
+  // Phase 012: the opt-in gestures.css and layout.css follow the same rule; a package class may carry
+  // attribute qualifiers (`.neshel-tab-indicator[data-ready]`).
+  const css = ["styles.css", "gestures.css", "layout.css"]
+    .map((file) => readFileSync(join(root, "dist", file), "utf8"))
+    .join(String.fromCharCode(10))
+    .replace(/\/\*[\s\S]*?\*\//g, "")
+    .replace(/@keyframes[^{]*\{(?:[^{}]*\{[^{}]*\})*[^{}]*\}/g, "");
   for (const [, selector, declarations] of css.matchAll(/([^{};]+)\{([^{}]*)\}/g)) {
     if (!/(?:^|;|\s)(?:transition|animation)(?:-[a-z-]+)?\s*:/.test(declarations)) continue;
     for (const part of selector.trim().split(/,(?![^(]*\))/)) {
       const subject = part.trim();
       assert.ok(
         /::(?:before|after)$/.test(subject) ||
-          /^\.neshel-[a-z-]+(?::has\(.*\))?$/.test(subject) ||
+          /^\.neshel-[a-z-]+(?:\[[^\]]+\])*(?::has\(.*\))?$/.test(subject) ||
           />\s*(?:\[data-slot\]|\.neshel-[a-z-]+)$/.test(subject),
         `transition/animation on a possibly consumer-owned subject: "${subject}"`,
       );
@@ -183,7 +199,7 @@ test("module boundaries: core imports only core; root/react/families never impor
     const where = relative(join(root, "dist"), file).split("\\").join("/");
     for (const target of relativeTargets(file)) {
       if (where.startsWith("core/")) assert.ok(target.startsWith("core/"), `${where} -> ${target}`);
-      for (const family of ["entrance", "hover", "press", "scroll"]) {
+      for (const family of ["entrance", "hover", "press", "scroll", "gestures", "layout"]) {
         if (!where.startsWith(`${family}/`))
           assert.ok(!target.startsWith(`${family}/`), `${where} -> ${target}`);
       }

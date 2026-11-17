@@ -15,7 +15,13 @@
     "press",
     "scroll",
     "parallax",
-    "reduced-motion"
+    "reduced-motion",
+    "gestures",
+    "drag",
+    "pinch-zoom",
+    "flip",
+    "layout-animation",
+    "presence"
   ],
   "homepage": "https://github.com/dannysequeira-dev/neshel-ui/tree/main/packages/animations#readme",
   "bugs": {
@@ -67,13 +73,23 @@
       "types": "./dist/scroll/index.d.ts",
       "import": "./dist/scroll/index.js"
     },
+    "./gestures": {
+      "types": "./dist/gestures/index.d.ts",
+      "import": "./dist/gestures/index.js"
+    },
+    "./layout": {
+      "types": "./dist/layout/index.d.ts",
+      "import": "./dist/layout/index.js"
+    },
     "./styles.css": "./dist/styles.css",
     "./hover.css": "./dist/hover.css",
     "./press.css": "./dist/press.css",
-    "./scroll.css": "./dist/scroll.css"
+    "./scroll.css": "./dist/scroll.css",
+    "./gestures.css": "./dist/gestures.css",
+    "./layout.css": "./dist/layout.css"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.build.json && node ../../scripts/copy-css.mjs src/hover/hover.css dist/hover.css src/press/press.css dist/press.css src/scroll/scroll.css dist/scroll.css && node ../../scripts/copy-css.mjs --concat dist/styles.css src/styles.css src/hover/hover.css src/press/press.css src/scroll/scroll.css",
+    "build": "tsc -p tsconfig.build.json && node ../../scripts/copy-css.mjs src/hover/hover.css dist/hover.css src/press/press.css dist/press.css src/scroll/scroll.css dist/scroll.css src/gestures/gestures.css dist/gestures.css src/layout/layout.css dist/layout.css && node ../../scripts/copy-css.mjs --concat dist/styles.css src/styles.css src/hover/hover.css src/press/press.css src/scroll/scroll.css",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "devDependencies": {
