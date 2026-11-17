@@ -1,5 +1,5 @@
 // pnpm check:animations:consumer [--no-build]
-// Phase 009 (spec FR-062) and Phase 010 (FR-072: Entrance, Hover and Press families, their stylesheets
+// Phase 009 (spec FR-062), Phase 011 (FR-044: scroll family) and Phase 010 (FR-072: Entrance, Hover and Press families, their stylesheets
 // in a plain-CSS app, SSR markup visible without JavaScript, hydration without replay, real input):
 // an external application OUTSIDE the workspace consumes the REAL packed
 // @neshel-ui/animations tarball (no workspace links to its source): Vite client build, Node SSR
@@ -23,6 +23,7 @@ const PACKAGE = join(repoRoot, "packages", "animations");
 const APP = `import { Tilt3D, Hover, lift, glow as glowRing } from "@neshel-ui/animations/hover";
 import { Reveal, fadeUp } from "@neshel-ui/animations/entrance";
 import { Press, pressScale, ripple, ToggleMorph, NumberTick } from "@neshel-ui/animations/press";
+import { ScrollScene, ScrollLayer, RevealOnScroll, HorizontalScroll, ScrollProgressBar } from "@neshel-ui/animations/scroll";
 import { useMotionEffect } from "@neshel-ui/animations";
 import { defineEffect } from "@neshel-ui/animations/core";
 import { useRef } from "react";
@@ -48,6 +49,7 @@ function Glow() {
 export function App() {
   return (
     <main>
+      <RevealOnScroll id="visible-reveal" preset={fadeUp}><p>Visible on load</p></RevealOnScroll>
       <Tilt3D id="card" maxTilt={12} style={{ width: 240, height: 160, margin: 40, background: "#ddd" }}>
         <button type="button">Choose</button>
       </Tilt3D>
@@ -61,6 +63,16 @@ export function App() {
       </Press>
       <button type="button" role="switch" aria-checked="true" id="switch"><ToggleMorph checked /> Wi-Fi</button>
       <NumberTick id="count" value={1234} />
+      <ScrollProgressBar id="bar" />
+      <ScrollScene id="scene" length={3} driver="js">
+        <ScrollLayer id="layer" depth={2} distance={100}>Layer</ScrollLayer>
+      </ScrollScene>
+      <HorizontalScroll id="hs" label="Cards">
+        {[1, 2, 3, 4, 5, 6].map((n) => <a key={n} href={"#c" + n} style={{ display: "block", width: 480, height: 200 }}>Card {n}</a>)}
+      </HorizontalScroll>
+      <div style={{ height: "150vh" }} />
+      <RevealOnScroll id="late-reveal" preset={fadeUp}><p>Revealed on scroll</p></RevealOnScroll>
+      <div style={{ height: "50vh" }} />
     </main>
   );
 }
@@ -171,6 +183,14 @@ async function main() {
       "SSR: ToggleMorph static state and NumberTick formatted value",
     );
     check(!/data-neshel-fx/.test(html), "SSR: no engine tokens before hydration");
+    check(
+      /<section id="scene" class="neshel-scene" style="--neshel-scene-length:3"><div class="neshel-scene-stage">/.test(
+        html,
+      ) &&
+        /data-neshel-hscroll="scroll"/.test(html) &&
+        /<div id="late-reveal" class="neshel-reveal-on-scroll"><p>/.test(html),
+      "SSR (011): scene, native horizontal scroller and visible reveals in server markup",
+    );
     const indexPath = join(app, "dist", "index.html");
     writeFileSync(indexPath, readFileSync(indexPath, "utf8").replace("<!--ssr-->", html));
 
@@ -285,6 +305,47 @@ async function main() {
         check(
           pressed.ripple && pressed.hidden === "true" && pressed.events === "none",
           `real press creates the owned, aria-hidden ripple layer (${JSON.stringify(pressed)})`,
+        );
+        // Phase 011: scroll family from the packed tarball after hydration.
+        const scrollState = await page.evaluate(`(async () => {
+          const raf = () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+          const late = document.getElementById("late-reveal");
+          const visible = document.getElementById("visible-reveal");
+          window.scrollTo(0, 0); await raf(); await raf();
+          const held = { late: late.style.opacity, visible: visible.style.cssText };
+          const scene = document.getElementById("scene");
+          const top = scene.getBoundingClientRect().top + scrollY;
+          const span = scene.offsetHeight - innerHeight;
+          window.scrollTo(0, top + span / 2); await raf(); await raf(); await raf();
+          const progress = Number(getComputedStyle(scene).getPropertyValue("--neshel-scene-progress"));
+          const layer = document.getElementById("layer").style.transform;
+          const stageTop = scene.firstElementChild.getBoundingClientRect().top;
+          const hs = document.getElementById("hs").getAttribute("data-neshel-hscroll");
+          late.scrollIntoView({ block: "center" });
+          const start = performance.now();
+          while (performance.now() - start < 3000 && (getComputedStyle(late).opacity !== "1" || late.style.cssText !== "")) await raf();
+          return { held, progress, layer, stageTop, hs, revealed: getComputedStyle(late).opacity, lateStyle: late.style.cssText,
+            bar: getComputedStyle(document.getElementById("bar")).getPropertyValue("--neshel-scroll-progress") };
+        })()`);
+        check(
+          scrollState.held.late === "0" && scrollState.held.visible === "",
+          `reveal: hydrated in-view content untouched, below-the-fold content held (${JSON.stringify(scrollState.held)})`,
+        );
+        check(
+          Math.abs(scrollState.progress - 0.5) < 0.02 &&
+            Math.abs(scrollState.stageTop) < 1 &&
+            scrollState.layer === "",
+          `ScrollScene pinned with CSS sticky; progress 0.5 and SP01 layer at identity (${JSON.stringify(scrollState)})`,
+        );
+        check(
+          scrollState.hs === "pinned",
+          `HorizontalScroll pinned after hydration (${scrollState.hs})`,
+        );
+        check(
+          scrollState.revealed === "1" &&
+            scrollState.lateStyle === "" &&
+            Number(scrollState.bar) > 0,
+          `reveal plays on scroll and restores the element; progress bar follows (${JSON.stringify(scrollState)})`,
         );
         check(
           page.errors.length === 0,

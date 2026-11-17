@@ -4,11 +4,12 @@
 
 Modular, accessible motion primitives and effects for Neshel-UI.
 
-**Status: experimental, private, unpublished (features 008.0–010).** This package is not on npm and its
+**Status: experimental, private, unpublished (features 008.0–011).** This package is not on npm and its
 API may change before the owner approves a first publication. Specification, catalogue and
 decisions: [`specs/008-animations/`](../../specs/008-animations/spec.md),
 [`specs/009-motion-engine/`](../../specs/009-motion-engine/spec.md),
-[`specs/010-animation-effects/`](../../specs/010-animation-effects/spec.md), ADRs 0018–0025.
+[`specs/010-animation-effects/`](../../specs/010-animation-effects/spec.md),
+[`specs/011-scroll-parallax/`](../../specs/011-scroll-parallax/spec.md), ADRs 0018–0026.
 
 ## What exists today
 
@@ -29,9 +30,21 @@ decisions: [`specs/008-animations/`](../../specs/008-animations/spec.md),
   `stagger`, `springIn`; `<Reveal>` and `<Stagger>` (E01–E11). No stylesheet needed.
 - `@neshel-ui/animations/press` — `pressScale`, `ripple`, `tapBounce`, `burst`, `shake`, `nudge`;
   `<Press>`; decorative `ToggleMorph`, `CheckboxDraw`, `NumberTick`, `ContentSwap` (P01–P10).
+- `@neshel-ui/animations/scroll` — the scroll engine (`createScrollProgress` with CSS named ranges,
+  viewport or inner containers, spring `smooth`; `observeInView`, `createScrollTrigger`,
+  `createSectionSpy`, `inViewPresets`, `refreshScroll`, `getScrollDebugInfo`) and the Scroll Triggers
+  (ST01–ST10: `revealOnEnter`, `staggerOnEnter`, modes, callbacks, `inViewProgress`, `directionHeader`,
+  `stuckState`, section spy, `lazyEffect`, trigger presets) and Scroll & Parallax effects (SP01–SP11:
+  `depthParallax`, `scrubTransform`, `scrollProgress`, `<HorizontalScroll>`, `pinnedScene`,
+  `imageParallax`, `zoomOnScroll`, `scrollColorShift`, `stickyStack`, smooth scrub, `velocitySkew`);
+  React: `<ScrollScene>`, `<ScrollLayer>`, `<ScrollEffect>`, `<RevealOnScroll>`, `<StaggerOnScroll>`,
+  `<ScrollProgressBar>`, `<StickyStack>`, `<ParallaxImage>`, `useScrollProgress`, `useScrollScene`,
+  `useInView`, `useScrollTrigger`, `useSectionSpy`.
 - `definePreset` / `attachPreset` (`./core`) — presets are values: a definition plus frozen options.
 - Stylesheets (opt-in): `@neshel-ui/animations/hover.css` (Tilt3D depth + decor layers),
-  `@neshel-ui/animations/press.css` (ripple, burst, toggle, checkbox, swap) or `styles.css` (both).
+  `@neshel-ui/animations/press.css` (ripple, burst, toggle, checkbox, swap),
+  `@neshel-ui/animations/scroll.css` (sticky scene stage, progress bar, horizontal section, sticky
+  stack, parallax frame) or `styles.css` (all three).
 
 ```tsx
 import { Tilt3D } from "@neshel-ui/animations/hover";
@@ -61,6 +74,27 @@ import "@neshel-ui/animations/styles.css"; // decor layers, ripple, toggle… (p
 </Reveal>;
 ```
 
+```tsx
+import { fadeUp } from "@neshel-ui/animations/entrance";
+import { RevealOnScroll, ScrollLayer, ScrollScene } from "@neshel-ui/animations/scroll";
+import "@neshel-ui/animations/scroll.css";
+
+<ScrollScene length={3} smooth>
+  <ScrollLayer depth={0.4}>Background</ScrollLayer>
+  <ScrollLayer depth={1.6}>Foreground</ScrollLayer>
+</ScrollScene>;
+
+<RevealOnScroll preset={fadeUp} mode="once">
+  <h2>Revealed when it enters the viewport</h2>
+</RevealOnScroll>;
+```
+
+Scroll effects never hijack scrolling: listeners are passive, pinning is CSS `position: sticky`, and the
+engine only follows the native scroll position, reading layout only when geometry changes (never per
+scroll event). Without JavaScript the markup is fully visible (the horizontal section is a native
+horizontal scroller); with reduced motion decorative scroll motion stops and the horizontal section is
+laid out vertically.
+
 Entrances play on client mounts and on `replayKey` changes; server-rendered content stays visible and
 is not hidden again while hydrating (`appear="client"`). Hover effects follow mouse/pen and keyboard
 `:focus-visible` (touch is opt-in). `ToggleMorph` and `CheckboxDraw` are decorative visuals for inside
@@ -75,7 +109,7 @@ ADR 0022). `transform` layers compose, `opacity` multiplies, other channels have
 original inline styles are restored when effects end. The package stylesheets never declare a
 transition or animation on your element (ADR 0025): CSS only renders package-owned layers, so effects
 compose with each other and with your own styles (`transition`, `translate`, …). Several effects —
-Entrance, Hover, Press and Tilt3D — can share one element through nested `asChild`.
+Entrance, Hover, Press, Tilt3D and scroll effects — can share one element through nested `asChild`.
 
 ## License
 

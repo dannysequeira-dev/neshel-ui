@@ -19,5 +19,13 @@
   "press: entire entry": 17408,
   "css: hover.css": 1894,
   "css: press.css": 1638,
-  "css: styles.css": 3174
+  "css: styles.css": 4096,
+  "css: scroll.css": 1280,
+  "scroll: createScrollProgress (engine, no React)": 7168,
+  "scroll: depthParallax definition (no React)": 8960,
+  "scroll: revealOnEnter definition (no React)": 8960,
+  "scroll: ScrollScene + ScrollLayer": 16128,
+  "scroll: RevealOnScroll": 11264,
+  "scroll: HorizontalScroll": 12032,
+  "scroll: entire entry": 25600
 }

@@ -47,6 +47,13 @@ export interface EntranceOptions {
   replay?: string | number | boolean;
   /** Called once per run: `"completed"`, `"cancelled"` or `"interrupted"`. */
   onFinish?: (status: MotionResult["status"]) => void;
+  /**
+   * Phase 011 (scroll triggers): while no run plays, keep the start pose (content hidden until a replay).
+   * Ignored when motion is reduced and after `beforeprint`; `<Reveal>` never sets it. Default false.
+   */
+  hold?: boolean;
+  /** Phase 011: `playback: "out"` plays end -> start and then holds the start pose (reverse on leave). Default `"in"`. */
+  playback?: "in" | "out";
 }
 
 export interface EntranceCommon {
@@ -57,6 +64,8 @@ export interface EntranceCommon {
   appear: boolean;
   replay: string | number | boolean | undefined;
   onFinish: ((status: MotionResult["status"]) => void) | undefined;
+  hold: boolean;
+  playback: "in" | "out";
 }
 
 /** Start pose of the entrance; the end pose is the identity. */
@@ -111,6 +120,8 @@ export function resolveCommon(
     appear: v.flag("appear", options.appear, true),
     replay: v.key("replay", options.replay),
     onFinish: v.callback("onFinish", options.onFinish),
+    hold: v.flag("hold", options.hold, false),
+    playback: v.oneOf("playback", options.playback, ["in", "out"] as const, "in"),
   };
 }
 
@@ -148,6 +159,10 @@ export function createEntrance<Options extends EntranceOptions, Extra>(
       let mode: "full" | "fade" | "none" = "full";
       let runId = 0;
       let destroyed = false;
+      /** The start pose is held (Phase 011 `hold` / end of an `"out"` run). */
+      let holding = false;
+      let running: "in" | "out" = "in";
+      let printed = false;
       const exclusive = paint.map(
         (channel) => [channel, context.channels.exclusive(channel)] as const,
       );
@@ -199,8 +214,32 @@ export function createEntrance<Options extends EntranceOptions, Extra>(
       function settle(id: number, status: MotionResult["status"]): void {
         if (id !== runId || destroyed) return;
         control = undefined;
-        clearAll();
+        if (running === "out" && status === "completed" && canHold()) {
+          holding = true;
+          render(0);
+        } else {
+          holding = false;
+          clearAll();
+        }
         o.onFinish?.(status);
+      }
+
+      const canHold = () => !context.reduced && !printed;
+
+      /** Keep the start pose without playing (Phase 011 scroll triggers). */
+      function holdStart(): void {
+        if (!canHold() || control || cancelDelay) return;
+        mode = "full";
+        holding = true;
+        progress.set(0);
+        render(0);
+      }
+
+      /** Stop holding: the element is shown as it is (no animation). */
+      function releaseHold(): void {
+        if (!holding || control || cancelDelay) return;
+        holding = false;
+        clearAll();
       }
 
       function stopRun(): void {
@@ -214,9 +253,16 @@ export function createEntrance<Options extends EntranceOptions, Extra>(
         running?.cancel();
       }
 
-      function play(): void {
+      function play(direction: "in" | "out" = "in"): void {
+        const wasHolding = holding;
         stopRun();
         const id = runId;
+        running = direction;
+        if (direction === "out") {
+          playOut(id, wasHolding);
+          return;
+        }
+        holding = false;
         mode = context.reduced ? (spec.reducedMotion === "instant" ? "none" : "fade") : "full";
         if (mode === "none" || pageHidden()) {
           mode = "none";
@@ -226,7 +272,9 @@ export function createEntrance<Options extends EntranceOptions, Extra>(
         }
         progress.set(0);
         render(0);
-        cancelDelay = afterDelay(context.scheduler, o.delay, () => {
+        let fired = false;
+        const cancel = afterDelay(context.scheduler, o.delay, () => {
+          fired = true;
           cancelDelay = undefined;
           if (id !== runId) return;
           const transition =
@@ -236,6 +284,41 @@ export function createEntrance<Options extends EntranceOptions, Extra>(
           control = animateValue(progress, 1, transition, { reducedMotion: "never" });
           watch(id);
         });
+        // A zero delay may run the callback synchronously: never keep a stale cancel function.
+        if (!fired) cancelDelay = cancel;
+      }
+
+      /** Phase 011: animate from the visible state back to the start pose, then hold it. */
+      function playOut(id: number, wasHolding: boolean): void {
+        holding = false;
+        if (!canHold()) {
+          mode = "none";
+          clearAll();
+          o.onFinish?.("completed");
+          return;
+        }
+        mode = "full";
+        if (wasHolding || pageHidden()) {
+          holdStart();
+          o.onFinish?.("completed");
+          return;
+        }
+        progress.set(1);
+        render(1);
+        let fired = false;
+        const cancel = afterDelay(context.scheduler, 0, () => {
+          fired = true;
+          cancelDelay = undefined;
+          if (id !== runId) return;
+          control = animateValue(
+            progress,
+            0,
+            { type: "tween", duration: o.duration, easing: o.easing },
+            { reducedMotion: "never" },
+          );
+          watch(id);
+        });
+        if (!fired) cancelDelay = cancel;
       }
 
       /** Settle in the write phase of the frame the run ends in (deterministic, unlike a promise). */
@@ -250,25 +333,45 @@ export function createEntrance<Options extends EntranceOptions, Extra>(
 
       /** Jump to the final state now (reduced motion switched on, page hidden). */
       function finishNow(): void {
-        if (!control && !cancelDelay) return;
+        if (!control && !cancelDelay) {
+          if (holding && !canHold()) {
+            holding = false;
+            clearAll();
+          }
+          return;
+        }
         stopRun();
         const id = runId;
+        running = "in";
         progress.set(1);
         settle(id, "completed");
       }
+
+      // Printing never shows held (hidden) content.
+      const onBeforePrint = () => {
+        printed = true;
+        finishNow();
+      };
+      if (typeof window !== "undefined") window.addEventListener("beforeprint", onBeforePrint);
 
       const unsubscribeValue = progress.subscribe(render);
       const unsubscribeReduced = context.onReducedChange((reduced) => {
         if (reduced) finishNow();
       });
-      const unsubscribeVisibility = watchVisibility(finishNow);
-      if (o.appear) play();
+      const unsubscribeVisibility = watchVisibility(() => {
+        if (running === "in") finishNow();
+      });
+      if (o.appear) play(o.playback);
+      else if (o.hold) holdStart();
 
       return {
         update(next) {
           const replay = next.replay !== o.replay;
+          const hold = next.hold !== o.hold;
           o = next;
-          if (replay) play();
+          if (replay) play(o.playback);
+          else if (hold && o.hold) holdStart();
+          else if (hold) releaseHold();
         },
         pause() {
           control?.pause();
@@ -287,6 +390,8 @@ export function createEntrance<Options extends EntranceOptions, Extra>(
           unsubscribeValue();
           unsubscribeReduced();
           unsubscribeVisibility();
+          if (typeof window !== "undefined")
+            window.removeEventListener("beforeprint", onBeforePrint);
           clearAll();
         },
       };

@@ -482,6 +482,27 @@ async function main() {
         await until("rest", `((s) => s.lift === "" && !s.reducedQuery)(${state})`, state);
       },
     );
+    // Phase 011 scroll gallery: in-page suite in real layout, then the live reduced-motion switch.
+    await p.evaluate(`document.getElementById("scroll-title").scrollIntoView()`);
+    const scrollCases = await p.evaluate("window.__neshelLab.scroll.runScrollSuite()");
+    for (const item of scrollCases) cases.push(item);
+    await run(
+      "scroll: reduced motion switched on live — horizontal sections (auto and pinned) stack, decorative layers stop",
+      async () => {
+        await motionPreference("reduce");
+        await until(
+          "static alternatives",
+          `(() => { const f = window.__neshelLab.scroll.reducedFacts(); return f.reduced && f.hscroll === "stacked" && f.hscrollPinned === "stacked" && f.pinnedTrackTransform === "" && f.dot === "" && f.scene === "" && f.skew === ""; })()`,
+          "window.__neshelLab.scroll.reducedFacts()",
+        );
+        await motionPreference("no-preference");
+        await until(
+          "pinned again",
+          `(() => { const f = window.__neshelLab.scroll.reducedFacts(); return f.hscroll === "pinned" && f.hscrollPinned === "pinned"; })()`,
+          "window.__neshelLab.scroll.reducedFacts()",
+        );
+      },
+    );
     notes.effects = await p.evaluate("window.__neshelLab.notes");
 
     await run("axe: no violations on the lab page", async () => {

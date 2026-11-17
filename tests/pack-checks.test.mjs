@@ -410,15 +410,17 @@ const animationsManifest = {
     "./entrance": { types: "./dist/entrance/index.d.ts", import: "./dist/entrance/index.js" },
     "./hover": { types: "./dist/hover/index.d.ts", import: "./dist/hover/index.js" },
     "./press": { types: "./dist/press/index.d.ts", import: "./dist/press/index.js" },
+    "./scroll": { types: "./dist/scroll/index.d.ts", import: "./dist/scroll/index.js" },
     "./styles.css": "./dist/styles.css",
     "./hover.css": "./dist/hover.css",
     "./press.css": "./dist/press.css",
+    "./scroll.css": "./dist/scroll.css",
   },
   peerDependencies: { react: "^19.0.0" },
   dependencies: { "@radix-ui/react-slot": "^1.5.0" },
 };
 
-test("animations package contract: private, exact exports, peers and framework-free core (features 008–010)", () => {
+test("animations package contract: private, exact exports, peers and framework-free core (features 008–011)", () => {
   const good = files({
     "dist/index.js": 'export { Tilt3D } from "./tilt/tilt-3d.js";',
     "dist/tilt/tilt-3d.js":
@@ -427,6 +429,7 @@ test("animations package contract: private, exact exports, peers and framework-f
     "dist/hover/index.js": 'export { tilt3D } from "./tilt/controller.js";',
     "dist/hover/tilt/controller.js": 'import { attachEffect } from "../../core/effect.js";',
     "dist/press/effects.js": 'import { attachEffect } from "../core/effect.js";',
+    "dist/scroll/parallax.js": 'import { attachEffect } from "../core/effect.js";',
     "dist/entrance/reveal.js":
       '"use client";\nimport { useMotionPresets } from "../react/use-motion-presets.js";',
   });
@@ -459,7 +462,7 @@ test("negative: animations contract detects lifted guard, extra exports/deps and
     {
       ...animationsManifest,
       private: undefined,
-      exports: { ...animationsManifest.exports, "./scroll": "./dist/scroll.js" },
+      exports: { ...animationsManifest.exports, "./cinematic": "./dist/cinematic.js" },
       peerDependencies: { react: "^19.0.0", "react-dom": "^19.0.0" },
       dependencies: { "@radix-ui/react-slot": "^1.5.0", motion: "^12.0.0" },
     },

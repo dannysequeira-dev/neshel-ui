@@ -446,9 +446,10 @@ export function checkPackageContract(manifest, files, context = {}) {
 }
 
 /**
- * Contract of the private, experimental `@neshel-ui/animations` package (features 008–010, ADR 0018,
- * owner decision D3, ADR 0025): still private, exports exactly `.`, `./core`, the family subpaths
- * `./entrance`, `./hover`, `./press` and the stylesheets `./styles.css`, `./hover.css`, `./press.css`,
+ * Contract of the private, experimental `@neshel-ui/animations` package (features 008–011, ADR 0018,
+ * owner decision D3, ADR 0025, ADR 0026): still private, exports exactly `.`, `./core`, the family
+ * subpaths `./entrance`, `./hover`, `./press`, `./scroll` and the stylesheets `./styles.css`,
+ * `./hover.css`, `./press.css`, `./scroll.css`,
  * React as the only peer, `@radix-ui/react-slot` as the only runtime dependency, a framework-free
  * `./core` (relative imports only, never into React bindings or families), a root entry that never
  * imports family code, and family subpaths that never import each other.
@@ -464,11 +465,13 @@ export function checkAnimationsContract(manifest, files) {
     "./entrance",
     "./hover",
     "./press",
+    "./scroll",
     "./styles.css",
     "./hover.css",
     "./press.css",
+    "./scroll.css",
   ];
-  const FAMILY_DIRS = ["entrance", "hover", "press"];
+  const FAMILY_DIRS = ["entrance", "hover", "press", "scroll"];
   if (!sameKeys(manifest.exports, expected)) {
     errors.push(`exports must be exactly ${expected.join(", ")}`);
   }

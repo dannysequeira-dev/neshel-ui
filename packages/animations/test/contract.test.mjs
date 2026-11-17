@@ -44,11 +44,13 @@ test("exports only implemented entry points, types first (FR-002)", () => {
     "./entrance",
     "./hover",
     "./press",
+    "./scroll",
     "./styles.css",
     "./hover.css",
     "./press.css",
+    "./scroll.css",
   ]);
-  for (const subpath of [".", "./core", "./entrance", "./hover", "./press"]) {
+  for (const subpath of [".", "./core", "./entrance", "./hover", "./press", "./scroll"]) {
     assert.deepEqual(Object.keys(manifest.exports[subpath]), ["types", "import"]);
   }
   assert.deepEqual(manifest.sideEffects, ["**/*.css"]);
@@ -96,6 +98,7 @@ test("no module touches window, document or matchMedia at import time (FR-007)",
   await import("../dist/entrance/index.js");
   await import("../dist/hover/index.js");
   await import("../dist/press/index.js");
+  await import("../dist/scroll/index.js");
   assert.equal(typeof globalThis.window, "undefined");
 });
 
@@ -103,7 +106,7 @@ test("no module touches window, document or matchMedia at import time (FR-007)",
 const SCOPED =
   /^(?::where\()?(?:\.neshel-[a-z0-9-]+|\[data-neshel-fx(?:-active|-reduced)?~="[a-z0-9-]+"\])/;
 
-for (const name of ["styles.css", "hover.css", "press.css"]) {
+for (const name of ["styles.css", "hover.css", "press.css", "scroll.css"]) {
   test(`stylesheet ${name}: one layer, scoped selectors, no resets or global rules (FR-008, 010 FR-040)`, () => {
     const css = readFileSync(join(root, "dist", name), "utf8").replace(/\r\n/g, "\n");
     const body = css.replace(/\/\*[\s\S]*?\*\//g, "");
@@ -130,7 +133,7 @@ for (const name of ["styles.css", "hover.css", "press.css"]) {
   });
 }
 
-test("styles.css is the header plus hover.css and press.css, in order (010 FR-041)", () => {
+test("styles.css is the header plus hover.css, press.css and scroll.css, in order (010 FR-041, 011 FR-041)", () => {
   const read = (...path) =>
     readFileSync(join(root, ...path), "utf8")
       .replace(/\r\n/g, "\n")
@@ -139,10 +142,12 @@ test("styles.css is the header plus hover.css and press.css, in order (010 FR-04
     read("src", "styles.css"),
     read("src", "hover", "hover.css"),
     read("src", "press", "press.css"),
+    read("src", "scroll", "scroll.css"),
   ];
   assert.equal(read("dist", "styles.css"), parts.join("\n\n"));
   assert.equal(read("dist", "hover.css"), parts[1]);
   assert.equal(read("dist", "press.css"), parts[2]);
+  assert.equal(read("dist", "scroll.css"), parts[3]);
 });
 
 test("no CSS transition or animation targets a consumer element (010 FR-042, ADR 0025)", () => {
@@ -178,7 +183,7 @@ test("module boundaries: core imports only core; root/react/families never impor
     const where = relative(join(root, "dist"), file).split("\\").join("/");
     for (const target of relativeTargets(file)) {
       if (where.startsWith("core/")) assert.ok(target.startsWith("core/"), `${where} -> ${target}`);
-      for (const family of ["entrance", "hover", "press"]) {
+      for (const family of ["entrance", "hover", "press", "scroll"]) {
         if (!where.startsWith(`${family}/`))
           assert.ok(!target.startsWith(`${family}/`), `${where} -> ${target}`);
       }
@@ -194,4 +199,15 @@ test("no global motion custom properties are declared by the stylesheet (009 FR-
     "read with fallbacks only, never declared",
   );
   assert.doesNotMatch(css, /:root|:where\(\s*:root/);
+});
+
+test("no package stylesheet declares a scroll timeline; pinning is CSS sticky (011 FR-041, ADR 0026)", () => {
+  const css = readFileSync(join(root, "dist", "styles.css"), "utf8").replace(
+    /\/\*[\s\S]*?\*\//g,
+    "",
+  );
+  assert.doesNotMatch(css, /(?:scroll|view)-timeline|timeline-scope|animation-range/);
+  const scroll = readFileSync(join(root, "dist", "scroll.css"), "utf8");
+  assert.match(scroll, /\.neshel-scene-stage \{[^}]*position: sticky/);
+  assert.match(scroll, /\.neshel-stack-item \{[^}]*position: sticky/);
 });

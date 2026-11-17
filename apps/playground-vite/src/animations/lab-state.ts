@@ -25,6 +25,12 @@ export interface LabState {
     runEffectsSuite(): Promise<Array<{ id: string; ok: boolean; error?: string }>>;
     replay(): void;
   };
+  /** Phase 011 scroll gallery (set after mount). */
+  scroll?: {
+    runScrollSuite(): Promise<Array<{ id: string; ok: boolean; error?: string }>>;
+    reducedFacts(): Record<string, unknown>;
+    debug(): unknown;
+  };
   /** Observations reported by in-page suites (not pass/fail). */
   notes: Record<string, unknown>;
 }

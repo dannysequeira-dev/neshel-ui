@@ -4,10 +4,11 @@
 (tag `v0.1.0`, release run 42843343125; evidence: `specs/007-first-publication/`). Feature 008
 (animations) milestone 008.0 — architecture, contracts, catalogue and spikes — is implemented and
 merged into `main` as the squash commit `fd3885c` (PR #4). Phase 009 (Motion Engine) is merged into
-`main` as the squash commit `44dc1c9` (PR #6) and validated by the owner. Phase 010 (Animation Effects &
-Presets: Entrance E01–E11, Hover H01–H02/H04–H10, Press P01–P10) is implemented on
-`feature/010-entrance-hover-press` (`specs/010-animation-effects/`, ADR 0025) and awaits the owner's
-review of its PR; never merge it automatically.
+`main` as the squash commit `44dc1c9` (PR #6) and validated by the owner. Phase 010 (Animation Effects & Presets: Entrance, Hover, Press;
+ADR 0025) is merged into `main` as the squash commit `70d852b` (PR #7) and approved by the owner.
+Phase 011 (Scroll Engine, Scroll Triggers ST01–ST10, Scroll & Parallax SP01–SP11) is in development on
+`feature/011-scroll-parallax` (`specs/011-scroll-parallax/`); its PR awaits the owner's review — never
+merge it automatically.
 `@neshel-ui/animations` is **private** (0.0.0) and must stay private until the owner approves its
 first publication; it is outside the Changesets fixed group and the release scripts. The five public
 packages are on npm with provenance; `@neshel-ui/core` stays private. `v0.1.0` is immutable: never
@@ -23,6 +24,14 @@ install without monorepo internals. **Do not implement the entire library in one
 3. `docs/package-contracts.md`, `docs/theming.md`, `docs/typography.md` — public contracts.
 4. `docs/roadmap.md` and current `specs/<feature>/spec.md` — scope/gates.
 5. `docs/decisions/` — existing choices, propose an ADR for nontrivial deviations.
+
+## Authorship and attribution (permanent)
+
+Neshel-UI is created and maintained by Daniel Sequeira Campos (public identity Danny Sequeira,
+GitHub `dannysequeira-dev`). Tools are not authors: never add `Co-Authored-By` model trailers,
+"Generated with/Made by/Powered by" AI lines, tool signatures or links to commits, PRs, docs, READMEs,
+Storybook, Playground, code comments or manifests. Keep the existing Git identity and history; keep
+legitimate third-party licence notices. Check every commit message and PR body before creating it.
 
 ## User and environment
 
@@ -90,7 +99,8 @@ install without monorepo internals. **Do not implement the entire library in one
 - `pnpm check` — doctor, lint, typecheck, test, build, check:exports, check:pack (offline; includes
   `--with animations`, which validates the private animations tarball without lifting its guard).
 - `pnpm check:browser:animations` — animations lab (Tilt3D, CornerRecede, ScrollScene, engine, Phase 010
-  effects gallery) in headless Chrome with real input and axe; requires `pnpm build:playground`.
+  effects gallery, Phase 011 scroll gallery) in headless Chrome with real input and axe; requires
+  `pnpm build:playground`.
 - `pnpm check:animations:engines` — the same lab in Playwright Chromium, Firefox and WebKit.
 - `pnpm check:animations:consumer` — external app from the packed animations tarball (SSR + hydration).
 - `pnpm check:animations:bundles` — packed-tarball bundle sizes against the approved budgets.

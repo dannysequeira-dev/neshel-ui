@@ -11,6 +11,7 @@
       "@neshel-ui/animations/hover": ["../../packages/animations/src/hover/index.ts"],
       "@neshel-ui/animations/entrance": ["../../packages/animations/src/entrance/index.ts"],
       "@neshel-ui/animations/press": ["../../packages/animations/src/press/index.ts"],
+      "@neshel-ui/animations/scroll": ["../../packages/animations/src/scroll/index.ts"],
       "@neshel-ui/animations/core": ["../../packages/animations/src/core/index.ts"]
     }
   },

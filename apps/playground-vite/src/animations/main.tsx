@@ -1,11 +1,12 @@
-// Feature 008.0 animations lab: experiments A (Tilt3D, package API), B (CornerRecede) and
-// C (ScrollScene). B and C are playground prototypes; their APIs are not approved (spec FR-080).
+// Animations lab: A (Tilt3D), C (ScrollScene, package API since Phase 011), the engine lab, the Phase
+// 010 effects gallery and the Phase 011 scroll gallery use the package; B (CornerRecede) is a prototype.
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { CornerRecedeLab } from "./corner-recede";
 import { EffectsLab } from "./effects-lab";
 import { EngineLab } from "./engine-lab";
 import "./lab.css";
+import { ScrollGallery } from "./scroll-gallery";
 import { ScrollSceneLab } from "./scroll-scene";
 import { TiltLab } from "./tilt-lab";
 
@@ -15,12 +16,12 @@ createRoot(root).render(
   <StrictMode>
     <main className="lab">
       <header className="lab-header">
-        <p className="lab-eyebrow">Neshel-UI · features 008.0–010</p>
+        <p className="lab-eyebrow">Neshel-UI · features 008.0–011</p>
         <h1>Animations lab</h1>
         <p>
           Technical spikes for <code>@neshel-ui/animations</code> (private, unpublished). Tilt3D,
-          the engine lab and the Phase 010 effects gallery use the package; CornerRecede and
-          ScrollScene are prototypes whose APIs are not approved.
+          ScrollScene, the engine lab and the Phase 010/011 galleries use the package; CornerRecede
+          is a prototype whose API is not approved.
         </p>
       </header>
       <TiltLab />
@@ -28,6 +29,7 @@ createRoot(root).render(
       <ScrollSceneLab />
       <EngineLab />
       <EffectsLab />
+      <ScrollGallery />
     </main>
   </StrictMode>,
 );
