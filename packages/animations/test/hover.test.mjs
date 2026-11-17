@@ -161,7 +161,13 @@ test("touch is opt-in; disabled returns to rest", () => {
   enter(node, 100, 50, "touch");
   frames.settle();
   assert.equal(node.style.cssText, "", "touch ignored by default");
+  leave();
   handle.update({ pointerTypes: ["touch"] });
+  enter(node, 100, 50, "touch");
+  frames.settle();
+  assert.equal(translate(node).y, -4, "an options update enables touch without re-attaching");
+  leave();
+  frames.settle();
   handle.destroy();
   const touch = attachEffect(node, lift, { pointerTypes: ["touch"] });
   enter(node, 100, 50, "touch");

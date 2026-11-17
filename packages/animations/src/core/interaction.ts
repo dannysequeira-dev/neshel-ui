@@ -41,7 +41,9 @@ export function watchHover(
     onChange(active, pointer ? "pointer" : focus ? "focus" : "none");
   };
   const untrack = trackPointer(element, {
-    pointerTypes: options.pointerTypes,
+    get pointerTypes() {
+      return options.pointerTypes;
+    },
     onMove(sample) {
       if (!pointer) {
         pointer = true;

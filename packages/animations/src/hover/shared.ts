@@ -110,7 +110,10 @@ export function createHoverDriver<K extends string, R extends ResolvedHover>(
   const unwatch = watchHover(
     element,
     {
-      pointerTypes: options().pointerTypes,
+      // Read live so an options update (e.g. enabling touch) applies without re-attaching.
+      get pointerTypes() {
+        return options().pointerTypes;
+      },
       focus: spec.focus !== false,
       onMove: spec.onMove
         ? (sample) => {
