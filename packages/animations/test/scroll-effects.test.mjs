@@ -110,6 +110,29 @@ function box(top, height = 200, parent = document.body) {
   return element;
 }
 
+let probeRenders = 0;
+const probeRef = { current: null };
+function Probe() {
+  const inView = scroll.useInView(probeRef);
+  probeRenders++;
+  return h(
+    "p",
+    {
+      ref: (node) => {
+        probeRef.current = node;
+      },
+      "data-in": String(inView),
+    },
+    "probe",
+  );
+}
+
+let spyActive;
+function Spy() {
+  spyActive = scroll.useSectionSpy(["a", "b"]);
+  return null;
+}
+
 const transform = (element) => element.style.getPropertyValue("transform");
 
 // --- SP01 / SP02 / SP07 / SP11 — transform layers -------------------------------------------------
@@ -684,13 +707,7 @@ test("React: RevealOnScroll does not hide hydrated content; useInView changes on
   fresh();
   const io = installFakeIO();
   try {
-    let renders = 0;
-    function Probe() {
-      const ref = (globalThis.__ref ??= { current: null });
-      const inView = scroll.useInView(ref);
-      renders++;
-      return h("p", { ref: (node) => (ref.current = node), "data-in": String(inView) }, "probe");
-    }
+    probeRenders = 0;
     const view = await mount(
       h("div", null, h(scroll.RevealOnScroll, { preset: fadeUp, id: "r" }, "x"), h(Probe)),
     );
@@ -699,13 +716,12 @@ test("React: RevealOnScroll does not hide hydrated content; useInView changes on
     assert.equal(revealed.style.opacity, "0", "client-only mount: held before paint");
     const probe = view.container.querySelector("p");
     const { act } = await import("react");
-    const start = renders;
+    const start = probeRenders;
     await act(async () => io.report(probe, { inView: true }));
     await act(async () => io.report(probe, { inView: true }));
     assert.equal(probe.getAttribute("data-in"), "true");
-    assert.equal(renders - start, 1, "one render per transition");
+    assert.equal(probeRenders - start, 1, "one render per transition");
     await view.unmount();
-    delete globalThis.__ref;
   } finally {
     io.restore();
   }
@@ -750,10 +766,8 @@ test("React: HorizontalScroll pins with overflow, stacks under reduced motion, m
     await act(async () => document.getElementById("card-3").focus());
     assert.equal(stage.scrollLeft, 0, "clipped stage reset");
     assert.equal(scrolls.length, 1, "document scrolled to show the focused card");
-    assert.equal(
-      scrolls[0].top,
-      1000 + (2100 / 1600) * 1600 > 2600 ? 2600 : 1000 + (2100 / 1600) * 1600,
-    );
+    // card 3 starts at 2100 px > distance 1600 → progress 1 → the end of the pinned span (2600).
+    assert.equal(scrolls[0].top, 2600);
     await act(async () => media.set(true));
     frames.settle();
     assert.equal(
@@ -772,11 +786,6 @@ test("React: HorizontalScroll pins with overflow, stacks under reduced motion, m
 
 test("React: useSectionSpy reports the active id", async () => {
   fresh();
-  let active;
-  function Spy() {
-    active = scroll.useSectionSpy(["a", "b"]);
-    return null;
-  }
   const view = await mount(
     h("div", null, h("section", { id: "a" }), h("section", { id: "b" }), h(Spy)),
   );
@@ -787,8 +796,8 @@ test("React: useSectionSpy reports the active id", async () => {
     scroll.refreshScroll();
     frames.settle();
   });
-  assert.equal(active, "a");
+  assert.equal(spyActive, "a");
   await act(async () => scrollAndSettle(1500));
-  assert.equal(active, "b");
+  assert.equal(spyActive, "b");
   await view.unmount();
 });
