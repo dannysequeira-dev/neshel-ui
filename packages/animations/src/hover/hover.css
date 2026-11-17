@@ -1,0 +1,134 @@
+/*
+ * @neshel-ui/animations/hover.css (Phase 010). Explicit, opt-in import; no global selectors, no resets.
+ * Rules select only package classes and engine tokens ([data-neshel-fx~="…"]), which an effect adds
+ * while it owns its channels. Nothing here declares a transition or an animation on the consumer's
+ * element: values are driven by the motion engine through namespaced custom properties and rendered on
+ * the package's own layers (contracts/drivers-and-css.md):
+ *   ::before  decor layer, shared and composable: box-shadows (lift, glow) and background layers
+ *             (spotlight, shine, underline), each from its own --neshel-<effect>-* properties;
+ *   ::after   ring layer, exclusive (border sweep; arbitrated through --neshel-layer-after).
+ * Layer hosts get `position: relative` with zero specificity, so any positioning of yours wins.
+ */
+
+/* The only registration: lets the ring's conic gradient angle interpolate (static ring without it). */
+@property --neshel-sweep-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@layer components.neshel {
+  /* H03 Tilt3D: children with translateZ() keep their depth inside a tilted card. */
+  .neshel-tilt {
+    transform-style: preserve-3d;
+  }
+
+  :where([data-neshel-fx~="decor"], [data-neshel-fx~="border-sweep"]) {
+    position: relative;
+  }
+
+  /* H08: the frame clips the zoomed media. */
+  :where([data-neshel-fx~="media-zoom"]) {
+    overflow: hidden;
+  }
+
+  /*
+   * Per-host values. Declared on every decor host (not inherited from an outer host), so nested hosts
+   * never show an ancestor's state.
+   */
+  [data-neshel-fx~="decor"] {
+    --neshel-lift-shadow: 0 calc(var(--neshel-lift-progress, 0) * 14px)
+      calc(var(--neshel-lift-progress, 0) * 30px) calc(var(--neshel-lift-progress, 0) * -6px)
+      rgb(0 0 0 / calc(var(--neshel-lift-progress, 0) * 0.28));
+    --neshel-glow-ring: 0 0 0 calc(var(--neshel-glow-progress, 0) * var(--neshel-glow-size, 3px))
+      color-mix(
+        in srgb,
+        var(--neshel-glow-color, var(--neshel-ring, #6366f1))
+          calc(var(--neshel-glow-progress, 0) * 100%),
+        transparent
+      );
+    --neshel-glow-halo: 0 0 calc(var(--neshel-glow-progress, 0) * var(--neshel-glow-blur, 16px)) 0
+      color-mix(
+        in srgb,
+        var(--neshel-glow-color, var(--neshel-ring, #6366f1))
+          calc(var(--neshel-glow-progress, 0) * 60%),
+        transparent
+      );
+    --neshel-spotlight-image: radial-gradient(
+      circle var(--neshel-spotlight-size, 240px) at var(--neshel-spotlight-x, 50%)
+        var(--neshel-spotlight-y, 50%),
+      color-mix(
+        in srgb,
+        var(--neshel-spotlight-color, #fff)
+          calc(var(--neshel-spotlight-progress, 0) * var(--neshel-spotlight-intensity, 22%)),
+        transparent
+      ),
+      transparent
+    );
+    --neshel-shine-image: linear-gradient(
+      var(--neshel-shine-angle, 110deg),
+      transparent 42%,
+      var(--neshel-shine-color, rgb(255 255 255 / 0.45)) 50%,
+      transparent 58%
+    );
+    --neshel-underline-image: linear-gradient(
+      var(--neshel-underline-color, currentColor),
+      var(--neshel-underline-color, currentColor)
+    );
+  }
+
+  [data-neshel-fx~="decor"]::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    box-shadow:
+      var(--neshel-lift-shadow),
+      var(--neshel-glow-ring),
+      var(--neshel-glow-halo);
+    background-image:
+      var(--neshel-spotlight-image), var(--neshel-shine-image), var(--neshel-underline-image);
+    background-repeat: no-repeat;
+    background-size:
+      100% 100%,
+      300% 100%,
+      calc(var(--neshel-underline-progress, 0) * 100%) var(--neshel-underline-thickness, 2px);
+    background-position:
+      0 0,
+      calc((1 - var(--neshel-shine-progress, 0)) * 100%) 0,
+      var(--neshel-underline-origin, 0%) 100%;
+  }
+
+  /* H06: rotating conic ring, visible as the engine fades --neshel-sweep-progress in. */
+  [data-neshel-fx~="border-sweep"]::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: var(--neshel-sweep-width, 2px);
+    pointer-events: none;
+    background: conic-gradient(
+      from var(--neshel-sweep-angle),
+      var(--neshel-sweep-color-a, #6366f1),
+      var(--neshel-sweep-color-b, #ec4899),
+      var(--neshel-sweep-color-a, #6366f1)
+    );
+    mask:
+      linear-gradient(#000 0 0) content-box exclude,
+      linear-gradient(#000 0 0);
+    opacity: var(--neshel-sweep-progress, 0);
+    animation: neshel-sweep var(--neshel-sweep-duration, 3000ms) linear infinite paused;
+  }
+
+  /* The ring turns only while active and not reduced (paused otherwise: no work for hidden rings). */
+  [data-neshel-fx-active~="border-sweep"]:not([data-neshel-fx-reduced~="border-sweep"])::after {
+    animation-play-state: running;
+  }
+
+  @keyframes neshel-sweep {
+    to {
+      --neshel-sweep-angle: 360deg;
+    }
+  }
+}
