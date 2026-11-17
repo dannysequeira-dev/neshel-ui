@@ -8,10 +8,11 @@
  *   wheel work as the browser defines; nothing pinned);
  * - `pinned` — the section is `100vh + distance` tall, the stage is CSS-sticky and the track moves
  *   `translateX(−progress · distance)` through the motion host while the page scrolls vertically;
- * - `stacked` — the cards are laid out vertically (reduced motion, or `layout="stacked"`).
+ * - `stacked` — the cards are laid out vertically (reduced motion for `auto`/`pinned`, or
+ *   `layout="stacked"`).
  *
- * `distance` (track overflow) is measured only in geometry passes and written to the section in the write
- * phase. Focus entering an off-screen card resets the clipped stage's `scrollLeft` and scrolls the
+ * `distance` (track overflow) is measured only in geometry passes and written to the section through its
+ * motion host (captured and restored; the consumer's inline value survives unmount). Focus entering an off-screen card resets the clipped stage's `scrollLeft` and scrolls the
  * document to the vertical position that shows the card — the only scroll write in the engine, caused by
  * focus, never by wheel or keys.
  */
@@ -26,9 +27,8 @@ import {
   useRef,
   useState,
 } from "react";
-import { attachEffect, defineEffect } from "../core/effect.js";
+import { attachEffect, defineEffect, type EffectHandle } from "../core/effect.js";
 import { prefersReducedMotion, subscribeReducedMotion } from "../core/reduced-motion.js";
-import { getFrameScheduler } from "../core/scheduler.js";
 import { joinClass, useHostRef } from "../react/motion-host.js";
 import { invalidate, type Measurable, registerGeometry } from "./engine/geometry.js";
 import { createScrollProgress, type ScrollProgress } from "./engine/progress.js";
@@ -38,7 +38,11 @@ import { roundTo } from "./shared.js";
 export type HorizontalLayout = "auto" | "pinned" | "stacked" | "scroll";
 
 export interface HorizontalScrollProps extends Omit<HTMLAttributes<HTMLElement>, "children"> {
-  /** `"auto"` (default): pinned, or stacked when motion is reduced. */
+  /**
+   * `"auto"` (default) and `"pinned"`: pinned when the track overflows (else a native scroller), stacked
+   * whenever motion is reduced (live). `"stacked"`: always vertical. `"scroll"`: always a native
+   * horizontal scroller (user-driven, kept under reduced motion).
+   */
   layout?: HorizontalLayout;
   /** Accessible name of the region (recommended). */
   label?: string;
@@ -79,6 +83,28 @@ const horizontalTrack = /* @__PURE__ */ defineEffect<TrackOptions, TrackOptions>
   },
 });
 
+/**
+ * Internal: the section's `--neshel-hscroll-distance`, written through the section's motion host
+ * (ADR 0022 style ownership): the consumer's inline value and priority are captured and restored on
+ * release; an external edit while mounted becomes the baseline to restore (the engine keeps writing the
+ * measured value, which the pinned height needs).
+ */
+const horizontalDistance = /* @__PURE__ */ defineEffect<{ distance: number }, { distance: number }>(
+  {
+    id: "scroll/horizontal-distance",
+    family: "scroll",
+    channels: [{ channel: "--neshel-hscroll-distance", mode: "exclusive" }],
+    reducedMotion: "instant",
+    resolve: (options) => options as { distance: number },
+    setup(context) {
+      const channel = context.channels.exclusive("--neshel-hscroll-distance");
+      const write = (options: { distance: number }) => channel.set(`${options.distance}px`);
+      write(context.options);
+      return { update: write, destroy: () => channel.clear() };
+    },
+  },
+);
+
 export function HorizontalScroll({
   layout = "auto",
   label,
@@ -105,17 +131,17 @@ export function HorizontalScroll({
     return subscribeReducedMotion(setReduced);
   }, []);
 
+  // Reduced motion replaces scroll-linked travel (auto and explicit pinned) with the vertical layout;
+  // `scroll` (user-driven native scroller) and `stacked` have no scroll-linked motion to reduce.
   const mode: Exclude<HorizontalLayout, "auto"> = !mounted
     ? "scroll"
-    : layout === "auto"
+    : layout === "auto" || layout === "pinned"
       ? reduced
         ? "stacked"
         : overflow
           ? "pinned"
           : "scroll"
-      : layout === "pinned" && !overflow
-        ? "scroll"
-        : layout;
+      : layout;
 
   // Measure the track overflow (geometry passes only) in every mode, so a layout switch is informed.
   useLayoutEffect(() => {
@@ -123,8 +149,7 @@ export function HorizontalScroll({
     const stageElement = stage.current;
     const trackElement = track.current;
     if (!sectionElement || !stageElement || !trackElement) return;
-    const scheduler = getFrameScheduler();
-    let writeTask: (() => void) | undefined;
+    let distanceHandle: EffectHandle<{ distance: number }> | undefined;
     const item: Measurable = {
       source: getScrollSource(null),
       targets: () => [stageElement, trackElement, ...trackElement.children],
@@ -134,18 +159,16 @@ export function HorizontalScroll({
       },
       measured() {
         const distance = distanceRef.current;
-        writeTask ??= scheduler.schedule(() => {
-          writeTask = undefined;
-          sectionElement.style.setProperty("--neshel-hscroll-distance", `${distance}px`);
-          setOverflow(distance > 1);
-        }, "write");
+        // The host writes in the write phase; the first measurement claims the variable.
+        if (distanceHandle) distanceHandle.update({ distance });
+        else distanceHandle = attachEffect(sectionElement, horizontalDistance, { distance });
+        setOverflow(distance > 1);
       },
     };
     const unregister = registerGeometry(item);
     return () => {
       unregister();
-      writeTask?.();
-      sectionElement.style.removeProperty("--neshel-hscroll-distance");
+      distanceHandle?.destroy(); // restores the consumer's value (or removes ours)
     };
   }, [section]);
 

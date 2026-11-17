@@ -591,11 +591,15 @@ export async function runScrollSuite(): Promise<Case[]> {
 /** Facts checked by the harnesses while the emulated preference is `reduce` (live switch). */
 export function scrollReducedFacts() {
   const hscroll = byId("sp04").dataset.neshelHscroll;
+  const hscrollPinned = byId("sp04-pinned").dataset.neshelHscroll;
+  const pinnedTrack = byId("sp04-pinned").querySelector<HTMLElement>(".neshel-hscroll-track");
   const dot = byId("sp01-2").style.transform;
   const scene = byId("scene-layer-front").style.transform;
   const skew = byId("sp11").style.transform;
   return {
     hscroll,
+    hscrollPinned,
+    pinnedTrackTransform: pinnedTrack?.style.transform ?? "",
     dot,
     scene,
     skew,

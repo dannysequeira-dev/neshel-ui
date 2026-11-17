@@ -1,9 +1,9 @@
 /**
  * Native scroll-driven driver (contracts/scroll-engine.md §4, research R1/R2/R4). Animates ONE registered
- * custom property of an element with WAAPI and a `ScrollTimeline`/`ViewTimeline` — compositor-driven, no
- * per-frame JavaScript — and never `transform`/`opacity` (those belong to the motion host). Ranges are
- * strings (`"cover 0%"`; Firefox has no `CSS.percent`), progress is read with `getComputedTiming()`
- * (`currentTime` is not portable).
+ * custom property of an element with WAAPI and a `ScrollTimeline`/`ViewTimeline` — browser-timed, no
+ * per-frame JavaScript (not a claim of compositor execution, ADR 0026) — and never `transform`/`opacity`
+ * (those belong to the motion host). Ranges are strings (`"cover 0%"`; Firefox has no `CSS.percent`),
+ * progress is read with `getComputedTiming()` (`currentTime` is not portable).
  *
  * Behavioural check: once the JS model of the same timeline has measured, the next read phase compares the
  * native progress with it; `null` (up to 3 frames) or a difference above 0.02 cancels the native animation

@@ -1,6 +1,8 @@
 # ADR 0026 — Scroll engine, progress model and native/JS drivers
 
-- Status: **Proposed** (Phase 011; awaiting the owner's review of the Phase 011 PR)
+- Status: **Accepted** (owner approval 2026-11-17, review of PR #8 — architectural direction and the
+  proposed scroll bundle budgets; implemented and verified in Phase 011 —
+  [evidence](../../specs/011-scroll-parallax/evidence.md))
 - Date: 2026-11-16
 - Feature: [011](../../specs/011-scroll-parallax/spec.md); research R1–R10; contracts
   [scroll-engine.md](../../specs/011-scroll-parallax/contracts/scroll-engine.md),
@@ -40,8 +42,16 @@ Firefox 159 and WebKit 27.2 all run scroll and view timelines correctly, but a n
 ## Consequences
 
 - Scroll effects compose with Tilt3D, Hover, Press and Entrance on the same element.
-- Visual effects on the consumer's element run on the main thread (one host write per frame); the
-  compositor-only path is available for custom-property outputs consumed by package CSS or the consumer.
+- Visual effects on the consumer's element run on the main thread (one host write per frame).
+- Native driver: custom-property outputs are timed by the browser from the scroll position (no per-frame
+  JavaScript once the behavioural check passed). Browser-managed timing is **not** proof of compositor
+  acceleration: whether a registered custom property animates off the main thread depends on the engine
+  and on how the value is consumed, and the consumers' properties (`transform`, colours, sizes) still
+  restyle as the browser decides. Phase 011 measured driver parity, zero scroll-time layout reads and
+  zero fallbacks; it did not measure compositor execution, so no compositor claim is made.
+- Bundle budgets (owner approval 2026-11-17): the scroll entries, `scroll.css` 1.25 KiB and the combined
+  `styles.css` 4.00 KiB in `scripts/animations-bundle-budgets.json` are approved; every earlier budget is
+  unchanged ([evidence](../../specs/011-scroll-parallax/evidence.md) §8).
 - A future phase may add a native path for package-rendered layers (013 scenes) without changing the
   model. Native driver regressions in a browser degrade to the JS driver instead of breaking.
 

@@ -183,6 +183,7 @@ export function attributeWriter(element: Element, name: string) {
   const original = element.getAttribute(name);
   let last: string | null | undefined;
   return {
+    element,
     set(value: string | null) {
       if (value === last) return;
       last = value;

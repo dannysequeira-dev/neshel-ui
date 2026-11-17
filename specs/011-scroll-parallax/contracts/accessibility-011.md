@@ -41,6 +41,12 @@ attachment's live reduced state: switching on mid-scroll clears decorative layer
 phase, stops springs, cancels native custom-property animations of static effects and re-lays SP04 out as
 stacked; switching off restores them from the current scroll position.
 
+SP04 layout policies under reduced motion (owner review of PR #8): `auto` and explicit `pinned` both
+become `stacked` (pinned horizontal travel is scroll-linked motion); `stacked` stays vertical; `scroll`
+stays a native horizontal scroller (user-driven, no scroll-linked motion). Leaving reduced motion restores
+the pinned layout, its timeline and the stage reset; the stacked layout has no timeline, track transform
+or stage listener (regression tests in `test/scroll-review.test.mjs`).
+
 ## 5 · Hidden pages and idle
 
 No frame task runs while the page does not scroll and no spring is moving; hidden documents receive no

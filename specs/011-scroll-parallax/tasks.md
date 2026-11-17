@@ -43,3 +43,15 @@ Dependency-ordered. `[x]` done, `[ ]` open. Authorised by the owner brief of 202
 - [x] T050 `pnpm check`, browser lab, engines, consumer, bundles, Storybook/Playground builds
 - [x] T051 Visual review captures; evidence.md; catalogue and roadmap updated
 - [x] T052 Push, three-OS CI (run 44110787974, 14/14), PR #8 for owner review (no merge)
+
+## 011.6 — Owner review of PR #8 (2026-11-17)
+
+- [x] T060 Regression tests first (`packages/animations/test/scroll-review.test.mjs`): 6 tests, all failing
+  against `8af81d5` — SP04 explicit `pinned` under live reduced motion, SP04 `--neshel-hscroll-distance`
+  restoration and external edits, SP08 `themeTarget` changes and `themes` removal
+- [x] T061 Fixes: SP04 `pinned` stacks under reduced motion; SP04 distance written through the motion host;
+  SP08 theme writer follows its target; contracts (accessibility-011 §4, api-011 §2) updated
+- [x] T062 Lab: explicit `layout="pinned"` SP04 in the gallery, covered by the live reduced-motion case
+  (Chrome + three engines)
+- [x] T063 ADR 0026 Accepted (owner approval; compositor wording corrected); budgets approved unchanged
+- [ ] T064 Gates, push to PR #8, three-OS CI (no merge)

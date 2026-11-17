@@ -32,7 +32,7 @@ release; the five public packages and the release workflow are unchanged. CI: se
 
 ## 2 · Engine and contracts
 
-Architecture and contracts: [scroll-engine.md](contracts/scroll-engine.md), ADR 0026 (proposed). One
+Architecture and contracts: [scroll-engine.md](contracts/scroll-engine.md), ADR 0026 (accepted). One
 source record per scroller (passive listener, read-phase position, velocity, direction, trailing frame);
 one progress model (CSS named ranges, transforms ignored) shared by both drivers; one shared
 ResizeObserver and MutationObserver with reference-counted targets; invalidation passes in the read phase;
@@ -93,9 +93,9 @@ Press + SP01 on one element under hover in three engines (lab).
 - axe: no violations on the lab page (Chrome).
 - Pending (owner): manual screen-reader pass; real Safari (Playwright WebKit is not Safari).
 
-## 8 · Bundle budgets (packed tarball, gzip; proposed for owner approval)
+## 8 · Bundle budgets (packed tarball, gzip; approved by the owner 2026-11-17)
 
-| Entry                                         | Measured  | Proposed budget                       |
+| Entry                                         | Measured  | Approved budget                       |
 | --------------------------------------------- | --------- | ------------------------------------- |
 | scroll: createScrollProgress (engine)         | 6.68 KiB  | 7.00 KiB                              |
 | scroll: depthParallax definition              | 8.25 KiB  | 8.75 KiB                              |
@@ -140,3 +140,41 @@ browsers (Linux, macOS), docs (three OS), Next + starters (three OS), Vercel bui
 - Hydration below the fold may move content above the viewport if a pinned section grows; browsers with
   scroll anchoring compensate (Safari pending).
 - Real Safari, screen readers and touch devices: pending manual verification.
+
+## 12 · Owner review of PR #8 (2026-11-17)
+
+Review: [PR #8 comment](https://github.com/dannysequeira-dev/neshel-ui/pull/8#issuecomment-6955764718).
+ADR 0026 and the proposed budgets are **approved**; ADR 0026 is now Accepted, and its consequences no
+longer imply compositor execution: the native driver is browser-timed (no per-frame JavaScript), which is
+not proof of compositor acceleration, and Phase 011 did not measure compositor execution. Three suspected
+defects were treated as hypotheses; regression tests were written first in
+`packages/animations/test/scroll-review.test.mjs` and run against the unfixed build (`8af81d5`):
+
+| #   | Hypothesis                                               | Reproduced (failing assertion before the fix)                                                                         | Fix                                                                                                                                                                                                                                                                            |
+| --- | -------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1   | SP04 `layout="pinned"` ignores live reduced motion       | yes — `pinned: reduced` expected `stacked`, got `pinned`; mid-scene test likewise (track kept moving, timeline alive) | `auto` and `pinned` both become `stacked` under reduced motion; `stacked` and `scroll` (user-driven native scroller) unchanged                                                                                                                                                 |
+| 2   | SP08 `themeTarget` change / `themes` removal             | yes — previous target kept `dark` instead of its original `light`; removed `themes` left `dark`                       | the theme writer follows its target: restores the previous target before theming the new one, restores on removal, last target on destroy                                                                                                                                      |
+| 3   | SP04 `--neshel-hscroll-distance` deletes consumer values | yes — consumer `123px` → `""` after unmount; an external `999px` edit → `""`                                          | the variable is an exclusive channel of the section's motion host: captured value and priority restored on release; an external edit while mounted becomes the baseline restored (the engine keeps writing the measured distance while mounted, as the pinned height needs it) |
+
+Before: 0/6 pass. After: 6/6 pass. The mid-scene SP04 test also proves cleanup: in the stacked layout and
+after unmount there is no pinned timeline (`getScrollDebugInfo().timelines` back to baseline), no track
+transform and no stage scroll listener; leaving reduced motion restores the pinned layout, the timeline,
+the track position from the current scroll and the stage reset. Cards keep no `aria-hidden`/`inert`/
+`hidden` and focus causes no document scroll in the stacked layout.
+
+The browser lab gained an explicit `layout="pinned"` SP04 (`#sp04-pinned`); the live reduced-motion case
+now requires both sections to stack (and the pinned track to drop its transform) and both to pin again.
+
+Gates after the fixes (Windows 11, local):
+
+| Gate                                                                                                                       | Result                                                                                              |
+| -------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `pnpm check` (root tests 107 + 1 skipped, test:packages 432 incl. animations 228, exports, `check:pack --with animations`) | pass                                                                                                |
+| `node --test packages/animations/test/scroll-review.test.mjs`                                                              | 6/6 (0/6 before)                                                                                    |
+| `pnpm check:browser:animations` (Chrome)                                                                                   | 70/70; scroll burst 16 timelines, 0 layout reads; native 3, fallbacks 0                             |
+| `pnpm check:animations:engines`                                                                                            | Chromium 158, Firefox 159, WebKit 27.2: 62/62 each; native 3, fallbacks 0                           |
+| `pnpm check:animations:consumer` (packed, Vite, SSR, hydration, scroll)                                                    | pass                                                                                                |
+| `pnpm check:animations:bundles`                                                                                            | pass, budgets unchanged (HorizontalScroll 11.22 / 11.75 KiB; entire scroll entry 24.05 / 25.00 KiB) |
+| `pnpm build:storybook`, `pnpm build:playground`                                                                            | pass                                                                                                |
+
+CI: see the PR #8 thread (recorded after the run).

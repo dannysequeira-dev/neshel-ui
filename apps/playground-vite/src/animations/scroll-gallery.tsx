@@ -201,6 +201,18 @@ export function ScrollGallery() {
           </a>
         ))}
       </HorizontalScroll>
+      <HorizontalScroll
+        id="sp04-pinned"
+        layout="pinned"
+        label="SP04 explicit pinned cards"
+        className="sp04"
+      >
+        {Array.from({ length: 4 }, (_, index) => (
+          <a key={index} href={`#sp04p-${index}`} id={`sp04p-${index}`} className="sp04-card">
+            SP04 pinned card {index + 1}
+          </a>
+        ))}
+      </HorizontalScroll>
       <ParallaxImage id="sp06-frame" className="sp06-frame" amount={40}>
         <div className="sp06-media" role="img" aria-label="Gradient landscape" />
       </ParallaxImage>

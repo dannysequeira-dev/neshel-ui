@@ -429,9 +429,16 @@ export const scrollColorShift = /* @__PURE__ */ progressEffect<ScrollColorShiftO
       context.channels
         .exclusive("--neshel-scroll-color")
         .set(colorAt(extra.stops, extra.space, p, step));
-      if (extra.themes) {
-        const target = extra.themeTarget ?? context.element;
-        let writer = themeWriters.get(context);
+      // The writer follows the current target: a changed `themeTarget` (or removed `themes`) restores the
+      // previous target's original attribute before anything else is written.
+      const target = extra.themes ? (extra.themeTarget ?? context.element) : undefined;
+      let writer = themeWriters.get(context);
+      if (writer && writer.element !== target) {
+        writer.restore();
+        themeWriters.delete(context);
+        writer = undefined;
+      }
+      if (target && extra.themes) {
         if (!writer) {
           writer = attributeWriter(target, "data-neshel-theme");
           themeWriters.set(context, writer);

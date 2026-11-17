@@ -238,18 +238,18 @@ async function runEngine(playwright, engine, url, throttle) {
     });
     for (const item of scrollSuite) cases.push(item);
     await run(
-      "scroll: reduced motion switched on live — horizontal section stacks, decorative layers stop",
+      "scroll: reduced motion switched on live — horizontal sections (auto and pinned) stack, decorative layers stop",
       async () => {
         await page.emulateMedia({ reducedMotion: "reduce" });
         await until(
           "static alternatives",
-          `(() => { const f = window.__neshelLab.scroll.reducedFacts(); return f.reduced && f.hscroll === "stacked" && f.dot === "" && f.scene === "" && f.skew === ""; })()`,
+          `(() => { const f = window.__neshelLab.scroll.reducedFacts(); return f.reduced && f.hscroll === "stacked" && f.hscrollPinned === "stacked" && f.pinnedTrackTransform === "" && f.dot === "" && f.scene === "" && f.skew === ""; })()`,
           "window.__neshelLab.scroll.reducedFacts()",
         );
         await page.emulateMedia({ reducedMotion: "no-preference" });
         await until(
           "pinned again",
-          `window.__neshelLab.scroll.reducedFacts().hscroll === "pinned"`,
+          `(() => { const f = window.__neshelLab.scroll.reducedFacts(); return f.hscroll === "pinned" && f.hscrollPinned === "pinned"; })()`,
           "window.__neshelLab.scroll.reducedFacts()",
         );
       },
