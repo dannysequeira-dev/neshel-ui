@@ -500,7 +500,12 @@ export function useInView(ref: RefObject<Element | null>, trigger?: InViewInput)
   useEffect(() => {
     const element = ref.current;
     if (!element) return;
-    return observeInView(element, trigger, (report) => setInView(report.inView));
+    let last: boolean | undefined;
+    return observeInView(element, trigger, (report) => {
+      if (report.inView === last) return; // transitions only
+      last = report.inView;
+      setInView(report.inView);
+    });
   }, [ref, key]);
   return inView;
 }

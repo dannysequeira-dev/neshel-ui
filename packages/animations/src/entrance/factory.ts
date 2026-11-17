@@ -272,7 +272,9 @@ export function createEntrance<Options extends EntranceOptions, Extra>(
         }
         progress.set(0);
         render(0);
-        cancelDelay = afterDelay(context.scheduler, o.delay, () => {
+        let fired = false;
+        const cancel = afterDelay(context.scheduler, o.delay, () => {
+          fired = true;
           cancelDelay = undefined;
           if (id !== runId) return;
           const transition =
@@ -282,6 +284,8 @@ export function createEntrance<Options extends EntranceOptions, Extra>(
           control = animateValue(progress, 1, transition, { reducedMotion: "never" });
           watch(id);
         });
+        // A zero delay may run the callback synchronously: never keep a stale cancel function.
+        if (!fired) cancelDelay = cancel;
       }
 
       /** Phase 011: animate from the visible state back to the start pose, then hold it. */
@@ -301,7 +305,9 @@ export function createEntrance<Options extends EntranceOptions, Extra>(
         }
         progress.set(1);
         render(1);
-        cancelDelay = afterDelay(context.scheduler, 0, () => {
+        let fired = false;
+        const cancel = afterDelay(context.scheduler, 0, () => {
+          fired = true;
           cancelDelay = undefined;
           if (id !== runId) return;
           control = animateValue(
@@ -312,6 +318,7 @@ export function createEntrance<Options extends EntranceOptions, Extra>(
           );
           watch(id);
         });
+        if (!fired) cancelDelay = cancel;
       }
 
       /** Settle in the write phase of the frame the run ends in (deterministic, unlike a promise). */
