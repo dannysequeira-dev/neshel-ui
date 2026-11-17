@@ -5,8 +5,8 @@ squash merge)
 
 **Created**: 2026-11-17
 
-**Status**: **Specified (012.0).** Implementation status per slice in [tasks.md](tasks.md); verification in
-[evidence.md](evidence.md). `@neshel-ui/animations` stays private (0.0.0).
+**Status**: **Implemented; verified locally — see [evidence.md](evidence.md); budgets, CI and the owner's
+review of the PR pending.** `@neshel-ui/animations` stays private (0.0.0).
 
 **Input**: Owner direction 2026-11-17, summarised in [brief.md](brief.md).
 

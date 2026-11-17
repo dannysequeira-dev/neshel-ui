@@ -161,3 +161,18 @@ key or pointer early cancels and reverses the progress; moving beyond `moveToler
 `pointercancel`, `lostpointercapture`, blur and the page becoming hidden cancel. The progress is a
 package-owned layer animated with WAAPI (reduced motion keeps a linear, non-vestibular fill, because the
 progress conveys state).
+
+## R13 — Findings in real engines during 012.5 (recorded, not assumptions)
+
+- **ResizeObserver loop notifications.** Starting a height animation or writing a masonry span inside a
+  `ResizeObserver` callback changed the size of elements at a shallower depth in the same loop; the three
+  engines then reported "ResizeObserver loop completed with undelivered notifications" (WebKit logs it as
+  a console error). Fixed: L02 starts from a `MutationObserver` (before layout), masonry writes in the
+  scheduler's write phase. The lab now loads and runs the whole suite with zero such errors.
+- **WebKit replays the real mouse position.** After any real pointer input (a tap or a Playwright mouse
+  move), WebKit dispatches mouse moves at the last real position when content scrolls or relayouts. A hover
+  started with synthetic events elsewhere is then legitimately ended. The in-page suite dispatches its H11
+  moves on the element (which restarts tracking) and the engines check adds a real-mouse H11 case.
+- **Moving a focused node blurs it.** Browsers (and jsdom) blur an element whose node is moved in the DOM,
+  which React does when the order changes. G10 restores focus to the moved handle after the consumer's
+  update and ignores that blur (accessibility-012 §3).

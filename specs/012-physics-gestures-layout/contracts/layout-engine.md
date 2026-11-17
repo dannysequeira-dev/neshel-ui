@@ -46,23 +46,33 @@ the bounding box plus scroll (documented: their transforms are then included).
 ## 5 · Reflow groups (L05 grid, L10 masonry)
 
 `gridReflow` / `masonry` attach to a container: one shared `ResizeObserver` watches the container and its
-element children; a `MutationObserver` (child list) registers new children. On a notification the group
+element children; a `MutationObserver` (child list) registers new children and runs a pass after a DOM
+reorder. On a notification the group
 compares cached boxes with fresh ones **inside the observer callback** (after layout, before paint — the
 documented exception of research R7) and flushes the motion hosts synchronously, so the inverted frame is
 the one painted. Caches are refreshed only there and after a play. Masonry computes each item's row span
-from its observed height (`ceil((h + gap) / (unit + gap))`) and writes `--neshel-masonry-span` (exclusive
-channel) through the item's motion host.
+from its observed height (`ceil((h + gap) / unit)`, rows of `unit` px with no row gap) and writes
+`--neshel-masonry-span` (exclusive channel) through the item's motion host **in the scheduler's write
+phase**, together with the `masonry` token, so the masonry layout and its spans appear in the same frame
+(the plain `.neshel-masonry` grid shows until then; that first switch is not animated).
 
 ## 6 · Height drivers (L02, L06)
 
-| Driver        | Used by                     | Mechanism                                                                                                                                                                                                       |
-| ------------- | --------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `css`         | L06 (`auto` when supported) | package CSS on the package-rendered panel: `interpolate-size: allow-keywords`; `height: auto` ↔ `0` with a transition (R1, rule R-1 respected)                                                                  |
-| `js` measured | L02; L06 fallback           | read the current and target height (2 reads per change), transient WAAPI `height` animation on the package-rendered wrapper (no fill, `overflow: clip` while running), the final state is the natural CSS state |
-
-A change during a running height animation starts from the current computed height (one read) — no
-jump. Reduced motion: instant. Closed panels are `hidden="until-found"` where supported (find-in-page
-opens them) and `inert` otherwise; the panel's content is never removed from the DOM by the driver.
+- **L06 `css` driver** (`auto` where `CSS.supports("interpolate-size", "allow-keywords")`: Chromium,
+  WebKit): package CSS on the package-rendered `.neshel-collapse` panel declares `interpolate-size` and a
+  `block-size` transition; the effect only toggles `data-state` (rule R-1 respected).
+- **L06 `js` driver** (Firefox, or forced): reads the current and target height (two reads per toggle) and
+  runs a transient WAAPI `height` animation on the panel (no fill: the natural CSS state applies after).
+- **L02 `autoHeight`**: DOM-driven content changes are seen by a `MutationObserver` — a microtask after the
+  change, **before** the frame's layout — where the new height is read once and the WAAPI animation starts.
+  Size changes without a mutation (fonts, images, viewport) are recorded by the shared `ResizeObserver` and
+  apply without animation. No layout is ever changed inside a `ResizeObserver` callback (it would be an
+  undelivered notification for other observed elements — found and fixed in the browser lab). The wrapper
+  must size to its content (not be stretched by a grid/flex parent).
+- A change during a running height animation starts from the current computed height (one read). Reduced
+  motion: instant. Closed panels: `hidden="until-found"` where `onbeforematch` exists (find-in-page asks the
+  consumer to open through `onRequestOpen`), `inert` otherwise; server markup renders the closed panel with a
+  plain `hidden` attribute that the effect upgrades after mount. Content is never removed from the DOM.
 
 ## 7 · Presence (L08)
 
@@ -82,7 +92,8 @@ State per key: `entering → present → exiting → removed`.
 | container unmounts           | everything removed; timers and attachments destroyed                                |
 | focus inside an exiting item | moved to the nearest present sibling item, else to the presence `focusFallback`     |
 
-`onExitComplete(key)` fires once per removal. `usePresence()` gives custom children `[isPresent,
+Children must accept a ref that reaches their DOM element (host elements do; components forward
+`ref`). `onExitComplete(key)` fires once per removal. `usePresence()` gives custom children `[isPresent,
 safeToRemove]`; a child that takes over its exit must call `safeToRemove` (the watchdog still applies).
 Exits and enters overlap. Inside a `<LayoutGroup>` (L03), the removal that ends an exit is a normal
 update of the group, so remaining siblings FLIP into the freed space.
