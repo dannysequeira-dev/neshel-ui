@@ -119,11 +119,12 @@ presence exit before unmount and keyboard reorder (focus kept) after hydration.
 | css: gestures.css                               | 0.94 KiB  | 1.00 KiB        |
 | css: layout.css                                 | 0.85 KiB  | 0.90 KiB        |
 
-Earlier approved budgets: all still met **except `press: entire entry` 18.66 KiB > 17.00 KiB** (P11 added
-to the family by this phase: the long-press code plus the shared pointer session). Without the shared
-session P11 would still leave the entry at about 17.5 KiB, so an increase is needed either way; it needs
-the owner's decision. `press.css` was trimmed back within its 1.60 KiB budget (1611 B). Closest margins:
-`composeTransform` 0.59/0.60, `hover.css` 1.83/1.85, `styles.css` 3.95/4.00, `entrance: fadeIn` 6.46/6.50.
+Owner decision 2026-11-17 (during Phase 012): the budgets above are approved, and `press: entire entry`
+is raised from 17.00 KiB to **19.00 KiB** (measured 18.66 KiB: P11 added to the family by this phase — the
+long-press code plus the shared pointer session; without the shared session it would still be about
+17.5 KiB). Every other earlier budget is unchanged and met; `press.css` was trimmed back within its
+1.60 KiB budget (1611 B). Closest margins: `composeTransform` 0.59/0.60, `hover.css` 1.83/1.85,
+`styles.css` 3.95/4.00, `entrance: fadeIn` 6.46/6.50. `pnpm check:animations:bundles` passes.
 
 ## 10 · Visual review
 

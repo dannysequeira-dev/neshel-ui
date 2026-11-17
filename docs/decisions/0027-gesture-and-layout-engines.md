@@ -50,8 +50,9 @@ benchmark and an ADR.
 - `touch-action` becomes a managed property of gesture areas; consumers keep their own value as the
   restored baseline.
 - Masonry uses row spans; a future native masonry/`grid-lanes` path can replace them behind the same API.
-- Budgets for the new entries are proposed in the Phase 012 evidence; earlier budgets change only with
-  owner approval.
+- Budgets (owner decision 2026-11-17): the new gestures/layout/H11/P11 entries and stylesheets in
+  `scripts/animations-bundle-budgets.json`, and `press: entire entry` raised to 19.00 KiB for P11; every
+  other earlier budget unchanged ([evidence](../../specs/012-physics-gestures-layout/evidence.md) §9).
 
 ## Alternatives rejected
 

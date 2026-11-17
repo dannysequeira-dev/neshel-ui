@@ -50,6 +50,6 @@ Dependency-ordered. `[x]` done, `[ ]` open. Authorised by the owner brief of 202
 
 - [x] T050 Composition tests (unit + browser)
 - [x] T051 CDP Chrome check (real mouse, real multi-touch, keyboard, axe) and Playwright engines (+ emulated touch)
-- [ ] T052 Packed consumer (SSR + hydration) done; bundle budgets proposed — owner approval pending
+- [x] T052 Packed consumer (SSR + hydration); bundle budgets (owner-approved 2026-11-17, press entry 19.00 KiB)
 - [x] T053 Docs: READMEs, catalogue, architecture, roadmap; evidence.md; ADR status
 - [ ] T054 `pnpm check`, Storybook/Playground builds (done locally); push; PR; three-OS CI
