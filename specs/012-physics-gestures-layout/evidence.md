@@ -169,6 +169,25 @@ evidence and limitation in layout-engine.md §7). An initial run of the new file
 one failing case leaving its view mounted; the tests now always unmount, and the before/after table above is
 from isolated runs. Package suite after the fix: 313/313.
 
+### Final QA (2026-11-18) — React prop changes between exit and re-entry
+
+Tests added first and committed failing (`presence-review.test.mjs`), then a minimal fix: Presence records
+at exit start whether `aria-hidden` / `inert` were React props of the exiting child; on re-entry such
+attributes follow the latest props (removal included), the pre-exit DOM value is used only for attributes
+React never controlled.
+
+| Case                                                                                 | Before                                   | After |
+| ------------------------------------------------------------------------------------ | ---------------------------------------- | ----- |
+| `aria-hidden="true"` + `inert` → re-entry with `aria-hidden={null}`, `inert={false}` | **fail** — `aria-hidden="true"` restored | pass  |
+| Same → re-entry with both props `undefined`                                          | **fail** — `aria-hidden="true"` restored | pass  |
+| Same → re-entry with both props omitted                                              | **fail** — `aria-hidden="true"` restored | pass  |
+| `aria-hidden={false}` on re-entry renders `"false"`                                  | pass                                     | pass  |
+| Props added on re-entry win over the pre-exit DOM state                              | pass                                     | pass  |
+| Attributes set imperatively (never React props) keep the DOM fallback                | pass                                     | pass  |
+| No focus leak across three rapid exit / re-entry rounds (same node)                  | pass                                     | pass  |
+
+Earlier review regressions unchanged and passing; package suite 320/320.
+
 ## 13 · Known limitations
 
 - Squash & stretch is axis-aligned (the composer has a fixed order; no arbitrary-direction scale).

@@ -92,9 +92,11 @@ State per key: `entering → present → exiting → removed`.
 | container unmounts           | everything removed; timers and attachments destroyed                                                                                                                              |
 | focus inside an exiting item | moved to the nearest present sibling item, else to the presence `focusFallback`                                                                                                   |
 
-On re-entry Presence restores the consumer's accessibility state: `aria-hidden` / `inert` from the latest
-React props of the child when given, otherwise the values the element had before the exit (e.g. set on the
-DOM); while exiting the content is always inert and hidden. Children must accept a ref that reaches their DOM element (host elements do; components forward
+On re-entry Presence restores the consumer's accessibility state. An attribute React controls — a prop of
+the re-entering child or of the exiting child — follows React's latest intent, including removal (omitted,
+`null`, `undefined`; `inert={false}`; `aria-hidden={false}` renders `"false"`). Only attributes that were
+never React props fall back to the value the element had before the exit (e.g. set on the DOM). While
+exiting, the content is always inert and hidden. Children must accept a ref that reaches their DOM element (host elements do; components forward
 `ref`). `onExitComplete(key)` fires once per removal. `usePresence()` gives custom children `[isPresent,
 safeToRemove]`; a child that takes over its exit must call `safeToRemove` (the watchdog still applies).
 Exits and enters overlap. Inside a `<LayoutGroup>` (L03), the removal that ends an exit is a normal

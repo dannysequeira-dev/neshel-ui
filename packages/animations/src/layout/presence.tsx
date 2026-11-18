@@ -158,7 +158,11 @@ function PresenceItem({ entry, appear, settings, onExited }: ItemProps) {
     { handle: EffectHandle<unknown>; effect: unknown; options: object } | undefined
   >(undefined);
   // Accessibility state of the element before Presence marked it exiting (restored on re-entry).
-  const before = useRef<{ ariaHidden: string | null; inert: boolean } | undefined>(undefined);
+  // `react*`: the attribute was a React prop of the exiting child (React controls it from then on).
+  const before = useRef<
+    | { ariaHidden: string | null; inert: boolean; reactAriaHidden: boolean; reactInert: boolean }
+    | undefined
+  >(undefined);
   const finished = useRef(new Set<number>());
   const exited = useRef(onExited);
   exited.current = onExited;
@@ -220,13 +224,19 @@ function PresenceItem({ entry, appear, settings, onExited }: ItemProps) {
       const props = latestProps.current;
       const saved = before.current;
       before.current = undefined;
+      // An attribute React controls (a prop now or on the exiting child) follows React's latest intent,
+      // including removal (omitted, null, undefined); the pre-exit DOM value applies only otherwise.
+      const ariaProp = props["aria-hidden"];
       const ariaHidden =
-        props["aria-hidden"] !== undefined && props["aria-hidden"] !== null
-          ? String(props["aria-hidden"])
+        "aria-hidden" in props || saved?.reactAriaHidden
+          ? ariaProp === undefined || ariaProp === null
+            ? null
+            : String(ariaProp)
           : (saved?.ariaHidden ?? null);
       if (ariaHidden === null) node.removeAttribute("aria-hidden");
       else node.setAttribute("aria-hidden", ariaHidden);
-      node.inert = props.inert !== undefined ? Boolean(props.inert) : (saved?.inert ?? false);
+      node.inert =
+        "inert" in props || saved?.reactInert ? Boolean(props.inert) : (saved?.inert ?? false);
       const current = handle.current;
       const { duration } = settings.current;
       if (current && custom.current === 0) {
@@ -248,7 +258,12 @@ function PresenceItem({ entry, appear, settings, onExited }: ItemProps) {
     // Exiting.
     const fallback = settings.current.focusFallback?.current;
     if (node.contains(document.activeElement)) focusTarget(node, fallback)?.focus();
-    before.current ??= { ariaHidden: node.getAttribute("aria-hidden"), inert: node.inert === true };
+    before.current ??= {
+      ariaHidden: node.getAttribute("aria-hidden"),
+      inert: node.inert === true,
+      reactAriaHidden: "aria-hidden" in latestProps.current,
+      reactInert: "inert" in latestProps.current,
+    };
     node.setAttribute("data-neshel-presence", "exiting");
     node.setAttribute("aria-hidden", "true");
     node.inert = true;
