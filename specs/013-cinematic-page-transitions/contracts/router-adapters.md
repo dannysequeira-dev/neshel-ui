@@ -11,8 +11,7 @@ useRouteTransition(input: {
   failed?: boolean;            // the router reported a failed navigation
   type?: "push" | "replace" | "traverse" | "unknown"; // when the router knows it
   focus?: "auto" | "none";     // after a committed push/replace: focus [data-neshel-route-focus] (default "auto")
-  progress?: RouteProgressOptions | false;
-}): { direction: NavigationDirection; progressRef: Ref<HTMLDivElement> }
+}): { direction: NavigationDirection }
 ```
 
 Rules: (1) the transition is coordinated with the commit — the location change observed in a layout
@@ -41,16 +40,27 @@ nothing in `./page-transitions` or the root imports it.
   for React's view transition, and `onNavigate` marking the navigation pending (Next calls `onNavigate`
   only for client-side navigations — not for modified clicks, new tabs or external URLs, so those stay
   native). Pending ends when the new location commits; the watchdog ends navigations that never commit.
-- Back/forward: Next handles them in a transition; direction from the Navigation API tracker.
+- Observed (evidence.md §6): link/push navigations run inside a native View Transition with the
+  `neshel-<effect>` / `neshel-forward` types; Next writes history **after** React commits, so the direction of
+  a push reaches CSS as a transition type (types win over the attribute); browser back/forward are committed
+  without a view transition (not animated), and Next follows a traverse with a same-URL `replaceState`, which
+  the tracker ignores as bookkeeping.
 
 ## 3. React Router — `@neshel-ui/animations/page-transitions/react-router`
 
-Verified against the installed `react-router` major (8.x on 2026-11-18) before it is written: hook
-names, the navigation state shape and whether navigations run inside React transitions are read from the
-installed type declarations and observed in a real consumer (evidence.md §6). Optional peer dependency
-`react-router`. Planned surface: `<RouterPageTransitions focus? progress?>` using `useLocation()` (commit)
-and the data-router navigation state (`useNavigation()`) for pending/failed, and `<TransitionLink>`
-forwarding to the router's `Link`.
+Verified against `react-router@8.5.0` (installed type declarations and runtime, research R4): data routers
+(`createBrowserRouter` + `<RouterProvider>`) commit navigation state inside `React.startTransition`, so
+React's view transitions (`<PageTransition>` boundaries) capture the real commit; the router's own
+`viewTransition` prop must not be combined with them (it starts a second, competing document transition).
+Optional peer dependency `react-router`.
+
+- `<RouterPageTransitions focus? progress? failed?>` — `useLocation().key` (commit), `useNavigationType()`
+  (POP → traverse) and the data router's navigation state through `UNSAFE_DataRouterNavigationContext`
+  (`navigation.state !== "idle"`) for PT07. Declarative routers (`<BrowserRouter>`) have no pending state; the
+  bar then stays idle. No `TransitionLink` is needed: plain `<Link>`s run in the router's transition.
+- Observed (evidence.md §6): push navigations run inside a native View Transition; browser back/forward are
+  committed by React Router 8.5 without a React transition, so they are **not animated** (the direction is
+  still detected and published).
 
 ## 4. Verification
 

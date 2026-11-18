@@ -30,6 +30,8 @@ import { Collapse, Presence, AnimatedList, TabIndicator, AutoHeight, Masonry } f
 import { CursorFollower } from "@neshel-ui/animations/hover";
 import { LongPress } from "@neshel-ui/animations/press";
 import { useMotionEffect } from "@neshel-ui/animations";
+import { Letterbox, Storyboard, StoryboardFrame, SplitReveal, CameraStage, TitleSequence, useTimeline } from "@neshel-ui/animations/cinematic";
+import { PageTransition, SharedElement, RouteProgress, usePageTransition } from "@neshel-ui/animations/page-transitions";
 import { defineEffect } from "@neshel-ui/animations/core";
 import { useRef, useState } from "react";
 
@@ -80,6 +82,31 @@ function Phase012() {
   );
 }
 
+function Phase013() {
+  const [boxed, setBoxed] = useState(false);
+  const [view, setView] = useState("a");
+  const transition = usePageTransition();
+  const timeline = useTimeline((tl) => {
+    tl.add({ target: document.getElementById("tl-target"), to: { x: 40 }, duration: 200 });
+  });
+  return (
+    <section id="p013">
+      <button type="button" id="toggle-letterbox" onClick={() => setBoxed(!boxed)}>Letterbox</button>
+      <Letterbox id="frame" active={boxed} style={{ width: 400, height: 300 }}><p>Framed</p></Letterbox>
+      <Storyboard id="story" label="Story"><StoryboardFrame>One</StoryboardFrame><StoryboardFrame>Two</StoryboardFrame></Storyboard>
+      <SplitReveal id="split"><p>Split content</p></SplitReveal>
+      <CameraStage label="Map" style={{ width: 200, height: 120 }}><div style={{ width: 800, height: 600 }}>Canvas</div></CameraStage>
+      <TitleSequence effect={fadeUp} id="titles"><h2>Title</h2><p>Line</p></TitleSequence>
+      <div id="tl-target">Timeline</div>
+      <button type="button" id="play-timeline" onClick={() => timeline.play()}>Play</button>
+      <button type="button" id="go-view" onClick={() => transition.start(() => setView(view === "a" ? "b" : "a"), { effect: "slide", direction: "forward" })}>Go</button>
+      <PageTransition effect="slide"><p id="view">View {view}</p></PageTransition>
+      <SharedElement name="badge"><span id="badge">Badge</span></SharedElement>
+      <RouteProgress pending={false} />
+    </section>
+  );
+}
+
 export function App() {
   return (
     <main>
@@ -108,6 +135,7 @@ export function App() {
       <RevealOnScroll id="late-reveal" preset={fadeUp}><p>Revealed on scroll</p></RevealOnScroll>
       <div style={{ height: "50vh" }} />
       <Phase012 />
+      <Phase013 />
     </main>
   );
 }
@@ -117,6 +145,17 @@ const CLIENT = `import { hydrateRoot } from "react-dom/client";
 import "@neshel-ui/animations/styles.css";
 import "@neshel-ui/animations/gestures.css";
 import "@neshel-ui/animations/layout.css";
+import "@neshel-ui/animations/cinematic.css";
+import "@neshel-ui/animations/page-transitions.css";
+window.__vt = [];
+if (document.startViewTransition) {
+  const start = document.startViewTransition.bind(document);
+  document.startViewTransition = (arg) => {
+    const transition = start(arg);
+    window.__vt.push({ types: arg && arg.types ? [...arg.types] : [] });
+    return transition;
+  };
+}
 import { App } from "./App.jsx";
 window.__recoverable = [];
 hydrateRoot(document.getElementById("root"), <App />, {
@@ -260,6 +299,21 @@ async function main() {
         /<div id="card-012">Present<\/div>/.test(html) &&
         /class="neshel-animated-list"><li>A<\/li>/.test(html),
       "SSR (012): gestures/layout components render plain, accessible markup (no measurements)",
+    );
+    check(
+      [
+        '<p>Framed</p><div class="neshel-letterbox-bars" aria-hidden="true" hidden="">',
+        'aria-roledescription="carousel"',
+        '<p>Split content</p><div class="neshel-cover-layers" aria-hidden="true" hidden=""',
+        'aria-label="Map" tabindex="0" class="neshel-camera-stage"',
+        "<h2>Title</h2><p>Line</p>",
+        '<div class="neshel-page"><p id="view">View <!-- -->a</p></div>',
+        'class="neshel-route-progress" hidden=""',
+      ].every(
+        (fragment) =>
+          html.includes(fragment) || (console.info(`missing in SSR markup: ${fragment}`), false),
+      ),
+      "SSR (013): cinematic and page-transition components render visible, plain markup",
     );
     const indexPath = join(app, "dist", "index.html");
     writeFileSync(indexPath, readFileSync(indexPath, "utf8").replace("<!--ssr-->", html));
@@ -461,6 +515,34 @@ async function main() {
         check(
           p012.order === "Banana,Apple,Cherry" && p012.focus,
           `G10 keyboard reorder changes the consumer's state and keeps focus (${p012.order})`,
+        );
+        const p013 = await page.evaluate(`(async () => {
+          const raf = () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+          const until = async (fn) => { const t = performance.now(); while (performance.now() - t < 3000 && !fn()) await raf(); return fn(); };
+          const ssrIntact = document.getElementById("split").querySelector(".neshel-cover-layers").hidden;
+          const titleStyle = document.querySelector("#titles h2").style.cssText;
+          document.getElementById("toggle-letterbox").click();
+          const bars = document.querySelector("#frame .neshel-letterbox-bars");
+          const shown = await until(() => !bars.hidden && bars.firstElementChild.getBoundingClientRect().height > 0 && bars.firstElementChild.style.transform === "");
+          document.getElementById("play-timeline").click();
+          const moved = await until(() => document.getElementById("tl-target").style.transform.includes("translate3d(40px"));
+          const controls = !document.querySelector("#story .neshel-storyboard-controls").hidden;
+          document.getElementById("go-view").click();
+          const changed = await until(() => document.getElementById("view").textContent === "View b");
+          await until(() => !document.documentElement.hasAttribute("data-neshel-pt-effect"));
+          return { ssrIntact, titleStyle, shown, moved, controls, changed, vt: window.__vt.length, native: typeof document.startViewTransition === "function" };
+        })()`);
+        check(
+          p013.ssrIntact && p013.titleStyle === "",
+          `013 hydration never covers or hides server-rendered content (${JSON.stringify(p013)})`,
+        );
+        check(
+          p013.shown && p013.moved && p013.controls,
+          `013 letterbox, timeline and storyboard controls work from the packed tarball (${JSON.stringify(p013)})`,
+        );
+        check(
+          p013.changed && (!p013.native || p013.vt >= 1),
+          `013 usePageTransition commits the update inside a native View Transition (${p013.vt} started)`,
         );
         check(
           page.errors.length === 0,

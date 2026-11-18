@@ -40,8 +40,8 @@ Dependency-ordered. `[x]` done, `[ ]` open. Authorised by the owner brief of 202
 
 ## 013.4 — Router integration
 
-- [ ] T040 `useRouteTransition`; Next adapter; React Router adapter (after reading installed types)
-- [ ] T041 Router consumers check (`check:animations:routers`)
+- [x] T040 `useRouteTransition`; Next adapter; React Router adapter (after reading installed types)
+- [x] T041 Router consumers check (`check:animations:routers`)
 
 ## 013.5 — Galleries & quality gates
 

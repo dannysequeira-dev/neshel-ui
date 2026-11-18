@@ -43,6 +43,20 @@ html[data-neshel-pt-direction="replace"]::view-transition-new(.neshel-pt-slide) 
   animation-name: neshel-pt-fade-in;
 }
 
+/* Transition types describe THIS transition (routers such as Next.js write history after React commits,
+ * so the attribute may still describe the previous navigation): they win over the attribute. */
+html:active-view-transition-type(neshel-back)::view-transition-old(.neshel-pt-slide) {
+  animation-name: neshel-pt-slide-out-back;
+}
+html:active-view-transition-type(neshel-back)::view-transition-new(.neshel-pt-slide) {
+  animation-name: neshel-pt-slide-in-back;
+}
+html:active-view-transition-type(neshel-forward)::view-transition-old(.neshel-pt-slide) {
+  animation-name: neshel-pt-slide-out;
+}
+html:active-view-transition-type(neshel-forward)::view-transition-new(.neshel-pt-slide) {
+  animation-name: neshel-pt-slide-in;
+}
 /* PT05 — scale-through. */
 ::view-transition-old(.neshel-pt-scale) {
   animation: var(--neshel-pt-duration, 360ms) var(--neshel-pt-easing, cubic-bezier(0.2, 0, 0, 1))
@@ -62,6 +76,9 @@ html[data-neshel-pt-direction="replace"]::view-transition-new(.neshel-pt-slide) 
     var(--neshel-pt-easing, cubic-bezier(0.65, 0, 0.35, 1)) both neshel-pt-wipe;
 }
 html[data-neshel-pt-direction="back"]::view-transition-new(.neshel-pt-wipe) {
+  animation-name: neshel-pt-wipe-back;
+}
+html:active-view-transition-type(neshel-back)::view-transition-new(.neshel-pt-wipe) {
   animation-name: neshel-pt-wipe-back;
 }
 

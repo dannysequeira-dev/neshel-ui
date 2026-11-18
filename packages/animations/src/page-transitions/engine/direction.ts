@@ -5,7 +5,7 @@
  * from URLs): push → forward, replace/reload → replace, traverse → back or forward by comparing
  * `destination.index` with `currentEntry.index`. The tracker writes `data-neshel-pt-direction` on `<html>`
  * synchronously in the event — before any router updates the DOM — so CSS and React's own view transitions
- * see it. Without the API, routers may call `set()`; otherwise the direction stays `"unknown"` and
+ * see it. A `replace` to the current URL is router state bookkeeping and leaves the direction alone. Without the API, routers may call `set()`; otherwise the direction stays `"unknown"` and
  * direction-aware effects use their neutral variant. One shared listener, reference-counted.
  */
 
@@ -24,7 +24,7 @@ export const DIRECTION_ATTRIBUTE = "data-neshel-pt-direction";
 
 interface NavigateEventLike extends Event {
   navigationType?: string;
-  destination?: { index?: number };
+  destination?: { index?: number; url?: string };
 }
 
 const state = {
@@ -78,12 +78,21 @@ function attach(): void {
   state.original = document.documentElement.getAttribute(DIRECTION_ATTRIBUTE);
   const navigation = (
     window as {
-      navigation?: EventTarget & { currentEntry?: { index?: number } };
+      navigation?: EventTarget & { currentEntry?: { index?: number; url?: string } };
     }
   ).navigation;
   if (!navigation || typeof navigation.addEventListener !== "function") return;
   const onNavigate = (event: Event) => {
     const navigate = event as NavigateEventLike;
+    // A replace to the SAME URL is router bookkeeping (e.g. Next.js writes its state after a traverse),
+    // not a navigation: keep the direction of the navigation that just happened.
+    if (
+      navigate.navigationType === "replace" &&
+      navigate.destination?.url !== undefined &&
+      navigate.destination.url === navigation.currentEntry?.url
+    ) {
+      return;
+    }
     const result = directionOf(
       navigate.navigationType,
       navigation.currentEntry?.index,

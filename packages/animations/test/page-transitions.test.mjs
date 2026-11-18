@@ -332,6 +332,9 @@ test("direction tracker: Navigation API indexes decide forward/back; URLs never 
   fire("replace", 3);
   fire("reload", 3);
   fire("traverse", 3);
+  // A replace to the current URL (router bookkeeping after a traverse) keeps the direction.
+  navigation.currentEntry = { index: 3, url: "https://example.test/same" };
+  fire("replace", 3);
   assert.deepEqual(seen, [
     "push:forward",
     "traverse:back",
