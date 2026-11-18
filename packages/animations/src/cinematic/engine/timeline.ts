@@ -17,7 +17,7 @@ import type { Easing, EasingPreset } from "../../core/easing.js";
 import { attachEffect, type EffectDefinition, type EffectHandle } from "../../core/effect.js";
 import { animationsError } from "../../core/errors.js";
 import { clamp, mix } from "../../core/interpolate.js";
-import type { MotionValue } from "../../core/motion-value.js";
+import { type MotionValue, motionValue } from "../../core/motion-value.js";
 import { isEffectPreset, type PresetInput } from "../../core/preset.js";
 import {
   prefersReducedMotion,
@@ -74,10 +74,16 @@ export interface ValueTrackInput extends TrackTiming {
 
 export interface EffectTrackInput extends TrackTiming {
   target: Styled;
-  /** An Entrance definition (E01–E09/E11) or a preset of one, triggered through its contract. */
+  /** An Entrance definition (E01–E09/E11) or a preset of one. */
   // biome-ignore lint/suspicious/noExplicitAny: definitions of any option types.
   effect: PresetInput<any, any>;
   options?: object;
+  /**
+   * `"scrub"` (default when the definition accepts an external `progress`): the definition follows the
+   * timeline clock — seek, scrub, reverse, interruption. `"trigger"`: the definition plays with its OWN
+   * clock when the playhead crosses the start (in), or crosses back (out).
+   */
+  mode?: "scrub" | "trigger";
 }
 
 export interface TimelineTrackInput {
@@ -417,11 +423,14 @@ export function createTimeline(options: TimelineOptions = {}): Timeline {
   }
 
   /**
-   * Effect tracks TRIGGER an existing Entrance definition through its public contract (Phase 011 `hold` /
-   * `playback`, Phase 012 `continuous`, `replay`), passed as a value — the definition keeps its own clock
-   * and poses (nothing copied). Crossing the start forward plays it in, crossing back plays it out; a seek
-   * (or `finish()`) shows the state at that time without animation: the start pose before the start, the
-   * visible end state after it. Not scrubbable — pose/value tracks are.
+   * Effect tracks coordinate an existing Entrance definition passed as a value (nothing copied), in one of
+   * two modes (contracts/timeline-engine.md §3):
+   * - `scrub` (default when supported): the definition renders an external `progress` motion value that this
+   *   track drives from the timeline clock — no clock of its own; seek, scrub, reverse and interruption follow
+   *   the timeline exactly.
+   * - `trigger`: through its Phase 011/012 contract (`hold`, `playback`, `continuous`, `replay`) the
+   *   definition plays with ITS OWN clock when the playhead crosses the start (in) or crosses back (out); a
+   *   seek or `finish()` shows the start pose before the start and the visible end state after it.
    */
   function effectTrack(input: EffectTrackInput, start: number): Track {
     const target = guardTarget(input.target, "effect");
@@ -434,31 +443,69 @@ export function createTimeline(options: TimelineOptions = {}): Timeline {
     }
     const base = isEffectPreset(input.effect) ? (input.effect.options as object) : undefined;
     const options = { ...base, ...(input.options as object | undefined) };
-    const resolved = definition.resolve(options) as {
+    const progress = motionValue(0);
+    const resolved = definition.resolve({ ...options, progress }) as {
       duration?: unknown;
       delay?: number;
+      easing?: Easing;
       hold?: unknown;
       playback?: unknown;
+      progress?: unknown;
       spring?: Parameters<typeof springCurve>[0];
     };
-    if (
-      typeof resolved?.duration !== "number" ||
-      !("hold" in resolved) ||
-      !("playback" in resolved)
-    ) {
+    const triggerable =
+      typeof resolved?.duration === "number" && "hold" in resolved && "playback" in resolved;
+    const scrubbable = triggerable && resolved.progress === progress;
+    const mode = v.oneOf(
+      "mode",
+      input.mode,
+      ["scrub", "trigger"] as const,
+      scrubbable ? "scrub" : "trigger",
+    );
+    if (!triggerable || (mode === "scrub" && !scrubbable)) {
       v.fail(
-        `effect track: "${definition.id}" cannot be triggered by a timeline (Entrance definitions can).`,
+        `effect track: "${definition.id}" cannot be ${mode === "scrub" ? "scrubbed" : "triggered"} by a timeline (Entrance definitions can).`,
       );
     }
-    const own = resolved.spring
-      ? springCurve(resolved.spring).duration
-      : (resolved.duration as number);
-    const length =
-      input.duration !== undefined
-        ? trackDuration("duration", input.duration, 400)
-        : (resolved.delay ?? 0) + own;
+    const curve = resolved.spring ? springCurve(resolved.spring) : undefined;
+    const own = curve ? curve.duration : (resolved.duration as number);
+    const explicit = input.duration !== undefined;
+    const delay = explicit ? 0 : (resolved.delay ?? 0);
+    const length = explicit ? trackDuration("duration", input.duration, 400) : delay + own;
+    const ease = resolveEase(input.easing, curve?.easing ?? resolved.easing ?? standard);
     const fill = input.fill ?? "both";
     let handle: EffectHandle<unknown> | undefined;
+    if (mode === "scrub") {
+      const scrubTrack: Track = {
+        id: input.id,
+        kind: "effect",
+        start,
+        order: order++,
+        fill,
+        last: Number.NaN,
+        detached: false,
+        target,
+        duration: () => length,
+        render(local) {
+          if (detachIfGone(scrubTrack)) return;
+          const elapsed = local * length;
+          const span = length - delay;
+          const p = span <= 0 ? (local >= 1 ? 1 : 0) : clamp((elapsed - delay) / span, 0, 1);
+          progress.set(ease(p));
+          handle ??= attachEffect(
+            target,
+            definition,
+            { ...options, progress },
+            { conflicts: o.conflicts },
+          );
+        },
+        release() {
+          handle?.destroy();
+          handle = undefined;
+        },
+      };
+      return scrubTrack;
+    }
     let shown: "start" | "end" | undefined;
     let replay = 0;
     const settings = (extra: object) => ({ ...options, continuous: true, ...extra });
@@ -476,7 +523,9 @@ export function createTimeline(options: TimelineOptions = {}): Timeline {
         if (detachIfGone(track)) return;
         const next = local > 0 ? "end" : "start";
         if (next === shown) return;
-        const animate = fire && !jumping && shown !== undefined;
+        // The first render may already be past the start (the shared scheduler was running, so the first
+        // frame had a non-zero delta): playing across the start still animates (review B).
+        const animate = fire && !jumping && (shown !== undefined || next === "end");
         shown = next;
         if (animate) {
           handle ??= attachEffect(target, definition, settings({ appear: false, hold: true }), {
@@ -938,7 +987,11 @@ export function createTimeline(options: TimelineOptions = {}): Timeline {
       if (destroyed || core.state === "failed") return;
       mutate();
       core.direction = core.direction === "forward" ? "reverse" : "forward";
-      if (core.state === "running") return;
+      if (core.state === "running") {
+        // A pending awaited call was abandoned by mutate(): the clock must run again (review A).
+        startClock();
+        return;
+      }
       if (core.state === "paused") return;
       if (settled()) {
         const at = total;
@@ -1008,6 +1061,8 @@ export function createTimeline(options: TimelineOptions = {}): Timeline {
       edge = false;
       const fire = v.flag("fire", seekOptions.fire, false);
       if (advance(target, fire)) emitUpdate();
+      // Seeking while running (even while an awaited call was pending) keeps running (review A).
+      if (core.state === "running" && !waiting) startClock();
     },
     retarget(trackId, to) {
       const track = tracks.find((candidate) => candidate.id === trackId);

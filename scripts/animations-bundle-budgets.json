@@ -8,7 +8,7 @@
   "root: React bindings": 5018,
   "core: definePreset + attachPreset": 4710,
   "entrance: Reveal + fadeUp": 12544,
-  "entrance: fadeIn definition (no React)": 6656,
+  "entrance: fadeIn definition (no React)": 6912,
   "entrance: entire entry": 14592,
   "hover: Hover + lift": 12032,
   "hover: lift definition (no React)": 5734,

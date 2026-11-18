@@ -137,12 +137,16 @@ export interface RouteProgressProps extends Omit<DivProps, "children">, RoutePro
   pending: boolean;
   /** The last navigation failed (shown when `pending` turns false). */
   failed?: boolean;
+  /** Identity of the current navigation: a new value while still pending restarts the indicator. */
+  navigation?: string | number;
 }
 
 /** PT07: indeterminate, accessible navigation progress (never a fake percentage). */
 export function RouteProgress({
   pending,
   failed = false,
+  navigation,
+  onTimeout,
   delay,
   minVisible,
   timeout,
@@ -154,8 +158,8 @@ export function RouteProgress({
 }: RouteProgressProps) {
   const [element, setRef] = useHostRef<HTMLDivElement>(ref);
   const control = useRef<RouteProgressControl | undefined>(undefined);
-  const latest = useRef({ pending, failed });
-  latest.current = { pending, failed };
+  const latest = useRef({ pending, failed, onTimeout });
+  latest.current = { pending, failed, onTimeout };
   useClientLayoutEffect(() => {
     if (!element.current) return;
     const progress = createRouteProgress(element.current, {
@@ -164,6 +168,7 @@ export function RouteProgress({
       timeout,
       announce,
       labels,
+      onTimeout: () => latest.current.onTimeout?.(),
     });
     control.current = progress;
     if (latest.current.pending) progress.start();
@@ -173,16 +178,19 @@ export function RouteProgress({
     };
   }, [delay, minVisible, timeout, announce]);
   const wasPending = useRef(pending);
+  const lastNavigation = useRef(navigation);
   useEffect(() => {
     const progress = control.current;
     if (!progress) return;
-    if (pending && !wasPending.current) progress.start();
+    const restarted = pending && wasPending.current && navigation !== lastNavigation.current;
+    if (pending && (!wasPending.current || restarted)) progress.start();
     else if (!pending && wasPending.current) {
       if (failed) progress.fail();
       else progress.done();
     }
     wasPending.current = pending;
-  }, [pending, failed]);
+    lastNavigation.current = navigation;
+  }, [pending, failed, navigation]);
   return (
     <div {...rest} ref={setRef} className={joinClass("neshel-route-progress", className)} hidden />
   );

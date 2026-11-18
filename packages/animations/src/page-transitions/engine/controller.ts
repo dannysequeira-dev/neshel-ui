@@ -176,9 +176,11 @@ export function startPageTransition(
     if (!root || !saved) return;
     if (saved.effect === null) root.removeAttribute(EFFECT_ATTRIBUTE);
     else root.setAttribute(EFFECT_ATTRIBUTE, saved.effect);
-    // The direction attribute belongs to the tracker when one runs: keep its latest value.
-    if (saved.direction === null && root.getAttribute(DIRECTION_ATTRIBUTE) === direction) {
-      root.removeAttribute(DIRECTION_ATTRIBUTE);
+    // Restore the original direction unless someone (a live tracker) changed it during the transition:
+    // the latest owner's value wins (review C).
+    if (root.getAttribute(DIRECTION_ATTRIBUTE) === direction) {
+      if (saved.direction === null) root.removeAttribute(DIRECTION_ATTRIBUTE);
+      else root.setAttribute(DIRECTION_ATTRIBUTE, saved.direction);
     }
   }
 

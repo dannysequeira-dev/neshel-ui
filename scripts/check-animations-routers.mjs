@@ -71,6 +71,7 @@ function Layout() {
       <nav>
         <Link id="to-home" to="/">Home</Link>
         <Link id="to-about" to="/about">About</Link>
+        <Link id="to-about-current" to="/about">About (again)</Link>
         <Link id="to-slow" to="/slow">Slow</Link>
         <Link id="to-broken" to="/broken">Broken</Link>
         <Link id="to-new-tab" to="/about" target="_blank">About in a new tab</Link>
@@ -128,6 +129,7 @@ export function Providers({ children }) {
       <nav>
         <TransitionLink id="to-home" href="/">Home</TransitionLink>
         <TransitionLink id="to-about" href="/about" effect="slide">About</TransitionLink>
+        <TransitionLink id="to-about-current" href="/about">About (again)</TransitionLink>
         <TransitionLink id="to-slow" href="/slow">Slow</TransitionLink>
         <TransitionLink id="to-new-tab" href="/about" target="_blank">About in a new tab</TransitionLink>
         <a id="external" href="https://example.invalid/">External</a>
@@ -285,6 +287,40 @@ async function scenario(context, origin, name, { broken }) {
     `${name}: a slow route shows the real pending state before it commits`,
   );
   check(arrived && idle, `${name}: progress completes and returns to idle after the commit`);
+
+  // Owner review D: a navigation superseded before it commits (slow route, then a link to the CURRENT
+  // route) must not leave the indicator pending; a later navigation must show its own pending state.
+  await page.click("#to-about");
+  await page.waitForSelector("#title-about");
+  await until(
+    `document.querySelector(".neshel-route-progress")?.getAttribute("data-state") === "idle"`,
+    3000,
+  );
+  await page.evaluate(`(() => {
+    window.__progressStates = [];
+    const bar = document.querySelector(".neshel-route-progress");
+    new MutationObserver(() => window.__progressStates.push(bar.getAttribute("data-state"))).observe(bar, { attributes: true, attributeFilter: ["data-state"] });
+  })()`);
+  await page.click("#to-slow");
+  await page.click("#to-about-current");
+  await page.waitForTimeout(1600); // past the slow route's 900 ms: it would have committed if not superseded
+  const supersededPath = await state("location.pathname");
+  const supersededState = await state(
+    `document.querySelector(".neshel-route-progress")?.getAttribute("data-state")`,
+  );
+  check(
+    supersededState === "idle",
+    `${name}: a navigation superseded without commit does not stay pending (${supersededState}, at ${supersededPath})`,
+  );
+  await page.evaluate("window.__progressStates.length = 0");
+  await page.click("#to-slow");
+  const restarted = await until(`window.__progressStates.includes("pending")`, 700);
+  await until(`document.getElementById("title-slow")`, 5000);
+  await until(
+    `document.querySelector(".neshel-route-progress")?.getAttribute("data-state") === "idle"`,
+    3000,
+  );
+  check(restarted, `${name}: the next navigation shows its own pending state`);
 
   if (broken) {
     await page.click("#to-broken");

@@ -57,6 +57,7 @@ export function NextPageTransitions({ focus, progress, children }: NextPageTrans
   const pathname = usePathname() ?? "";
   const [search, setSearch] = useState("");
   const [pending, setPending] = useState(false);
+  const [navigation, setNavigation] = useState(0);
   const location = search ? `${pathname}?${search}` : pathname;
   useRouteTransition({ location, focus });
   // The committed location changed: the navigation is complete.
@@ -67,9 +68,14 @@ export function NextPageTransitions({ focus, progress, children }: NextPageTrans
       begin(href) {
         const target = new URL(href, window.location.href);
         const current = new URL(window.location.href);
-        // Same document location (or only a hash): Next does not change the route.
-        if (target.pathname === current.pathname && target.search === current.search) return;
+        // A link to the current location supersedes a pending navigation and completes without a location
+        // change: nothing stays pending (review D).
+        if (target.pathname === current.pathname && target.search === current.search) {
+          setPending(false);
+          return;
+        }
         setPending(true);
+        setNavigation((n) => n + 1);
       },
     }),
     [],
@@ -81,7 +87,15 @@ export function NextPageTransitions({ focus, progress, children }: NextPageTrans
         <SearchReader onChange={onSearch} />
       </Suspense>
       {children}
-      {progress === false ? null : <RouteProgress pending={pending} {...progress} />}
+      {progress === false ? null : (
+        <RouteProgress
+          pending={pending}
+          navigation={navigation}
+          {...progress}
+          // A navigation that never commits (cancelled, failed before commit): the watchdog clears it.
+          onTimeout={() => setPending(false)}
+        />
+      )}
     </PendingContext.Provider>
   );
 }

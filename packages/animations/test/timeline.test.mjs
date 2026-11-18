@@ -443,6 +443,7 @@ test("effect tracks trigger Entrance definitions through their contract; seek sh
       target: a,
       effect: entrance.fadeUp,
       options: { distance: 40, duration: 200, easing: "linear" },
+      mode: "trigger",
     },
     100,
   );
@@ -485,7 +486,12 @@ test("effect tracks trigger Entrance definitions through their contract; seek sh
   assert.ok(spring.duration > 200 && spring.duration < 4000, `spring span ${spring.duration}`);
   spring.destroy();
   const finishing = createTimeline();
-  finishing.add({ target: a, effect: entrance.fadeIn, options: { duration: 2000 } });
+  finishing.add({
+    target: a,
+    effect: entrance.fadeIn,
+    options: { duration: 2000 },
+    mode: "trigger",
+  });
   finishing.play();
   frames.flush(2);
   finishing.finish();
@@ -500,7 +506,7 @@ test("effect tracks under reduced motion: the entrance follows its declared beha
   const a = el();
   media.set(true);
   const tl = createTimeline({ reducedMotion: "never" });
-  tl.add({ target: a, effect: entrance.fadeUp }, 100);
+  tl.add({ target: a, effect: entrance.fadeUp, mode: "trigger" }, 100);
   tl.seekTo(0);
   settle();
   assert.equal(a.style.cssText, "", "hold is ignored under reduced motion: content visible");

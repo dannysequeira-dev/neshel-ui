@@ -23,6 +23,8 @@ export interface RouteProgressOptions {
   /** Announce completion/failure once in a status region (default false). */
   announce?: boolean;
   labels?: Partial<Record<"loading" | "loaded" | "failed", string>>;
+  /** Called when the watchdog cancels a navigation that never settled (the owner should clear its state). */
+  onTimeout?(): void;
 }
 
 export interface RouteProgress {
@@ -47,6 +49,7 @@ export function createRouteProgress(
   const timeout = v.number("timeout", o.timeout, 15000, 1000, 120000);
   const announce = v.flag("announce", o.announce, false);
   const labels = { ...LABELS, ...o.labels };
+  const onTimeout = v.callback<() => void>("onTimeout", o.onTimeout);
   if (!element?.ownerDocument) v.fail('"element" must be an element.');
   let state: RouteProgressState = "idle";
   let shown = false;
@@ -122,6 +125,7 @@ export function createRouteProgress(
           `a navigation stayed pending for ${timeout} ms; the progress bar was cancelled.`,
         );
         idle();
+        onTimeout?.();
       });
     },
     done() {

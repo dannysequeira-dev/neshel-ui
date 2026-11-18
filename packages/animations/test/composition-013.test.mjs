@@ -49,7 +49,15 @@ test("1 · timeline + Entrance: the triggered entrance follows the timeline (see
   const node = element("opacity: 0.9");
   const before = snapshot(node);
   const tl = createTimeline();
-  tl.add({ target: node, effect: entrance.fadeUp, options: { distance: 30, duration: 300 } }, 50);
+  tl.add(
+    {
+      target: node,
+      effect: entrance.fadeUp,
+      options: { distance: 30, duration: 300 },
+      mode: "trigger",
+    },
+    50,
+  );
   tl.seekTo(0);
   settle();
   assert.equal(translate(node)[1], 30, "start pose before the start");

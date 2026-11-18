@@ -209,7 +209,7 @@ test("C04/C05 covers: panels move by their own layers; content untouched; hidden
   container.remove();
 });
 
-test("C06 title sequence: lines staggered with a drivable entrance; background; reduced → fade only", () => {
+test("C06 title sequence: lines scrubbed in sequence (Entrance progress); background; reduced → fade only", () => {
   const root = el();
   const background = el(root);
   const lines = [el(root, "h2"), el(root, "p"), el(root, "p")];
@@ -230,18 +230,13 @@ test("C06 title sequence: lines staggered with a drivable entrance; background; 
   );
   tl.seekTo(150);
   settle();
-  assert.ok(
-    opacityOf(lines[0]) === 1 && opacityOf(lines[1]) === 1 && opacityOf(lines[2]) === 0,
-    "lines past their start are shown",
-  );
+  assert.ok(Math.abs(opacityOf(lines[0]) - 0.75) < 0.01, `line 1 at 3/4: ${opacityOf(lines[0])}`);
+  assert.ok(Math.abs(opacityOf(lines[1]) - 0.25) < 0.01, `line 2 at 1/4: ${opacityOf(lines[1])}`);
+  assert.equal(opacityOf(lines[2]), 0, "line 3 not started");
   assert.ok(scaleOf(background)[0] > 1, "background scale settling (scrubbed pose track)");
-  tl.play();
-  frames.flush(1);
-  frames.flush(5);
-  assert.ok(
-    opacityOf(lines[2]) > 0 && opacityOf(lines[2]) < 1,
-    "the last line plays in on its own clock",
-  );
+  tl.seekTo(50);
+  settle();
+  assert.ok(Math.abs(opacityOf(lines[0]) - 0.25) < 0.01, "seeking back rewinds the lines");
   tl.seekTo(tl.duration);
   settle();
   assert.equal(lines.map((line) => line.style.cssText).join(""), "", "identity at the end");
