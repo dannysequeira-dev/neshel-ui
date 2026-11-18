@@ -131,9 +131,20 @@ long-press code plus the shared pointer session; without the shared session it w
 [visual-review/](visual-review/README.md): gallery, mid-gesture, mid-FLIP, accordion, presence, masonry,
 reduced-motion and Storybook captures (Chromium, real input).
 
-## 11 · CI
+## 11 · CI (GitHub Actions, PR #10)
 
-Pending (push and PR after the owner's budget decision).
+- Run 44193970348 (`13450677`): typecheck failed on 5 jobs — the apps lacked TypeScript path aliases for
+  `./gestures` and `./layout` (local typecheck had the built `dist`). Fixed in `1c9694e`.
+- Run 44196197830 (`1c9694e`): 12/14 — macOS bundles (`composeTransform` 641 B > 614 B: the macOS build
+  minifies differently; fixed by compacting the function, 0.56 KiB) and Windows CDP (one-finger drag case
+  depended on where the previous case left the puck; made deterministic). The follow-up commit `ffcd459`
+  accidentally deleted seven CDP cases; restored in `7297b31` (run 44199222122 cancelled).
+- **Run 44220599044 (`7297b31`): verified in GitHub Actions — 14/14 on attempt 2** (Linux, Windows, macOS;
+  Node 22/24/26). Attempt 1 failed only the unchanged **Phase 011** case "composition: Entrance + Hover +
+  Press + parallax on one element" on macOS (`parallax kept after hover: [8.359, 5.801]`): the final
+  transform settled 2.56 px from the recorded base, i.e. the parallax contribution changed during the case
+  or the base was read before it settled. Re-run once for evidence; not fixed here (independent, like
+  issue #9); proposed as a separate issue for the owner.
 
 ## 12 · Known limitations
 
