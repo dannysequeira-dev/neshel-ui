@@ -47,6 +47,7 @@ test("exports only implemented entry points, types first (FR-002)", () => {
     "./scroll",
     "./gestures",
     "./layout",
+    "./cinematic",
     "./styles.css",
     "./hover.css",
     "./press.css",
@@ -63,6 +64,7 @@ test("exports only implemented entry points, types first (FR-002)", () => {
     "./scroll",
     "./gestures",
     "./layout",
+    "./cinematic",
   ]) {
     assert.deepEqual(Object.keys(manifest.exports[subpath]), ["types", "import"]);
   }

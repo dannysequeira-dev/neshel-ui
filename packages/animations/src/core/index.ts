@@ -36,6 +36,7 @@ export {
   type ChannelClaim,
   type ChannelHandles,
   createEffectRegistry,
+  type DrivableSpan,
   defineEffect,
   type EffectContext,
   type EffectDefinition,

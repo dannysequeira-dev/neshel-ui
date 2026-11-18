@@ -6,6 +6,7 @@
 import { arbiter } from "./arbiter.js";
 import { type AttachConfig, attachWith } from "./attach.js";
 import type { TransformLayer } from "./compose.js";
+import type { Easing } from "./easing.js";
 import { animationsError } from "./errors.js";
 import { type ExclusiveChannel, isExclusiveChannel } from "./host.js";
 import type { ReducedMotion } from "./reduced-motion.js";
@@ -72,6 +73,16 @@ export interface EffectDefinition<Options, Resolved> {
   /** Reduced-motion policy carried by the options (e.g. Tilt3D's `reducedMotion` prop). */
   policy?(options: Resolved): ReducedMotion | undefined;
   setup(context: EffectContext<Resolved>): EffectInstance<Resolved>;
+  /**
+   * Phase 013 (optional): the definition renders an external `progress` motion value passed in its options
+   * (0 = start pose, 1 = end), so a timeline can drive it; `span` reports its own timing for scheduling.
+   */
+  readonly drivable?: DrivableSpan<Resolved>;
+}
+
+/** Timing of a drivable definition (Phase 013, ADR 0028 §3). */
+export interface DrivableSpan<Resolved> {
+  span(options: Resolved): { duration: number; delay: number; easing: Easing };
 }
 
 // biome-ignore lint/suspicious/noExplicitAny: registries hold definitions of any option types.

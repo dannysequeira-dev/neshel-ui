@@ -33,7 +33,7 @@ interface TimelineOptions {
   onStart?(): void;                  // once per run, on its first frame
   onUpdate?(time: number, progress: number): void; // after each render (frame or seek)
   onRepeat?(iteration: number): void;
-  onComplete?(result: MotionResult): void;          // once per run, never twice
+  onComplete?(result: MotionResult): void;          // once per completed run, never twice
 }
 
 interface Timeline extends TweenControl {          // state, finished, play, pause, reverse, finish, cancel, seek

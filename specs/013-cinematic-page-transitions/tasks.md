@@ -14,11 +14,11 @@ Dependency-ordered. `[x]` done, `[ ]` open. Authorised by the owner brief of 202
 
 ## 013.1 — Timeline foundation
 
-- [ ] T010 `EffectDefinition.drivable`; host excludes `view-transition-*` from `will-change` (D-3, D-4)
-- [ ] T011 Entrance `progress` option + `drivable` span (FR-005)
-- [ ] T012 Timeline engine: positions, labels, tracks, controls, callbacks, waits, retarget (FR-001, FR-002)
-- [ ] T013 Edge-case tests of research R5 (FR-003, FR-004)
-- [ ] T014 `useTimeline` (FR-006)
+- [x] T010 `EffectDefinition.drivable`; host excludes `view-transition-*` from `will-change` (D-3, D-4)
+- [x] T011 Entrance `progress` option + `drivable` span (FR-005)
+- [x] T012 Timeline engine: positions, labels, tracks, controls, callbacks, waits, retarget (FR-001, FR-002)
+- [x] T013 Edge-case tests of research R5 (FR-003, FR-004)
+- [x] T014 `useTimeline` (FR-006)
 
 ## 013.2 — Cinematic effects
 

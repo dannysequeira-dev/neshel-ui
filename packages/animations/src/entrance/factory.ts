@@ -19,9 +19,10 @@ import type { Easing, EasingPreset } from "../core/easing.js";
 import { type ChannelClaim, defineEffect, type EffectDefinition } from "../core/effect.js";
 import { pageHidden, watchVisibility } from "../core/interaction.js";
 import { clamp, mix } from "../core/interpolate.js";
-import { motionValue } from "../core/motion-value.js";
+import { type MotionValue, motionValue } from "../core/motion-value.js";
 import type { ReducedMotion } from "../core/reduced-motion.js";
 import type { SpringOptions } from "../core/spring.js";
+import { springCurve } from "../core/spring-curve.js";
 import { afterDelay, whenSettled } from "../core/springs.js";
 import { type Validator, validator } from "../core/validate.js";
 
@@ -59,6 +60,12 @@ export interface EntranceOptions {
    * with the remaining fraction of the duration, instead of restarting from the start pose. Default false.
    */
   continuous?: boolean;
+  /**
+   * Phase 013 (timelines, scene segments): an external progress motion value (0 = start pose, 1 = visible)
+   * renders the entrance instead of its own clock. `appear`, `replay`, `hold`, `playback`, `delay`,
+   * `continuous` and `onFinish` are then ignored; reduced motion keeps the declared behaviour.
+   */
+  progress?: MotionValue;
 }
 
 export interface EntranceCommon {
@@ -72,6 +79,7 @@ export interface EntranceCommon {
   hold: boolean;
   playback: "in" | "out";
   continuous: boolean;
+  progress: MotionValue | undefined;
 }
 
 /** Start pose of the entrance; the end pose is the identity. */
@@ -113,6 +121,15 @@ const round = (value: number, digits = 3) => {
   return Math.round(value * factor) / factor;
 };
 
+function externalProgress(v: Validator, value: unknown): MotionValue | undefined {
+  if (value === undefined || value === null) return undefined;
+  const candidate = value as Partial<MotionValue>;
+  if (typeof candidate.get !== "function" || typeof candidate.subscribe !== "function") {
+    v.fail(`invalid value for "progress"; expected a motion value.`);
+  }
+  return value as MotionValue;
+}
+
 export function resolveCommon(
   options: Partial<EntranceOptions>,
   v: Validator,
@@ -129,6 +146,7 @@ export function resolveCommon(
     hold: v.flag("hold", options.hold, false),
     playback: v.oneOf("playback", options.playback, ["in", "out"] as const, "in"),
     continuous: v.flag("continuous", options.continuous, false),
+    progress: externalProgress(v, options.progress),
   };
 }
 
@@ -157,6 +175,12 @@ export function createEntrance<Options extends EntranceOptions, Extra>(
       return { ...common, spring, extra: spec.resolve(options, v) };
     },
     policy: (options) => options.reducedMotion,
+    drivable: {
+      span: (o) =>
+        o.spring
+          ? { ...springCurve(o.spring), delay: o.delay }
+          : { duration: o.duration, delay: o.delay, easing: o.easing },
+    },
     setup(context) {
       let o = context.options;
       const progress = motionValue(0);
@@ -216,6 +240,44 @@ export function createEntrance<Options extends EntranceOptions, Extra>(
         context.channels.opacity.clear();
         context.channels.transform.clear();
         for (const [, handle] of exclusive) handle.clear();
+      }
+
+      // Phase 013: an external progress value renders the entrance; no clock, no delay, no hold.
+      if (o.progress) {
+        let source = o.progress;
+        const applyMode = () => {
+          mode = context.reduced ? (spec.reducedMotion === "instant" ? "none" : "fade") : "full";
+        };
+        const draw = (value: number) => {
+          if (mode === "none") clearAll();
+          else render(value);
+        };
+        applyMode();
+        let unsubscribeSource = source.subscribe(draw);
+        draw(source.get());
+        const unsubscribeDrivenReduced = context.onReducedChange(() => {
+          clearAll();
+          applyMode();
+          draw(source.get());
+        });
+        return {
+          update(next) {
+            o = next;
+            if (next.progress && next.progress !== source) {
+              unsubscribeSource();
+              source = next.progress;
+              unsubscribeSource = source.subscribe(draw);
+            }
+            draw(source.get());
+          },
+          destroy() {
+            if (destroyed) return;
+            destroyed = true;
+            unsubscribeSource();
+            unsubscribeDrivenReduced();
+            clearAll();
+          },
+        };
       }
 
       function settle(id: number, status: MotionResult["status"]): void {
