@@ -1,7 +1,8 @@
 # ADR 0027 — Gesture and layout engines (pointer session, physics, FLIP, presence)
 
-- Status: **Proposed** (Phase 012; implemented and verified locally — owner review of the Phase 012 PR
-  pending)
+- Status: **Accepted** (owner approval 2026-11-18, review of PR #10 — architectural direction and the Phase
+  012 bundle budgets; implemented and verified in Phase 012 —
+  [evidence](../../specs/012-physics-gestures-layout/evidence.md))
 - Date: 2026-11-17
 - Feature: [012](../../specs/012-physics-gestures-layout/spec.md); research R1–R12; contracts
   [gesture-engine.md](../../specs/012-physics-gestures-layout/contracts/gesture-engine.md),

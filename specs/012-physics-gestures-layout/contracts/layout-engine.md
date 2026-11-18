@@ -78,25 +78,33 @@ phase**, together with the `masonry` token, so the masonry layout and its spans 
 
 State per key: `entering → present → exiting → removed`.
 
-| Event                        | Behaviour                                                                           |
-| ---------------------------- | ----------------------------------------------------------------------------------- |
-| key added after mount        | enter animation (Entrance definition/preset as a value, or built-in fade)           |
-| key added at first render    | no animation unless `initial`; SSR/hydration output is the plain children           |
-| key removed                  | kept rendered in place; `inert` + `aria-hidden`; exit animation; then removed       |
-| key re-added while exiting   | exit interrupted; enter continues from the current progress (Entrance `continuous`) |
-| several keys removed         | independent exits, each removed on its own completion                               |
-| exit fails / never completes | watchdog: duration + 1000 ms (max 10 s), then removed                               |
-| page hidden                  | running exits complete at once                                                      |
-| reduced motion (live)        | exits complete at once; enters show the final state                                 |
-| duration 0                   | removed in the same commit cycle                                                    |
-| container unmounts           | everything removed; timers and attachments destroyed                                |
-| focus inside an exiting item | moved to the nearest present sibling item, else to the presence `focusFallback`     |
+| Event                        | Behaviour                                                                                                                                                                         |
+| ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| key added after mount        | enter animation (Entrance definition/preset as a value, or built-in fade)                                                                                                         |
+| key added at first render    | no animation unless `initial`; SSR/hydration output is the plain children                                                                                                         |
+| key removed                  | kept rendered in place; `inert` + `aria-hidden`; exit animation; then removed                                                                                                     |
+| key re-added while exiting   | exit interrupted; the running effect (exit's or enter's) is reversed with its own options from the current progress — continuous whatever `enter`/`exit` are, always ends visible |
+| several keys removed         | independent exits, each removed on its own completion                                                                                                                             |
+| exit fails / never completes | watchdog: duration + 1000 ms (max 10 s), then removed                                                                                                                             |
+| page hidden                  | running exits complete at once                                                                                                                                                    |
+| reduced motion (live)        | exits complete at once; enters show the final state                                                                                                                               |
+| duration 0                   | removed in the same commit cycle                                                                                                                                                  |
+| container unmounts           | everything removed; timers and attachments destroyed                                                                                                                              |
+| focus inside an exiting item | moved to the nearest present sibling item, else to the presence `focusFallback`                                                                                                   |
 
-Children must accept a ref that reaches their DOM element (host elements do; components forward
+On re-entry Presence restores the consumer's accessibility state: `aria-hidden` / `inert` from the latest
+React props of the child when given, otherwise the values the element had before the exit (e.g. set on the
+DOM); while exiting the content is always inert and hidden. Children must accept a ref that reaches their DOM element (host elements do; components forward
 `ref`). `onExitComplete(key)` fires once per removal. `usePresence()` gives custom children `[isPresent,
 safeToRemove]`; a child that takes over its exit must call `safeToRemove` (the watchdog still applies).
 Exits and enters overlap. Inside a `<LayoutGroup>` (L03), the removal that ends an exit is a normal
 update of the group, so remaining siblings FLIP into the freed space.
+
+**Render safety.** The keyed merge runs during render on a ref-held state machine; every transition is
+idempotent for the same input and a re-added key returns to `present`. Tested: StrictMode double renders, and
+renders discarded by a suspending sibling that added or removed a key (no ghost and no lost exit). Not
+proven for every concurrent schedule (e.g. a transition abandoned without a later render of the same
+`<Presence>`); a later render always converges to its children.
 
 ## 8 · Phase 013 preparation
 

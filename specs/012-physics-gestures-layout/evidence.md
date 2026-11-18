@@ -146,7 +146,30 @@ reduced-motion and Storybook captures (Chromium, real input).
   or the base was read before it settled. Re-run once for evidence; not fixed here (independent, like
   issue #9); proposed as a separate issue for the owner.
 
-## 12 · Known limitations
+## 12 · Owner review of PR #10 (2026-11-18) — Presence
+
+Regression tests written first (`packages/animations/test/presence-review.test.mjs`, committed failing in
+`a280e38`), run against the unchanged code, then against the fix:
+
+| Case                                                                  | Before                                                                   | After |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------------ | ----- |
+| Re-entry with only an `exit` preset ends visible (continuity checked) | **fail** — held at the exit pose (`opacity: 0; translate3d(0, 16px, 0)`) | pass  |
+| Re-entry with different `enter` and `exit` effects                    | pass (risk refuted; no error, continuous, visible)                       | pass  |
+| Re-entry with the same preset (control)                               | pass                                                                     | pass  |
+| Consumer `aria-hidden` React prop restored on re-entry                | **fail** — attribute removed                                             | pass  |
+| Consumer `inert` / `aria-hidden` set on the DOM restored on re-entry  | **fail** — `inert` false, attribute removed                              | pass  |
+| Re-entry without consumer state removes only what Presence added      | pass                                                                     | pass  |
+| Discarded render (suspending sibling) that added a key: no ghost exit | pass (risk not reproduced)                                               | pass  |
+| Discarded render that removed a key: not lost, same node              | pass (risk not reproduced)                                               | pass  |
+
+Fix (minimal, `presence.tsx`): re-entry reverses the running effect with the options it was attached with
+(exit's or enter's); accessibility state saved at exit start and restored on re-entry (latest React props
+win). The state machine was not restructured: the interrupted-render risk was not reproducible (bounded
+evidence and limitation in layout-engine.md §7). An initial run of the new file showed failures caused by
+one failing case leaving its view mounted; the tests now always unmount, and the before/after table above is
+from isolated runs. Package suite after the fix: 313/313.
+
+## 13 · Known limitations
 
 - Squash & stretch is axis-aligned (the composer has a fixed order; no arbitrary-direction scale).
 - Drag-to-reorder has no auto-scroll near the edges of a scroll container; touch reorder needs the handle.

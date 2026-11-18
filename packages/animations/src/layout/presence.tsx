@@ -153,11 +153,19 @@ function PresenceItem({ entry, appear, settings, onExited }: ItemProps) {
   const element = useRef<HTMLElement | null>(null);
   const [shouldAppear] = useState(appear);
   const custom = useRef(0);
-  const handle = useRef<{ handle: EffectHandle<unknown>; effect: unknown } | undefined>(undefined);
+  // The attached effect and the options it was attached with (re-entry reverses it with its own options).
+  const handle = useRef<
+    { handle: EffectHandle<unknown>; effect: unknown; options: object } | undefined
+  >(undefined);
+  // Accessibility state of the element before Presence marked it exiting (restored on re-entry).
+  const before = useRef<{ ariaHidden: string | null; inert: boolean } | undefined>(undefined);
   const finished = useRef(new Set<number>());
   const exited = useRef(onExited);
   exited.current = onExited;
   const isPresent = entry.status === "present";
+  // Latest props of the child (consumer accessibility state to restore on re-entry).
+  const latestProps = useRef<Record<string, unknown>>({});
+  latestProps.current = (entry.value.props ?? {}) as Record<string, unknown>;
   const generation = entry.generation;
 
   // Stable (refs only): completes the exit of one generation once.
@@ -176,6 +184,7 @@ function PresenceItem({ entry, appear, settings, onExited }: ItemProps) {
       const { effect, options } = resolvePreset(enter);
       handle.current = {
         effect,
+        options: (options ?? {}) as object,
         handle: attachEffect(node, effect, {
           ...(options as object),
           appear: shouldAppear,
@@ -185,6 +194,7 @@ function PresenceItem({ entry, appear, settings, onExited }: ItemProps) {
     } else {
       handle.current = {
         effect: crossFade,
+        options: {},
         handle: attachEffect(node, crossFade, {
           visible: true,
           appear: shouldAppear,
@@ -205,17 +215,28 @@ function PresenceItem({ entry, appear, settings, onExited }: ItemProps) {
     if (isPresent) {
       if (generation === 0) return;
       node.removeAttribute("data-neshel-presence");
-      node.removeAttribute("aria-hidden");
-      node.inert = false;
+      // Restore the consumer's accessibility state: the latest React props win (React does not re-apply an
+      // unchanged prop), otherwise the value the element had before the exit (e.g. set on the DOM).
+      const props = latestProps.current;
+      const saved = before.current;
+      before.current = undefined;
+      const ariaHidden =
+        props["aria-hidden"] !== undefined && props["aria-hidden"] !== null
+          ? String(props["aria-hidden"])
+          : (saved?.ariaHidden ?? null);
+      if (ariaHidden === null) node.removeAttribute("aria-hidden");
+      else node.setAttribute("aria-hidden", ariaHidden);
+      node.inert = props.inert !== undefined ? Boolean(props.inert) : (saved?.inert ?? false);
       const current = handle.current;
-      const { enter, duration } = settings.current;
+      const { duration } = settings.current;
       if (current && custom.current === 0) {
-        if (current.effect === crossFade)
+        if (current.effect === crossFade) {
           current.handle.update({ visible: true, duration: duration ?? 220 });
-        else if (enter) {
-          const { options } = resolvePreset(enter);
+        } else {
+          // Reverse the effect that is running (the exit's, or the enter's) with ITS OWN options, from the
+          // current progress: continuous whatever `enter`/`exit` are, and it always ends visible.
           current.handle.update({
-            ...(options as object),
+            ...current.options,
             playback: "in",
             replay: generation,
             continuous: true,
@@ -227,6 +248,7 @@ function PresenceItem({ entry, appear, settings, onExited }: ItemProps) {
     // Exiting.
     const fallback = settings.current.focusFallback?.current;
     if (node.contains(document.activeElement)) focusTarget(node, fallback)?.focus();
+    before.current ??= { ariaHidden: node.getAttribute("aria-hidden"), inert: node.inert === true };
     node.setAttribute("data-neshel-presence", "exiting");
     node.setAttribute("aria-hidden", "true");
     node.inert = true;
@@ -255,11 +277,14 @@ function PresenceItem({ entry, appear, settings, onExited }: ItemProps) {
             if (status === "completed") done();
           },
         };
-        if (current && current.effect === effect) current.handle.update(exitOptions);
-        else {
+        if (current && current.effect === effect) {
+          current.handle.update(exitOptions);
+          current.options = (options ?? {}) as object;
+        } else {
           current?.handle.destroy();
           handle.current = {
             effect,
+            options: (options ?? {}) as object,
             handle: attachEffect(node, effect, { ...exitOptions, appear: true }),
           };
         }
@@ -270,6 +295,7 @@ function PresenceItem({ entry, appear, settings, onExited }: ItemProps) {
         current?.handle.destroy();
         handle.current = {
           effect: crossFade,
+          options: {},
           handle: attachEffect(node, crossFade, {
             visible: false,
             duration: duration ?? 220,
