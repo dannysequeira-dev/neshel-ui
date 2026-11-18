@@ -196,3 +196,94 @@ test("a discarded render that removed a key does not lose it", async () => {
   );
   await view.unmount();
 });
+
+// Final QA of PR #10: React prop changes between exit and re-entry. The latest React intent must win for
+// attributes React controls (removed, null, undefined, false); the DOM fallback applies only to attributes
+// that were never React props.
+async function exitAndReenter(before, after) {
+  const view = await mount(h(List, { items: ["a", "b"], attrs: { b: before } }));
+  const b = view.container.querySelector("#item-b");
+  await view.render(h(List, { items: ["a"], attrs: { b: before } }));
+  assert.equal(b.inert, true, "inert while exiting");
+  assert.equal(b.getAttribute("aria-hidden"), "true", "hidden while exiting");
+  await view.render(h(List, { items: ["a", "b"], attrs: { b: after } }));
+  return { view, b };
+}
+
+test("React props removed with null / false on re-entry: no restriction remains", async () => {
+  const { b } = await exitAndReenter(
+    { "aria-hidden": "true", inert: true },
+    { "aria-hidden": null, inert: false },
+  );
+  assert.equal(b.getAttribute("aria-hidden"), null, "aria-hidden removed as React asked");
+  assert.equal(b.inert, false, "inert={false} wins");
+});
+
+test("React props explicitly undefined on re-entry: no restriction remains", async () => {
+  const { b } = await exitAndReenter(
+    { "aria-hidden": "true", inert: true },
+    { "aria-hidden": undefined, inert: undefined },
+  );
+  assert.equal(b.getAttribute("aria-hidden"), null);
+  assert.equal(b.inert, false);
+});
+
+test("React props omitted on re-entry (present on the exiting child): the latest intent wins", async () => {
+  const { b } = await exitAndReenter({ "aria-hidden": "true", inert: true }, {});
+  assert.equal(b.getAttribute("aria-hidden"), null);
+  assert.equal(b.inert, false);
+});
+
+test('aria-hidden={false} on re-entry renders aria-hidden="false" (React semantics)', async () => {
+  const { b } = await exitAndReenter({ "aria-hidden": "true" }, { "aria-hidden": false });
+  assert.equal(b.getAttribute("aria-hidden"), "false");
+});
+
+test("React props added on re-entry win over the pre-exit DOM state", async () => {
+  const { b } = await exitAndReenter({}, { "aria-hidden": "true", inert: true });
+  assert.equal(b.getAttribute("aria-hidden"), "true");
+  assert.equal(b.inert, true);
+});
+
+test("attributes set imperatively (never React props) keep the pre-exit DOM fallback", async () => {
+  const view = await mount(h(List, { items: ["a", "b"] }));
+  const b = view.container.querySelector("#item-b");
+  b.inert = true;
+  b.setAttribute("aria-hidden", "true");
+  await view.render(h(List, { items: ["a"] }));
+  await view.render(h(List, { items: ["a", "b"] }));
+  assert.equal(b.inert, true);
+  assert.equal(b.getAttribute("aria-hidden"), "true");
+});
+
+function Buttons({ items }) {
+  return h(
+    "ul",
+    null,
+    h(
+      layout.Presence,
+      { duration: 200 },
+      items.map((item) => h("li", { key: item, id: `btn-${item}` }, h("button", null, item))),
+    ),
+  );
+}
+
+test("no focus leak: rapid exit / re-entry never leaves focus inside exiting content", async () => {
+  const view = await mount(h(Buttons, { items: ["a", "b", "c"] }));
+  const b = view.container.querySelector("#btn-b");
+  for (let round = 0; round < 3; round++) {
+    b.querySelector("button").focus();
+    await view.render(h(Buttons, { items: ["a", "c"] }));
+    assert.equal(b.getAttribute("data-neshel-presence"), "exiting");
+    assert.equal(b.inert, true);
+    assert.ok(
+      !b.contains(document.activeElement),
+      `round ${round}: focus moved out of the exiting item`,
+    );
+    await act(async () => run(2));
+    await view.render(h(Buttons, { items: ["a", "b", "c"] }));
+    assert.equal(b.inert, false, `round ${round}: interactive again after re-entry`);
+  }
+  await act(async () => settle());
+  assert.equal(view.container.querySelector("#btn-b"), b, "same node throughout");
+});
