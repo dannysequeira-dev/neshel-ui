@@ -115,6 +115,12 @@ function createRevealOnEnter(
       let hold = o.initial === "hold" && !context.reduced;
       let playback: "in" | "out" = "in";
       let reports = 0;
+      /**
+       * The hold was released by reduced motion (content shown, nothing played). When motion is allowed
+       * again, content still outside the trigger area is held again off-screen (as on a first report);
+       * content that may be on screen is never hidden again and its entrance is not replayed (issue #11).
+       */
+      let released = false;
       const entranceOptions = () => ({
         ...(presetOptions as object),
         ...o.options,
@@ -138,6 +144,7 @@ function createRevealOnEnter(
           push();
           return;
         }
+        released = false;
         playback = direction;
         hold = direction === "out";
         replay++;
@@ -145,22 +152,32 @@ function createRevealOnEnter(
       };
       const rearm = () => {
         if (context.reduced) return;
+        released = false;
         playback = "in";
         hold = true;
         push();
+      };
+      /** Restore a hold released by reduced motion while the element is outside the trigger area. */
+      const restoreHold = () => {
+        if (!released || context.reduced) return;
+        const state = trigger.state;
+        if (state === "before" || (state === "after" && o.mode === "repeat")) rearm();
       };
 
       const trigger = createScrollTrigger(context.element, {
         trigger: o.trigger,
         mode: o.mode === "once" ? "once" : "repeat",
         onEnter: () => {
-          // Hydrated markup already in view on the first report stays as rendered (no re-hide).
-          if (!(reports === 1 && !hold && o.initial === "visible")) play("in");
+          // Hydrated markup already in view on the first report stays as rendered (no re-hide), and so
+          // does content shown by reduced motion (never replayed from the hidden start pose).
+          if (released) released = false;
+          else if (!(reports === 1 && !hold && o.initial === "visible")) play("in");
           o.onEnter?.();
         },
         onEnterBack: () => {
           // Coming back from above: once/reverse content is visible already; repeat replays.
-          if (o.mode === "repeat" || hold) play("in");
+          if (released) released = false;
+          else if (o.mode === "repeat" || hold) play("in");
           o.onEnterBack?.();
         },
         onLeave: () => {
@@ -176,12 +193,22 @@ function createRevealOnEnter(
           reports++;
           // First report outside the area (hydrated markup below the fold): hide it now, off-screen.
           if (state === "before" && !hold && playback === "in" && replay === 0) rearm();
+          else restoreHold();
         },
       });
+      // Restored in the next update phase: listeners are notified in subscription order and the entrance
+      // (attached during this setup) may not have left its reduced state yet.
+      let cancelRestore: (() => void) | undefined;
       const stopReduced = context.onReducedChange((reduced) => {
         if (reduced && hold) {
           hold = false;
+          released = true;
           push();
+        } else if (!reduced && released) {
+          cancelRestore ??= context.scheduler.schedule(() => {
+            cancelRestore = undefined;
+            restoreHold();
+          });
         }
       });
 
@@ -194,6 +221,7 @@ function createRevealOnEnter(
         resume: () => entrance.resume(),
         destroy() {
           stopReduced();
+          cancelRestore?.();
           trigger.destroy();
           entrance.destroy();
         },

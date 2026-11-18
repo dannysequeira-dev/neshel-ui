@@ -801,3 +801,98 @@ test("React: useSectionSpy reports the active id", async () => {
   assert.equal(spyActive, "b");
   await view.unmount();
 });
+
+// Issue #11: a live reduced-motion round trip released the held start pose and never restored it, so
+// content waiting below the trigger area was visible and its entrance later replayed from the hidden
+// start pose (a visible element flashed to opacity 0 and slid in again).
+test("ST01 live reduced motion round trip: below the area the hold returns; visible content is never hidden again", () => {
+  fresh();
+  const io = installFakeIO();
+  try {
+    // Below the area (reported "before"): reduced on shows it, reduced off holds it again off-screen.
+    const below = box(3000, 200);
+    const log = [];
+    const a = attachEffect(below, revealOnEnter, {
+      preset: fadeUp,
+      onEnter: () => log.push("enter"),
+    });
+    io.report(below, { inView: false, top: 1500, bottom: 1700 });
+    frames.flush();
+    assert.equal(below.style.opacity, "0", "held below the area");
+    media.set(true);
+    frames.settle();
+    assert.equal(below.style.opacity, "", "reduced on: shown");
+    media.set(false);
+    frames.flush();
+    assert.equal(below.style.opacity, "0", "reduced off: held again while still below the area");
+    io.report(below, { inView: true });
+    frames.flush(3);
+    const mid = Number(below.style.opacity);
+    assert.ok(
+      mid > 0 && mid < 1,
+      `entering plays the entrance from the held pose (opacity ${mid})`,
+    );
+    frames.settle();
+    assert.equal(below.style.opacity, "", "revealed and restored");
+    assert.equal(transform(below), "");
+    assert.deepEqual(log, ["enter"]);
+    a.destroy();
+
+    // Released while no report has arrived yet: the first "before" report holds it again.
+    const early = box(3200, 200);
+    const b = attachEffect(early, revealOnEnter, { preset: fadeUp });
+    frames.flush();
+    media.set(true);
+    frames.settle();
+    media.set(false);
+    frames.flush();
+    io.report(early, { inView: false, top: 1600, bottom: 1800 });
+    frames.flush();
+    assert.equal(early.style.opacity, "0", "first report below the area: held");
+    b.destroy();
+
+    // Inside the area when motion is allowed again (still not played: reduced on before the first
+    // enter): it stays visible and entering never replays it from the hidden pose.
+    const inside = box(3400, 200);
+    const c = attachEffect(inside, revealOnEnter, { preset: fadeUp });
+    io.report(inside, { inView: false, top: 1500, bottom: 1700 });
+    frames.flush();
+    media.set(true);
+    frames.settle();
+    io.report(inside, { inView: true });
+    frames.settle();
+    media.set(false);
+    frames.flush();
+    assert.equal(inside.style.opacity, "", "inside the area: not hidden again");
+    for (let index = 0; index < 4; index++) {
+      frames.flush();
+      assert.equal(inside.style.opacity, "", "no replay from the hidden pose");
+      assert.equal(transform(inside), "");
+    }
+    c.destroy();
+
+    // Visible because reduced motion released it, then it enters after motion is allowed again while
+    // the report still says "before" is impossible; but a release followed by an enter with motion
+    // allowed must not flash it either (it was shown the whole time).
+    const shown = box(3600, 200);
+    const d = attachEffect(shown, revealOnEnter, { preset: fadeUp, mode: "repeat" });
+    io.report(shown, { inView: true });
+    frames.settle();
+    io.report(shown, { inView: false, top: -400, bottom: -200 });
+    frames.flush();
+    assert.equal(shown.style.opacity, "0", "repeat: re-armed after leaving forward");
+    media.set(true);
+    frames.settle();
+    assert.equal(shown.style.opacity, "", "reduced on: shown");
+    media.set(false);
+    frames.flush();
+    assert.equal(shown.style.opacity, "0", "repeat, outside the area: held again");
+    io.report(shown, { inView: true });
+    frames.settle();
+    assert.equal(shown.style.opacity, "", "replayed and restored");
+    d.destroy();
+  } finally {
+    media.set(false);
+    io.restore();
+  }
+});

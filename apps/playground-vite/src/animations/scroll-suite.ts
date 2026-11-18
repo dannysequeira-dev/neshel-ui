@@ -44,6 +44,27 @@ async function place(element: Element, fraction: number) {
   await frames(2);
 }
 
+/** Layout top in document coordinates from the offset chain (transforms ignored), as the engine measures. */
+function layoutTopOf(element: HTMLElement) {
+  let total = 0;
+  for (let node: HTMLElement | null = element; node; ) {
+    total += node.offsetTop;
+    const parent = node.offsetParent as HTMLElement | null;
+    if (!parent || parent === document.body) break;
+    total += parent.clientTop;
+    node = parent;
+  }
+  return total;
+}
+
+/** SP01 offset (`cover` range, block axis) the engine must draw for `element` at the current scroll. */
+function depthParallaxModel(element: HTMLElement, depth: number, distance: number) {
+  const v = viewportHeight();
+  const start = layoutTopOf(element) - v;
+  const p = Math.min(1, Math.max(0, (window.scrollY - start) / (element.offsetHeight + v)));
+  return Math.round((0.5 - p) * distance * depth * 1000) / 1000;
+}
+
 /** Cover progress of `element` from its live box (what both drivers must produce). */
 function coverProgress(element: Element) {
   const rect = element.getBoundingClientRect();
@@ -490,10 +511,18 @@ export async function runScrollSuite(): Promise<Case[]> {
 
   await run("composition: Entrance + Hover + Press + parallax on one element", async () => {
     const combo = byId("combo-scroll");
+    // Issue #11: below the trigger area the entrance holds its start pose — also after a live reduced-
+    // motion round trip (the CDP run switches it on and off before this suite). Content shown without
+    // a hold used to replay its entrance from the hidden pose after "revealed" was already observed.
+    await until(
+      "held below the trigger area",
+      () => combo.style.opacity === "0",
+      () => combo.style.cssText,
+    );
     await place(combo, 0.6);
     await until(
       "revealed",
-      () => opacity(combo) === 1,
+      () => opacity(combo) === 1 && combo.style.opacity === "",
       () => combo.style.cssText,
     );
     window.dispatchEvent(
@@ -504,8 +533,30 @@ export async function runScrollSuite(): Promise<Case[]> {
       () => combo.style.getPropertyValue("--neshel-lift-progress") === "",
       () => combo.style.cssText,
     );
+    // Issue #11: the composed offset at rest must be the parallax of the LIVE layout (a duplicated motion
+    // host used to leave a stale parallax value inline). Diagnostics separate the classes of failure:
+    // `model` vs `f` (stale composition), `y` (scroll moved), `s`/`h`/`v` (geometry changed) and `m`
+    // (an invalidation pass ran).
+    const model = () => depthParallaxModel(combo, 0.6, 80);
+    const snap = () => ({
+      f: matrix(combo).f,
+      model: model(),
+      y: window.scrollY,
+      s: layoutTopOf(combo),
+      h: combo.offsetHeight,
+      v: viewportHeight(),
+      m: getScrollDebugInfo().measurements,
+      inline: combo.style.transform,
+      t: Math.round(performance.now()),
+    });
+    await until(
+      "parallax at rest matches the live layout",
+      () => Math.abs(matrix(combo).f - model()) < 0.75,
+      snap,
+    );
     await frames(3);
     const base = matrix(combo).f;
+    const atBase = snap();
     // lift (default 4 px) adds to the parallax layer; press and entrance stay composed.
     const r = combo.getBoundingClientRect();
     combo.dispatchEvent(
@@ -526,7 +577,7 @@ export async function runScrollSuite(): Promise<Case[]> {
     await until(
       "lift added to parallax",
       () => Math.abs(matrix(combo).f - (base - 4)) < 0.75,
-      () => [base, matrix(combo).f],
+      () => ({ base, atBase, now: snap() }),
     );
     window.dispatchEvent(
       new PointerEvent("pointermove", { clientX: -500, clientY: -500, pointerType: "mouse" }),
@@ -534,7 +585,7 @@ export async function runScrollSuite(): Promise<Case[]> {
     await until(
       "parallax kept after hover",
       () => Math.abs(matrix(combo).f - base) < 0.75,
-      () => [base, matrix(combo).f],
+      () => ({ base, atBase, now: snap() }),
     );
   });
 

@@ -82,8 +82,11 @@ export interface MotionHost {
   commit(property: string, value: string): void;
   /** Write pending changes now (normally done in the scheduler's write phase). */
   flush(): void;
+  /** Whether the ledger still holds captured properties (diagnostics). */
+  holding(): boolean;
 }
 
+/** One host per element for the element's lifetime (ADR 0022); never replaced while the element lives. */
 const hosts = new WeakMap<object, MotionHost>();
 
 export function getMotionHost(
@@ -213,12 +216,11 @@ function createHost(element: Styled, scheduler: FrameScheduler): MotionHost {
       state.desired = desired;
       state.written = style.getPropertyValue(property);
     }
-    if (
-      props.size + layers.size + opacities.size + records.size === 0 &&
-      hosts.get(element) === host
-    ) {
-      hosts.delete(element);
-    }
+    // An idle host is NOT removed from the registry (issue #11): attachments and controllers keep the
+    // host they were created with, so a replacement host would be a second ledger writing the same inline
+    // properties, each adopting the other's writes as the external baseline (stale values restored). An
+    // idle ledger holds nothing (every property was restored and dropped above); the WeakMap releases it
+    // together with the element.
   }
 
   const host: MotionHost = {
@@ -260,6 +262,7 @@ function createHost(element: Styled, scheduler: FrameScheduler): MotionHost {
       schedule();
     },
     flush,
+    holding: () => props.size > 0,
   };
   return host;
 }

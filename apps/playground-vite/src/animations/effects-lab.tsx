@@ -79,19 +79,25 @@ export function EffectsLab() {
   const [bell, setBell] = useState(0);
   const [count, setCount] = useState(1200);
   const [copied, setCopied] = useState(false);
+  // Test hook (issue #9): while held, the confirmation is not reset after 1.5 s, so a check never races
+  // the demo's timer on a slow runner.
+  const [copyHeld, setCopyHeld] = useState(false);
   const policy = reduced ? ("always" as const) : ("user" as const);
 
   useEffect(() => {
     labState().effects = {
       runEffectsSuite,
       replay: () => setReplay((value) => value + 1),
+      setCopied,
+      holdCopied: setCopyHeld,
+      setReduced,
     };
   }, []);
   useEffect(() => {
-    if (!copied) return;
+    if (!copied || copyHeld) return;
     const timer = setTimeout(() => setCopied(false), 1500);
     return () => clearTimeout(timer);
-  }, [copied]);
+  }, [copied, copyHeld]);
 
   return (
     <section className="lab-section" aria-labelledby="effects-title">

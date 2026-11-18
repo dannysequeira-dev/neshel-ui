@@ -24,6 +24,12 @@ export interface LabState {
   effects?: {
     runEffectsSuite(): Promise<Array<{ id: string; ok: boolean; error?: string }>>;
     replay(): void;
+    /** P10 demo state (`copied`). */
+    setCopied(value: boolean): void;
+    /** Hold the P10 confirmation: no automatic reset while held (issue #9). */
+    holdCopied(hold: boolean): void;
+    /** The gallery's "Force reduced motion" switch. */
+    setReduced(value: boolean): void;
   };
   /** Phase 011 scroll gallery (set after mount). */
   scroll?: {
