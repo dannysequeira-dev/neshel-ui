@@ -446,11 +446,12 @@ export function checkPackageContract(manifest, files, context = {}) {
 }
 
 /**
- * Contract of the private, experimental `@neshel-ui/animations` package (features 008–012, ADR 0018,
- * owner decision D3, ADR 0025, ADR 0026, ADR 0027): still private, exports exactly `.`, `./core`, the
- * family subpaths `./entrance`, `./hover`, `./press`, `./scroll`, `./gestures`, `./layout` and the
- * stylesheets `./styles.css`, `./hover.css`, `./press.css`, `./scroll.css`, `./gestures.css`, `./layout.css`,
- * React as the only peer, `@radix-ui/react-slot` as the only runtime dependency, a framework-free
+ * Contract of the private, experimental `@neshel-ui/animations` package (features 008–013, ADR 0018,
+ * owner decision D3, ADR 0025–0028): still private, exports exactly `.`, `./core`, the family subpaths
+ * `./entrance`, `./hover`, `./press`, `./scroll`, `./gestures`, `./layout`, `./cinematic`,
+ * `./page-transitions` (+ the router adapters `./page-transitions/next` and `./page-transitions/react-router`)
+ * and their stylesheets, React as the required peer and `next` / `react-router` as OPTIONAL peers imported
+ * only by their adapter, `@radix-ui/react-slot` as the only runtime dependency, a framework-free
  * `./core` (relative imports only, never into React bindings or families), a root entry that never
  * imports family code, and family subpaths that never import each other.
  */
@@ -468,19 +469,44 @@ export function checkAnimationsContract(manifest, files) {
     "./scroll",
     "./gestures",
     "./layout",
+    "./cinematic",
+    "./page-transitions",
+    "./page-transitions/next",
+    "./page-transitions/react-router",
     "./styles.css",
     "./hover.css",
     "./press.css",
     "./scroll.css",
     "./gestures.css",
     "./layout.css",
+    "./cinematic.css",
+    "./page-transitions.css",
+    "./page-transitions-mpa.css",
   ];
-  const FAMILY_DIRS = ["entrance", "hover", "press", "scroll", "gestures", "layout"];
+  const FAMILY_DIRS = [
+    "entrance",
+    "hover",
+    "press",
+    "scroll",
+    "gestures",
+    "layout",
+    "cinematic",
+    "page-transitions",
+  ];
+  // Optional peers, each importable only by its adapter module (ADR 0028 §1).
+  const ADAPTERS = {
+    "dist/page-transitions/next.js": new Set(["next/link.js", "next/navigation.js"]),
+    "dist/page-transitions/react-router.js": new Set(["react-router"]),
+  };
   if (!sameKeys(manifest.exports, expected)) {
     errors.push(`exports must be exactly ${expected.join(", ")}`);
   }
-  if (!sameKeys(manifest.peerDependencies, ["react"])) {
-    errors.push("peerDependencies must be exactly react");
+  if (!sameKeys(manifest.peerDependencies, ["react", "next", "react-router"])) {
+    errors.push("peerDependencies must be exactly react, next, react-router");
+  }
+  const optional = manifest.peerDependenciesMeta ?? {};
+  if (optional.next?.optional !== true || optional["react-router"]?.optional !== true) {
+    errors.push("next and react-router must be optional peers (peerDependenciesMeta)");
   }
   if (!sameKeys(manifest.dependencies, ["@radix-ui/react-slot"])) {
     errors.push(
@@ -511,7 +537,7 @@ export function checkAnimationsContract(manifest, files) {
         errors.push(
           `${path} imports "${specifier}"; the core entry may import only relative modules`,
         );
-      } else if (!allowed.has(specifier)) {
+      } else if (!allowed.has(specifier) && !ADAPTERS[path]?.has(specifier)) {
         errors.push(`${path} imports "${specifier}", outside the declared dependencies`);
       }
     }
