@@ -79,23 +79,27 @@ export function createPoseWriter(
   let claim: Claim | undefined;
   let layered = false;
   let faded = false;
+  /** Last filter value: re-applied when a suspended claim is granted again (ADR 0022 §2). */
+  let filter: string | undefined;
 
   function blur(value: number | undefined): void {
-    if (value === undefined || value <= 0.01) {
+    filter = value === undefined || value <= 0.01 ? undefined : `blur(${round(value)}px)`;
+    if (!filter) {
       if (claim) setExclusive(host, claim, "filter", undefined);
       return;
     }
     if (!claim) {
-      claim = {
+      const own: Claim = {
         id: options.id,
         priority: options.priority ?? 0,
         channels: ["filter"],
-        onGrant: () => {},
+        onGrant: () => setExclusive(host, own, "filter", filter),
         onRevoke: () => {},
       };
-      requestChannels(host, claim, options.conflicts);
+      claim = own;
+      requestChannels(host, own, options.conflicts);
     }
-    setExclusive(host, claim, "filter", `blur(${round(value)}px)`);
+    setExclusive(host, claim, "filter", filter);
   }
 
   return {
@@ -141,6 +145,7 @@ export function createPoseWriter(
       if (layered) host.setLayer(key, undefined);
       if (faded) host.setOpacity(key, undefined);
       layered = faded = false;
+      filter = undefined;
       if (claim) {
         releaseChannels(host, claim);
         claim = undefined;

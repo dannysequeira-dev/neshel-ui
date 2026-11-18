@@ -102,19 +102,27 @@ export function createNameWrites(id: string): NameWrites {
     write(element, name, className) {
       const host = getMotionHost(element as Styled);
       let claim = claims.get(element);
+      const apply = (target: Claim) => {
+        setExclusive(host, target, NAME_CHANNEL, name);
+        setExclusive(host, target, CLASS_CHANNEL, className);
+      };
       if (!claim) {
-        claim = {
+        const own: Claim = {
           id,
           priority: 0,
           channels: [NAME_CHANNEL, CLASS_CHANNEL],
-          onGrant: () => {},
+          // A claim that waited (another transition owned the element) applies its values when granted.
+          onGrant: () => {
+            apply(own);
+            host.flush();
+          },
           onRevoke: () => {},
         };
-        requestChannels(host, claim, "silent");
-        claims.set(element, claim);
+        claim = own;
+        requestChannels(host, own, "silent");
+        claims.set(element, own);
       }
-      setExclusive(host, claim, NAME_CHANNEL, name);
-      setExclusive(host, claim, CLASS_CHANNEL, className);
+      apply(claim);
       host.flush();
     },
     clear(element) {
