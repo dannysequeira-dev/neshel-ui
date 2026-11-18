@@ -22,14 +22,14 @@ Dependency-ordered. `[x]` done, `[ ]` open. Authorised by the owner brief of 202
 
 ## 013.2 — Cinematic effects
 
-- [ ] T020 C02 scene chapters (+ progress-source scrub, clock mode)
-- [ ] T021 C03 camera
-- [ ] T022 C04/C05 covers
-- [ ] T023 C06 title sequence
-- [ ] T024 C07 spotlight, C08 depth of field
-- [ ] T025 C09 storyboard
-- [ ] T026 C10 letterbox
-- [ ] T027 React components, `cinematic.css`, unit tests incl. restoration and StrictMode
+- [x] T020 C02 scene chapters (+ progress-source scrub, clock mode)
+- [x] T021 C03 camera
+- [x] T022 C04/C05 covers
+- [x] T023 C06 title sequence
+- [x] T024 C07 spotlight, C08 depth of field
+- [x] T025 C09 storyboard
+- [x] T026 C10 letterbox
+- [x] T027 React components, `cinematic.css`, unit tests incl. restoration and StrictMode
 
 ## 013.3 — Page transitions foundation
 

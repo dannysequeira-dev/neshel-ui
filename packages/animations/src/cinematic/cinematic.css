@@ -1,0 +1,186 @@
+/*
+ * @neshel-ui/animations/cinematic.css — package-rendered parts of the Cinematic & Scenes family (Phase 013):
+ * camera stage/canvas, cover panels (split, curtain, shutter), spotlight lens, title sequence, depth layers,
+ * storyboard frames and controls, letterbox bars. Opt-in. Nothing here declares a transition or an animation
+ * (rule R-1, ADR 0025): motion comes from the engine through Motion Hosts. Without JavaScript every layout is
+ * usable: the camera stage scrolls, covers and bars are `hidden`, storyboard frames form a list.
+ */
+
+/* C02 — chapters are plain blocks; `data-active` is a styling hook. */
+.neshel-scene-chapters {
+  position: relative;
+}
+
+/* C03 — camera: a scrollable region without JS; clipped and transformed with the camera. */
+.neshel-camera-stage {
+  position: relative;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.neshel-camera-stage[data-neshel-camera] {
+  overflow: clip;
+}
+.neshel-camera-canvas {
+  inline-size: max-content;
+  transform-origin: 0 0;
+}
+
+/* C04 / C05 — covers. */
+.neshel-cover {
+  position: relative;
+  overflow: clip;
+}
+.neshel-cover-layers {
+  position: absolute;
+  inset: 0;
+  z-index: var(--neshel-cover-z, 2);
+  pointer-events: none;
+}
+.neshel-cover-layers[hidden] {
+  display: none;
+}
+.neshel-cover-panel {
+  position: absolute;
+  background: var(--neshel-cover-color, #111);
+}
+.neshel-cover-layers[data-pattern="split-x"] > .neshel-cover-panel,
+.neshel-cover-layers[data-pattern="curtain"] > .neshel-cover-panel {
+  inset-block: 0;
+  inline-size: 50.5%;
+}
+.neshel-cover-layers[data-pattern="split-x"] > .neshel-cover-panel[data-index="0"],
+.neshel-cover-layers[data-pattern="curtain"] > .neshel-cover-panel[data-index="0"] {
+  inset-inline-start: 0;
+  transform-origin: 0 50%;
+}
+.neshel-cover-layers[data-pattern="split-x"] > .neshel-cover-panel[data-index="1"],
+.neshel-cover-layers[data-pattern="curtain"] > .neshel-cover-panel[data-index="1"] {
+  inset-inline-end: 0;
+  transform-origin: 100% 50%;
+}
+.neshel-cover-layers[data-pattern="split-y"] > .neshel-cover-panel {
+  inset-inline: 0;
+  block-size: 50.5%;
+}
+.neshel-cover-layers[data-pattern="split-y"] > .neshel-cover-panel[data-index="0"] {
+  inset-block-start: 0;
+}
+.neshel-cover-layers[data-pattern="split-y"] > .neshel-cover-panel[data-index="1"] {
+  inset-block-end: 0;
+}
+.neshel-cover-layers[data-pattern="shutter"] {
+  display: flex;
+  flex-direction: column;
+}
+.neshel-cover-layers[data-pattern="shutter"][hidden] {
+  display: none;
+}
+.neshel-cover-layers[data-pattern="shutter"] > .neshel-cover-panel {
+  position: relative;
+  flex: 1 1 0;
+  margin-block-end: -1px;
+  transform-origin: 50% 0;
+}
+
+/* C06 — title sequence: background behind the lines. */
+.neshel-title-sequence {
+  position: relative;
+  isolation: isolate;
+}
+.neshel-title-background {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* C07 — spotlight lens: 4000 px square with a 200 px transparent hole, moved by transform only. */
+.neshel-spotlight-stage {
+  position: relative;
+  overflow: clip;
+}
+.neshel-spotlight {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  inline-size: 4000px;
+  block-size: 4000px;
+  pointer-events: none;
+  transform-origin: 50% 50%;
+  background: radial-gradient(
+    circle at 50% 50%,
+    transparent 0,
+    transparent 200px,
+    var(--neshel-spotlight-dim, rgb(0 0 0 / 0.62))
+      calc(200px + var(--neshel-spotlight-feather, 48px))
+  );
+  z-index: var(--neshel-spotlight-z, 3);
+}
+.neshel-spotlight[hidden] {
+  display: none;
+}
+
+/* C08 — depth layers keep their own layout; the engine only blurs and scales them. */
+.neshel-depth {
+  position: relative;
+}
+
+/* C09 — storyboard: a list without JS; stacked frames with the engine. */
+.neshel-storyboard-controls {
+  display: flex;
+  gap: 0.5rem;
+}
+.neshel-storyboard-controls[hidden] {
+  display: none;
+}
+.neshel-storyboard[data-neshel-storyboard] > .neshel-storyboard-frames {
+  display: grid;
+}
+.neshel-storyboard[data-neshel-storyboard] > .neshel-storyboard-frames > .neshel-storyboard-frame {
+  grid-area: 1 / 1;
+}
+.neshel-storyboard[data-neshel-storyboard]
+  > .neshel-storyboard-frames
+  > .neshel-storyboard-frame:not([data-current]):not([data-leaving]) {
+  visibility: hidden;
+}
+.neshel-visually-hidden {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* C10 — letterbox bars sized from the frame width and the ratio (no measurement). */
+.neshel-letterbox {
+  position: relative;
+  container-type: inline-size;
+}
+.neshel-letterbox-bars {
+  position: absolute;
+  inset: 0;
+  z-index: var(--neshel-letterbox-z, 4);
+  pointer-events: none;
+}
+.neshel-letterbox-bars[hidden] {
+  display: none;
+}
+.neshel-letterbox-bar {
+  position: absolute;
+  inset-inline: 0;
+  block-size: var(
+    --neshel-letterbox-size,
+    max(0px, calc((100% - 100cqi / var(--neshel-letterbox-ratio, 2.39)) / 2))
+  );
+  background: var(--neshel-letterbox-color, #000);
+}
+.neshel-letterbox-bar[data-edge="top"] {
+  inset-block-start: 0;
+  transform-origin: 50% 0;
+}
+.neshel-letterbox-bar[data-edge="bottom"] {
+  inset-block-end: 0;
+  transform-origin: 50% 100%;
+}

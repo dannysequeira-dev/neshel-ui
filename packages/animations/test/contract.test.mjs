@@ -54,6 +54,7 @@ test("exports only implemented entry points, types first (FR-002)", () => {
     "./scroll.css",
     "./gestures.css",
     "./layout.css",
+    "./cinematic.css",
   ]);
   for (const subpath of [
     ".",
@@ -170,7 +171,7 @@ test("no CSS transition or animation targets a consumer element (010 FR-042, ADR
   // a pseudo-element layer, a package class, or a child of a package component.
   // Phase 012: the opt-in gestures.css and layout.css follow the same rule; a package class may carry
   // attribute qualifiers (`.neshel-tab-indicator[data-ready]`).
-  const css = ["styles.css", "gestures.css", "layout.css"]
+  const css = ["styles.css", "gestures.css", "layout.css", "cinematic.css"]
     .map((file) => readFileSync(join(root, "dist", file), "utf8"))
     .join(String.fromCharCode(10))
     .replace(/\/\*[\s\S]*?\*\//g, "")
@@ -201,7 +202,15 @@ test("module boundaries: core imports only core; root/react/families never impor
     const where = relative(join(root, "dist"), file).split("\\").join("/");
     for (const target of relativeTargets(file)) {
       if (where.startsWith("core/")) assert.ok(target.startsWith("core/"), `${where} -> ${target}`);
-      for (const family of ["entrance", "hover", "press", "scroll", "gestures", "layout"]) {
+      for (const family of [
+        "entrance",
+        "hover",
+        "press",
+        "scroll",
+        "gestures",
+        "layout",
+        "cinematic",
+      ]) {
         if (!where.startsWith(`${family}/`))
           assert.ok(!target.startsWith(`${family}/`), `${where} -> ${target}`);
       }

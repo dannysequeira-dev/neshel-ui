@@ -21,7 +21,12 @@
     "pinch-zoom",
     "flip",
     "layout-animation",
-    "presence"
+    "presence",
+    "cinematic",
+    "timeline",
+    "scenes",
+    "camera",
+    "storyboard"
   ],
   "homepage": "https://github.com/dannysequeira-dev/neshel-ui/tree/main/packages/animations#readme",
   "bugs": {
@@ -90,10 +95,11 @@
     "./press.css": "./dist/press.css",
     "./scroll.css": "./dist/scroll.css",
     "./gestures.css": "./dist/gestures.css",
-    "./layout.css": "./dist/layout.css"
+    "./layout.css": "./dist/layout.css",
+    "./cinematic.css": "./dist/cinematic.css"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.build.json && node ../../scripts/copy-css.mjs src/hover/hover.css dist/hover.css src/press/press.css dist/press.css src/scroll/scroll.css dist/scroll.css src/gestures/gestures.css dist/gestures.css src/layout/layout.css dist/layout.css && node ../../scripts/copy-css.mjs --concat dist/styles.css src/styles.css src/hover/hover.css src/press/press.css src/scroll/scroll.css",
+    "build": "tsc -p tsconfig.build.json && node ../../scripts/copy-css.mjs src/hover/hover.css dist/hover.css src/press/press.css dist/press.css src/scroll/scroll.css dist/scroll.css src/gestures/gestures.css dist/gestures.css src/layout/layout.css dist/layout.css src/cinematic/cinematic.css dist/cinematic.css && node ../../scripts/copy-css.mjs --concat dist/styles.css src/styles.css src/hover/hover.css src/press/press.css src/scroll/scroll.css",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "devDependencies": {
