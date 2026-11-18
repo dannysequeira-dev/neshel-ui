@@ -1,7 +1,8 @@
 # Contract — Accessibility matrix (Phase 013)
 
 **Status: implemented and verified locally; results in [../evidence.md](../evidence.md) §7 (screen-reader passes pending).**
-nExtends the 008–012 accessibility contracts; nothing earlier is relaxed.
+
+Extends the 008–012 accessibility contracts; nothing earlier is relaxed.
 
 | Id        | No JS / SSR                                  | Reduced motion (live)                                | Keyboard / focus                                                      | Screen reader                                                                   | 2.2.2 / 2.3.3                                                                 |
 | --------- | -------------------------------------------- | ---------------------------------------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
