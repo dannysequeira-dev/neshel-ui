@@ -12,6 +12,16 @@
       "@neshel-ui/animations/scroll": ["../../packages/animations/src/scroll/index.ts"],
       "@neshel-ui/animations/gestures": ["../../packages/animations/src/gestures/index.ts"],
       "@neshel-ui/animations/layout": ["../../packages/animations/src/layout/index.ts"],
+      "@neshel-ui/animations/cinematic": ["../../packages/animations/src/cinematic/index.ts"],
+      "@neshel-ui/animations/page-transitions": [
+        "../../packages/animations/src/page-transitions/index.ts"
+      ],
+      "@neshel-ui/animations/page-transitions/next": [
+        "../../packages/animations/src/page-transitions/next.tsx"
+      ],
+      "@neshel-ui/animations/page-transitions/react-router": [
+        "../../packages/animations/src/page-transitions/react-router.tsx"
+      ],
       "@neshel-ui/animations/core": ["../../packages/animations/src/core/index.ts"]
     }
   },
