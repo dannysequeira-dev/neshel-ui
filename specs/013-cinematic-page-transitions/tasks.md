@@ -6,10 +6,10 @@ Dependency-ordered. `[x]` done, `[ ]` open. Authorised by the owner brief of 202
 ## 013.0 — Specification & research
 
 - [x] T001 Branch `feature/013-cinematic-page-transitions` from `origin/main` (`b7bfe14`); roadmap and
-      CLAUDE.md updated (012 and #9/#11 merged; 013 current)
+  CLAUDE.md updated (012 and #9/#11 merged; 013 current)
 - [x] T002 Brief, spec (FR-001–FR-046), research R1–R10 (VT, MPA and Navigation API probes in three engines)
 - [x] T003 Contracts: timeline-engine, cinematic-api, page-transitions, router-adapters, accessibility-013,
-      support-matrix-013, composition-matrix-013, entry-points-013
+  support-matrix-013, composition-matrix-013, entry-points-013
 - [x] T004 ADR 0028 (proposed); plan, tasks, analysis
 
 ## 013.1 — Timeline foundation

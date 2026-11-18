@@ -309,10 +309,11 @@ async function main() {
         "<h2>Title</h2><p>Line</p>",
         '<div class="neshel-page"><p id="view">View <!-- -->a</p></div>',
         'class="neshel-route-progress" hidden=""',
-      ].every(
-        (fragment) =>
-          html.includes(fragment) || (console.info(`missing in SSR markup: ${fragment}`), false),
-      ),
+      ].every((fragment) => {
+        if (html.includes(fragment)) return true;
+        console.info(`missing in SSR markup: ${fragment}`);
+        return false;
+      }),
       "SSR (013): cinematic and page-transition components render visible, plain markup",
     );
     const indexPath = join(app, "dist", "index.html");
