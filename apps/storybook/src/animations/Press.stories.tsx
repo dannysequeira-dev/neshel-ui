@@ -3,6 +3,7 @@ import {
   burst,
   CheckboxDraw,
   ContentSwap,
+  LongPress,
   NumberTick,
   nudge,
   Press,
@@ -159,4 +160,34 @@ export const ReducedMotion: Story = {
     },
   },
   render: (args) => <Microinteractions {...args} />,
+};
+
+function LongPressDemo({ reducedMotion }: Args) {
+  const [held, setHeld] = useState(0);
+  return (
+    <div style={row}>
+      <LongPress
+        asChild
+        duration={700}
+        reducedMotion={reducedMotion}
+        onLongPress={() => setHeld((n) => n + 1)}
+      >
+        <Button>Hold to archive</Button>
+      </LongPress>
+      <span role="status">Archived {held}×</span>
+    </div>
+  );
+}
+
+export const LongPressStory: Story = {
+  name: "P11 Long press progress (Phase 012)",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "Hold the pointer or Space/Enter for the duration; early release reverses the progress, moving away cancels, and the click that follows a completed long press is swallowed (never two actions). Keep a non-timed path for destructive actions.",
+      },
+    },
+  },
+  render: (args) => <LongPressDemo {...args} />,
 };

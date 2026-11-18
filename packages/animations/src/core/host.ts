@@ -157,7 +157,10 @@ function createHost(element: Styled, scheduler: FrameScheduler): MotionHost {
       if (composed !== "none") tokens.push("transform");
       if (opacities.size > 0) tokens.push("opacity");
       for (const channel of owners.keys()) {
-        if (values.has(channel) && !channel.startsWith("--")) tokens.push(channel);
+        // Custom properties and `touch-action` (Phase 012 gesture areas) are not animated.
+        if (values.has(channel) && !channel.startsWith("--") && channel !== "touch-action") {
+          tokens.push(channel);
+        }
       }
       return tokens.length === before ? null : [...new Set(tokens)].join(", ");
     }

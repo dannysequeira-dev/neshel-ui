@@ -21,7 +21,7 @@ const {
 } = hover;
 const { attachEffect, definePreset } = core;
 
-test("hoverEffects lists H01–H10 in catalogue order; every definition is frozen", () => {
+test("hoverEffects lists H01–H11 in catalogue order; every definition is frozen", () => {
   assert.deepEqual(
     hover.hoverEffects.map((definition) => definition.id),
     [
@@ -35,6 +35,7 @@ test("hoverEffects lists H01–H10 in catalogue order; every definition is froze
       "hover/media-zoom",
       "hover/parallax",
       "hover/shine",
+      "hover/cursor-follower",
     ],
   );
   for (const definition of hover.hoverEffects) assert.ok(Object.isFrozen(definition));

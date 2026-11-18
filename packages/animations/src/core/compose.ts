@@ -8,7 +8,8 @@
  * both kinds coexist without conflicts.
  *
  * Rules (deterministic and independent of layer order):
- * - translations add (px); rotations add per axis (deg); scales multiply;
+ * - translations add (px); rotations add per axis (deg); scales multiply (`scale` with `scaleX`/`scaleY`,
+ *   Phase 012, additive; written as `scale(x, y)` only when non-uniform);
  * - `perspective` takes the smallest positive value (the strongest perspective wins);
  * - skews add per axis (deg; Phase 011, additive);
  * - output order: perspective, translate3d, rotateX, rotateY, rotateZ, skew, scale (CSS order);
@@ -33,6 +34,10 @@ export interface TransformLayer {
   skewY?: number;
   /** Uniform scale factor. */
   scale?: number;
+  /** Horizontal scale factor (Phase 012, multiplies with `scale`). */
+  scaleX?: number;
+  /** Vertical scale factor (Phase 012, multiplies with `scale`). */
+  scaleY?: number;
 }
 
 const EPSILON = 1e-4;
@@ -49,7 +54,8 @@ export function composeTransform(layers: Iterable<TransformLayer>): string {
   let rz = 0;
   let kx = 0;
   let ky = 0;
-  let scale = 1;
+  let sx = 1;
+  let sy = 1;
   for (const layer of layers) {
     if (layer.perspective !== undefined && layer.perspective > 0) {
       perspective = Math.min(perspective, layer.perspective);
@@ -62,11 +68,11 @@ export function composeTransform(layers: Iterable<TransformLayer>): string {
     rz += layer.rotateZ ?? 0;
     kx += layer.skewX ?? 0;
     ky += layer.skewY ?? 0;
-    scale *= layer.scale ?? 1;
+    const s = layer.scale ?? 1;
+    sx *= s * (layer.scaleX ?? 1);
+    sy *= s * (layer.scaleY ?? 1);
   }
-  if (![tx, ty, tz, rx, ry, rz, kx, ky, scale - 1].some(moved)) return "none";
   const parts: string[] = [];
-  if (Number.isFinite(perspective)) parts.push(`perspective(${round(perspective)}px)`);
   if (moved(tx) || moved(ty) || moved(tz)) {
     parts.push(`translate3d(${round(tx)}px, ${round(ty)}px, ${round(tz)}px)`);
   }
@@ -74,6 +80,10 @@ export function composeTransform(layers: Iterable<TransformLayer>): string {
   if (moved(ry)) parts.push(`rotateY(${round(ry)}deg)`);
   if (moved(rz)) parts.push(`rotateZ(${round(rz)}deg)`);
   if (moved(kx) || moved(ky)) parts.push(`skew(${round(kx)}deg, ${round(ky)}deg)`);
-  if (moved(scale - 1)) parts.push(`scale(${round(scale)})`);
+  if (moved(sx - sy)) parts.push(`scale(${round(sx)}, ${round(sy)})`);
+  else if (moved(sx - 1)) parts.push(`scale(${round(sx)})`);
+  if (!parts.length) return "none";
+  // Perspective applies first, and only when something moves.
+  if (perspective < Number.POSITIVE_INFINITY) parts.unshift(`perspective(${round(perspective)}px)`);
   return parts.join(" ");
 }

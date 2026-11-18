@@ -4,12 +4,13 @@
 
 Modular, accessible motion primitives and effects for Neshel-UI.
 
-**Status: experimental, private, unpublished (features 008.0–011).** This package is not on npm and its
+**Status: experimental, private, unpublished (features 008.0–012).** This package is not on npm and its
 API may change before the owner approves a first publication. Specification, catalogue and
 decisions: [`specs/008-animations/`](../../specs/008-animations/spec.md),
 [`specs/009-motion-engine/`](../../specs/009-motion-engine/spec.md),
 [`specs/010-animation-effects/`](../../specs/010-animation-effects/spec.md),
-[`specs/011-scroll-parallax/`](../../specs/011-scroll-parallax/spec.md), ADRs 0018–0026.
+[`specs/011-scroll-parallax/`](../../specs/011-scroll-parallax/spec.md),
+[`specs/012-physics-gestures-layout/`](../../specs/012-physics-gestures-layout/spec.md), ADRs 0018–0027.
 
 ## What exists today
 
@@ -24,12 +25,14 @@ decisions: [`specs/008-animations/`](../../specs/008-animations/spec.md),
 - `@neshel-ui/animations/hover` — `Tilt3D`, `useTilt3D`, `createTilt3D`, `tilt3D` (inward by default,
   `reverse` inverts; keyboard focus pose; live reduced motion; `asChild`; SSR-safe).
   Phase 010 adds `lift`, `glow`, `magnetic`, `spotlight`, `borderSweep`, `underline`, `mediaZoom`,
-  `parallax`, `shine` and the `<Hover>` primitive (catalogue H01–H10).
+  `parallax`, `shine` and the `<Hover>` primitive (catalogue H01–H10); Phase 012 adds the decorative
+  `cursorFollower` / `<CursorFollower>` (H11).
 - `@neshel-ui/animations/entrance` — `fadeIn`, `fadeSlide` (+ `fadeUp/Down/Left/Right`), `scaleIn`,
   `zoomIn`, `blurIn`, `clipReveal` (+ `clipCircle`), `maskWipe`, `rotateIn`, `flipIn` (+ `flipX/Y`),
   `stagger`, `springIn`; `<Reveal>` and `<Stagger>` (E01–E11). No stylesheet needed.
 - `@neshel-ui/animations/press` — `pressScale`, `ripple`, `tapBounce`, `burst`, `shake`, `nudge`;
-  `<Press>`; decorative `ToggleMorph`, `CheckboxDraw`, `NumberTick`, `ContentSwap` (P01–P10).
+  `<Press>`; decorative `ToggleMorph`, `CheckboxDraw`, `NumberTick`, `ContentSwap` (P01–P10); Phase 012
+  adds `longPress` / `<LongPress>` (P11: hold to activate, keyboard hold, never two actions).
 - `@neshel-ui/animations/scroll` — the scroll engine (`createScrollProgress` with CSS named ranges,
   viewport or inner containers, spring `smooth`; `observeInView`, `createScrollTrigger`,
   `createSectionSpy`, `inViewPresets`, `refreshScroll`, `getScrollDebugInfo`) and the Scroll Triggers
@@ -40,11 +43,27 @@ decisions: [`specs/008-animations/`](../../specs/008-animations/spec.md),
   React: `<ScrollScene>`, `<ScrollLayer>`, `<ScrollEffect>`, `<RevealOnScroll>`, `<StaggerOnScroll>`,
   `<ScrollProgressBar>`, `<StickyStack>`, `<ParallaxImage>`, `useScrollProgress`, `useScrollScene`,
   `useInView`, `useScrollTrigger`, `useSectionSpy`.
+- `@neshel-ui/animations/gestures` (Phase 012) — a pointer session per element (capture, several
+  pointers, scroll compensation, competing gestures, composed `touch-action`), `createGesture`,
+  physics primitives (`createVelocityTracker`, `stepDecay`, `projectDecay`, `rubberband`,
+  `nearestSnap`), `createGestureControls`, and G01–G11: `drag`, `dragSnap`, `swipeDismiss`,
+  `pullToRefresh`, `springFollow`, `elasticEdge`, `fling`, `pinchZoom`, `rotateGesture`, `reorder`,
+  `squashStretch`; React: `<Gesture>`, `<SwipeDismiss>`, `<PullToRefresh>`, `<ElasticScroll>`,
+  `<PinchZoom>`, `<Reorder>`/`<ReorderItem>`/`<ReorderHandle>`, `useReorderItem`,
+  `useGestureControls`, `useSpringFollow`.
+- `@neshel-ui/animations/layout` (Phase 012) — FLIP on layout boxes (`createLayoutGroup`, `measureBox`),
+  reflow observers, height drivers, the presence state machine (`createPresence`) and L01–L10:
+  `flipMove`, `autoHeight`, `listItem`, `sharedLayout`, `gridReflow`, `collapse`, `tabIndicator`,
+  `crossFade`, `masonry`; React: `<LayoutGroup>`, `<LayoutItem>`, `useLayoutItem`, `useLayoutGroup`,
+  `<AutoHeight>`, `<AnimatedList>`, `<Reflow>`, `<Collapse>`, `<TabIndicator>`, `<Presence>`,
+  `usePresence`, `useIsPresent`, `<CrossFade>`, `<Masonry>`.
 - `definePreset` / `attachPreset` (`./core`) — presets are values: a definition plus frozen options.
 - Stylesheets (opt-in): `@neshel-ui/animations/hover.css` (Tilt3D depth + decor layers),
   `@neshel-ui/animations/press.css` (ripple, burst, toggle, checkbox, swap),
   `@neshel-ui/animations/scroll.css` (sticky scene stage, progress bar, horizontal section, sticky
-  stack, parallax frame) or `styles.css` (all three).
+  stack, parallax frame) or `styles.css` (all three); `@neshel-ui/animations/gestures.css` (built-in
+  controls, pull indicator, reorder states) and `@neshel-ui/animations/layout.css` (collapse panel,
+  tab indicator, cross-fade stack, masonry grid) are separate opt-in files.
 
 ```tsx
 import { Tilt3D } from "@neshel-ui/animations/hover";
@@ -95,6 +114,29 @@ scroll event). Without JavaScript the markup is fully visible (the horizontal se
 horizontal scroller); with reduced motion decorative scroll motion stops and the horizontal section is
 laid out vertically.
 
+```tsx
+import { Reorder, ReorderHandle, ReorderItem } from "@neshel-ui/animations/gestures";
+import "@neshel-ui/animations/gestures.css";
+
+// The order is yours: the package asks, React re-renders, items settle (FLIP).
+<Reorder onReorder={(from, to) => setItems((all) => move(all, from, to))}>
+  {items.map((item, index) => (
+    <ReorderItem key={item.id} index={index} label={item.name}>
+      <ReorderHandle /> {item.name}
+    </ReorderItem>
+  ))}
+</Reorder>;
+```
+
+Gestures that do something always have a keyboard path and a single-pointer, non-drag alternative
+(buttons through `useGestureControls()`, move up/down, dismiss and refresh buttons, zoom buttons);
+`touch-action` is set only on the area of a gesture, and pinch-zoom keeps one-finger page scrolling at
+scale 1. Layout animations read layout boxes once before a change and once in the next read phase
+(never per frame); `<Presence>` keeps removed children mounted — inert and hidden from assistive
+technology — only until their exit ends (a watchdog removes them if an animation never completes).
+`<AutoHeight>` expects a wrapper that sizes to its content (not stretched by a grid or flex parent);
+give each `<PullToRefresh>` / `<ElasticScroll>` region a unique accessible name.
+
 Entrances play on client mounts and on `replayKey` changes; server-rendered content stays visible and
 is not hidden again while hydrating (`appear="client"`). Hover effects follow mouse/pen and keyboard
 `:focus-visible` (touch is opt-in). `ToggleMorph` and `CheckboxDraw` are decorative visuals for inside
@@ -109,7 +151,8 @@ ADR 0022). `transform` layers compose, `opacity` multiplies, other channels have
 original inline styles are restored when effects end. The package stylesheets never declare a
 transition or animation on your element (ADR 0025): CSS only renders package-owned layers, so effects
 compose with each other and with your own styles (`transition`, `translate`, …). Several effects —
-Entrance, Hover, Press, Tilt3D and scroll effects — can share one element through nested `asChild`.
+Entrance, Hover, Press, Tilt3D, scroll, gesture and layout effects — can share one element through
+nested `asChild`.
 
 ## License
 

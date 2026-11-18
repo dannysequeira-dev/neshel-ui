@@ -1,6 +1,7 @@
 import "@neshel-ui/animations/hover.css";
 import {
   borderSweep,
+  CursorFollower,
   glow,
   Hover,
   lift,
@@ -132,4 +133,31 @@ export const ReducedMotion: Story = {
     },
   },
   render: Gallery.render,
+};
+
+export const CursorFollowerStory: Story = {
+  name: "H11 Cursor follower (Phase 012)",
+  parameters: {
+    docs: {
+      description: {
+        story:
+          "A decorative, `aria-hidden`, `pointer-events: none` dot follows a mouse or pen inside the area; it never captures events (the button stays clickable) and is off for reduced motion.",
+      },
+    },
+  },
+  render: () => (
+    <CursorFollower
+      size={22}
+      style={{
+        display: "grid",
+        placeItems: "center",
+        height: 180,
+        borderRadius: 12,
+        background: "var(--neshel-muted, #f1f5f9)",
+        color: "var(--neshel-primary, #4f46e5)",
+      }}
+    >
+      <Button>Still clickable</Button>
+    </CursorFollower>
+  ),
 };

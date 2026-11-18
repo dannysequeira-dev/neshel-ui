@@ -8,7 +8,11 @@
 import { type CSSProperties, type HTMLAttributes, type ReactNode, type Ref, useRef } from "react";
 import type { ReducedMotion } from "../core/reduced-motion.js";
 import type { SpringOptions } from "../core/spring.js";
-import { type EffectPrimitiveProps, useEffectPrimitive } from "../react/effect-primitive.js";
+import {
+  type EffectHostProps,
+  type EffectPrimitiveProps,
+  useEffectPrimitive,
+} from "../react/effect-primitive.js";
 import { joinClass, useHostRef } from "../react/motion-host.js";
 import { useMotionPresets } from "../react/use-motion-presets.js";
 import {
@@ -20,12 +24,53 @@ import {
   numberTick,
   toggleMorph,
 } from "./controls.js";
+import { type LongPressOptions, longPress } from "./long-press.js";
 
 export type PressProps<Options, Resolved> = EffectPrimitiveProps<Options, Resolved>;
 
 /** `<Press>`: press & microinteraction effects on a `<div>` or, with `asChild`, your own element. */
 export function Press<Options, Resolved>(props: PressProps<Options, Resolved>) {
   return useEffectPrimitive("Press", ["press"], "neshel-press", props);
+}
+
+/* P11 ---------------------------------------------------------------------------------------------- */
+export interface LongPressProps
+  extends Omit<EffectHostProps, "children">,
+    Omit<LongPressOptions, "pointerTypes"> {
+  pointerTypes?: LongPressOptions["pointerTypes"];
+  children?: ReactNode;
+}
+
+/**
+ * P11 `<LongPress>`: hold to activate, with a progress layer (`press.css`). Usually `asChild` on your own
+ * `<button>`; describe the hold in its label or nearby text, and keep a non-timed path for destructive actions.
+ */
+export function LongPress(props: LongPressProps) {
+  const {
+    duration,
+    moveTolerance,
+    keyboard,
+    pointerTypes,
+    onLongPress,
+    onCancel,
+    reducedMotion,
+    disabled,
+    ...rest
+  } = props;
+  return useEffectPrimitive("LongPress", ["press"], "neshel-press", {
+    ...rest,
+    preset: longPress,
+    options: {
+      duration,
+      moveTolerance,
+      keyboard,
+      pointerTypes,
+      onLongPress,
+      onCancel,
+      reducedMotion,
+      disabled,
+    },
+  });
 }
 
 /* P04 ---------------------------------------------------------------------------------------------- */

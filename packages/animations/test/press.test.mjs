@@ -32,16 +32,18 @@ const {
 } = press;
 const { attachEffect } = core;
 
-test("press subpath runtime exports and catalogue order (P01–P10)", () => {
+test("press subpath runtime exports and catalogue order (P01–P11)", () => {
   assert.deepEqual(Object.keys(press).sort(), [
     "CheckboxDraw",
     "ContentSwap",
+    "LongPress",
     "NumberTick",
     "Press",
     "ToggleMorph",
     "burst",
     "checkboxDraw",
     "contentSwap",
+    "longPress",
     "nudge",
     "numberTick",
     "pressEffects",
@@ -64,6 +66,7 @@ test("press subpath runtime exports and catalogue order (P01–P10)", () => {
       "press/nudge",
       "press/number-tick",
       "press/content-swap",
+      "press/long-press",
     ],
   );
 });

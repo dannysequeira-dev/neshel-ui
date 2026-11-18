@@ -1,5 +1,6 @@
 // pnpm check:animations:consumer [--no-build]
-// Phase 009 (spec FR-062), Phase 011 (FR-044: scroll family) and Phase 010 (FR-072: Entrance, Hover and Press families, their stylesheets
+// Phase 009 (spec FR-062), Phase 011 (FR-044: scroll family), Phase 012 (FR-053: gestures/layout) and Phase 010
+// (FR-072: Entrance, Hover and Press families, their stylesheets
 // in a plain-CSS app, SSR markup visible without JavaScript, hydration without replay, real input):
 // an external application OUTSIDE the workspace consumes the REAL packed
 // @neshel-ui/animations tarball (no workspace links to its source): Vite client build, Node SSR
@@ -24,9 +25,13 @@ const APP = `import { Tilt3D, Hover, lift, glow as glowRing } from "@neshel-ui/a
 import { Reveal, fadeUp } from "@neshel-ui/animations/entrance";
 import { Press, pressScale, ripple, ToggleMorph, NumberTick } from "@neshel-ui/animations/press";
 import { ScrollScene, ScrollLayer, RevealOnScroll, HorizontalScroll, ScrollProgressBar } from "@neshel-ui/animations/scroll";
+import { Gesture, drag, Reorder, ReorderItem, ReorderHandle, SwipeDismiss, PinchZoom } from "@neshel-ui/animations/gestures";
+import { Collapse, Presence, AnimatedList, TabIndicator, AutoHeight, Masonry } from "@neshel-ui/animations/layout";
+import { CursorFollower } from "@neshel-ui/animations/hover";
+import { LongPress } from "@neshel-ui/animations/press";
 import { useMotionEffect } from "@neshel-ui/animations";
 import { defineEffect } from "@neshel-ui/animations/core";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 export const glow = defineEffect({
   id: "ambient/glow",
@@ -44,6 +49,35 @@ function Glow() {
   const ref = useRef(null);
   useMotionEffect(ref, glow, { amount: 6 }, { conflicts: "silent" });
   return <p ref={ref} id="glow">Glow</p>;
+}
+
+function Phase012() {
+  const [open, setOpen] = useState(false);
+  const [shown, setShown] = useState(true);
+  const [items, setItems] = useState(["Apple", "Banana", "Cherry"]);
+  const [held, setHeld] = useState(0);
+  return (
+    <section id="p012">
+      <div id="arena" style={{ position: "relative", width: 320, height: 160, border: "1px solid #ccc" }}>
+        <Gesture preset={drag} options={{ constraints: "parent", inertia: false }} id="drag" style={{ width: 48, height: 48, background: "#4f46e5" }} />
+      </div>
+      <Reorder id="fruits" onReorder={(from, to) => setItems((all) => { const next = [...all]; const [m] = next.splice(from, 1); next.splice(to, 0, m); return next; })}>
+        {items.map((item, index) => <ReorderItem key={item} index={index} label={item}><ReorderHandle />{item}</ReorderItem>)}
+      </Reorder>
+      <button type="button" id="toggle-panel" aria-expanded={open} aria-controls="panel" onClick={() => setOpen(!open)}>Details</button>
+      <Collapse open={open} id="panel" driver="js"><p>Panel body</p></Collapse>
+      <button type="button" id="toggle-card" onClick={() => setShown(!shown)}>Card</button>
+      <Presence>{shown ? <div key="card" id="card-012">Present</div> : null}</Presence>
+      <AnimatedList id="list"><li key="a">A</li><li key="b">B</li></AnimatedList>
+      <TabIndicator asChild active={0}><div role="tablist" aria-label="Tabs"><button type="button" role="tab" aria-selected="true">One</button></div></TabIndicator>
+      <AutoHeight id="auto"><p>Auto</p></AutoHeight>
+      <Masonry id="masonry">{[40, 80, 60].map((h, i) => <div key={i} style={{ height: h }}>{i}</div>)}</Masonry>
+      <SwipeDismiss id="note" onDismiss={() => {}}>Note</SwipeDismiss>
+      <PinchZoom id="zoom"><img alt="Pixel" width="80" height="60" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=" /></PinchZoom>
+      <CursorFollower id="follower-area">Area</CursorFollower>
+      <LongPress asChild onLongPress={() => setHeld((n) => n + 1)}><button type="button" id="hold">Hold {held}</button></LongPress>
+    </section>
+  );
 }
 
 export function App() {
@@ -73,6 +107,7 @@ export function App() {
       <div style={{ height: "150vh" }} />
       <RevealOnScroll id="late-reveal" preset={fadeUp}><p>Revealed on scroll</p></RevealOnScroll>
       <div style={{ height: "50vh" }} />
+      <Phase012 />
     </main>
   );
 }
@@ -80,6 +115,8 @@ export function App() {
 
 const CLIENT = `import { hydrateRoot } from "react-dom/client";
 import "@neshel-ui/animations/styles.css";
+import "@neshel-ui/animations/gestures.css";
+import "@neshel-ui/animations/layout.css";
 import { App } from "./App.jsx";
 window.__recoverable = [];
 hydrateRoot(document.getElementById("root"), <App />, {
@@ -87,6 +124,29 @@ hydrateRoot(document.getElementById("root"), <App />, {
 });
 window.__hydrated = true;
 `;
+
+/** In-page probe of the Phase 012 components after the real drag (conditions with a ceiling). */
+const PHASE_012_PROBE = `(async () => {
+  const raf = () => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r)));
+  const until = async (fn) => { const t = performance.now(); while (performance.now() - t < 3000 && !fn()) await raf(); return fn(); };
+  await until(() => document.getElementById("drag").style.transform.includes("translate3d(80px, 32px"));
+  const dragged = document.getElementById("drag").style.transform;
+  document.getElementById("toggle-panel").click();
+  const panel = document.getElementById("panel");
+  const opened = await until(() => panel.getBoundingClientRect().height > 10 && panel.getAnimations().length === 0);
+  const card = document.getElementById("card-012");
+  document.getElementById("toggle-card").click();
+  await raf();
+  const exiting = card.isConnected && card.getAttribute("aria-hidden") === "true";
+  const removed = await until(() => !document.getElementById("card-012"));
+  const handle = document.querySelector('[aria-label="Reorder Apple"]');
+  handle.focus();
+  handle.dispatchEvent(new KeyboardEvent("keydown", { key: " ", bubbles: true }));
+  handle.dispatchEvent(new KeyboardEvent("keydown", { key: "ArrowDown", bubbles: true }));
+  await until(() => document.querySelector("#fruits li:nth-child(2)")?.getAttribute("data-neshel-reorder-label") === "Apple");
+  const order = [...document.querySelectorAll("#fruits li")].map((li) => li.getAttribute("data-neshel-reorder-label")).join();
+  return { dragged, opened, exiting, removed, order, focus: document.activeElement === handle };
+})()`;
 
 function link(from, to) {
   mkdirSync(dirname(to), { recursive: true });
@@ -190,6 +250,16 @@ async function main() {
         /data-neshel-hscroll="scroll"/.test(html) &&
         /<div id="late-reveal" class="neshel-reveal-on-scroll"><p>/.test(html),
       "SSR (011): scene, native horizontal scroller and visible reveals in server markup",
+    );
+    check(
+      /<div id="panel" class="neshel-collapse" data-state="closed" hidden="">/.test(html) &&
+        /data-neshel-reorder-item=""/.test(html) &&
+        /aria-label="Reorder Apple"/.test(html) &&
+        /class="neshel-gesture-button neshel-swipe-dismiss" aria-label="Dismiss"/.test(html) &&
+        /role="group" aria-label="Zoomable media" tabindex="0"/.test(html) &&
+        /<div id="card-012">Present<\/div>/.test(html) &&
+        /class="neshel-animated-list"><li>A<\/li>/.test(html),
+      "SSR (012): gestures/layout components render plain, accessible markup (no measurements)",
     );
     const indexPath = join(app, "dist", "index.html");
     writeFileSync(indexPath, readFileSync(indexPath, "utf8").replace("<!--ssr-->", html));
@@ -346,6 +416,51 @@ async function main() {
             scrollState.lateStyle === "" &&
             Number(scrollState.bar) > 0,
           `reveal plays on scroll and restores the element; progress bar follows (${JSON.stringify(scrollState)})`,
+        );
+        // Phase 012: gestures and layout from the packed tarball after hydration (real mouse input).
+        const dragBox = await page.evaluate(
+          `(() => { const el = document.getElementById("drag"); el.scrollIntoView({ block: "center" }); const b = el.getBoundingClientRect(); return { x: b.left + 24, y: b.top + 24 }; })()`,
+        );
+        await page.send("Input.dispatchMouseEvent", {
+          type: "mouseMoved",
+          x: dragBox.x,
+          y: dragBox.y,
+        });
+        await page.send("Input.dispatchMouseEvent", {
+          type: "mousePressed",
+          x: dragBox.x,
+          y: dragBox.y,
+          button: "left",
+          clickCount: 1,
+        });
+        for (let i = 1; i <= 8; i++) {
+          await page.send("Input.dispatchMouseEvent", {
+            type: "mouseMoved",
+            x: dragBox.x + i * 10,
+            y: dragBox.y + i * 4,
+            button: "left",
+            buttons: 1,
+          });
+        }
+        await page.send("Input.dispatchMouseEvent", {
+          type: "mouseReleased",
+          x: dragBox.x + 80,
+          y: dragBox.y + 32,
+          button: "left",
+          clickCount: 1,
+        });
+        const p012 = await page.evaluate(PHASE_012_PROBE);
+        check(
+          /translate3d\(80px, 32px/.test(p012.dragged),
+          `G01 drag from the packed tarball follows a real mouse (${p012.dragged})`,
+        );
+        check(
+          p012.opened && p012.exiting && p012.removed,
+          `L06 collapse opens; L08 presence exits before unmount (${JSON.stringify(p012)})`,
+        );
+        check(
+          p012.order === "Banana,Apple,Cherry" && p012.focus,
+          `G10 keyboard reorder changes the consumer's state and keeps focus (${p012.order})`,
         );
         check(
           page.errors.length === 0,

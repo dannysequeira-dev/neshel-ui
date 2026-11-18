@@ -178,6 +178,10 @@ Status of each decision (implemented / locally verified / CI-verified) is tracke
   GSAP never as a dependency ([ADR 0020](decisions/0020-motion-engine-dependency-policy.md)).
 - `animations` imports no other Neshel package; `layout`, `typography` and `components` do not import
   `animations`. Status and evidence: `specs/008-animations/evidence.md`.
+- Phase 012 (ADR 0027) adds the `./gestures` and `./layout` family subpaths. Code shared by several
+  families lives in internal `src/core` modules that `./core` does not export (pointer session,
+  offset-chain boxes, FLIP animator), so families still never import each other; gestures and layout
+  use the one scheduler, spring integrator and motion host.
 
 ## Phase 009 decisions (2026-11-16, accepted)
 

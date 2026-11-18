@@ -1,6 +1,7 @@
 // pnpm check:animations:bundles [--no-build] [--report <file>]
-// Phase 009 (spec FR-063, SC-003; owner-approved budgets) and Phase 010 (FR-073; family entries,
-// representative imports and stylesheets, budgets proposed from measurements): bundle sizes of @neshel-ui/animations
+// Phase 009 (spec FR-063, SC-003; owner-approved budgets), Phase 010 (FR-073; family entries,
+// representative imports and stylesheets, budgets proposed from measurements), Phase 011 and Phase 012
+// (FR-054; gestures/layout entries): bundle sizes of @neshel-ui/animations
 // measured from its REAL packed tarball (pnpm pack → extracted outside the workspace), built with
 // Vite (Rolldown) minified, React external, gzip-compressed. Offline: Vite comes from the
 // playground's installed dependencies; @radix-ui/react-slot is linked from the workspace install.
@@ -153,6 +154,65 @@ export const ENTRIES = {
     source: `export * from "${A}/scroll";`,
     markers: { tilt: false, entranceCode: false, hoverCode: false, pressCode: false },
   },
+  // Phase 012 (FR-054): gestures, layout, H11, P11.
+  "gestures: createGesture (engine, no React)": {
+    source: `export { createGesture } from "${A}/gestures";`,
+    markers: { react: false, slot: false, waapi: false, layoutCode: false, hoverCode: false },
+  },
+  "gestures: physics primitives (decay, rubber band, snap, velocity)": {
+    source: `export { stepDecay, projectDecay, rubberband, nearestSnap, createVelocityTracker } from "${A}/gestures";`,
+    markers: { react: false, scheduler: false, arbiter: false },
+  },
+  "gestures: drag definition (no React)": {
+    source: `export { drag } from "${A}/gestures";`,
+    markers: { react: false, slot: false, waapi: false, layoutCode: false },
+  },
+  "gestures: pinchZoom + rotateGesture (no React)": {
+    source: `export { pinchZoom, rotateGesture } from "${A}/gestures";`,
+    markers: { react: false, slot: false, layoutCode: false },
+  },
+  "gestures: Reorder components": {
+    source: `export { Reorder, ReorderItem, ReorderHandle } from "${A}/gestures";`,
+    markers: { react: true, layoutCode: false, hoverCode: false, pressCode: false },
+  },
+  "gestures: Gesture + drag": {
+    source: `export { Gesture, drag } from "${A}/gestures";`,
+    markers: { react: true, slot: true, layoutCode: false },
+  },
+  "gestures: entire entry": {
+    source: `export * from "${A}/gestures";`,
+    markers: {
+      tilt: false,
+      layoutCode: false,
+      hoverCode: false,
+      pressCode: false,
+      entranceCode: false,
+    },
+  },
+  "layout: createLayoutGroup + flipMove (no React)": {
+    source: `export { createLayoutGroup, flipMove } from "${A}/layout";`,
+    markers: { react: false, slot: false, gesturesCode: false },
+  },
+  "layout: Presence": {
+    source: `export { Presence } from "${A}/layout";`,
+    markers: { react: true, gesturesCode: false, entranceCode: false },
+  },
+  "layout: LayoutGroup + LayoutItem": {
+    source: `export { LayoutGroup, LayoutItem } from "${A}/layout";`,
+    markers: { react: true, gesturesCode: false },
+  },
+  "layout: entire entry": {
+    source: `export * from "${A}/layout";`,
+    markers: { gesturesCode: false, hoverCode: false, pressCode: false, entranceCode: false },
+  },
+  "hover: cursorFollower definition (no React)": {
+    source: `export { cursorFollower } from "${A}/hover";`,
+    markers: { react: false, slot: false, tilt: false },
+  },
+  "press: longPress definition (no React)": {
+    source: `export { longPress } from "${A}/press";`,
+    markers: { react: false, slot: false, hoverCode: false },
+  },
 };
 
 /** Stylesheets measured from the packed tarball (gzip of the file as shipped). */
@@ -161,6 +221,8 @@ export const STYLESHEETS = [
   "dist/press.css",
   "dist/scroll.css",
   "dist/styles.css",
+  "dist/gestures.css",
+  "dist/layout.css",
 ];
 
 const MARKERS = {
@@ -176,6 +238,8 @@ const MARKERS = {
   hoverCode: (code) => /hover\/lift|hover\/glow|hover\/spotlight/.test(code),
   pressCode: (code) => /press\/scale|press\/ripple|press\/number-tick/.test(code),
   entranceCode: (code) => /entrance\/fade-in|entrance\/fade-slide|entrance\/clip-reveal/.test(code),
+  gesturesCode: (code) => /physics\/drag|physics\/pinch-zoom|physics\/reorder/.test(code),
+  layoutCode: (code) => /layout\/flip|layout\/collapse|layout\/masonry/.test(code),
 };
 
 function link(from, to) {

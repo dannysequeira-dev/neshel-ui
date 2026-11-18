@@ -3,7 +3,8 @@
 // Phase 009 (spec FR-061): the animations lab in Chromium, Firefox and WebKit through Playwright
 // (the ADR 0016 harness; WebKit is Playwright's build, not Safari). Real mouse input for Tilt3D,
 // keyboard focus, live reduced-motion emulation, the in-page engine suite shared with the CDP
-// check, the ScrollScene progress and its geometry invalidation. Results are decided by observable
+// check, the ScrollScene progress and its geometry invalidation, the Phase 011/012 gallery suites and an
+// emulated touch device (phone viewport, hasTouch, real taps) for Phase 012. Results are decided by observable
 // conditions with a ceiling (scripts/lib/animations-lab.mjs), never by fixed sleeps.
 // `--cpu-throttle <rate>` slows Chromium's main thread (CDP) to exercise slow-runner timing.
 // Requires `pnpm build:playground`.
@@ -254,6 +255,157 @@ async function runEngine(playwright, engine, url, throttle) {
         );
       },
     );
+
+    // Phase 012 gestures/layout gallery (same in-page suite as the Chrome check; synthetic multi-pointer
+    // input with pointer ids, so pinch/rotate run in every engine).
+    // The real mouse away from the gallery: WebKit dispatches pointer events when content scrolls under a
+    // stationary cursor, which would mix with the suite's synthetic input.
+    await page.mouse.move(1, 1);
+    const gestureSuite = await page.evaluate(async () => {
+      document.getElementById("gestures-title").scrollIntoView();
+      return window.__neshelLab.gestures.runGesturesSuite();
+    });
+    for (const item of gestureSuite) cases.push(item);
+    await run(
+      "phase 012: reduced motion switched on live — FLIP applies at once, no inertia, follower hidden",
+      async () => {
+        await page.emulateMedia({ reducedMotion: "reduce" });
+        const facts = await page.evaluate(() => window.__neshelLab.gestures.reducedFacts());
+        await page.emulateMedia({ reducedMotion: "no-preference" });
+        check(
+          facts.reduced === true &&
+            facts.flipTransform === "" &&
+            facts.follower === "" &&
+            facts.dragIdle,
+          JSON.stringify(facts),
+        );
+      },
+    );
+    notes.l06Driver = await page.evaluate(() => window.__neshelLab.notes.l06Driver);
+    await run(
+      "H11 real mouse: the follower appears under the real pointer and hides on leave",
+      async () => {
+        const area = page.locator("#h11-area");
+        await area.scrollIntoViewIfNeeded();
+        const box = await area.boundingBox();
+        await page.mouse.move(box.x + 30, box.y + 30);
+        await page.mouse.move(box.x + box.width / 2, box.y + 40, { steps: 6 });
+        await until(
+          "visible",
+          `Number(getComputedStyle(document.querySelector("#h11-area .neshel-cursor-follower")).opacity) > 0.9`,
+          `document.querySelector("#h11-area .neshel-cursor-follower").style.cssText`,
+        );
+        await page.mouse.move(1, 1, { steps: 4 });
+        await until(
+          "hidden",
+          `document.querySelector("#h11-area .neshel-cursor-follower").style.opacity === ""`,
+          `document.querySelector("#h11-area .neshel-cursor-follower").style.cssText`,
+        );
+      },
+    );
+
+    // Emulated touch device: a phone viewport with touch input (`hasTouch`; `isMobile` where supported).
+    // Real taps go through the engine's touch pipeline; the in-page suite runs again in the narrow layout.
+    const phone = await browser.newContext({
+      viewport: { width: 390, height: 844 },
+      deviceScaleFactor: 2,
+      hasTouch: true,
+      isMobile: engine !== "firefox",
+      reducedMotion: "no-preference",
+      colorScheme: "light",
+    });
+    try {
+      const mobile = await phone.newPage();
+      const mobileErrors = [];
+      mobile.on("pageerror", (error) => mobileErrors.push(error.message));
+      await mobile.goto(url);
+      await mobile.waitForFunction(() => window.__neshelLab?.gestures !== undefined);
+      notes.touchDevice = await mobile.evaluate(() => ({
+        touchEvents: "TouchEvent" in window,
+        coarse: matchMedia("(pointer: coarse)").matches,
+        maxTouchPoints: navigator.maxTouchPoints,
+      }));
+      const tapCenter = async (selector) => {
+        const target = mobile.locator(selector).first();
+        await target.scrollIntoViewIfNeeded();
+        const box = await target.boundingBox();
+        await mobile.touchscreen.tap(box.x + box.width / 2, box.y + box.height / 2);
+      };
+      await run(
+        "touch device: a real tap on the dismiss button removes a note (G03 alternative)",
+        async () => {
+          const count = () =>
+            mobile.evaluate(() => document.querySelectorAll("#g03-list .g-note").length);
+          const before = await count();
+          await tapCenter("#g03-list .g-note .neshel-swipe-dismiss");
+          await mobile.waitForFunction(
+            (n) => document.querySelectorAll("#g03-list .g-note").length === n - 1,
+            before,
+          );
+          await tapCenter("#g03-reset");
+          await mobile.waitForFunction(
+            () => document.querySelectorAll("#g03-list .g-note").length === 3,
+          );
+        },
+      );
+      await run(
+        "touch device: real taps on the zoom buttons zoom and reset (G08 alternative)",
+        async () => {
+          const scale = () =>
+            mobile.evaluate(() => {
+              const m = new DOMMatrix(
+                getComputedStyle(document.querySelector("#g08-zoom img")).transform,
+              );
+              return Math.hypot(m.a, m.b);
+            });
+          await tapCenter('#g08-zoom button:has-text("Zoom in")');
+          await mobile.waitForFunction(() => {
+            const m = new DOMMatrix(
+              getComputedStyle(document.querySelector("#g08-zoom img")).transform,
+            );
+            return Math.abs(Math.hypot(m.a, m.b) - 1.5) < 0.01;
+          });
+          await tapCenter('#g08-zoom button:has-text("Reset zoom")');
+          await mobile.waitForFunction(() => {
+            const m = new DOMMatrix(
+              getComputedStyle(document.querySelector("#g08-zoom img")).transform,
+            );
+            return Math.abs(Math.hypot(m.a, m.b) - 1) < 0.01;
+          });
+          check((await scale()) < 1.01, "reset");
+        },
+      );
+      await run(
+        "touch device: a real tap toggles presence (L08) and the accordion (L06)",
+        async () => {
+          await tapCenter("#l08-toggle");
+          await mobile.waitForFunction(() => !document.getElementById("l08-card"));
+          await tapCenter("#l08-toggle");
+          await mobile.waitForFunction(() => !!document.getElementById("l08-card"));
+          await tapCenter("#l06-trigger-1");
+          await mobile.waitForFunction(
+            () =>
+              document.getElementById("l06-panel-1").getAttribute("data-state") === "open" &&
+              document.getElementById("l06-panel-1").getBoundingClientRect().height > 10,
+          );
+          await tapCenter("#l06-trigger-1");
+          await mobile.waitForFunction(
+            () => document.getElementById("l06-panel-1").getBoundingClientRect().height < 0.5,
+          );
+        },
+      );
+      const phoneSuite = await mobile.evaluate(async () => {
+        document.getElementById("gestures-title").scrollIntoView();
+        return window.__neshelLab.gestures.runGesturesSuite();
+      });
+      for (const item of phoneSuite)
+        cases.push({ ...item, id: `touch device (390×844): ${item.id}` });
+      await run("touch device: no page errors", async () =>
+        check(mobileErrors.length === 0, mobileErrors.join(" | ")),
+      );
+    } finally {
+      await phone.close();
+    }
 
     await run("no page errors during the run", async () =>
       check(errors.length === 0, errors.join(" | ")),

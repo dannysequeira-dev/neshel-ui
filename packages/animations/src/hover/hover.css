@@ -129,3 +129,24 @@
     }
   }
 }
+
+/* H11 cursor follower (Phase 012): a package-rendered, decorative, non-interactive layer. */
+:where([data-neshel-fx~="cursor-follower"]) {
+  position: relative;
+}
+.neshel-cursor-follower {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  z-index: 1;
+  inline-size: var(--neshel-follower-size, 28px);
+  block-size: var(--neshel-follower-size, 28px);
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0;
+  pointer-events: none;
+}
+.neshel-cursor-follower[data-blend] {
+  background: #fff;
+  mix-blend-mode: difference;
+}

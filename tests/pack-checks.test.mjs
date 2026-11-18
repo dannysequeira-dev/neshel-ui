@@ -411,16 +411,20 @@ const animationsManifest = {
     "./hover": { types: "./dist/hover/index.d.ts", import: "./dist/hover/index.js" },
     "./press": { types: "./dist/press/index.d.ts", import: "./dist/press/index.js" },
     "./scroll": { types: "./dist/scroll/index.d.ts", import: "./dist/scroll/index.js" },
+    "./gestures": { types: "./dist/gestures/index.d.ts", import: "./dist/gestures/index.js" },
+    "./layout": { types: "./dist/layout/index.d.ts", import: "./dist/layout/index.js" },
     "./styles.css": "./dist/styles.css",
     "./hover.css": "./dist/hover.css",
     "./press.css": "./dist/press.css",
     "./scroll.css": "./dist/scroll.css",
+    "./gestures.css": "./dist/gestures.css",
+    "./layout.css": "./dist/layout.css",
   },
   peerDependencies: { react: "^19.0.0" },
   dependencies: { "@radix-ui/react-slot": "^1.5.0" },
 };
 
-test("animations package contract: private, exact exports, peers and framework-free core (features 008–011)", () => {
+test("animations package contract: private, exact exports, peers and framework-free core (features 008–012)", () => {
   const good = files({
     "dist/index.js": 'export { Tilt3D } from "./tilt/tilt-3d.js";',
     "dist/tilt/tilt-3d.js":
@@ -430,10 +434,23 @@ test("animations package contract: private, exact exports, peers and framework-f
     "dist/hover/tilt/controller.js": 'import { attachEffect } from "../../core/effect.js";',
     "dist/press/effects.js": 'import { attachEffect } from "../core/effect.js";',
     "dist/scroll/parallax.js": 'import { attachEffect } from "../core/effect.js";',
+    "dist/gestures/drag.js":
+      'import { subscribePointerSession } from "../core/pointer-session.js";',
+    "dist/layout/effects.js": 'import { createFlipAnimator } from "../core/flip.js";',
     "dist/entrance/reveal.js":
       '"use client";\nimport { useMotionPresets } from "../react/use-motion-presets.js";',
   });
   assert.deepEqual(checkPackageContract(animationsManifest, good), []);
+});
+
+test("negative: the gestures family never imports the layout family (012 D-2)", () => {
+  const errors = checkPackageContract(
+    animationsManifest,
+    files({ "dist/gestures/reorder.js": 'import { flipMove } from "../layout/effects.js";' }),
+  );
+  assert.ok(
+    errors.some((error) => /family code is reachable only through its own subpath/.test(error)),
+  );
 });
 
 test("negative: animations families never import each other (010 FR-050)", () => {

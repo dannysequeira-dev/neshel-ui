@@ -1,17 +1,20 @@
 /**
- * `@neshel-ui/animations/press` — Press & Microinteractions family (Phase 010, catalogue P01–P10).
+ * `@neshel-ui/animations/press` — Press & Microinteractions family (Phase 010, catalogue P01–P10; P11 from Phase 012).
  * Experimental, private. Ripple, burst, toggle, checkbox and content swap render with the opt-in
  * `@neshel-ui/animations/press.css`.
  */
 import type { AnyEffectDefinition } from "../core/effect.js";
 import { checkboxDraw, contentSwap, numberTick, toggleMorph } from "./controls.js";
 import { burst, nudge, pressScale, ripple, shake, tapBounce } from "./effects.js";
+import { longPress } from "./long-press.js";
 
 export {
   CheckboxDraw,
   type CheckboxDrawProps,
   ContentSwap,
   type ContentSwapProps,
+  LongPress,
+  type LongPressProps,
   NumberTick,
   type NumberTickProps,
   Press,
@@ -45,8 +48,9 @@ export {
   type TriggerOptions,
   tapBounce,
 } from "./effects.js";
+export { type LongPressOptions, longPress } from "./long-press.js";
 
-/** Every press definition in catalogue order (P01–P10), for explicit registries. */
+/** Every press definition in catalogue order (P01–P11), for explicit registries. */
 export const pressEffects: readonly AnyEffectDefinition[] = /* @__PURE__ */ Object.freeze([
   pressScale,
   ripple,
@@ -58,4 +62,5 @@ export const pressEffects: readonly AnyEffectDefinition[] = /* @__PURE__ */ Obje
   nudge,
   numberTick,
   contentSwap,
+  longPress,
 ]);

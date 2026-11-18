@@ -6,7 +6,10 @@ engine since 009), the 30 Phase 010 entries **E01–E11, H01, H02, H04–H10, P0
 [specs/010 contracts/effects-010.md](../../010-animation-effects/contracts/effects-010.md)) and the 21
 Phase 011 entries **ST01–ST10, SP01–SP11** (marked **✓ 011**; API, drivers and reduced behaviour in
 [specs/011 contracts/api-011.md](../../011-scroll-parallax/contracts/api-011.md) — the scroll driver
-rule of ADR 0026 replaces the SDA column for anything that moves the consumer's element). Phase 010
+rule of ADR 0026 replaces the SDA column for anything that moves the consumer's element) and the 23
+Phase 012 entries **G01–G11, L01–L10, H11, P11** (marked **✓ 012**; API, drivers and reduced behaviour
+in [specs/012 contracts/api-012.md](../../012-physics-gestures-layout/contracts/api-012.md) — FLIP
+entries animate the consumer's element through the motion host instead of WAAPI, ADR 0027). Phase 010
 changed the driver of most CSS rows: the consumer's element is animated only by the motion host (rule
 R-1, ADR 0025) and CSS renders package-owned layers; the Driver column below keeps the original plan
 and the 010 contract records each change. `D05 CornerRecede` exists as a
@@ -68,7 +71,7 @@ only · `instant` jump to end state · `static` decorative motion removed, conte
 | H08 | Media zoom inside frame             | CSS    | W         | static         | ✓ 010 |
 | H09 | Pointer parallax layers             | JS     | G         | off            | ✓ 010 |
 | H10 | Shine / glare sweep                 | CSS    | L²        | static         | ✓ 010 |
-| H11 | Cursor follower (decorative)        | JS     | W         | off            | 012   |
+| H11 | Cursor follower (decorative)        | JS     | W         | off            | ✓ 012 |
 
 ² A decorative pseudo-element where possible; an extra element only when the host forbids it.
 
@@ -86,7 +89,7 @@ only · `instant` jump to end state · `static` decorative motion removed, conte
 | P08 | Nudge / attention jiggle      | CSS    | —         | off            | ✓ 010 |
 | P09 | Number tick (counter)         | JS     | —         | instant        | ✓ 010 |
 | P10 | Content swap confirm (copy ✓) | CSS    | G         | fade           | ✓ 010 |
-| P11 | Long-press progress           | WAAPI  | W         | reduced        | 012   |
+| P11 | Long-press progress           | WAAPI  | W         | reduced        | ✓ 012 |
 
 ³ The error must also be conveyed by text/ARIA; the shake is never the only signal.
 
@@ -94,17 +97,17 @@ only · `instant` jump to end state · `static` decorative motion removed, conte
 
 | Id  | Effect                              | Driver | Structure | Reduced motion | Phase |
 | --- | ----------------------------------- | ------ | --------- | -------------- | ----- |
-| G01 | Drag with inertia                   | JS     | —         | instant        | 012   |
-| G02 | Drag constraints + snap points      | JS     | W         | instant        | 012   |
-| G03 | Swipe to dismiss                    | JS     | —         | instant        | 012   |
-| G04 | Pull-to-refresh indicator           | JS     | W         | reduced        | 012   |
-| G05 | Spring follow (value chasing)       | JS     | —         | instant        | 012   |
-| G06 | Elastic edge (visual overscroll)    | JS     | W         | off            | 012   |
-| G07 | Throw / fling with decay            | JS     | —         | instant        | 012   |
-| G08 | Pinch-zoom media                    | JS     | W         | instant        | 012   |
-| G09 | Rotate gesture                      | JS     | —         | instant        | 012   |
-| G10 | Drag-to-reorder (with keyboard alt) | JS     | G         | instant        | 012   |
-| G11 | Velocity squash & stretch           | JS     | —         | off            | 012   |
+| G01 | Drag with inertia                   | JS     | —         | instant        | ✓ 012 |
+| G02 | Drag constraints + snap points      | JS     | W         | instant        | ✓ 012 |
+| G03 | Swipe to dismiss                    | JS     | —         | instant        | ✓ 012 |
+| G04 | Pull-to-refresh indicator           | JS     | W         | reduced        | ✓ 012 |
+| G05 | Spring follow (value chasing)       | JS     | —         | instant        | ✓ 012 |
+| G06 | Elastic edge (visual overscroll)    | JS     | W         | off            | ✓ 012 |
+| G07 | Throw / fling with decay            | JS     | —         | instant        | ✓ 012 |
+| G08 | Pinch-zoom media                    | JS     | W         | instant        | ✓ 012 |
+| G09 | Rotate gesture                      | JS     | —         | instant        | ✓ 012 |
+| G10 | Drag-to-reorder (with keyboard alt) | JS     | G         | instant        | ✓ 012 |
+| G11 | Velocity squash & stretch           | JS     | —         | off            | ✓ 012 |
 
 Every gesture has a keyboard and single-pointer alternative (WCAG 2.5.1, 2.5.7) or is decorative.
 
@@ -178,16 +181,16 @@ Every gesture has a keyboard and single-pointer alternative (WCAG 2.5.1, 2.5.7) 
 
 | Id  | Effect                                  | Driver | Structure | Reduced motion | Phase |
 | --- | --------------------------------------- | ------ | --------- | -------------- | ----- |
-| L01 | FLIP move / reorder                     | WAAPI  | G         | instant        | 012   |
-| L02 | Auto-height expand / collapse           | WAAPI⁷ | —         | instant        | 012   |
-| L03 | List enter / exit                       | WAAPI  | G         | fade           | 012   |
-| L04 | Shared layout (same item, new position) | WAAPI  | —         | instant        | 012   |
-| L05 | Grid reflow                             | WAAPI  | G         | instant        | 012   |
-| L06 | Accordion height                        | CSS⁷   | —         | instant        | 012   |
-| L07 | Tab indicator slide                     | CSS    | W         | instant        | 012   |
-| L08 | Presence (exit before unmount)          | WAAPI  | —         | instant        | 012   |
-| L09 | Content cross-fade swap                 | CSS    | G         | instant        | 012   |
-| L10 | Masonry reflow                          | WAAPI  | G         | instant        | 012   |
+| L01 | FLIP move / reorder                     | WAAPI  | G         | instant        | ✓ 012 |
+| L02 | Auto-height expand / collapse           | WAAPI⁷ | —         | instant        | ✓ 012 |
+| L03 | List enter / exit                       | WAAPI  | G         | fade           | ✓ 012 |
+| L04 | Shared layout (same item, new position) | WAAPI  | —         | instant        | ✓ 012 |
+| L05 | Grid reflow                             | WAAPI  | G         | instant        | ✓ 012 |
+| L06 | Accordion height                        | CSS⁷   | —         | instant        | ✓ 012 |
+| L07 | Tab indicator slide                     | CSS    | W         | instant        | ✓ 012 |
+| L08 | Presence (exit before unmount)          | WAAPI  | —         | instant        | ✓ 012 |
+| L09 | Content cross-fade swap                 | CSS    | G         | instant        | ✓ 012 |
+| L10 | Masonry reflow                          | WAAPI  | G         | instant        | ✓ 012 |
 
 ⁷ `interpolate-size` / `calc-size()` where supported; measured WAAPI fallback otherwise.
 
@@ -306,12 +309,12 @@ real deformation and only for raster content (research R7).
 | Interpolation / easing / clamp       | all               | implemented (009)    |
 | Effect registry + channel metadata   | all               | implemented (009)    |
 | Pointer tracker (box-based hit area) | H, B, G           | implemented (010)    |
-| Intersection / visibility observer   | ST, SP, B, M      | planned (011)        |
+| Intersection / visibility observer   | ST, SP, B, M      | implemented (011)    |
 | Scroll progress (cached geometry)    | ST, SP, C, M, T   | spike in ScrollScene |
 | Timeline (labels, overlaps, scrub)   | C, PT, T, S       | planned (013)        |
-| Presence / exit orchestration        | L, PT, F          | planned (012)        |
-| FLIP measurer                        | L, M              | planned (012)        |
-| Gesture recogniser (drag, pinch)     | G, M              | planned (012)        |
+| Presence / exit orchestration        | L, PT, F          | implemented (012)    |
+| FLIP measurer                        | L, M              | implemented (012)    |
+| Gesture recogniser (drag, pinch)     | G, M              | implemented (012)    |
 | Text splitter (accessible)           | T, C              | planned (014)        |
 | Path utilities (length, morph)       | S                 | planned (014)        |
 | GPU surface manager (optional entry) | D, M, B           | planned (016)        |

@@ -6,9 +6,11 @@
 merged into `main` as the squash commit `fd3885c` (PR #4). Phase 009 (Motion Engine) is merged into
 `main` as the squash commit `44dc1c9` (PR #6) and validated by the owner. Phase 010 (Animation Effects & Presets: Entrance, Hover, Press;
 ADR 0025) is merged into `main` as the squash commit `70d852b` (PR #7) and approved by the owner.
-Phase 011 (Scroll Engine, Scroll Triggers ST01–ST10, Scroll & Parallax SP01–SP11) is in development on
-`feature/011-scroll-parallax` (`specs/011-scroll-parallax/`); its PR awaits the owner's review — never
-merge it automatically.
+Phase 011 (Scroll Engine, Scroll Triggers ST01–ST10, Scroll & Parallax SP01–SP11; ADR 0026) is merged
+into `main` as the squash commit `804badb` (PR #8) and approved by the owner. Phase 012 (Physics &
+Gestures G01–G11, Layout Animations L01–L10, H11, P11; ADR 0027) is in development on
+`feature/012-physics-gestures-layout` (`specs/012-physics-gestures-layout/`); its PR awaits the owner's
+review — never merge it automatically.
 `@neshel-ui/animations` is **private** (0.0.0) and must stay private until the owner approves its
 first publication; it is outside the Changesets fixed group and the release scripts. The five public
 packages are on npm with provenance; `@neshel-ui/core` stays private. `v0.1.0` is immutable: never
@@ -99,7 +101,7 @@ legitimate third-party licence notices. Check every commit message and PR body b
 - `pnpm check` — doctor, lint, typecheck, test, build, check:exports, check:pack (offline; includes
   `--with animations`, which validates the private animations tarball without lifting its guard).
 - `pnpm check:browser:animations` — animations lab (Tilt3D, CornerRecede, ScrollScene, engine, Phase 010
-  effects gallery, Phase 011 scroll gallery) in headless Chrome with real input and axe; requires
+  effects gallery, Phase 011 scroll gallery, Phase 012 gestures/layout gallery) in headless Chrome with real input and axe; requires
   `pnpm build:playground`.
 - `pnpm check:animations:engines` — the same lab in Playwright Chromium, Firefox and WebKit.
 - `pnpm check:animations:consumer` — external app from the packed animations tarball (SSR + hydration).

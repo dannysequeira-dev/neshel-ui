@@ -5,6 +5,7 @@ import { createRoot } from "react-dom/client";
 import { CornerRecedeLab } from "./corner-recede";
 import { EffectsLab } from "./effects-lab";
 import { EngineLab } from "./engine-lab";
+import { GesturesGallery } from "./gestures-gallery";
 import "./lab.css";
 import { ScrollGallery } from "./scroll-gallery";
 import { ScrollSceneLab } from "./scroll-scene";
@@ -16,11 +17,11 @@ createRoot(root).render(
   <StrictMode>
     <main className="lab">
       <header className="lab-header">
-        <p className="lab-eyebrow">Neshel-UI · features 008.0–011</p>
+        <p className="lab-eyebrow">Neshel-UI · features 008.0–012</p>
         <h1>Animations lab</h1>
         <p>
           Technical spikes for <code>@neshel-ui/animations</code> (private, unpublished). Tilt3D,
-          ScrollScene, the engine lab and the Phase 010/011 galleries use the package; CornerRecede
+          ScrollScene, the engine lab and the Phase 010–012 galleries use the package; CornerRecede
           is a prototype whose API is not approved.
         </p>
       </header>
@@ -30,6 +31,7 @@ createRoot(root).render(
       <EngineLab />
       <EffectsLab />
       <ScrollGallery />
+      <GesturesGallery />
     </main>
   </StrictMode>,
 );

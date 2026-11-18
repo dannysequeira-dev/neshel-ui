@@ -1,6 +1,8 @@
 /* Animations lab (feature 008.0). Plain CSS on the config tokens; no Tailwind utilities needed. */
 @import "@neshel-ui/config/tokens.css";
 @import "@neshel-ui/animations/styles.css";
+@import "@neshel-ui/animations/gestures.css";
+@import "@neshel-ui/animations/layout.css";
 
 /* Spike behind research R2b: a package-like layered transition vs the consumer's own declaration. */
 @layer components.neshel {
@@ -649,4 +651,242 @@ body {
   height: var(--h);
   display: grid;
   place-items: center;
+}
+
+/* Phase 012 gallery (gestures, layout, H11, P11). */
+.g-grid {
+  grid-template-columns: repeat(auto-fill, minmax(min(19rem, 100%), 1fr));
+  align-items: start;
+}
+.g-grid .gallery-tile > .gallery-button,
+.g-grid .gallery-tile > .g-row-buttons {
+  justify-self: start;
+}
+.g-note,
+.g-fruit,
+.g-flip li,
+.g-cell,
+.g-card,
+.g-brick {
+  border: 1px solid var(--neshel-border, #d4d4d8);
+  background: var(--neshel-background, #fff);
+}
+.g-wide {
+  grid-column: 1 / -1;
+}
+.g-arena {
+  position: relative;
+  height: 11rem;
+  border: 1px dashed var(--neshel-border, #ccc);
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+.g-track {
+  height: 5rem;
+}
+.g-puck {
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 0.75rem;
+  background: var(--neshel-primary, #4f46e5);
+  cursor: grab;
+  touch-action: none;
+}
+.g-puck:focus-visible,
+.g-rotor:focus-visible,
+.g-note:focus-visible {
+  outline: 3px solid var(--neshel-ring, #2563eb);
+  outline-offset: 2px;
+}
+.g-small {
+  width: 2rem;
+  height: 2rem;
+}
+.g-round {
+  border-radius: 50%;
+}
+.g-label {
+  display: block;
+  margin-bottom: 0.5rem;
+}
+.g-notes {
+  display: grid;
+  gap: 0.5rem;
+  overflow: hidden;
+}
+.g-note {
+  padding: 0.75rem 2.5rem 0.75rem 0.75rem;
+  border-radius: 0.5rem;
+}
+.g-pull {
+  height: 11rem;
+}
+.g-pull .neshel-pull-scroller,
+.g-scroller {
+  height: 9rem;
+  border: 1px solid var(--neshel-border, #ccc);
+  border-radius: 0.5rem;
+  padding: 0 0.75rem;
+}
+.g-rotor {
+  width: 6rem;
+  height: 6rem;
+  margin: 1rem auto;
+  border-radius: 50%;
+  background: conic-gradient(
+    var(--neshel-primary, #4f46e5) 0 25%,
+    #db2777 0 50%,
+    #f59e0b 0 75%,
+    #10b981 0
+  );
+}
+.g-row-buttons {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+.g-reorder {
+  display: grid;
+  gap: 0.375rem;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+.g-fruit {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.375rem;
+  border-radius: 0.5rem;
+}
+.g-fruit-name {
+  flex: 1;
+}
+.g-area {
+  display: grid;
+  place-items: center;
+  height: 9rem;
+  border-radius: 0.75rem;
+  background: var(--neshel-muted, #f1f5f9);
+  color: var(--neshel-primary, #4f46e5);
+}
+.g-hold {
+  min-width: 10rem;
+}
+.g-flip {
+  display: grid;
+  gap: 0.375rem;
+  padding: 0;
+  margin: 0.5rem 0 0;
+  list-style: none;
+}
+.g-flip li {
+  padding: 0.5rem 0.75rem;
+  border-radius: 0.5rem;
+}
+.g-box {
+  align-self: start;
+  margin-top: 0.5rem;
+  border: 1px solid var(--neshel-border, #ccc);
+  border-radius: 0.5rem;
+  padding: 0 0.75rem;
+}
+.g-segments {
+  display: flex;
+  min-inline-size: 0;
+  margin: 0;
+  border: 0;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  border-radius: 999px;
+  background: var(--neshel-muted, #f1f5f9);
+}
+.g-segment {
+  position: relative;
+  flex: 1;
+  border: 0;
+  border-radius: 999px;
+  padding: 0.5rem;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+}
+.g-highlight {
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  background: var(--neshel-background, #fff);
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.15);
+}
+.g-segment-label {
+  position: relative;
+}
+.g-reflow {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  max-width: 100%;
+}
+.g-reflow.g-narrow {
+  grid-template-columns: repeat(2, 1fr);
+  max-width: 12rem;
+}
+.g-cell {
+  display: grid;
+  place-items: center;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+}
+.g-accordion {
+  margin-top: 0.5rem;
+  border: 1px solid var(--neshel-border, #ccc);
+  border-radius: 0.5rem;
+}
+.g-acc-heading {
+  margin: 0;
+}
+.g-acc-heading button {
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+.g-acc-body {
+  margin: 0;
+  padding: 0 0.75rem 0.75rem;
+}
+.g-tabs {
+  display: flex;
+  gap: 0.25rem;
+  border-bottom: 1px solid var(--neshel-border, #ccc);
+  color: var(--neshel-primary, #4f46e5);
+}
+.g-tab {
+  border: 0;
+  padding: 0.5rem 0.75rem;
+  background: transparent;
+  color: var(--neshel-foreground, inherit);
+  font: inherit;
+  cursor: pointer;
+}
+.g-presence {
+  min-height: 4.5rem;
+  margin-top: 0.5rem;
+}
+.g-card {
+  padding: 1rem;
+  border-radius: 0.75rem;
+}
+.g-masonry {
+  max-width: 40rem;
+}
+.g-brick {
+  display: grid;
+  place-items: center;
+  border-radius: 0.5rem;
+  background: var(--neshel-muted, #f1f5f9);
 }
