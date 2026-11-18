@@ -162,12 +162,7 @@ function createHost(element: Styled, scheduler: FrameScheduler): MotionHost {
       for (const channel of owners.keys()) {
         // Custom properties, `touch-action` (Phase 012 gesture areas) and `view-transition-*` (Phase 013
         // page transitions) are not animated.
-        if (
-          values.has(channel) &&
-          !channel.startsWith("--") &&
-          channel !== "touch-action" &&
-          !channel.startsWith("view-transition")
-        ) {
+        if (values.has(channel) && !/^(--|touch-action|view-transition)/.test(channel)) {
           tokens.push(channel);
         }
       }

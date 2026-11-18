@@ -43,7 +43,7 @@ import { createSpotlight, type Spotlight as SpotlightControl } from "./spotlight
 import { createStoryboard, type Storyboard as StoryboardControl } from "./storyboard.js";
 import { titleSequence } from "./title.js";
 
-// biome-ignore lint/suspicious/noExplicitAny: drivable definitions of any option types.
+// biome-ignore lint/suspicious/noExplicitAny: entrance definitions of any option types.
 type AnyPreset = PresetInput<any, any>;
 type DivProps = Omit<HTMLAttributes<HTMLDivElement>, "children"> & {
   ref?: Ref<HTMLDivElement>;
@@ -203,7 +203,7 @@ export function Chapter({ id, weight = 1, children, ref, ...rest }: ChapterProps
 }
 
 export interface SceneSegmentProps extends DivProps {
-  /** A drivable Entrance definition or preset… */
+  /** An Entrance definition or preset (triggered as the chapter crosses it)… */
   effect?: AnyPreset;
   options?: object;
   /** …or a pose transition (`from` → `to`; default `to` is the identity). */
@@ -448,7 +448,7 @@ export function CurtainReveal({ pattern = "curtain", slats = 6, ...props }: Curt
 // --- C06 <TitleSequence> ---------------------------------------------------------------------------
 
 export interface TitleSequenceProps extends DivProps {
-  /** Drivable entrance (definition or preset) for every line. */
+  /** Entrance (definition or preset) triggered for every line. */
   effect: AnyPreset;
   options?: object;
   interval?: number;

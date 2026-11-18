@@ -46,9 +46,13 @@ const vtAnimations = () =>
     .map((animation) => (animation.effect as KeyframeEffect | null)?.pseudoElement ?? "")
     .filter((pseudo) => pseudo.startsWith("::view-transition"));
 
-async function runCases(list: Array<[string, () => Promise<void>]>): Promise<Case[]> {
+async function runCases(
+  list: Array<[string, () => Promise<void>]>,
+  skip: readonly string[] = [],
+): Promise<Case[]> {
   const cases: Case[] = [];
   for (const [id, fn] of list) {
+    if (skip.some((prefix) => id.startsWith(prefix))) continue;
     try {
       await fn();
       cases.push({ id, ok: true });
@@ -421,7 +425,7 @@ export async function runCinematicSuite(): Promise<Case[]> {
   ]);
 }
 
-export async function runPageSuite(): Promise<Case[]> {
+export async function runPageSuite(skip: readonly string[] = []): Promise<Case[]> {
   const lab = labState();
   const api = lab.cinematic;
   if (!api) throw new Error("cinematic gallery not mounted");
@@ -432,251 +436,256 @@ export async function runPageSuite(): Promise<Case[]> {
     !document.documentElement.hasAttribute("data-neshel-pt-effect") &&
     !(document as { activeViewTransition?: unknown }).activeViewTransition;
   // Engines without document.activeViewTransition fall back to the attribute only.
-  return runCases([
+  return runCases(
     [
-      "PT03/PT02/PT08: slide + shared morph + persistent element run natively; names and attributes cleaned",
-      async () => {
-        click("pt-effect-slide");
-        await frames(2);
-        const seen = new Set<string>();
-        const watch = () => {
-          for (const pseudo of vtAnimations()) seen.add(pseudo);
-        };
-        click("pt-open");
-        if (support.sameDocument) {
-          await until(
-            "transition running",
-            () => {
-              watch();
-              return vtAnimations().length > 0;
-            },
-            () => [...seen],
-            3000,
-          );
-          await until(
-            "transition done",
-            () => {
-              watch();
-              return settled();
-            },
-            () => [...seen],
-          );
-          check(
-            [...seen].some((p) => p.includes("neshel-lab-photo")),
-            `shared morph group animated: ${[...seen].join(" ")}`,
-          );
-          check(
-            [...seen].some(
-              (p) => p.startsWith("::view-transition-old") || p.startsWith("::view-transition-new"),
-            ),
-            `page snapshots animated: ${[...seen].join(" ")}`,
-          );
-          check(
-            ![...seen].some((p) => p.includes("neshel-lab-player") && !p.includes("group")) || true,
-            "persistent element present",
-          );
-        }
-        await until(
-          "detail page",
-          () => byId("pt-heading").textContent === "Photo detail",
-          () => byId("pt-heading").textContent,
-        );
-        check(
-          ![...document.querySelectorAll<HTMLElement>("*")].some((el) =>
-            el.style?.getPropertyValue("view-transition-name"),
-          ),
-          "no inline names left",
-        );
-        check(
-          document.getElementById("pt-player")?.isConnected,
-          "persistent element kept (same node)",
-        );
-      },
-    ],
-    [
-      "PT04: the back navigation selects the back variant of the slide",
-      async () => {
-        let backAnimation = "";
-        click("pt-back");
-        if (support.sameDocument) {
-          await until(
-            "back transition",
-            () => {
-              for (const animation of document.documentElement.getAnimations({ subtree: true })) {
-                const pseudo = (animation.effect as KeyframeEffect | null)?.pseudoElement ?? "";
-                const name = (animation as CSSAnimation).animationName ?? "";
-                if (pseudo.startsWith("::view-transition-old") && name.startsWith("neshel-pt")) {
-                  backAnimation ||= name;
-                }
-              }
-              return backAnimation !== "";
-            },
-            () => backAnimation,
-            3000,
-          );
-          check(
-            prefersReducedMotion()
-              ? backAnimation === "neshel-pt-fade-out"
-              : backAnimation === "neshel-pt-slide-out-back",
-            `old snapshot animation: ${backAnimation}`,
-          );
-          await until("settled", settled, () => document.documentElement.outerHTML.slice(0, 120));
-        }
-        await until(
-          "list page",
-          () => byId("pt-heading").textContent === "Gallery",
-          () => byId("pt-heading").textContent,
-        );
-      },
-    ],
-    [
-      "PT01/PT05/PT06: fade, scale and wipe effects complete and clean up",
-      async () => {
-        for (const name of ["fade", "scale", "wipe"]) {
-          click(`pt-effect-${name}`);
+      [
+        "PT03/PT02/PT08: slide + shared morph + persistent element run natively; names and attributes cleaned",
+        async () => {
+          click("pt-effect-slide");
           await frames(2);
+          const seen = new Set<string>();
+          const watch = () => {
+            for (const pseudo of vtAnimations()) seen.add(pseudo);
+          };
           click("pt-open");
+          if (support.sameDocument) {
+            await until(
+              "transition running",
+              () => {
+                watch();
+                return vtAnimations().length > 0;
+              },
+              () => [...seen],
+              3000,
+            );
+            await until(
+              "transition done",
+              () => {
+                watch();
+                return settled();
+              },
+              () => [...seen],
+            );
+            check(
+              [...seen].some((p) => p.includes("neshel-lab-photo")),
+              `shared morph group animated: ${[...seen].join(" ")}`,
+            );
+            check(
+              [...seen].some(
+                (p) =>
+                  p.startsWith("::view-transition-old") || p.startsWith("::view-transition-new"),
+              ),
+              `page snapshots animated: ${[...seen].join(" ")}`,
+            );
+            check(
+              ![...seen].some((p) => p.includes("neshel-lab-player") && !p.includes("group")) ||
+                true,
+              "persistent element present",
+            );
+          }
           await until(
-            `${name} detail`,
-            () => byId("pt-heading").textContent === "Photo detail" && settled(),
+            "detail page",
+            () => byId("pt-heading").textContent === "Photo detail",
             () => byId("pt-heading").textContent,
           );
-          click("pt-back");
-          await until(
-            `${name} list`,
-            () => byId("pt-heading").textContent === "Gallery" && settled(),
-            () => byId("pt-heading").textContent,
-          );
-        }
-      },
-    ],
-    [
-      "PT07: route progress shows the pending state, completes and fails without staying active",
-      async () => {
-        const bar = byId("pt-progress");
-        click("pt-slow");
-        await until(
-          "pending",
-          () => bar.getAttribute("data-state") === "pending" && !bar.hidden,
-          () => bar.getAttribute("data-state"),
-        );
-        check(
-          !bar.hasAttribute("aria-valuenow") && bar.getAttribute("role") === "progressbar",
-          "indeterminate progressbar",
-        );
-        await until(
-          "idle",
-          () => bar.getAttribute("data-state") === "idle" && bar.hidden,
-          () => bar.getAttribute("data-state"),
-          4000,
-        );
-        click("pt-fail");
-        await until(
-          "failed",
-          () => bar.getAttribute("data-state") === "failed",
-          () => bar.getAttribute("data-state"),
-        );
-        await until(
-          "idle again",
-          () => bar.hidden,
-          () => bar.getAttribute("data-state"),
-          4000,
-        );
-        check(
-          bar.querySelector('[role="status"]')?.textContent === "Navigation failed",
-          "one-shot status",
-        );
-      },
-    ],
-    [
-      "rapid navigation: a second transition interrupts the first; final DOM is the last update",
-      async () => {
-        const out = byId("pt-vanilla-output");
-        const first = startPageTransition(
-          () => {
-            out.textContent = "rapid 1";
-          },
-          { effect: "fade" },
-        );
-        const second = startPageTransition(
-          () => {
-            out.textContent = "rapid 2";
-          },
-          { effect: "fade" },
-        );
-        const [a, b] = await Promise.all([first.finished, second.finished]);
-        check(a.status === "interrupted", `first: ${a.status}`);
-        check(b.status === "completed" || b.status === "skipped", `second: ${b.status}`);
-        check(out.textContent === "rapid 2", out.textContent ?? "");
-        await until("settled", settled, () => "");
-      },
-    ],
-    [
-      "failed update: finished rejects, every name/class/attribute restored",
-      async () => {
-        const probe = document.createElement("div");
-        document.body.append(probe);
-        const off = registerSharedElement(probe, "lab-probe");
-        const failing = startPageTransition(() => {
-          throw new Error("route failed");
-        });
-        let rejected = false;
-        await failing.finished.catch(() => (rejected = true));
-        off();
-        check(rejected && failing.state === "failed", `state ${failing.state}`);
-        check(probe.style.cssText === "", `probe style: ${probe.style.cssText}`);
-        check(
-          document.documentElement.style.getPropertyValue("view-transition-class") === "",
-          "root class restored",
-        );
-        probe.remove();
-        await until("settled", settled, () => "");
-      },
-    ],
-    [
-      "fallback path: without the API the update runs at once and the shared element FLIPs from its old box",
-      async () => {
-        const doc = document as { startViewTransition?: unknown };
-        const saved = doc.startViewTransition;
-        doc.startViewTransition = undefined;
-        try {
-          const a = document.createElement("div");
-          a.style.cssText = "position:absolute;left:0;top:0;width:40px;height:40px";
-          document.body.append(a);
-          const offA = registerSharedElement(a, "lab-flip");
-          let b: HTMLDivElement | undefined;
-          let offB = () => {};
-          const transition = startPageTransition(
-            () => {
-              offA();
-              a.remove();
-              b = document.createElement("div");
-              b.style.cssText = "position:absolute;left:300px;top:200px;width:80px;height:80px";
-              document.body.append(b);
-              offB = registerSharedElement(b, "lab-flip");
-            },
-            { fallback: "flip" },
-          );
-          const result = await transition.finished;
-          check(result.native === false && result.status === "completed", JSON.stringify(result));
-          await frame();
           check(
-            b && /translate3d\(-/.test(b.style.transform),
-            `starts from the old box: ${b?.style.transform}`,
+            ![...document.querySelectorAll<HTMLElement>("*")].some((el) =>
+              el.style?.getPropertyValue("view-transition-name"),
+            ),
+            "no inline names left",
+          );
+          check(
+            document.getElementById("pt-player")?.isConnected,
+            "persistent element kept (same node)",
+          );
+        },
+      ],
+      [
+        "PT04: the back navigation selects the back variant of the slide",
+        async () => {
+          let backAnimation = "";
+          click("pt-back");
+          if (support.sameDocument) {
+            await until(
+              "back transition",
+              () => {
+                for (const animation of document.documentElement.getAnimations({ subtree: true })) {
+                  const pseudo = (animation.effect as KeyframeEffect | null)?.pseudoElement ?? "";
+                  const name = (animation as CSSAnimation).animationName ?? "";
+                  if (pseudo.startsWith("::view-transition-old") && name.startsWith("neshel-pt")) {
+                    backAnimation ||= name;
+                  }
+                }
+                return backAnimation !== "";
+              },
+              () => backAnimation,
+              3000,
+            );
+            check(
+              prefersReducedMotion()
+                ? backAnimation === "neshel-pt-fade-out"
+                : backAnimation === "neshel-pt-slide-out-back",
+              `old snapshot animation: ${backAnimation}`,
+            );
+            await until("settled", settled, () => document.documentElement.outerHTML.slice(0, 120));
+          }
+          await until(
+            "list page",
+            () => byId("pt-heading").textContent === "Gallery",
+            () => byId("pt-heading").textContent,
+          );
+        },
+      ],
+      [
+        "PT01/PT05/PT06: fade, scale and wipe effects complete and clean up",
+        async () => {
+          for (const name of ["fade", "scale", "wipe"]) {
+            click(`pt-effect-${name}`);
+            await frames(2);
+            click("pt-open");
+            await until(
+              `${name} detail`,
+              () => byId("pt-heading").textContent === "Photo detail" && settled(),
+              () => byId("pt-heading").textContent,
+            );
+            click("pt-back");
+            await until(
+              `${name} list`,
+              () => byId("pt-heading").textContent === "Gallery" && settled(),
+              () => byId("pt-heading").textContent,
+            );
+          }
+        },
+      ],
+      [
+        "PT07: route progress shows the pending state, completes and fails without staying active",
+        async () => {
+          const bar = byId("pt-progress");
+          click("pt-slow");
+          await until(
+            "pending",
+            () => bar.getAttribute("data-state") === "pending" && !bar.hidden,
+            () => bar.getAttribute("data-state"),
+          );
+          check(
+            !bar.hasAttribute("aria-valuenow") && bar.getAttribute("role") === "progressbar",
+            "indeterminate progressbar",
           );
           await until(
-            "identity",
-            () => b?.style.transform === "",
-            () => b?.style.transform,
+            "idle",
+            () => bar.getAttribute("data-state") === "idle" && bar.hidden,
+            () => bar.getAttribute("data-state"),
+            4000,
           );
-          offB();
-          b?.remove();
-        } finally {
-          doc.startViewTransition = saved;
-        }
-      },
+          click("pt-fail");
+          await until(
+            "failed",
+            () => bar.getAttribute("data-state") === "failed",
+            () => bar.getAttribute("data-state"),
+          );
+          await until(
+            "idle again",
+            () => bar.hidden,
+            () => bar.getAttribute("data-state"),
+            4000,
+          );
+          check(
+            bar.querySelector('[role="status"]')?.textContent === "Navigation failed",
+            "one-shot status",
+          );
+        },
+      ],
+      [
+        "rapid navigation: a second transition interrupts the first; final DOM is the last update",
+        async () => {
+          const out = byId("pt-vanilla-output");
+          const first = startPageTransition(
+            () => {
+              out.textContent = "rapid 1";
+            },
+            { effect: "fade" },
+          );
+          const second = startPageTransition(
+            () => {
+              out.textContent = "rapid 2";
+            },
+            { effect: "fade" },
+          );
+          const [a, b] = await Promise.all([first.finished, second.finished]);
+          check(a.status === "interrupted", `first: ${a.status}`);
+          check(b.status === "completed" || b.status === "skipped", `second: ${b.status}`);
+          check(out.textContent === "rapid 2", out.textContent ?? "");
+          await until("settled", settled, () => "");
+        },
+      ],
+      [
+        "failed update: finished rejects, every name/class/attribute restored",
+        async () => {
+          const probe = document.createElement("div");
+          document.body.append(probe);
+          const off = registerSharedElement(probe, "lab-probe");
+          const failing = startPageTransition(() => {
+            throw new Error("route failed");
+          });
+          let rejected = false;
+          await failing.finished.catch(() => (rejected = true));
+          off();
+          check(rejected && failing.state === "failed", `state ${failing.state}`);
+          check(probe.style.cssText === "", `probe style: ${probe.style.cssText}`);
+          check(
+            document.documentElement.style.getPropertyValue("view-transition-class") === "",
+            "root class restored",
+          );
+          probe.remove();
+          await until("settled", settled, () => "");
+        },
+      ],
+      [
+        "fallback path: without the API the update runs at once and the shared element FLIPs from its old box",
+        async () => {
+          const doc = document as { startViewTransition?: unknown };
+          const saved = doc.startViewTransition;
+          doc.startViewTransition = undefined;
+          try {
+            const a = document.createElement("div");
+            a.style.cssText = "position:absolute;left:0;top:0;width:40px;height:40px";
+            document.body.append(a);
+            const offA = registerSharedElement(a, "lab-flip");
+            let b: HTMLDivElement | undefined;
+            let offB = () => {};
+            const transition = startPageTransition(
+              () => {
+                offA();
+                a.remove();
+                b = document.createElement("div");
+                b.style.cssText = "position:absolute;left:300px;top:200px;width:80px;height:80px";
+                document.body.append(b);
+                offB = registerSharedElement(b, "lab-flip");
+              },
+              { fallback: "flip" },
+            );
+            const result = await transition.finished;
+            check(result.native === false && result.status === "completed", JSON.stringify(result));
+            await frame();
+            check(
+              b && /translate3d\(-/.test(b.style.transform),
+              `starts from the old box: ${b?.style.transform}`,
+            );
+            await until(
+              "identity",
+              () => b?.style.transform === "",
+              () => b?.style.transform,
+            );
+            offB();
+            b?.remove();
+          } finally {
+            doc.startViewTransition = saved;
+          }
+        },
+      ],
     ],
-  ]);
+    skip,
+  );
 }
 
 /** Facts under reduced motion (the check scripts emulate the media query). */

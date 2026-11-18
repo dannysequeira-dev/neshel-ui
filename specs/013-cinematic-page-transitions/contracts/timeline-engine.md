@@ -63,26 +63,32 @@ malformed position throws `NeshelAnimationsError`; negative results clamp to 0.
 
 ### Tracks
 
-| Kind     | Input                                                                                | Renders                                                                                                                 |
-| -------- | ------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------- |
-| pose     | `{ id?, target, to, from?, duration?, easing?, fill?, priority? }`                   | `Pose` `{ x, y, scale, rotate, opacity, blur }` → one transform layer + one opacity contribution + `filter` (exclusive) |
-| value    | `{ id?, value: MotionValue, from, to, duration?, easing?, fill? }`                   | the motion value (the caller renders it, e.g. `bindChannel`)                                                            |
-| effect   | `{ id?, target, effect: definition or preset, options?, duration?, easing?, fill? }` | a **drivable** definition (§3) attached lazily with `progress` = a motion value driven by the track                     |
-| timeline | `{ id?, timeline: Timeline }`                                                        | a nested timeline rendered at the parent's local time (its own clock disabled; finite repeat only)                      |
-| call     | `call(fn, at, { wait, reverse })`                                                    | `fn("forward")` when the playhead crosses `at` forward (`(prev, next]`), `reverse("reverse")` backward (`[next, prev)`) |
+| Kind     | Input                                                                       | Renders                                                                                                                                                    |
+| -------- | --------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| pose     | `{ id?, target, to, from?, duration?, easing?, fill?, priority? }`          | `Pose` `{ x, y, scale, rotate, opacity, blur }` → one transform layer + one opacity contribution + `filter` (exclusive)                                    |
+| value    | `{ id?, value: MotionValue, from, to, duration?, easing?, fill? }`          | the motion value (the caller renders it, e.g. `bindChannel`)                                                                                               |
+| effect   | `{ id?, target, effect: definition or preset, options?, duration?, fill? }` | an Entrance definition **triggered** through its own contract (§3): plays in when the playhead crosses the start, out when it crosses back; not scrubbable |
+| timeline | `{ id?, timeline: Timeline }`                                               | a nested timeline rendered at the parent's local time (its own clock disabled; finite repeat only)                                                         |
+| call     | `call(fn, at, { wait, reverse })`                                           | `fn("forward")` when the playhead crosses `at` forward (`(prev, next]`), `reverse("reverse")` backward (`[next, prev)`)                                    |
 
 `duration` defaults to 400 ms (pose/value) or the definition's span (effect); `easing` to `"standard"`
 (pose/value) or the definition's easing. `fill: "both"` (default) renders the from-state before the
 track starts; `"forwards"` writes nothing before the start.
 
-## 3. Drivable definitions (additive core/entrance change)
+## 3. Triggered definitions (no change to Entrance)
 
-`EffectDefinition.drivable?: { span(resolved): { duration: number; delay: number; easing: Easing } }`
-(type-only, optional). Entrance definitions E01–E09/E11 declare it and accept the additive option
-`progress?: MotionValue`: with it the entrance runs no clock of its own and renders the external value
-(0 → start pose, 1 → identity) through its channels; `appear`, `replay`, `hold`, `playback`, `delay` and
-`onFinish` are ignored; reduced motion uses its declared behaviour (`instant` → no contribution, `fade` →
-opacity only). Passing a non-drivable definition to an effect track throws `NeshelAnimationsError`.
+Effect tracks coordinate existing Entrance definitions (E01–E09, E11) as values through their public
+contract — Phase 011 `hold`/`playback`, Phase 012 `continuous`, `replay` — the same mechanism the scroll
+triggers use (ADR 0026 §7). The definition keeps its own clock, poses and reduced-motion behaviour; nothing is
+copied. The track's span is the definition's own `delay + duration` (E11: the spring's settle time). Playing
+across the start plays the entrance in; crossing back plays it out (continuing from where it is); pausing the
+timeline pauses the run. A seek (no `fire`) or `finish()` shows the state at that time without animation:
+the held start pose before the start (`fill: "both"`), the visible end state after it. A definition without
+that contract is rejected (`NeshelAnimationsError`).
+
+Measured alternative, **not adopted** (bundle budget): a scrubbable `progress` option on Entrance cost +123 B
+gzip on `entrance: fadeIn definition` (6605 → 6728 B) against an approved budget of 6656 B. It is proposed to
+the owner in evidence.md §8; without approval, scrubbable motion uses pose and value tracks.
 
 ## 4. Control semantics
 

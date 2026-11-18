@@ -14,8 +14,9 @@ Dependency-ordered. `[x]` done, `[ ]` open. Authorised by the owner brief of 202
 
 ## 013.1 — Timeline foundation
 
-- [x] T010 `EffectDefinition.drivable`; host excludes `view-transition-*` from `will-change` (D-3, D-4)
-- [x] T011 Entrance `progress` option + `drivable` span (FR-005)
+- [x] T010 Host excludes `view-transition-*` from `will-change` (D-4)
+- [x] T011 Effect tracks trigger Entrance through its contract (D-3; the `progress` variant measured and set
+  aside: +123 B over the approved `fadeIn` budget)
 - [x] T012 Timeline engine: positions, labels, tracks, controls, callbacks, waits, retarget (FR-001, FR-002)
 - [x] T013 Edge-case tests of research R5 (FR-003, FR-004)
 - [x] T014 `useTimeline` (FR-006)

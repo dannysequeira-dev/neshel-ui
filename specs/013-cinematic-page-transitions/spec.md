@@ -57,7 +57,9 @@ PR; Press changes unrelated to Phase 013; closing issue #9.
   `cinematic.css`, `page-transitions.css`, `page-transitions-mpa.css`; adapters in
   `./page-transitions/next` and `./page-transitions/react-router` with optional peers (ADR 0028 §1).
 - D-2 The timeline lives in `./cinematic` (not `./core`, whose approved budget stays unchanged).
-- D-3 `EffectDefinition.drivable` (optional, type-level) and `EntranceOptions.progress` (additive) — R6.
+- D-3 Timelines trigger Entrance definitions through their existing contract (`hold`, `playback`,
+  `continuous`, `replay`); Entrance and its budgets are unchanged (research R6; the scrubbable alternative is
+  proposed in evidence.md §8).
 - D-4 `view-transition-name`/`-class` become internal host channels excluded from `will-change` (one-line
   host change, same pattern as Phase 012's `touch-action`).
 - D-5 React adapters use React's `<ViewTransition>` (19.3+) instead of calling `startViewTransition`
@@ -75,7 +77,7 @@ Timeline (013.1)
   another advances, reverse mid-way, seek while active, detached target, mutating callback, failing
   awaited action, hidden page, reduced motion during playback).
 - FR-004 Zero scheduler tasks when idle/paused/settled/destroyed; no layout reads by the engine.
-- FR-005 Drivable Entrance definitions (`progress` option) — §3.
+- FR-005 Effect tracks trigger Entrance definitions through their contract — timeline-engine.md §3.
 - FR-006 `useTimeline` with a stable handle; StrictMode safe; inert on the server.
 
 Cinematic (013.2)

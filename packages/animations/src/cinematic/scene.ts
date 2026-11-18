@@ -132,7 +132,8 @@ export function createSceneChapters(options: SceneChaptersOptions): SceneChapter
     if (destroyed) return;
     const p = clamp(progress, 0, 1);
     mark(p);
-    timeline.seek(reduced() ? 1 : p);
+    // fire: triggered segments (Entrance) play in/out as the source crosses them; pose segments scrub.
+    timeline.seekTo((reduced() ? 1 : p) * timeline.duration, { fire: !reduced() });
   }
 
   const unsubscribeReduced = subscribeReducedMotion(() => {

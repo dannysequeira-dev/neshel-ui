@@ -62,7 +62,7 @@ shutter: scaleY per slat with a stagger). The consumer's content element receive
 
 ## C06 — Title sequence
 
-`titleSequence(timeline, { lines: Element[], effect (drivable entrance definition/preset), interval =
+`titleSequence(timeline, { lines: Element[], effect (Entrance definition or preset, triggered), interval =
 120, background?: Element, backgroundPose?, at? })` adds one effect track per line (offset `interval`)
 and one background pose track (default: opacity 0 → 1 and scale 1.08 → 1) to a C01 timeline. React
 `<TitleSequence effect interval background? play?>` staggers its element children (lines supplied by the

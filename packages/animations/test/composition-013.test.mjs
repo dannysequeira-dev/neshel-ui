@@ -45,18 +45,17 @@ const snapshot = (node) => ({
     .join("|"),
 });
 
-test("1 · timeline + Entrance: the entrance follows the timeline (seek/reverse) and is restored", () => {
+test("1 · timeline + Entrance: the triggered entrance follows the timeline (seek/reverse) and is restored", () => {
   const node = element("opacity: 0.9");
   const before = snapshot(node);
   const tl = createTimeline();
-  tl.add({
-    target: node,
-    effect: entrance.fadeUp,
-    options: { distance: 30, duration: 300, easing: "linear" },
-  });
-  tl.seekTo(150);
+  tl.add({ target: node, effect: entrance.fadeUp, options: { distance: 30, duration: 300 } }, 50);
+  tl.seekTo(0);
   settle();
-  assert.equal(translate(node)[1], 15);
+  assert.equal(translate(node)[1], 30, "start pose before the start");
+  tl.seekTo(200);
+  settle();
+  assert.deepEqual(snapshot(node), before, "end state after the start");
   tl.seekTo(0);
   settle();
   assert.equal(translate(node)[1], 30);

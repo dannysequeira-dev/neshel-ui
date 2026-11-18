@@ -112,13 +112,13 @@ Edge cases decided by the model (each has a unit test, see tasks T013):
 
 ## R6 — Driving existing effect definitions from a timeline
 
-Entrance definitions (E01–E09, E11) run their own `animateValue` clock. Rather than copying their poses,
-an additive Entrance option `progress?: MotionValue` makes the definition render an external progress
-(no clock of its own), and an optional, additive `EffectDefinition.drivable` metadata
-(`span(resolved) → { duration, delay, easing }`) tells a timeline how long the definition's run lasts.
-The timeline passes a motion value, drives it with the definition's easing, and the definition renders
-through its own channels. Families still never import each other: definitions travel as values (as in
-Phase 011 `hold`/`playback` and Phase 012 `continuous`).
+Entrance definitions (E01–E09, E11) run their own `animateValue` clock. Two options were built and measured:
+(a) an additive Entrance option `progress?: MotionValue` (the definition renders an external progress —
+scrubbable) — **+123 B gzip** on `entrance: fadeIn definition` (6605 → 6728 B, approved budget 6656 B);
+(b) triggering the definition through its existing public contract (`hold`, `playback`, `continuous`,
+`replay`), as the 011 scroll triggers do — **0 B** on Entrance. Chosen: (b), because earlier budgets are not
+raised without the owner's approval; (a) is proposed in evidence.md §8. Families still never import each
+other: definitions travel as values.
 
 ## R7 — Scene chapters without importing `./scroll`
 

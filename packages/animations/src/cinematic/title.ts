@@ -1,7 +1,7 @@
 /**
  * C06 — Title sequence: staggered lines + background (catalogue §7; contracts/cinematic-api.md).
  *
- * A timeline builder: one effect track per line (a drivable Entrance definition or preset, passed as a
+ * A timeline builder: one effect track per line (an Entrance definition or preset, triggered and passed as a
  * value — families never import each other) offset by `interval`, plus one background pose track. Lines are
  * the consumer's own elements (a heading, paragraphs): no text splitting here (Phase 014). Reduced motion
  * (`fade`): the entrances render their declared reduced behaviour (opacity only) and the background loses
@@ -19,7 +19,7 @@ import type { Timeline, TimelinePosition } from "./engine/timeline.js";
 
 export interface TitleSequenceOptions {
   lines: readonly Element[];
-  /** Drivable entrance (definition or preset) for every line. */
+  /** Entrance (definition or preset) triggered for every line. */
   // biome-ignore lint/suspicious/noExplicitAny: entrance definitions of any option types.
   effect: PresetInput<any, any>;
   /** Options merged into the effect's options for every line. */

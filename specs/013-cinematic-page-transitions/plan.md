@@ -12,11 +12,10 @@ built from the tarball. No new runtime dependency; `next` and `react-router` bec
 
 ```
 packages/animations/src/
-  core/effect.ts               + drivable (optional metadata, type-level)
   core/host.ts                 view-transition-name/-class excluded from will-change
-  entrance/factory.ts          + progress option (external driver) + drivable span
+  core/spring-curve.ts         spring settle time for triggered E11 tracks (internal)
   cinematic/engine/timeline.ts C01 engine
-  cinematic/engine/positions.ts, tracks.ts, debug.ts
+  cinematic/engine/pose.ts, progress.ts, debug.ts (pose writer, animated progress, counters)
   cinematic/scene.ts           C02 createSceneChapters
   cinematic/camera.ts          C03
   cinematic/cover.ts           C04/C05

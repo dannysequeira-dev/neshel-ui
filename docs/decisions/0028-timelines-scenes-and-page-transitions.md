@@ -29,10 +29,11 @@ view transitions into its commit (research R1–R4).
 2. **The timeline is a sequencer, not an engine.** A timeline is a pure function of time rendered by one
    `update` task of the 009 scheduler while running; tracks render through motion values and Motion Hosts;
    run state and `finished` reuse `createRunCore`. No frame loop, no style writes outside the host.
-3. **Driving existing definitions as values.** An optional `EffectDefinition.drivable` metadata and the
-   additive Entrance option `progress` let a timeline drive Entrance definitions (C06, scene segments)
-   without copying their poses; scroll progress sources reach scene chapters as values
-   (`{ get, subscribe }`), so `./cinematic` never imports `./scroll`.
+3. **Coordinating existing definitions as values.** Effect tracks trigger Entrance definitions through their
+   existing public contract (`hold`/`playback` of ADR 0026 §7, `continuous`, `replay`): Entrance and its
+   approved budgets are unchanged; scrubbable motion uses pose and value tracks. A scrubbable `progress` option
+   (+123 B on the `fadeIn` definition) is proposed to the owner, not adopted. Scroll progress sources reach
+   scene chapters as values (`{ get, subscribe }`), so `./cinematic` never imports `./scroll`.
 4. **R-1 and View Transitions.** Page-transition CSS animates only `::view-transition-*` pseudo-elements —
    browser-generated snapshots, not the consumer's elements — keyed on `neshel-pt-*` classes; R-1 holds.
    `view-transition-name`/`view-transition-class` are written through the Motion Host as internal exclusive

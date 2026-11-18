@@ -17,7 +17,7 @@ import type { Easing, EasingPreset } from "../../core/easing.js";
 import { attachEffect, type EffectDefinition, type EffectHandle } from "../../core/effect.js";
 import { animationsError } from "../../core/errors.js";
 import { clamp, mix } from "../../core/interpolate.js";
-import { type MotionValue, motionValue } from "../../core/motion-value.js";
+import type { MotionValue } from "../../core/motion-value.js";
 import { isEffectPreset, type PresetInput } from "../../core/preset.js";
 import {
   prefersReducedMotion,
@@ -26,6 +26,7 @@ import {
   subscribeReducedMotion,
 } from "../../core/reduced-motion.js";
 import { type FrameInfo, getFrameScheduler } from "../../core/scheduler.js";
+import { springCurve } from "../../core/spring-curve.js";
 import { validator } from "../../core/validate.js";
 import { counters } from "./debug.js";
 import {
@@ -73,7 +74,7 @@ export interface ValueTrackInput extends TrackTiming {
 
 export interface EffectTrackInput extends TrackTiming {
   target: Styled;
-  /** A drivable definition (Entrance E01–E09/E11) or a preset of one. */
+  /** An Entrance definition (E01–E09/E11) or a preset of one, triggered through its contract. */
   // biome-ignore lint/suspicious/noExplicitAny: definitions of any option types.
   effect: PresetInput<any, any>;
   options?: object;
@@ -162,6 +163,8 @@ interface Track {
   render(local: number, time: number, fire: boolean): void;
   release(): void;
   retarget?(to: Partial<Pose> | number): void;
+  pause?(): void;
+  resume?(): void;
 }
 
 interface CallEntry {
@@ -241,6 +244,8 @@ export function createTimeline(options: TimelineOptions = {}): Timeline {
   let edge = true; // a fresh run: calls exactly at the start edge fire
   let destroyed = false;
   let nested = false;
+  /** `finish()` in progress: triggered tracks show end states instead of animating. */
+  let jumping = false;
   let cancelTask: (() => void) | undefined;
   let unsubscribeReduced: (() => void) | undefined;
   let visibilityListener: (() => void) | undefined;
@@ -411,6 +416,13 @@ export function createTimeline(options: TimelineOptions = {}): Timeline {
     return track;
   }
 
+  /**
+   * Effect tracks TRIGGER an existing Entrance definition through its public contract (Phase 011 `hold` /
+   * `playback`, Phase 012 `continuous`, `replay`), passed as a value — the definition keeps its own clock
+   * and poses (nothing copied). Crossing the start forward plays it in, crossing back plays it out; a seek
+   * (or `finish()`) shows the state at that time without animation: the start pose before the start, the
+   * visible end state after it. Not scrubbable — pose/value tracks are.
+   */
   function effectTrack(input: EffectTrackInput, start: number): Track {
     const target = guardTarget(input.target, "effect");
     if (!input.effect) v.fail(`effect track: "effect" is required.`);
@@ -420,46 +432,86 @@ export function createTimeline(options: TimelineOptions = {}): Timeline {
     if (!definition || typeof definition.setup !== "function") {
       v.fail(`effect track: "effect" must be an effect definition or a preset.`);
     }
-    if (!definition.drivable) {
+    const base = isEffectPreset(input.effect) ? (input.effect.options as object) : undefined;
+    const options = { ...base, ...(input.options as object | undefined) };
+    const resolved = definition.resolve(options) as {
+      duration?: unknown;
+      delay?: number;
+      hold?: unknown;
+      playback?: unknown;
+      spring?: Parameters<typeof springCurve>[0];
+    };
+    if (
+      typeof resolved?.duration !== "number" ||
+      !("hold" in resolved) ||
+      !("playback" in resolved)
+    ) {
       v.fail(
-        `effect track: "${definition.id}" is not drivable by a timeline (Entrance definitions are).`,
+        `effect track: "${definition.id}" cannot be triggered by a timeline (Entrance definitions can).`,
       );
     }
-    const base = isEffectPreset(input.effect) ? (input.effect.options as object) : undefined;
-    const progress = motionValue(0);
-    const merged = { ...base, ...(input.options as object | undefined), progress };
-    const span = definition.drivable?.span(definition.resolve(merged)) ?? {
-      duration: 400,
-      delay: 0,
-      easing: standard,
-    };
-    const explicit = input.duration !== undefined;
-    const length = explicit
-      ? trackDuration("duration", input.duration, 400)
-      : span.delay + span.duration;
-    const delay = explicit ? 0 : span.delay;
-    const ease = resolveEase(input.easing, span.easing);
+    const own = resolved.spring
+      ? springCurve(resolved.spring).duration
+      : (resolved.duration as number);
+    const length =
+      input.duration !== undefined
+        ? trackDuration("duration", input.duration, 400)
+        : (resolved.delay ?? 0) + own;
+    const fill = input.fill ?? "both";
     let handle: EffectHandle<unknown> | undefined;
+    let shown: "start" | "end" | undefined;
+    let replay = 0;
+    const settings = (extra: object) => ({ ...options, continuous: true, ...extra });
     const track: Track = {
       id: input.id,
       kind: "effect",
       start,
       order: order++,
-      fill: input.fill ?? "both",
+      fill,
       last: Number.NaN,
       detached: false,
       target,
       duration: () => length,
-      render(local) {
+      render(local, _time, fire) {
         if (detachIfGone(track)) return;
-        const elapsed = local * length;
-        const p = length === 0 ? local : clamp((elapsed - delay) / (length - delay || 1), 0, 1);
-        progress.set(ease(p));
-        handle ??= attachEffect(target, definition, merged, { conflicts: o.conflicts });
+        const next = local > 0 ? "end" : "start";
+        if (next === shown) return;
+        const animate = fire && !jumping && shown !== undefined;
+        shown = next;
+        if (animate) {
+          handle ??= attachEffect(target, definition, settings({ appear: false, hold: true }), {
+            conflicts: o.conflicts,
+          });
+          replay++;
+          handle.update(
+            settings({
+              appear: false,
+              hold: next === "start",
+              replay,
+              playback: next === "end" ? "in" : "out",
+            }),
+          );
+          return;
+        }
+        // Seek / finish: the state at that time, without animation.
+        handle?.destroy();
+        handle = undefined;
+        if (next === "start" && fill === "both") {
+          handle = attachEffect(target, definition, settings({ appear: false, hold: true }), {
+            conflicts: o.conflicts,
+          });
+        }
       },
       release() {
         handle?.destroy();
         handle = undefined;
+        shown = undefined;
+      },
+      pause() {
+        handle?.pause();
+      },
+      resume() {
+        handle?.resume();
       },
     };
     return track;
@@ -872,6 +924,7 @@ export function createTimeline(options: TimelineOptions = {}): Timeline {
         settle("completed");
         return;
       }
+      for (const track of tracks) track.resume?.();
       startClock();
     },
     pause() {
@@ -879,6 +932,7 @@ export function createTimeline(options: TimelineOptions = {}): Timeline {
       mutate();
       core.state = "paused";
       stopClock();
+      for (const track of tracks) track.pause?.();
     },
     reverse() {
       if (destroyed || core.state === "failed") return;
@@ -907,7 +961,13 @@ export function createTimeline(options: TimelineOptions = {}): Timeline {
             : (iterationOf(total, true) + 1) * duration()
           : 0;
       if (core.state === "idle") core.state = "running";
-      const ok = advance(end, true);
+      jumping = true;
+      let ok: boolean;
+      try {
+        ok = advance(end, true);
+      } finally {
+        jumping = false;
+      }
       if (!ok || gen !== generation) return;
       emitUpdate();
       if (gen !== generation) return;

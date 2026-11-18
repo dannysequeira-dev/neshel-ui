@@ -222,10 +222,26 @@ test("C06 title sequence: lines staggered with a drivable entrance; background; 
     background,
   });
   assert.equal(tl.getTrack("title:line-2").start, 200);
+  tl.seekTo(0);
+  settle();
+  assert.ok(
+    lines.every((line) => opacityOf(line) === 0),
+    "every line held at its start pose",
+  );
   tl.seekTo(150);
   settle();
-  assert.ok(opacityOf(lines[0]) > 0.5 && opacityOf(lines[1]) < 0.5 && opacityOf(lines[2]) === 0);
-  assert.ok(scaleOf(background)[0] > 1, "background scale settling");
+  assert.ok(
+    opacityOf(lines[0]) === 1 && opacityOf(lines[1]) === 1 && opacityOf(lines[2]) === 0,
+    "lines past their start are shown",
+  );
+  assert.ok(scaleOf(background)[0] > 1, "background scale settling (scrubbed pose track)");
+  tl.play();
+  frames.flush(1);
+  frames.flush(5);
+  assert.ok(
+    opacityOf(lines[2]) > 0 && opacityOf(lines[2]) < 1,
+    "the last line plays in on its own clock",
+  );
   tl.seekTo(tl.duration);
   settle();
   assert.equal(lines.map((line) => line.style.cssText).join(""), "", "identity at the end");
@@ -237,7 +253,15 @@ test("C06 title sequence: lines staggered with a drivable entrance; background; 
   settle();
   assert.equal(translation(lines[0])[1], 0, "no travel under reduced motion");
   assert.equal(scaleOf(background)[0], 1, "background without scale");
-  assert.ok(opacityOf(lines[0]) < 1, "fade kept");
+  assert.ok(opacityOf(background) < 1, "background fades");
+  reduced.seekTo(0);
+  reduced.play();
+  frames.flush(3);
+  assert.equal(
+    translation(lines[1])[1],
+    0,
+    "lines fade (declared reduced behaviour), never travel",
+  );
   reduced.destroy();
   media.set(false);
   settle();

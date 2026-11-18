@@ -12,7 +12,7 @@ const entrance = await import("../dist/entrance/index.js");
 const hover = await import("../dist/hover/index.js");
 const core = await import("../dist/core/index.js");
 const { createTimeline, getCinematicDebugInfo, useTimeline } = cinematic;
-const { getFrameScheduler, attachEffect, motionValue } = core;
+const { getFrameScheduler, motionValue } = core;
 const { act } = await import("react");
 
 const settle = (limit = 600) => frames.settle(limit, 16);
@@ -433,65 +433,80 @@ test("retarget: continuous from the current value; seeking before the anchor sho
   a.remove();
 });
 
-test("effect tracks drive Entrance definitions (no own clock); non-drivable definitions are rejected", async () => {
+test("effect tracks trigger Entrance definitions through their contract; seek shows start/end states", async () => {
   const a = el("opacity: 0.8");
   const before = a.style.cssText;
   const tl = createTimeline();
-  tl.add({
-    id: "in",
-    target: a,
-    effect: entrance.fadeUp,
-    options: { distance: 40, duration: 200, easing: "linear" },
-  });
-  assert.equal(tl.duration, 200, "duration from the definition's span");
+  tl.add(
+    {
+      id: "in",
+      target: a,
+      effect: entrance.fadeUp,
+      options: { distance: 40, duration: 200, easing: "linear" },
+    },
+    100,
+  );
+  assert.equal(tl.duration, 300, "span from the definition's own timing");
   tl.seekTo(0);
   settle();
-  assert.equal(translation(a)[1], 40, "start pose");
+  assert.equal(translation(a)[1], 40, "start pose held before the start");
   assert.equal(opacityOf(a), 0);
-  tl.seekTo(100);
+  tl.seekTo(250);
   settle();
-  assert.equal(translation(a)[1], 20);
-  assert.ok(Math.abs(opacityOf(a) - 0.4) < 0.01, "0.5 × baseline 0.8");
-  frames.flush(30);
-  assert.equal(translation(a)[1], 20, "the entrance runs no clock of its own");
-  tl.seekTo(200);
+  assert.equal(a.style.cssText, before, "a seek past the start shows the visible end state");
+  tl.seekTo(50);
   settle();
+  assert.equal(opacityOf(a), 0, "seeking back holds the start pose again");
+  tl.play();
+  frames.flush(1);
+  frames.flush(5); // crosses 100 ms: the entrance plays on its own clock
+  frames.flush(4);
+  assert.ok(translation(a)[1] > 0 && translation(a)[1] < 40, `playing in: ${a.style.transform}`);
+  tl.pause();
+  const paused = a.style.transform;
+  frames.flush(6);
+  assert.equal(a.style.transform, paused, "pausing the timeline pauses the triggered run");
+  tl.play();
+  settle();
+  assert.equal(tl.state, "completed");
   assert.equal(a.style.cssText, before, "identity at the end: baseline restored");
+  tl.reverse();
+  frames.flush(12);
+  settle();
+  assert.equal(opacityOf(a), 0, "reverse plays it out and holds the start pose");
   tl.destroy();
   settle();
   assert.equal(a.style.cssText, before);
   assert.throws(
     () => createTimeline().add({ target: a, effect: hover.lift }),
-    /not drivable by a timeline/,
+    /cannot be triggered by a timeline/,
   );
-  // E11 spring: span from the spring curve.
   const spring = createTimeline().add({ target: a, effect: entrance.springIn });
   assert.ok(spring.duration > 200 && spring.duration < 4000, `spring span ${spring.duration}`);
   spring.destroy();
+  const finishing = createTimeline();
+  finishing.add({ target: a, effect: entrance.fadeIn, options: { duration: 2000 } });
+  finishing.play();
+  frames.flush(2);
+  finishing.finish();
+  settle();
+  assert.equal(a.style.cssText, before, "finish() shows the end state at once");
+  finishing.destroy();
   idle();
   a.remove();
 });
 
-test("entrance progress option: reduced motion uses the declared behaviour; invalid values rejected", () => {
+test("effect tracks under reduced motion: the entrance follows its declared behaviour (no hidden content)", () => {
   const a = el();
-  const progress = motionValue(0.5);
   media.set(true);
-  const handle = attachEffect(a, entrance.fadeSlide, { progress, distance: 40 });
+  const tl = createTimeline({ reducedMotion: "never" });
+  tl.add({ target: a, effect: entrance.fadeUp }, 100);
+  tl.seekTo(0);
   settle();
-  assert.equal(translation(a)[1], 0, "fade behaviour: no travel");
-  assert.ok(opacityOf(a) > 0 && opacityOf(a) < 1);
-  handle.destroy();
-  const instant = attachEffect(a, entrance.fadeIn, { progress });
-  settle();
-  assert.equal(a.style.opacity, "", "instant behaviour: no contribution");
+  assert.equal(a.style.cssText, "", "hold is ignored under reduced motion: content visible");
   media.set(false);
-  progress.set(0.25);
+  tl.destroy();
   settle();
-  assert.ok(opacityOf(a) < 0.5, "live off: renders the external progress again");
-  instant.destroy();
-  settle();
-  assert.equal(a.style.cssText, "");
-  assert.throws(() => attachEffect(a, entrance.fadeIn, { progress: 3 }), /expected a motion value/);
   a.remove();
 });
 

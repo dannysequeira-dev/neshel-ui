@@ -42,5 +42,20 @@
   "hover: cursorFollower definition (no React)": 5734,
   "press: longPress definition (no React)": 8806,
   "css: gestures.css": 1024,
-  "css: layout.css": 922
+  "css: layout.css": 922,
+  "css: cinematic.css": 1792,
+  "css: page-transitions.css": 1843,
+  "css: page-transitions-mpa.css": 1997,
+  "cinematic: createTimeline (engine, no React)": 12032,
+  "cinematic: useTimeline": 12288,
+  "cinematic: SceneChapters + Chapter + SceneSegment": 15616,
+  "cinematic: CameraStage": 9472,
+  "cinematic: Storyboard": 14336,
+  "cinematic: entire entry": 25600,
+  "page-transitions: startPageTransition (engine, no React)": 8704,
+  "page-transitions: PageTransition + SharedElement": 2970,
+  "page-transitions: RouteProgress": 3482,
+  "page-transitions: entire entry": 13312,
+  "page-transitions/next: adapter (next external)": 4915,
+  "page-transitions/react-router: adapter (react-router external)": 4608
 }

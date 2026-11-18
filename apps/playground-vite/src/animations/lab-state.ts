@@ -46,7 +46,9 @@ export interface LabState {
   /** Phase 013 cinematic/page-transitions gallery (set after mount). */
   cinematic?: {
     runCinematicSuite(): Promise<Array<{ id: string; ok: boolean; error?: string }>>;
-    runPageSuite(): Promise<Array<{ id: string; ok: boolean; error?: string }>>;
+    runPageSuite(
+      skip?: readonly string[],
+    ): Promise<Array<{ id: string; ok: boolean; error?: string }>>;
     reducedFacts(): Promise<Record<string, unknown>>;
     debug(): unknown;
     commits(): number;
