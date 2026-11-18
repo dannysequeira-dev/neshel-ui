@@ -9,6 +9,12 @@ every property the motion host writes: `transform`, `opacity`, `filter`, `clip-p
 All engine writes to an element go through its **style ledger** (owned by the motion host). No effect,
 controller or driver writes `element.style` for a managed property directly.
 
+The element keeps **one** host for its whole lifetime (stabilization of issue #11, 2026-11-17): a host
+whose ledger became idle (every property restored, no layer, contribution or claim) stays registered —
+attachments and controllers keep the host they were created with, and a replacement host would be a
+second ledger writing the same properties, each adopting the other's writes as the §5 baseline. An idle
+host holds nothing and is released with the element (weak registry); diagnostics report it as absent.
+
 ## §2 Capture
 
 On the first claim of a property, the ledger captures the element's **inline** declaration:

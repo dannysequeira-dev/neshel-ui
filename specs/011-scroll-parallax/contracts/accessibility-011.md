@@ -21,6 +21,10 @@
   reported outside the trigger area; never under reduced motion, without IntersectionObserver, after
   `beforeprint`, or for hydrated content already in view. A held element is revealed by any intersection
   (scroll, anchor, keyboard focus moving the page). Destroy restores the element exactly.
+- Reduced motion switched on releases a held reveal (shown at once). Switched off again (stabilization of
+  issue #11, 2026-11-17), the hold returns only while the element is still reported outside the trigger
+  area (before it; after it in `repeat` mode), from the next frame; content inside the area stays as it is
+  and its entrance is never replayed from the hidden start pose.
 - ST06 shows the header while focus is inside it, at the top of the page and on backward scroll; a hidden
   header is moved with `transform` only (its links stay in the tab order and become visible on focus).
 

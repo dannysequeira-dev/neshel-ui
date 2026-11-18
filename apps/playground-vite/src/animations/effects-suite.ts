@@ -6,6 +6,7 @@
 import { attachEffect } from "@neshel-ui/animations/core";
 import { clipReveal, maskWipe } from "@neshel-ui/animations/entrance";
 import { borderSweep, glow, lift, shine, spotlight, underline } from "@neshel-ui/animations/hover";
+import { labState } from "./lab-state";
 
 type Case = { id: string; ok: boolean; error?: string };
 
@@ -337,18 +338,165 @@ export async function runEffectsSuite(): Promise<Case[]> {
     input.click();
   });
 
-  await run("press: content swap hides the idle slot and shows the confirmation", async () => {
-    byId("press-copy").click();
+  // P10 (issue #9). The demo resets `copied` 1.5 s after a click; a check that waits for the end of the
+  // swap must not race that timer (a main-thread stall of ~1.5 s on a contended runner used to hide the
+  // swapped state behind the reset), so the confirmation is held while it is observed and the reverse
+  // swap is checked explicitly. Diagnostics: timestamps of each slot transition.
+  const swapSlots = () => {
     const swap = byId("press-swap");
-    const idle = swap.children[0] as HTMLElement;
-    const confirm = swap.children[1] as HTMLElement;
-    await until(
-      "swapped",
-      () => idle.hidden && computed(idle).display === "none" && computed(confirm).opacity === "1",
-      () => ({ idle: computed(idle).display, confirm: computed(confirm).opacity }),
+    return {
+      swap,
+      idle: swap.children[0] as HTMLElement,
+      confirm: swap.children[1] as HTMLElement,
+    };
+  };
+  const swapShown = (slot: HTMLElement, other: HTMLElement) =>
+    !slot.hidden &&
+    other.hidden &&
+    computed(other).display === "none" &&
+    computed(slot).opacity === "1" &&
+    computed(slot).translate === "none";
+  const swapTrace = () => {
+    const { swap, idle, confirm } = swapSlots();
+    const start = performance.now();
+    const log: Array<[number, string]> = [];
+    const observer = new MutationObserver(() =>
+      log.push([Math.round(performance.now() - start), swap.getAttribute("data-state") ?? ""]),
     );
-    check(swap.getAttribute("data-neshel-fx") === "content-swap", "token");
+    observer.observe(swap, { attributes: true, attributeFilter: ["data-state"] });
+    return {
+      stop: () => observer.disconnect(),
+      describe: () => ({
+        elapsed: Math.round(performance.now() - start),
+        state: swap.getAttribute("data-state"),
+        stateChanges: log,
+        idle: {
+          hidden: idle.hidden,
+          display: computed(idle).display,
+          opacity: computed(idle).opacity,
+        },
+        confirm: {
+          hidden: confirm.hidden,
+          display: computed(confirm).display,
+          opacity: computed(confirm).opacity,
+          translate: computed(confirm).translate,
+        },
+        fx: swap.getAttribute("data-neshel-fx"),
+        reducedFx: swap.getAttribute("data-neshel-fx-reduced"),
+        animations: swap.getAnimations({ subtree: true }).length,
+      }),
+    };
+  };
+  const swapLab = () => {
+    const lab = labState().effects;
+    if (!lab) throw new Error("effects lab not mounted");
+    return lab;
+  };
+  /** Back to the idle slot with every transition finished (reset by the demo's own timer). */
+  async function swapIdle(label: string) {
+    const { idle, confirm } = swapSlots();
+    const trace = swapTrace();
+    try {
+      swapLab().holdCopied(false);
+      await until(label, () => swapShown(idle, confirm), trace.describe);
+    } finally {
+      trace.stop();
+    }
+  }
+
+  await run("press: content swap hides the idle slot and shows the confirmation", async () => {
+    const { swap, idle, confirm } = swapSlots();
+    await swapIdle("idle before the click");
+    swapLab().holdCopied(true);
+    const trace = swapTrace();
+    try {
+      byId("press-copy").click();
+      await until("swapped", () => swapShown(confirm, idle), trace.describe);
+      check(swap.getAttribute("data-neshel-fx") === "content-swap", "token");
+    } finally {
+      trace.stop();
+    }
+    // Releasing the hold lets the demo reset `copied`: the swap plays back to the idle slot.
+    await swapIdle("swapped back after the reset");
   });
+
+  await run(
+    "press: content swap — rapid toggles mid-transition always end on exactly one visible slot",
+    async () => {
+      const { idle, confirm } = swapSlots();
+      await swapIdle("idle before the toggles");
+      const lab = swapLab();
+      lab.holdCopied(true);
+      const trace = swapTrace();
+      try {
+        for (const value of [true, false, true, false, true]) {
+          lab.setCopied(value);
+          await frame();
+          check(idle.hidden !== confirm.hidden, `both slots ${idle.hidden ? "hidden" : "shown"}`);
+        }
+        await until(
+          "confirmation after the toggles",
+          () => swapShown(confirm, idle),
+          trace.describe,
+        );
+        lab.setCopied(false);
+        await frame();
+        lab.setCopied(true);
+        await frame();
+        lab.setCopied(false);
+        await until("idle after the toggles", () => swapShown(idle, confirm), trace.describe);
+      } finally {
+        trace.stop();
+        lab.holdCopied(false);
+      }
+    },
+  );
+
+  await run(
+    "press: content swap — reduced motion switched on mid-swap keeps an opacity-only, complete swap",
+    async () => {
+      const { swap, idle, confirm } = swapSlots();
+      await swapIdle("idle before the swap");
+      const lab = swapLab();
+      lab.holdCopied(true);
+      const trace = swapTrace();
+      try {
+        lab.setCopied(true);
+        await frame();
+        lab.setReduced(true);
+        await until(
+          "reduced token",
+          () => (swap.getAttribute("data-neshel-fx-reduced") ?? "").includes("content-swap"),
+          trace.describe,
+        );
+        await until("confirmation (reduced)", () => swapShown(confirm, idle), trace.describe);
+        lab.setCopied(false);
+        await until("idle (reduced)", () => swapShown(idle, confirm), trace.describe);
+        lab.setReduced(false);
+        await until(
+          "reduced token removed",
+          () => !(swap.getAttribute("data-neshel-fx-reduced") ?? "").includes("content-swap"),
+          trace.describe,
+        );
+        lab.setCopied(true);
+        await until(
+          "confirmation after reduced motion",
+          () => swapShown(confirm, idle),
+          trace.describe,
+        );
+      } finally {
+        trace.stop();
+        lab.setReduced(false);
+        lab.setCopied(false);
+        lab.holdCopied(false);
+      }
+      await until(
+        "idle at the end",
+        () => swapShown(idle, confirm),
+        () => null,
+      );
+    },
+  );
 
   await run(
     "press: number tick counts in the aria-hidden copy; the accessible copy is final",

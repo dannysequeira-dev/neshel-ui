@@ -16,6 +16,8 @@ export function getMotionDebugInfo(element: object): MotionDebugInfo | undefined
   const host = peekMotionHost(element);
   if (!host) return undefined;
   const { layers, opacities, records, owners, values, writes } = host;
+  // An idle host (nothing contributed, claimed or held) reports like no host at all.
+  if (layers.size + opacities.size + records.size === 0 && !host.holding()) return undefined;
   const channels: MotionDebugInfo["channels"] = [];
   if (layers.size > 0) {
     channels.push({

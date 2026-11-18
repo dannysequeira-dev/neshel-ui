@@ -1,7 +1,7 @@
 // Press & Microinteractions (Phase 010 FR-022, FR-060; contracts/effects-010.md §3, accessibility-010.md §3).
 import assert from "node:assert/strict";
 import test, { mock } from "node:test";
-import { Profiler } from "react";
+import { Profiler, StrictMode } from "react";
 import {
   frames,
   h,
@@ -495,6 +495,32 @@ test("<ContentSwap>: hidden inactive slot, CSS token while attached, reduced tok
   media.set(true);
   assert.equal(swap.getAttribute("data-neshel-fx-reduced"), "content-swap");
   media.set(false);
+  await app.unmount();
+  assert.equal(swap.getAttribute("data-neshel-fx"), null);
+});
+
+// Issue #9: the swap must stay consistent through StrictMode's double setup and rapid state changes
+// (the browser lab checks the CSS transitions themselves).
+test("<ContentSwap>: StrictMode setup keeps the token; rapid toggles keep exactly one visible slot", async () => {
+  const tree = (active) =>
+    h(StrictMode, null, h(ContentSwap, { active, confirm: "Copied", id: "s2" }, "Copy"));
+  const app = await mount(tree(false));
+  const swap = app.container.querySelector("#s2");
+  assert.equal(swap.getAttribute("data-neshel-fx"), "content-swap", "token after StrictMode setup");
+  const [idle, confirm] = swap.children;
+  for (const active of [true, false, true, true, false, true]) {
+    await app.render(tree(active));
+    assert.equal(swap.getAttribute("data-state"), active ? "active" : "idle");
+    assert.equal(idle.hidden, active);
+    assert.equal(confirm.hidden, !active);
+    assert.equal(swap.getAttribute("data-neshel-fx"), "content-swap");
+  }
+  media.set(true);
+  await app.render(tree(false));
+  assert.equal(swap.getAttribute("data-neshel-fx-reduced"), "content-swap");
+  assert.equal(idle.hidden, false);
+  media.set(false);
+  assert.equal(swap.getAttribute("data-neshel-fx-reduced"), null, "reduced token removed live");
   await app.unmount();
   assert.equal(swap.getAttribute("data-neshel-fx"), null);
 });
