@@ -740,6 +740,79 @@ async function main() {
         notes.gesturesReduced = facts;
       },
     );
+
+    // Phase 013 cinematic & page-transitions gallery: the in-page suites (shared with Playwright), then REAL
+    // keyboard focus into the camera canvas and a real pointer over the storyboard, and the live
+    // reduced-motion facts (instant effects start no View Transition; depth of field never blurs).
+    const cinematicCases = await p.evaluate("window.__neshelLab.cinematic.runCinematicSuite()");
+    for (const item of cinematicCases) cases.push(item);
+    const pageCases = await p.evaluate("window.__neshelLab.cinematic.runPageSuite()");
+    for (const item of pageCases) cases.push(item);
+    await run(
+      "C03 real keyboard: Tab into the canvas pans the camera to the focused card",
+      async () => {
+        await p.evaluate(
+          `(() => { const s = document.getElementById("c03-stage"); s.scrollIntoView({ block: "center" }); s.focus(); })()`,
+        );
+        const before = await p.evaluate(
+          `document.querySelector("#c03-stage .neshel-camera-canvas").style.transform`,
+        );
+        await p.send("Input.dispatchKeyEvent", {
+          type: "keyDown",
+          key: "Tab",
+          code: "Tab",
+          windowsVirtualKeyCode: 9,
+        });
+        await p.send("Input.dispatchKeyEvent", {
+          type: "keyUp",
+          key: "Tab",
+          code: "Tab",
+          windowsVirtualKeyCode: 9,
+        });
+        check(
+          (await p.evaluate("document.activeElement?.id")) === "c03-card-0",
+          "focus moved into the canvas",
+        );
+        await until(
+          `document.querySelector("#c03-stage .neshel-camera-canvas").style.transform !== ${JSON.stringify(before)}`,
+          `document.querySelector("#c03-stage .neshel-camera-canvas").style.transform`,
+        );
+      },
+    );
+    await run("C09 real pointer: hovering the storyboard pauses the rotation", async () => {
+      const box = await p.evaluate(
+        `(() => { const s = document.getElementById("c09"); s.scrollIntoView({ block: "center" }); const r = s.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; })()`,
+      );
+      await p.evaluate(
+        `document.querySelector("#c09 .neshel-storyboard-rotation").getAttribute("aria-label").startsWith("Start") && document.querySelector("#c09 .neshel-storyboard-rotation").click()`,
+      );
+      await p.send("Input.dispatchMouseEvent", { type: "mouseMoved", x: box.x, y: box.y });
+      const held = await p.evaluate(
+        `[...document.querySelectorAll("#c09 .neshel-storyboard-frame")].findIndex((f) => f.hasAttribute("data-current"))`,
+      );
+      await p.evaluate("new Promise((r) => setTimeout(r, 2600))");
+      const after = await p.evaluate(
+        `[...document.querySelectorAll("#c09 .neshel-storyboard-frame")].findIndex((f) => f.hasAttribute("data-current"))`,
+      );
+      await p.send("Input.dispatchMouseEvent", { type: "mouseMoved", x: 1, y: 1 });
+      check(held === after, `frame changed while hovered (${held} → ${after})`);
+    });
+    await run(
+      "phase 013: reduced motion live — instant page effects start no transition; no blur; no autoplay",
+      async () => {
+        await motionPreference("reduce");
+        const facts = await p.evaluate("window.__neshelLab.cinematic.reducedFacts()");
+        await motionPreference("no-preference");
+        check(facts.reduced === true, JSON.stringify(facts));
+        check(
+          facts.wipeStartedTransitions === 0 && facts.wipeNative === false,
+          JSON.stringify(facts),
+        );
+        check(facts.depthBlur === "", `blur under reduced motion: ${facts.depthBlur}`);
+        check(String(facts.storyboardRotation).startsWith("Start"), JSON.stringify(facts));
+        notes.cinematicReduced = facts;
+      },
+    );
     notes.effects = await p.evaluate("window.__neshelLab.notes");
 
     await run("axe: no violations on the lab page", async () => {

@@ -9,7 +9,13 @@ export default defineConfig({
   build: {
     rollupOptions: {
       // Paths relative to the Vite root. `animations.html` hosts the feature 008.0 experiments.
-      input: { main: "index.html", animations: "animations.html" },
+      input: {
+        main: "index.html",
+        animations: "animations.html",
+        // Phase 013 PT09: two same-origin documents for cross-document View Transitions.
+        "mpa-a": "mpa-a.html",
+        "mpa-b": "mpa-b.html",
+      },
     },
   },
 });

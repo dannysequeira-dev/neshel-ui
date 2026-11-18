@@ -3,7 +3,8 @@
  *
  * An oversized package-rendered lens (`.neshel-spotlight`, 4000 × 4000 px, a fixed radial hole of 200 px
  * drawn once by CSS) is moved and scaled by ONE Motion Host transform layer, so the gradient is never
- * repainted per frame. The stage clips it (`overflow: clip` from `cinematic.css`); the dimmed content stays
+ * repainted per frame. A package layer (`.neshel-spotlight-layer`) clips it — the stage content itself is
+ * never clipped; the dimmed content stays
  * in the accessibility tree and interactive (the lens has no pointer events). Geometry is read once per
  * `focus()`/`track()` from the offset chain (transforms ignored), never per frame.
  */
@@ -60,15 +61,23 @@ export function createSpotlight(stage: HTMLElement, options: SpotlightOptions = 
   const padding = v.number("padding", o.padding, 16, 0, 200);
   const policy = v.reducedMotion(o.reducedMotion);
   if (!stage?.ownerDocument) v.fail('"stage" must be an element.');
-  let found = stage.querySelector<HTMLElement>(":scope > .neshel-spotlight");
-  const created = !found;
+  // The lens lives in a package layer that clips it, so the stage content is never clipped.
+  let layer = stage.querySelector<HTMLElement>(":scope > .neshel-spotlight-layer");
+  const created = !layer;
+  if (!layer) {
+    layer = stage.ownerDocument.createElement("div");
+    layer.className = "neshel-spotlight-layer";
+    layer.setAttribute("aria-hidden", "true");
+    stage.appendChild(layer);
+  }
+  let found = layer.querySelector<HTMLElement>(":scope > .neshel-spotlight");
   if (!found) {
     found = stage.ownerDocument.createElement("div");
     found.className = "neshel-spotlight";
-    found.setAttribute("aria-hidden", "true");
-    stage.appendChild(found);
+    layer.appendChild(found);
   }
   const lens = found;
+  const lensLayer = layer;
   lens.setAttribute("hidden", "");
   const writer = createPoseWriter(lens as Styled, { id: "cinematic/spotlight" });
   const progress = createAnimatedProgress(0, () => policy);
@@ -177,7 +186,7 @@ export function createSpotlight(stage: HTMLElement, options: SpotlightOptions = 
       unsubscribe();
       writer.clear();
       destroyed = true;
-      if (created) lens.remove();
+      if (created) lensLayer.remove();
       else lens.setAttribute("hidden", "");
     },
   };

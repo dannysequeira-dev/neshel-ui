@@ -890,3 +890,122 @@ body {
   border-radius: 0.5rem;
   background: var(--neshel-muted, #f1f5f9);
 }
+
+/* Phase 013 gallery */
+.c-track {
+  display: grid;
+  gap: 8px;
+  padding: 8px 0;
+}
+.c-box {
+  width: 32px;
+  height: 20px;
+  border-radius: 4px;
+  background: #6366f1;
+}
+.c-stage {
+  width: 100%;
+  height: 180px;
+  border: 1px solid #c7c7d1;
+  border-radius: 8px;
+}
+.c-canvas {
+  display: grid;
+  grid-template-columns: repeat(3, 360px);
+  gap: 40px;
+  padding: 40px;
+  background: repeating-linear-gradient(45deg, #f4f4f8 0 20px, #ececf3 20px 40px);
+}
+.c-card {
+  height: 240px;
+  border: 2px solid #4f46e5;
+  border-radius: 12px;
+  background: #fff;
+  font-size: 1.5rem;
+}
+.c-panel {
+  min-height: 90px;
+  padding: 12px;
+  border: 1px solid #c7c7d1;
+  border-radius: 8px;
+  background: #fff;
+}
+.c-title-bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #e0e7ff, #fce7f3);
+}
+.c-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin: 0;
+  padding: 20px;
+  list-style: none;
+}
+.c-depth {
+  display: grid;
+  gap: 6px;
+}
+.c-layer {
+  padding: 10px;
+  border-radius: 6px;
+  background: #eef2ff;
+}
+.c-frame {
+  margin: 0;
+  padding: 24px;
+  border-radius: 8px;
+  background: #f5f3ff;
+}
+.c-letterbox {
+  height: 160px;
+  display: grid;
+  place-items: center;
+  background: linear-gradient(135deg, #0ea5e9, #6366f1);
+  color: #fff;
+}
+.c-chapters {
+  display: grid;
+  gap: 16px;
+  padding: 40px;
+}
+.pt-app {
+  position: relative;
+  display: grid;
+  gap: 8px;
+  margin-block: 12px;
+}
+.pt-player {
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: #111827;
+  color: #fff;
+  width: max-content;
+}
+.pt-page {
+  padding: 16px;
+  border: 1px solid #c7c7d1;
+  border-radius: 12px;
+  background: #fff;
+}
+.pt-thumb {
+  width: 80px;
+  height: 60px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+}
+.pt-hero {
+  width: 100%;
+  height: 160px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #f59e0b, #ef4444);
+}
+.pt-vanilla {
+  padding: 8px;
+  border-radius: 6px;
+  background: #f1f5f9;
+}
+.pt-progress {
+  color: #4f46e5;
+}

@@ -565,7 +565,9 @@ export function Spotlight({
   return (
     <div {...rest} ref={setRef} className={joinClass("neshel-spotlight-stage", className)}>
       {children}
-      <div className="neshel-spotlight" aria-hidden="true" hidden />
+      <div className="neshel-spotlight-layer" aria-hidden="true">
+        <div className="neshel-spotlight" hidden />
+      </div>
     </div>
   );
 }

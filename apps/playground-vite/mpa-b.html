@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Neshel-UI MPA transition — page b</title>
+    <script>
+      // Lab instrumentation (classic, render-blocking): records whether each navigation was revealed
+      // with a cross-document View Transition (Chromium/WebKit) or plainly (fallback).
+      (() => {
+        var key = "neshel-mpa-log";
+        function push(entry) {
+          var log = JSON.parse(sessionStorage.getItem(key) || "[]");
+          log.push(entry);
+          sessionStorage.setItem(key, JSON.stringify(log));
+        }
+        addEventListener("pagereveal", (event) => {
+          push({ page: "b", event: "pagereveal", vt: !!event.viewTransition, type: window.navigation?.activation?.navigationType });
+        });
+        addEventListener("pageswap", (event) => {
+          push({ page: "b", event: "pageswap", vt: !!event.viewTransition });
+        });
+        addEventListener("load", () => {
+          push({ page: "b", event: "load" });
+        });
+      })();
+    </script>
+  </head>
+  <body class="mpa">
+    <main id="mpa-main">
+      <div class="mpa-hero mpa-hero-b" id="mpa-hero"></div>
+      <h1 id="mpa-title">Chapter two</h1>
+      <p>Cross-document View Transition (PT09): native where supported, plain navigation elsewhere.</p>
+      <a id="mpa-next" href="./mpa-a.html">Go to page a</a>
+      <a href="./animations.html">Back to the lab</a>
+    </main>
+    <script type="module" src="/src/mpa/mpa.ts"></script>
+  </body>
+</html>

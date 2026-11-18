@@ -14,6 +14,8 @@
 /* C03 — camera: a scrollable region without JS; clipped and transformed with the camera. */
 .neshel-camera-stage {
   position: relative;
+  /* `overflow: clip` is not a scroll container, so the canvas would otherwise widen grid/flex parents. */
+  min-inline-size: 0;
   overflow: auto;
   overscroll-behavior: contain;
 }
@@ -28,12 +30,13 @@
 /* C04 / C05 — covers. */
 .neshel-cover {
   position: relative;
-  overflow: clip;
 }
+/* The package layer clips its own panels: the consumer content is never clipped. */
 .neshel-cover-layers {
   position: absolute;
   inset: 0;
   z-index: var(--neshel-cover-z, 2);
+  overflow: clip;
   pointer-events: none;
 }
 .neshel-cover-layers[hidden] {
@@ -94,10 +97,20 @@
   pointer-events: none;
 }
 
-/* C07 — spotlight lens: 4000 px square with a 200 px transparent hole, moved by transform only. */
+/* C07 — spotlight lens: 4000 px square with a 200 px transparent hole, moved by transform only, inside a
+   package layer that clips it (the stage content itself is never clipped). */
 .neshel-spotlight-stage {
   position: relative;
+}
+.neshel-spotlight-layer {
+  position: absolute;
+  inset: 0;
+  z-index: var(--neshel-spotlight-z, 3);
   overflow: clip;
+  pointer-events: none;
+}
+.neshel-spotlight-layer:has(> .neshel-spotlight[hidden]) {
+  display: none;
 }
 .neshel-spotlight {
   position: absolute;
@@ -114,7 +127,6 @@
     var(--neshel-spotlight-dim, rgb(0 0 0 / 0.62))
       calc(200px + var(--neshel-spotlight-feather, 48px))
   );
-  z-index: var(--neshel-spotlight-z, 3);
 }
 .neshel-spotlight[hidden] {
   display: none;
@@ -135,6 +147,8 @@
 }
 .neshel-storyboard[data-neshel-storyboard] > .neshel-storyboard-frames {
   display: grid;
+  /* Slide changes move frames sideways: never let them widen the page. */
+  overflow: clip;
 }
 .neshel-storyboard[data-neshel-storyboard] > .neshel-storyboard-frames > .neshel-storyboard-frame {
   grid-area: 1 / 1;

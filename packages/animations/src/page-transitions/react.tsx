@@ -18,7 +18,6 @@ import {
 } from "react";
 import { joinClass, renderHost, useHostRef } from "../react/motion-host.js";
 import {
-  EFFECT_ATTRIBUTE,
   type PageEffect,
   type PageTransitionOptions,
   startPageTransition,
@@ -229,9 +228,9 @@ export function usePageTransition(): { start(update: () => void, options?: Start
       const direction =
         options.direction && options.direction !== "auto" ? options.direction : undefined;
       if (getReactViewTransition() && addTransitionType && !options.native) {
-        const root = document.documentElement;
-        root.setAttribute(EFFECT_ATTRIBUTE, effect);
-        if (direction) root.setAttribute("data-neshel-pt-direction", direction);
+        // The effect comes from the <PageTransition> boundaries; an explicit direction is published like the
+        // tracker does (it describes the latest navigation and stays until the next one).
+        if (direction) document.documentElement.setAttribute("data-neshel-pt-direction", direction);
         startTransition(() => {
           addTransitionType(`neshel-${effect}`);
           if (direction) addTransitionType(`neshel-${direction}`);

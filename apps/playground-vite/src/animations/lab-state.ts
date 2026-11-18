@@ -43,6 +43,17 @@ export interface LabState {
     reducedFacts(): Promise<Record<string, unknown>>;
     debug(): unknown;
   };
+  /** Phase 013 cinematic/page-transitions gallery (set after mount). */
+  cinematic?: {
+    runCinematicSuite(): Promise<Array<{ id: string; ok: boolean; error?: string }>>;
+    runPageSuite(): Promise<Array<{ id: string; ok: boolean; error?: string }>>;
+    reducedFacts(): Promise<Record<string, unknown>>;
+    debug(): unknown;
+    commits(): number;
+    timeline(): import("@neshel-ui/animations/cinematic").TimelineHandle;
+    camera(): import("@neshel-ui/animations/cinematic").CameraHandle;
+    setPage(page: "list" | "detail"): void;
+  };
   /** Observations reported by in-page suites (not pass/fail). */
   notes: Record<string, unknown>;
 }

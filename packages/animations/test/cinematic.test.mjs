@@ -251,7 +251,8 @@ test("C07 spotlight: lens moved by one layer from a single measurement; clear hi
   box(target, { x: 300, y: 200, width: 100, height: 50 });
   const before = cinematic.getCinematicDebugInfo().reads;
   const spotlight = cinematic.createSpotlight(stage, { radius: 100 });
-  const lens = stage.querySelector(".neshel-spotlight");
+  const lens = stage.querySelector(".neshel-spotlight-layer > .neshel-spotlight");
+  assert.equal(stage.querySelector(".neshel-spotlight-layer").getAttribute("aria-hidden"), "true");
   assert.equal(lens.hasAttribute("hidden"), true);
   const done = spotlight.focus(target, { duration: 160 });
   frames.flush(3);
@@ -278,7 +279,7 @@ test("C07 spotlight: lens moved by one layer from a single measurement; clear hi
   assert.equal(lens.hasAttribute("hidden"), false, "reduced: placed without motion");
   media.set(false);
   spotlight.destroy();
-  assert.equal(stage.querySelector(".neshel-spotlight"), null);
+  assert.equal(stage.querySelector(".neshel-spotlight-layer"), null);
   settle();
   stage.remove();
 });
