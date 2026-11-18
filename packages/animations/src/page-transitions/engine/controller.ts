@@ -263,8 +263,21 @@ export function startPageTransition(
     const timeout = new Promise<"timeout">((resolve) => {
       timer = setTimeout(() => resolve("timeout"), maxWait);
     });
-    const outcome = await Promise.race([run.then(() => "done" as const), timeout]);
+    // The browser callback never rejects: a failing update skips the animation and is reported through
+    // `updated`/`finished` (some engines log a rejected update callback as an uncaught error).
+    const outcome = await Promise.race([
+      run.then(
+        () => "done" as const,
+        () => "failed" as const,
+      ),
+      timeout,
+    ]);
     clearTimeout(timer);
+    if (outcome === "failed") {
+      skipped = true;
+      vt?.skipTransition();
+      return;
+    }
     if (outcome === "timeout") {
       // Unfreeze rendering: the transition is skipped, the update keeps running.
       skipped = true;

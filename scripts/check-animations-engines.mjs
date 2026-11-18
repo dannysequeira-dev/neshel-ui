@@ -304,6 +304,72 @@ async function runEngine(playwright, engine, url, throttle) {
       },
     );
 
+    // Phase 013 cinematic & page-transitions gallery: the same in-page suites as the Chrome check (native View
+    // Transition facts are observed per engine), the live reduced-motion facts and a REAL cross-document
+    // navigation between the two MPA pages (native in Chromium/WebKit; plain navigation in Firefox).
+    await page.mouse.move(1, 1);
+    const cinematicSuite = await page.evaluate(() =>
+      window.__neshelLab.cinematic.runCinematicSuite(),
+    );
+    for (const item of cinematicSuite) cases.push(item);
+    const pageSuite = await page.evaluate(() => window.__neshelLab.cinematic.runPageSuite());
+    for (const item of pageSuite) cases.push(item);
+    await run(
+      "phase 013: reduced motion live — instant page effects start no transition; no blur; no autoplay",
+      async () => {
+        await page.emulateMedia({ reducedMotion: "reduce" });
+        const facts = await page.evaluate(() => window.__neshelLab.cinematic.reducedFacts());
+        await page.emulateMedia({ reducedMotion: "no-preference" });
+        check(
+          facts.reduced === true &&
+            facts.wipeStartedTransitions === 0 &&
+            facts.depthBlur === "" &&
+            String(facts.storyboardRotation).startsWith("Start"),
+          JSON.stringify(facts),
+        );
+      },
+    );
+    notes.viewTransitionSupport = await page.evaluate(
+      () => window.__neshelLab.notes.viewTransitions,
+    );
+    notes.timelineStress = await page.evaluate(() => window.__neshelLab.notes.timelineStress);
+    await run(
+      "PT09 cross-document navigation (MPA): native where supported, plain navigation otherwise",
+      async () => {
+        const mpa = await context.newPage();
+        try {
+          await mpa.goto(url.replace("animations.html", "mpa-a.html"));
+          await mpa.evaluate(() => sessionStorage.removeItem("neshel-mpa-log"));
+          await mpa.click("#mpa-next");
+          await mpa.waitForURL(/mpa-b\.html/);
+          await mpa.waitForFunction(() =>
+            JSON.parse(sessionStorage.getItem("neshel-mpa-log") || "[]").some(
+              (entry) => entry.page === "b" && entry.event === "load",
+            ),
+          );
+          const log = await mpa.evaluate(() =>
+            JSON.parse(sessionStorage.getItem("neshel-mpa-log") || "[]"),
+          );
+          const supported = await mpa.evaluate(() => "onpagereveal" in window);
+          const reveal = log.find((entry) => entry.page === "b" && entry.event === "pagereveal");
+          notes.mpa = { supported, log };
+          check(
+            (await mpa.textContent("#mpa-title")) === "Chapter two",
+            "the navigation completed",
+          );
+          if (supported)
+            check(reveal?.vt === true, `native cross-document transition: ${JSON.stringify(log)}`);
+          else
+            check(
+              !reveal,
+              `fallback: plain navigation without pagereveal (${JSON.stringify(log)})`,
+            );
+        } finally {
+          await mpa.close();
+        }
+      },
+    );
+
     // Emulated touch device: a phone viewport with touch input (`hasTouch`; `isMobile` where supported).
     // Real taps go through the engine's touch pipeline; the in-page suite runs again in the narrow layout.
     const phone = await browser.newContext({
@@ -400,6 +466,45 @@ async function runEngine(playwright, engine, url, throttle) {
       });
       for (const item of phoneSuite)
         cases.push({ ...item, id: `touch device (390×844): ${item.id}` });
+      await run(
+        "touch device (390×844): C09 real taps on Next/Stop change frames; C10 tap toggles bars",
+        async () => {
+          await tapCenter("#c09 [aria-label='Next slide']");
+          await mobile.waitForFunction(
+            () =>
+              [...document.querySelectorAll("#c09 .neshel-storyboard-frame")].findIndex((f) =>
+                f.hasAttribute("data-current"),
+              ) !== 0,
+          );
+          await tapCenter("#c09 [aria-label^='Stop']");
+          await mobile.waitForFunction(() =>
+            document.querySelector("#c09 .neshel-storyboard-frame")?.hasAttribute("data-current"),
+          );
+          await tapCenter("#c10-toggle");
+          await mobile.waitForFunction(
+            () => !document.querySelector("#c10 .neshel-letterbox-bars")?.hidden,
+          );
+          const wide = await mobile.evaluate(() => {
+            // Phase 013 gallery only: no element of it reaches past the viewport unless clipped by a parent.
+            const section = document.getElementById("cinematic-title")?.closest("section");
+            const width = document.documentElement.clientWidth;
+            const clipped = (el) => {
+              for (let n = el.parentElement; n && n !== section; n = n.parentElement) {
+                if (getComputedStyle(n).overflowX !== "visible") return true;
+              }
+              return false;
+            };
+            return [...(section?.querySelectorAll("*") ?? [])]
+              .filter((el) => el.getBoundingClientRect().right > width + 1 && !clipped(el))
+              .map((el) => el.id || el.className)
+              .slice(0, 5);
+          });
+          check(
+            wide.length === 0,
+            `Phase 013 gallery overflows the phone viewport: ${wide.join(", ")}`,
+          );
+        },
+      );
       await run("touch device: no page errors", async () =>
         check(mobileErrors.length === 0, mobileErrors.join(" | ")),
       );
