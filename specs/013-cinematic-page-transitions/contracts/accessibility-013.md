@@ -1,6 +1,6 @@
 # Contract — Accessibility matrix (Phase 013)
 
-**Status: planned in 013.0; results in [../evidence.md](../evidence.md) §7.** Extends the 008–012
+**Status: implemented and verified locally; results in [../evidence.md](../evidence.md) §7 (screen-reader passes pending).**
 accessibility contracts; nothing earlier is relaxed.
 
 | Id        | No JS / SSR                                  | Reduced motion (live)                                | Keyboard / focus                                                      | Screen reader                                                                   | 2.2.2 / 2.3.3                                                                 |

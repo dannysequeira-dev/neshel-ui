@@ -46,10 +46,10 @@ Dependency-ordered. `[x]` done, `[ ]` open. Authorised by the owner brief of 202
 
 ## 013.5 — Galleries & quality gates
 
-- [ ] T050 Playground cinematic + page-transitions galleries, MPA pages, in-page suites
-- [ ] T051 CDP and Playwright cases; emulated touch; ≥ 105 earlier cases kept
-- [ ] T052 Storybook stories (20 entries)
-- [ ] T053 Composition tests (15 rows); stress and performance measurements
-- [ ] T054 Packed consumer (SSR + hydration); bundle budgets proposed
-- [ ] T055 Package contract/pack checks, catalogue, README, docs; `pnpm check`; builds
+- [x] T050 Playground cinematic + page-transitions galleries, MPA pages, in-page suites
+- [x] T051 CDP and Playwright cases; emulated touch; ≥ 105 earlier cases kept
+- [x] T052 Storybook stories (20 entries)
+- [x] T053 Composition tests (15 rows); stress and performance measurements
+- [x] T054 Packed consumer (SSR + hydration); bundle budgets proposed
+- [x] T055 Package contract/pack checks, catalogue, README, docs; `pnpm check`; builds
 - [ ] T056 Push, PR, three-OS CI on the head commit; evidence

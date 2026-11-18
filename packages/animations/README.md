@@ -4,13 +4,14 @@
 
 Modular, accessible motion primitives and effects for Neshel-UI.
 
-**Status: experimental, private, unpublished (features 008.0–012).** This package is not on npm and its
+**Status: experimental, private, unpublished (features 008.0–013).** This package is not on npm and its
 API may change before the owner approves a first publication. Specification, catalogue and
 decisions: [`specs/008-animations/`](../../specs/008-animations/spec.md),
 [`specs/009-motion-engine/`](../../specs/009-motion-engine/spec.md),
 [`specs/010-animation-effects/`](../../specs/010-animation-effects/spec.md),
 [`specs/011-scroll-parallax/`](../../specs/011-scroll-parallax/spec.md),
-[`specs/012-physics-gestures-layout/`](../../specs/012-physics-gestures-layout/spec.md), ADRs 0018–0027.
+[`specs/012-physics-gestures-layout/`](../../specs/012-physics-gestures-layout/spec.md),
+[`specs/013-cinematic-page-transitions/`](../../specs/013-cinematic-page-transitions/spec.md), ADRs 0018–0028.
 
 ## What exists today
 
@@ -57,13 +58,31 @@ decisions: [`specs/008-animations/`](../../specs/008-animations/spec.md),
   `crossFade`, `masonry`; React: `<LayoutGroup>`, `<LayoutItem>`, `useLayoutItem`, `useLayoutGroup`,
   `<AutoHeight>`, `<AnimatedList>`, `<Reflow>`, `<Collapse>`, `<TabIndicator>`, `<Presence>`,
   `usePresence`, `useIsPresent`, `<CrossFade>`, `<Masonry>`.
+- `@neshel-ui/animations/cinematic` (Phase 013) — the timeline engine `createTimeline` (C01: labels,
+  overlaps, pause, reverse, seek, retarget, explicit repeat, awaited calls; one task of the shared scheduler,
+  renders only through motion hosts) and C02–C10: `createSceneChapters`, `createCamera`, `createCover`
+  (split, curtain, shutter), `titleSequence`, `createSpotlight`, `createDepthOfField`,
+  `createStoryboard`, `createLetterbox`; React: `useTimeline`, `<SceneChapters>`, `<Chapter>`,
+  `<SceneSegment>`, `<CameraStage>`, `useCamera`, `<SplitReveal>`, `<CurtainReveal>`, `<TitleSequence>`,
+  `<Spotlight>`, `<DepthOfField>`, `<Storyboard>`, `<StoryboardFrame>`, `<Letterbox>`.
+- `@neshel-ui/animations/page-transitions` (Phase 013) — native View Transitions first:
+  `startPageTransition` (PT01 fade, PT03 slide, PT05 scale, PT06 wipe; fallback runs the update at once),
+  `registerSharedElement` (PT02 morph, PT08 persistent; FLIP fallback), `trackNavigationDirection` (PT04,
+  Navigation API indexes), `createRouteProgress` (PT07), `enableCrossDocumentTransitions` (PT09); React:
+  `<PageTransition>`, `<SharedElement>`, `<PersistentElement>`, `<RouteProgress>`, `usePageTransition`,
+  `useNavigationDirection`, `useRouteTransition`. Router adapters (PT10, optional peers):
+  `@neshel-ui/animations/page-transitions/next` (`<NextPageTransitions>`, `<TransitionLink>`; next ≥ 16.4) and
+  `@neshel-ui/animations/page-transitions/react-router` (`<RouterPageTransitions>`; react-router ≥ 8).
 - `definePreset` / `attachPreset` (`./core`) — presets are values: a definition plus frozen options.
 - Stylesheets (opt-in): `@neshel-ui/animations/hover.css` (Tilt3D depth + decor layers),
   `@neshel-ui/animations/press.css` (ripple, burst, toggle, checkbox, swap),
   `@neshel-ui/animations/scroll.css` (sticky scene stage, progress bar, horizontal section, sticky
   stack, parallax frame) or `styles.css` (all three); `@neshel-ui/animations/gestures.css` (built-in
   controls, pull indicator, reorder states) and `@neshel-ui/animations/layout.css` (collapse panel,
-  tab indicator, cross-fade stack, masonry grid) are separate opt-in files.
+  tab indicator, cross-fade stack, masonry grid) are separate opt-in files, as are
+  `@neshel-ui/animations/cinematic.css` (camera stage, cover panels, spotlight lens, storyboard, letterbox),
+  `@neshel-ui/animations/page-transitions.css` (View Transition effects, route progress) and
+  `@neshel-ui/animations/page-transitions-mpa.css` (the same plus the cross-document opt-in).
 
 ```tsx
 import { Tilt3D } from "@neshel-ui/animations/hover";
@@ -142,7 +161,33 @@ is not hidden again while hydrating (`appear="client"`). Hover effects follow mo
 `:focus-visible` (touch is opt-in). `ToggleMorph` and `CheckboxDraw` are decorative visuals for inside
 your native, labelled control. Every effect honours `prefers-reduced-motion` live.
 
-Peer dependency: `react ^19.0.0`. Runtime dependency: `@radix-ui/react-slot`.
+```tsx
+import {
+  PageTransition,
+  SharedElement,
+  usePageTransition,
+} from "@neshel-ui/animations/page-transitions";
+import "@neshel-ui/animations/page-transitions.css";
+
+const transition = usePageTransition();
+// React 19.3+ starts the document's View Transition at the real commit; elsewhere the update just runs.
+transition.start(() => setPage("detail"), { effect: "slide", direction: "forward" });
+<PageTransition effect="slide">
+  <SharedElement name="photo">
+    <img src={photo} alt={title} />
+  </SharedElement>
+</PageTransition>;
+```
+
+Page transitions never block a navigation: without the API, under reduced motion (instant effects), on a
+hidden page or after a failure the update simply runs; names exist only during a transition and are
+restored. Cinematic effects keep server-rendered content visible (covers, lenses and bars are package
+layers shown only by JavaScript), the storyboard's autoplay is opt-in and pausable (WCAG 2.2.2), and
+timelines trigger Entrance definitions through their existing contract (pose and value tracks are
+scrubbable).
+
+Peer dependencies: `react ^19.0.0`; optional `next >=16.4.0` and `react-router >=8.0.0` (only for their
+adapter subpaths). Runtime dependency: `@radix-ui/react-slot`.
 
 ## Composition rule
 

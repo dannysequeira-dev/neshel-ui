@@ -9,7 +9,10 @@ Phase 011 entries **ST01–ST10, SP01–SP11** (marked **✓ 011**; API, drivers
 rule of ADR 0026 replaces the SDA column for anything that moves the consumer's element) and the 23
 Phase 012 entries **G01–G11, L01–L10, H11, P11** (marked **✓ 012**; API, drivers and reduced behaviour
 in [specs/012 contracts/api-012.md](../../012-physics-gestures-layout/contracts/api-012.md) — FLIP
-entries animate the consumer's element through the motion host instead of WAAPI, ADR 0027). Phase 010
+entries animate the consumer's element through the motion host instead of WAAPI, ADR 0027) and the 20
+Phase 013 entries **C01–C10, PT01–PT10** (marked **✓ 013**; API, support matrix and reduced behaviour in
+[specs/013 contracts](../../013-cinematic-page-transitions/contracts/cinematic-api.md) — cinematic effects
+render through the motion host; page transitions animate only View Transition pseudo-elements, ADR 0028). Phase 010
 changed the driver of most CSS rows: the consumer's element is animated only by the motion host (rule
 R-1, ADR 0025) and CSS renders package-owned layers; the Driver column below keeps the original plan
 and the 010 contract records each change. `D05 CornerRecede` exists as a
@@ -149,16 +152,16 @@ Every gesture has a keyboard and single-pointer alternative (WCAG 2.5.1, 2.5.7) 
 
 | Id  | Effect                                        | Driver   | Structure | Reduced motion | Phase |
 | --- | --------------------------------------------- | -------- | --------- | -------------- | ----- |
-| C01 | Timeline sequencer (labels, overlaps)         | JS/WAAPI | G         | instant        | 013   |
-| C02 | Scene chapters (pin + segments)               | SDA/JS   | W         | static         | 013   |
-| C03 | Camera pan/zoom over a large canvas           | JS       | W         | static         | 013   |
-| C04 | Split-screen reveal                           | CSS      | L         | instant        | 013   |
-| C05 | Curtain / shutter open                        | CSS      | L         | instant        | 013   |
-| C06 | Title sequence (staggered text + background)  | WAAPI    | S         | fade           | 013   |
-| C07 | Spotlight / vignette focus                    | CSS      | W         | static         | 013   |
-| C08 | Depth-of-field blur sequence                  | CSS      | G         | static         | 013   |
-| C09 | Autoplay storyboard with pause/stop controls⁶ | JS       | G         | off            | 013   |
-| C10 | Letterbox transition                          | CSS      | W         | instant        | 013   |
+| C01 | Timeline sequencer (labels, overlaps)         | JS/WAAPI | G         | instant        | ✓ 013 |
+| C02 | Scene chapters (pin + segments)               | SDA/JS   | W         | static         | ✓ 013 |
+| C03 | Camera pan/zoom over a large canvas           | JS       | W         | static         | ✓ 013 |
+| C04 | Split-screen reveal                           | CSS      | L         | instant        | ✓ 013 |
+| C05 | Curtain / shutter open                        | CSS      | L         | instant        | ✓ 013 |
+| C06 | Title sequence (staggered text + background)  | WAAPI    | S         | fade           | ✓ 013 |
+| C07 | Spotlight / vignette focus                    | CSS      | W         | static         | ✓ 013 |
+| C08 | Depth-of-field blur sequence                  | CSS      | G         | static         | ✓ 013 |
+| C09 | Autoplay storyboard with pause/stop controls⁶ | JS       | G         | off            | ✓ 013 |
+| C10 | Letterbox transition                          | CSS      | W         | instant        | ✓ 013 |
 
 ⁶ Anything moving for more than 5 s needs pause/stop/hide (WCAG 2.2.2).
 
@@ -166,16 +169,16 @@ Every gesture has a keyboard and single-pointer alternative (WCAG 2.5.1, 2.5.7) 
 
 | Id   | Effect                                      | Driver | Structure | Reduced motion | Phase |
 | ---- | ------------------------------------------- | ------ | --------- | -------------- | ----- |
-| PT01 | Cross-fade                                  | VT     | —         | instant        | 013   |
-| PT02 | Shared-element morph                        | VT     | —         | instant        | 013   |
-| PT03 | Slide / push                                | VT     | —         | fade           | 013   |
-| PT04 | Direction by navigation (forward/back)      | VT     | —         | fade           | 013   |
-| PT05 | Scale-through                               | VT     | —         | fade           | 013   |
-| PT06 | Curtain wipe                                | VT     | —         | instant        | 013   |
-| PT07 | Route progress bar                          | CSS    | W         | reduced        | 013   |
-| PT08 | Persistent element across routes            | VT     | —         | instant        | 013   |
-| PT09 | Cross-document (MPA) view transitions       | VT     | —         | instant        | 013   |
-| PT10 | Router adapters (Next.js App Router, React) | VT     | —         | n/a            | 013   |
+| PT01 | Cross-fade                                  | VT     | —         | instant        | ✓ 013 |
+| PT02 | Shared-element morph                        | VT     | —         | instant        | ✓ 013 |
+| PT03 | Slide / push                                | VT     | —         | fade           | ✓ 013 |
+| PT04 | Direction by navigation (forward/back)      | VT     | —         | fade           | ✓ 013 |
+| PT05 | Scale-through                               | VT     | —         | fade           | ✓ 013 |
+| PT06 | Curtain wipe                                | VT     | —         | instant        | ✓ 013 |
+| PT07 | Route progress bar                          | CSS    | W         | reduced        | ✓ 013 |
+| PT08 | Persistent element across routes            | VT     | —         | instant        | ✓ 013 |
+| PT09 | Cross-document (MPA) view transitions       | VT     | —         | instant        | ✓ 013 |
+| PT10 | Router adapters (Next.js App Router, React) | VT     | —         | n/a            | ✓ 013 |
 
 ## 9 · Layout Animations (L)
 

@@ -1,6 +1,6 @@
 # Contract — Page transitions (PT01–PT09)
 
-**Status: planned in 013.0; implementation status in [../evidence.md](../evidence.md).** Subpath
+**Status: implemented and verified locally ([evidence](../evidence.md)); CI pending.** Subpath
 `@neshel-ui/animations/page-transitions` (family `page`); opt-in stylesheets
 `@neshel-ui/animations/page-transitions.css` (effects on View Transition pseudo-elements, route progress
 bar) and `@neshel-ui/animations/page-transitions-mpa.css` (the cross-document opt-in, PT09). Router

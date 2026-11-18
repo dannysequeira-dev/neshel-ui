@@ -1,6 +1,6 @@
 # Contract — Router adapters (PT10)
 
-**Status: planned in 013.0; implementation status in [../evidence.md](../evidence.md).**
+**Status: implemented and verified locally ([evidence](../evidence.md)); CI pending.**
 
 ## 1. Router-independent contract (in `./page-transitions`)
 

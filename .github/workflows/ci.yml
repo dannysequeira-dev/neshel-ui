@@ -250,6 +250,10 @@ jobs:
         run: pnpm --filter @neshel-ui/playground-vite build
       - name: Animations lab in Chromium, Firefox and WebKit
         run: pnpm check:animations:engines --report "${{ runner.temp }}/animations-engines-report.json"
+      # Phase 013: real router consumers from the packed tarball — React Router 8.5.0 (Vite, offline links)
+      # and Next.js 16.4.5 App Router (registry install, next build + next start) — in Playwright Chromium.
+      - name: Animations router consumers (Next.js App Router, React Router)
+        run: pnpm check:animations:routers --no-build
       - name: Upload browser report (accessibility-tree evidence)
         if: always()
         uses: actions/upload-artifact@v7

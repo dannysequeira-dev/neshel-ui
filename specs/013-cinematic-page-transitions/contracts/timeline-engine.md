@@ -1,6 +1,6 @@
 # Contract — Timeline engine (C01)
 
-**Status: planned in 013.0; implementation status in [../evidence.md](../evidence.md).** Lives in
+**Status: implemented and verified locally ([evidence](../evidence.md)); CI pending.** Lives in
 `src/cinematic/engine/timeline.ts`, exported by `@neshel-ui/animations/cinematic`; framework-free (no
 React, no DOM access at import time, SSR-safe: creating a timeline on the server renders nothing and
 schedules nothing). ADR 0028 §2.
