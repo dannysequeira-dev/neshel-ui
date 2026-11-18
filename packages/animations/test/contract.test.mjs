@@ -48,6 +48,7 @@ test("exports only implemented entry points, types first (FR-002)", () => {
     "./gestures",
     "./layout",
     "./cinematic",
+    "./page-transitions",
     "./styles.css",
     "./hover.css",
     "./press.css",
@@ -55,6 +56,8 @@ test("exports only implemented entry points, types first (FR-002)", () => {
     "./gestures.css",
     "./layout.css",
     "./cinematic.css",
+    "./page-transitions.css",
+    "./page-transitions-mpa.css",
   ]);
   for (const subpath of [
     ".",
@@ -66,6 +69,7 @@ test("exports only implemented entry points, types first (FR-002)", () => {
     "./gestures",
     "./layout",
     "./cinematic",
+    "./page-transitions",
   ]) {
     assert.deepEqual(Object.keys(manifest.exports[subpath]), ["types", "import"]);
   }
@@ -171,7 +175,14 @@ test("no CSS transition or animation targets a consumer element (010 FR-042, ADR
   // a pseudo-element layer, a package class, or a child of a package component.
   // Phase 012: the opt-in gestures.css and layout.css follow the same rule; a package class may carry
   // attribute qualifiers (`.neshel-tab-indicator[data-ready]`).
-  const css = ["styles.css", "gestures.css", "layout.css", "cinematic.css"]
+  const css = [
+    "styles.css",
+    "gestures.css",
+    "layout.css",
+    "cinematic.css",
+    "page-transitions.css",
+    "page-transitions-mpa.css",
+  ]
     .map((file) => readFileSync(join(root, "dist", file), "utf8"))
     .join(String.fromCharCode(10))
     .replace(/\/\*[\s\S]*?\*\//g, "")
@@ -182,6 +193,8 @@ test("no CSS transition or animation targets a consumer element (010 FR-042, ADR
       const subject = part.trim();
       assert.ok(
         /::(?:before|after)$/.test(subject) ||
+          // Phase 013: browser-generated View Transition snapshots (never the consumer's element).
+          /::view-transition-(?:group|image-pair|old|new)\([^)]*\)$/.test(subject) ||
           /^\.neshel-[a-z-]+(?:\[[^\]]+\])*(?::has\(.*\))?$/.test(subject) ||
           />\s*(?:\[data-slot\]|\.neshel-[a-z-]+)$/.test(subject),
         `transition/animation on a possibly consumer-owned subject: "${subject}"`,
@@ -210,6 +223,7 @@ test("module boundaries: core imports only core; root/react/families never impor
         "gestures",
         "layout",
         "cinematic",
+        "page-transitions",
       ]) {
         if (!where.startsWith(`${family}/`))
           assert.ok(!target.startsWith(`${family}/`), `${where} -> ${target}`);

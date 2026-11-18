@@ -33,10 +33,10 @@ Dependency-ordered. `[x]` done, `[ ]` open. Authorised by the owner brief of 202
 
 ## 013.3 — Page transitions foundation
 
-- [ ] T030 Support detection, controller, names, FLIP fallback (FR-020–FR-022)
-- [ ] T031 Direction tracker, route progress (FR-023, FR-024)
-- [ ] T032 MPA stylesheet + helper (FR-025)
-- [ ] T033 React bindings (FR-026); unit tests with the VT stub
+- [x] T030 Support detection, controller, names, FLIP fallback (FR-020–FR-022)
+- [x] T031 Direction tracker, route progress (FR-023, FR-024)
+- [x] T032 MPA stylesheet + helper (FR-025)
+- [x] T033 React bindings (FR-026); unit tests with the VT stub
 
 ## 013.4 — Router integration
 
