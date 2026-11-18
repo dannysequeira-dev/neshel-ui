@@ -43,7 +43,24 @@ Unit tests written before the fixes (failing on the pre-fix `dist`):
 | New in-page cases (reverse swap, rapid toggles, reduced mid-swap) in the 5 throttled CDP runs | 5/5 pass       |
 | `press.test.mjs` (StrictMode + rapid toggles unit test)                                       | 19/19 pass     |
 
+## CI (three native OS runners)
+
+No run below was rerun; every result is attempt 1.
+
+| Run         | Event             | Commit    | Result                                                    |
+| ----------- | ----------------- | --------- | --------------------------------------------------------- |
+| 44240688407 | pull_request      | `d88b0b2` | **fail** at Lint (unformatted `evidence.md`); lab not run |
+| 44240706724 | workflow_dispatch | `d88b0b2` | **fail** at Lint (same cause); lab not run                |
+| 44242544853 | pull_request      | `c6cef9b` | pass, 14/14 jobs                                          |
+| 44242590348 | workflow_dispatch | `c6cef9b` | pass, 14/14 jobs                                          |
+| 44243853783 | workflow_dispatch | `c6cef9b` | pass, 14/14 jobs                                          |
+| 44247866322 | workflow_dispatch | `c6cef9b` | pass, 14/14 jobs                                          |
+
+The browser animations lab passed in every `c6cef9b` run on macOS / Node 26 and Windows / Node 26
+(the runners of #11 and #9), Ubuntu / Node 22, 24 and 26, and the `browsers` jobs (ubuntu, macos):
+4/4 first attempts, 0 reruns.
+
 ## Gates
 
-See the PR description for `pnpm check`, browser lab, engines, packed consumer, bundles, Storybook,
-Playground and the three-OS CI results (first attempt and reruns listed separately).
+See the PR description for `pnpm check`, browser lab, engines, packed consumer, bundles, Storybook and
+Playground.
