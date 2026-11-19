@@ -1,0 +1,36 @@
+# Contract — Accessibility matrix (Phase 014)
+
+**Status: see [../evidence.md](../evidence.md) (screen-reader passes are pending owner checks unless the
+evidence says otherwise).** Extends the 008–013 accessibility contracts; nothing earlier is relaxed.
+
+| Id          | No JS / SSR                    | Reduced motion (live)                    | Screen reader                                                             | Keyboard / focus                 | Contrast / forced colours                                   | 2.2.2 / 2.3.1                                |
+| ----------- | ------------------------------ | ---------------------------------------- | ------------------------------------------------------------------------- | -------------------------------- | ----------------------------------------------------------- | -------------------------------------------- |
+| T01         | plain text, visible            | instant (all pieces shown)               | one copy (hidden original); pieces `aria-hidden`                          | no focus change                  | pieces inherit colour                                       | ≤ 1 s default                                |
+| T02         | full text                      | instant                                  | full text from the start; caret `aria-hidden`                             | n/a                              | caret `currentColor`                                        | caret blink ≤ 5 s                            |
+| T03         | full text                      | instant                                  | real text only; glyphs are pseudo-element content of `aria-hidden` pieces | n/a                              | overlay off under forced colours                            | ≤ 1.2 s default; no flashing                 |
+| T04         | plain text                     | static (no sweep)                        | unchanged text                                                            | n/a                              | `currentColor` base; plain text without clip/forced colours | one sweep default; `Infinity` explicit       |
+| T05         | formatted value                | instant                                  | exact `Intl` value, updated once per `set()`, no live region              | n/a                              | inherits colour                                             | ≤ 1 s                                        |
+| T06         | first word + hidden full list  | static (first word)                      | `accessibleText` once; no live region                                     | pauses on focus within           | inherits colour                                             | finite default; pause/play                   |
+| T07         | plain text                     | off                                      | one copy                                                                  | n/a                              | no colour/opacity change                                    | ≤ 5 s default; no flashing                   |
+| T08         | plain text                     | instant (band shown)                     | unchanged                                                                 | n/a                              | band behind glyphs; `Highlight` underline when forced       | short                                        |
+| T09         | plain text                     | instant                                  | one copy                                                                  | n/a                              | masks only after capability check                           | short                                        |
+| T10         | consumer typography            | static (direct value)                    | unchanged                                                                 | n/a                              | unchanged                                                   | consumer-initiated                           |
+| T11         | plain text                     | instant (all lines), source not followed | one copy                                                                  | n/a                              | inherits colour                                             | scroll-driven                                |
+| S01/S06/S10 | consumer SVG as authored       | instant                                  | consumer semantics untouched; `<SuccessCheck>` decorative unless `title`  | n/a                              | consumer stroke colours                                     | short                                        |
+| S02/S04     | original `d`                   | instant                                  | icon decorative; control name/state owned by the consumer                 | the button keeps focus and state | consumer colours                                            | short                                        |
+| S03         | element at its normal position | static (end position, no travel)         | unchanged                                                                 | n/a                              | unchanged                                                   | finite default                               |
+| S05         | consumer stops                 | static                                   | decorative                                                                | n/a                              | static under forced colours                                 | finite default                               |
+| S07         | no filter                      | off                                      | unchanged                                                                 | n/a                              | unchanged                                                   | finite default; off-screen pause             |
+| S08         | logo fully visible             | instant                                  | logo name untouched; outline paths are the consumer's decoration          | n/a                              | visible without mask support                                | short                                        |
+| S09         | dashes as authored             | static                                   | unchanged                                                                 | n/a                              | consumer colours                                            | finite default; pause/play; off-screen pause |
+
+Rules:
+
+- No `aria-live` region is created by any Phase 014 effect; announcements are the consumer's decision.
+- No effect hides essential content when JavaScript fails, before hydration, without the stylesheet, or
+  when a capability (`background-clip: text`, `mask-image`, `offset-path`, `color-mix`) is missing.
+- Text selection over split text copies the visible text once (the hidden copy is `user-select: none`).
+- Language and direction: `lang`/`dir` of the element and of nested phrasing elements are kept in both
+  copies; direction runs are isolated (`dir`).
+- Manual checks (reproducible scripts in [../manual-checks.md](../manual-checks.md)): NVDA + Firefox/Chrome
+  and VoiceOver + Safari passes over the text gallery — **pending owner checks**, never claimed.
