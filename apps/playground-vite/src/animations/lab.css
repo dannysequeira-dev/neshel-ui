@@ -1009,3 +1009,74 @@ body {
 .pt-progress {
   color: #4f46e5;
 }
+
+/* Phase 014 text/SVG gallery */
+.ts-grid {
+  grid-template-columns: repeat(auto-fill, minmax(16rem, 1fr));
+}
+.ts-wide {
+  grid-column: 1 / -1;
+}
+.ts-measure {
+  max-width: 42ch;
+}
+.ts-large {
+  font-size: 1.6rem;
+  font-weight: 600;
+}
+.ts-variable {
+  font-family: "Inter Variable", system-ui, sans-serif;
+  font-size: 1.8rem;
+}
+.ts-svg {
+  width: 100%;
+  max-width: 14rem;
+  height: auto;
+  display: block;
+}
+.ts-stroke {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.ts-fill {
+  fill: #6366f1;
+}
+.ts-motion-stage {
+  position: relative;
+  height: 5rem;
+}
+.ts-traveller {
+  position: absolute;
+  left: 0.5rem;
+  top: 2.5rem;
+  width: 1rem;
+  height: 1rem;
+  border-radius: 50%;
+  background: #ec4899;
+}
+.ts-icon-button {
+  inline-size: 2.75rem;
+  block-size: 2.75rem;
+  display: grid;
+  place-items: center;
+}
+.ts-check {
+  color: #15803d;
+}
+.ts-corpus {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+.ts-capsize {
+  display: flex;
+  gap: 1.5rem;
+  align-items: flex-start;
+}
+.s06-point {
+  fill: currentColor;
+}

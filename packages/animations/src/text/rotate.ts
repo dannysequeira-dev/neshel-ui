@@ -80,7 +80,7 @@ export function createRotatingWords(
   });
   for (const node of originals) node.parentNode?.removeChild(node);
   element.append(a11y, stack);
-  let current = 0;
+  let current = -1;
   let previous = -1;
   const show = (index: number, leaving: number) => {
     if (index === current && leaving === previous) return;

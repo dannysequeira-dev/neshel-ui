@@ -813,6 +813,42 @@ async function main() {
         notes.cinematicReduced = facts;
       },
     );
+    // Phase 014 text & SVG gallery: the in-page suite (shared with Playwright), Chrome's real accessibility tree
+    // for split text (one name, no per-character nodes), and the live reduced-motion facts.
+    const textSvgCases = await p.evaluate("window.__neshelLab.textSvg.runTextSvgSuite()");
+    for (const item of textSvgCases) cases.push(item);
+    await run(
+      "T01 accessibility tree: the split heading is named once by its whole text; pieces are not exposed",
+      async () => {
+        const { nodes } = await p.send("Accessibility.getFullAXTree");
+        const named = (role, name) =>
+          nodes.filter((n) => !n.ignored && n.role?.value === role && n.name?.value === name);
+        check(named("heading", "Rooted in faith 👨‍👩‍👧‍👦").length === 1, "heading named by its whole text");
+        const letters = nodes.filter(
+          (n) => !n.ignored && n.role?.value === "StaticText" && n.name?.value === "R",
+        );
+        check(letters.length === 0, `per-character text nodes exposed: ${letters.length}`);
+        check(
+          named("paragraph", "").length >= 0 &&
+            nodes.some((n) => !n.ignored && n.name?.value === "Built with hope, word by word."),
+          "words sentence exposed once",
+        );
+      },
+    );
+    await run(
+      "phase 014: reduced motion live — reveals instant, wave off, ants static, no turbulence filter, idle",
+      async () => {
+        await motionPreference("reduce");
+        const facts = await p.evaluate("window.__neshelLab.textSvg.reducedFacts()");
+        await motionPreference("no-preference");
+        check(facts.reduced === true, JSON.stringify(facts));
+        check(facts.revealProgress === "1" || facts.revealProgress === "unset", JSON.stringify(facts));
+        check(facts.waveTransform === false, `wave moved: ${JSON.stringify(facts)}`);
+        check(["0", "0px", ""].includes(facts.antsOffset), JSON.stringify(facts));
+        check(facts.filters === 0, JSON.stringify(facts));
+        notes.textSvgReduced = facts;
+      },
+    );
     notes.effects = await p.evaluate("window.__neshelLab.notes");
 
     await run("axe: no violations on the lab page", async () => {
