@@ -1,0 +1,324 @@
+/*
+ * @neshel-ui/animations/text.css — Typography & Text family (Phase 014, opt-in). Rules select package classes
+ * and engine tokens only. Consumer elements receive static, token-keyed styles (T04 sweep, T08 band); every
+ * animated value comes from a custom property written by the engine through the Motion Host (rule R-1).
+ * Per-piece values are computed here from one progress value: t = clamp(0, p·(1 + (n−1)·k) − i·k, 1), eased by
+ * smoothstep t²(3 − 2t). Without this stylesheet split text is fully visible and static.
+ */
+@layer components.neshel {
+  /* Animated pieces of a split: clusters (or whole shaping words), words or lines. */
+  .neshel-split[data-split="chars"]
+    :is(.neshel-split-char, .neshel-split-word[data-neshel-split-whole]),
+  .neshel-split[data-split="words"] .neshel-split-word,
+  .neshel-split[data-split="lines"] > .neshel-split-line {
+    --neshel-piece-i: var(--neshel-o, var(--neshel-i, 0));
+  }
+
+  .neshel-split[data-neshel-justify] > .neshel-split-line:not(:last-child) {
+    text-align-last: justify;
+  }
+
+  /* T01 / T11 — reveal. */
+  .neshel-split[data-neshel-fx~="text-reveal"][data-split="chars"]
+    :is(.neshel-split-char, .neshel-split-word[data-neshel-split-whole]),
+  .neshel-split[data-neshel-fx~="text-reveal"][data-split="words"] .neshel-split-word,
+  .neshel-split[data-neshel-fx~="text-reveal"][data-split="lines"] > .neshel-split-line {
+    --neshel-reveal-t: clamp(
+      0,
+      calc(
+        var(--neshel-reveal-progress, 1) *
+        (
+          1 +
+          (var(--neshel-reveal-count, var(--neshel-n, 1)) - 1) *
+          var(--neshel-reveal-stagger, 0.2)
+        ) -
+        var(--neshel-piece-i) *
+        var(--neshel-reveal-stagger, 0.2)
+      ),
+      1
+    );
+    --neshel-reveal-e: calc(
+      var(--neshel-reveal-t) *
+      var(--neshel-reveal-t) *
+      (3 - 2 * var(--neshel-reveal-t))
+    );
+    opacity: var(--neshel-reveal-e);
+  }
+
+  .neshel-split[data-neshel-fx~="text-reveal"][data-neshel-reveal="fade-up"]
+    :is(.neshel-split-char, .neshel-split-word, .neshel-split-line) {
+    translate: 0 calc((1 - var(--neshel-reveal-e, 1)) * var(--neshel-reveal-distance, 0.6em));
+  }
+
+  .neshel-split[data-neshel-fx~="text-reveal"][data-neshel-reveal="fade-down"]
+    :is(.neshel-split-char, .neshel-split-word, .neshel-split-line) {
+    translate: 0 calc((var(--neshel-reveal-e, 1) - 1) * var(--neshel-reveal-distance, 0.6em));
+  }
+
+  .neshel-split[data-neshel-fx~="text-reveal"][data-neshel-reveal="scale"]
+    :is(.neshel-split-char, .neshel-split-word, .neshel-split-line) {
+    scale: calc(0.6 + 0.4 * var(--neshel-reveal-e, 1));
+  }
+
+  .neshel-split[data-neshel-fx~="text-reveal"][data-neshel-reveal="blur"]
+    :is(.neshel-split-char, .neshel-split-word, .neshel-split-line) {
+    filter: blur(calc((1 - var(--neshel-reveal-e, 1)) * 0.4em));
+  }
+
+  /* T02 — typewriter: cluster i is visible once p·n > i (hidden clusters keep their space). */
+  .neshel-split[data-neshel-fx~="typewriter"]
+    :is(.neshel-split-char, .neshel-split-word[data-neshel-split-whole]) {
+    position: relative;
+    opacity: clamp(
+      0,
+      calc((var(--neshel-type-progress, 1) * var(--neshel-n, 1) - var(--neshel-i, 0)) * 100000),
+      1
+    );
+  }
+
+  .neshel-split[data-neshel-fx~="typewriter"] [data-caret]::after,
+  .neshel-split[data-neshel-fx~="typewriter"][data-caret]::before {
+    content: "";
+    width: 0.08em;
+    background: currentColor;
+  }
+
+  .neshel-split[data-neshel-fx~="typewriter"] [data-caret]::after {
+    position: absolute;
+    inset-block: 0.1em;
+    inset-inline-start: 100%;
+  }
+
+  .neshel-split[data-neshel-fx~="typewriter"][data-caret]::before {
+    display: inline-block;
+    height: 0.9em;
+    vertical-align: -0.1em;
+    margin-inline-end: -0.08em;
+  }
+
+  .neshel-split[data-neshel-fx~="typewriter"] [data-caret="rest"]::after,
+  .neshel-split[data-neshel-fx~="typewriter"][data-caret="rest"]::before {
+    animation: neshel-caret-blink 1s step-end 5;
+  }
+
+  .neshel-split[data-neshel-fx-reduced~="typewriter"] [data-caret]::after,
+  .neshel-split[data-neshel-fx-reduced~="typewriter"][data-caret]::before {
+    animation: none;
+  }
+
+  /* T03 — scramble: the real cluster keeps its box; the glyph is an overlay of an aria-hidden piece. */
+  .neshel-split[data-neshel-fx~="scramble"] [data-glyph] {
+    position: relative;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .neshel-split[data-neshel-fx~="scramble"] [data-glyph]::after {
+    content: attr(data-glyph);
+    position: absolute;
+    inset: 0;
+    text-align: center;
+    -webkit-text-fill-color: currentColor;
+  }
+
+  /* T04 — gradient sweep (consumer element; currentColor base keeps the consumer's colour). */
+  @supports (background-clip: text) or (-webkit-background-clip: text) {
+    @media (forced-colors: none) {
+      [data-neshel-fx~="text-sweep"] {
+        --neshel-sweep-w: var(--neshel-sweep-width, 0.25);
+        --neshel-sweep-pos: calc(
+          var(--neshel-sweep-progress, 0) *
+          (1 + 2 * var(--neshel-sweep-w)) -
+          var(--neshel-sweep-w)
+        );
+        background-image: linear-gradient(
+          var(--neshel-sweep-angle, 100deg),
+          currentColor calc((var(--neshel-sweep-pos) - var(--neshel-sweep-w)) * 100%),
+          var(--neshel-sweep-color, var(--neshel-primary, #6366f1))
+            calc(var(--neshel-sweep-pos) * 100%),
+          currentColor calc((var(--neshel-sweep-pos) + var(--neshel-sweep-w)) * 100%)
+        );
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+    }
+  }
+
+  /* T05 — number roll: a strip of 20 digits per column, 5 % of its height per digit. */
+  .neshel-number {
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    unicode-bidi: isolate;
+  }
+
+  [data-neshel-fx~="number-roll"] .neshel-number-column {
+    display: inline-block;
+    position: relative;
+    clip-path: inset(0 -0.1em);
+  }
+
+  [data-neshel-fx~="number-roll"] .neshel-number-holder {
+    visibility: hidden;
+  }
+
+  [data-neshel-fx~="number-roll"] .neshel-number-strip {
+    display: flex !important;
+    flex-direction: column;
+    position: absolute;
+    inset-inline: 0;
+    top: 0;
+    text-align: center;
+    translate: 0
+      calc(
+        -5% *
+        (var(--from, 0) + (var(--to, 0) - var(--from, 0)) * var(--neshel-number-progress, 1))
+      );
+  }
+
+  /* T06 — rotating words (stacked in one grid cell; the box is the largest word). */
+  .neshel-rotator[data-neshel-fx~="rotate-words"] > .neshel-rotator-word {
+    --neshel-rotate-t: var(--neshel-rotate-progress, 1);
+    --neshel-rotate-e: calc(
+      var(--neshel-rotate-t) *
+      var(--neshel-rotate-t) *
+      (3 - 2 * var(--neshel-rotate-t))
+    );
+  }
+
+  .neshel-rotator[data-neshel-fx~="rotate-words"] > .neshel-rotator-word[data-state="current"] {
+    opacity: var(--neshel-rotate-e);
+  }
+
+  .neshel-rotator[data-neshel-fx~="rotate-words"] > .neshel-rotator-word[data-state="leaving"] {
+    opacity: calc(1 - var(--neshel-rotate-e));
+  }
+
+  .neshel-rotator[data-neshel-fx~="rotate-words"][data-variant="slide-up"]
+    > .neshel-rotator-word[data-state="current"] {
+    translate: 0 calc((1 - var(--neshel-rotate-e)) * 0.6em);
+  }
+
+  .neshel-rotator[data-neshel-fx~="rotate-words"][data-variant="slide-up"]
+    > .neshel-rotator-word[data-state="leaving"] {
+    translate: 0 calc(var(--neshel-rotate-e) * -0.6em);
+  }
+
+  .neshel-rotator[data-neshel-fx~="rotate-words"][data-variant="slide-down"]
+    > .neshel-rotator-word[data-state="current"] {
+    translate: 0 calc((var(--neshel-rotate-e) - 1) * 0.6em);
+  }
+
+  .neshel-rotator[data-neshel-fx~="rotate-words"][data-variant="slide-down"]
+    > .neshel-rotator-word[data-state="leaving"] {
+    translate: 0 calc(var(--neshel-rotate-e) * 0.6em);
+  }
+
+  /* T07 — kinetic wave (transform, so it composes with the reveal's `translate`). */
+  @supports (transform: translateY(calc(sin(1) * 1px))) {
+    .neshel-split[data-neshel-fx~="text-wave"]
+      :is(.neshel-split-char, .neshel-split-word[data-neshel-split-whole]) {
+      transform: translateY(
+        calc(
+          sin(
+            calc(var(--neshel-wave-phase, 0) - var(--neshel-i, 0) * var(--neshel-wave-spread, 0.5))
+          ) *
+          var(--neshel-wave-amplitude, 0.18em) *
+          var(--neshel-wave-energy, 0) *
+          -1
+        )
+      );
+    }
+  }
+
+  /* T08 — highlighter band behind the glyphs (consumer element). */
+  [data-neshel-fx~="highlight"] {
+    background-color: transparent;
+    background-image: linear-gradient(
+      var(--neshel-highlight-color, rgb(253 224 71 / 0.6)),
+      var(--neshel-highlight-color, rgb(253 224 71 / 0.6))
+    );
+    background-repeat: no-repeat;
+    background-size: calc(var(--neshel-highlight-progress, 1) * 100%)
+      var(--neshel-highlight-size, 0.85em);
+    background-position: 0 88%;
+    -webkit-box-decoration-break: slice;
+    box-decoration-break: slice;
+    color: inherit;
+  }
+
+  [data-neshel-fx~="highlight"]:dir(rtl) {
+    background-position: 100% 88%;
+  }
+
+  @media (forced-colors: active) {
+    [data-neshel-fx~="highlight"] {
+      background-image: none;
+      text-decoration: underline 0.12em;
+      text-decoration-color: Highlight;
+    }
+
+    .neshel-split[data-neshel-fx~="scramble"] [data-glyph] {
+      -webkit-text-fill-color: currentColor;
+    }
+
+    .neshel-split[data-neshel-fx~="scramble"] [data-glyph]::after {
+      content: none;
+    }
+  }
+
+  /* T09 — text mask reveal per line. */
+  .neshel-split[data-neshel-fx~="text-mask"] > .neshel-split-line {
+    --neshel-mask-t: clamp(
+      0,
+      calc(
+        var(--neshel-mask-progress, 1) *
+        (1 + (var(--neshel-n, 1) - 1) * var(--neshel-mask-stagger, 0.25)) -
+        var(--neshel-i, 0) *
+        var(--neshel-mask-stagger, 0.25)
+      ),
+      1
+    );
+    --neshel-mask-e: calc(
+      var(--neshel-mask-t) *
+      var(--neshel-mask-t) *
+      (3 - 2 * var(--neshel-mask-t))
+    );
+  }
+
+  .neshel-split[data-neshel-fx~="text-mask"][data-neshel-mask="rise"] > .neshel-split-line {
+    overflow: hidden;
+  }
+
+  @supports (overflow: clip) {
+    .neshel-split[data-neshel-fx~="text-mask"][data-neshel-mask="rise"] > .neshel-split-line {
+      overflow: clip;
+    }
+  }
+
+  .neshel-split[data-neshel-fx~="text-mask"][data-neshel-mask="rise"]
+    > .neshel-split-line
+    > .neshel-split-line-inner {
+    translate: 0 calc((1 - var(--neshel-mask-e, 1)) * 110%);
+  }
+
+  @supports (mask-image: linear-gradient(#000, #000)) {
+    .neshel-split[data-neshel-fx~="text-mask"][data-neshel-mask="wipe"] > .neshel-split-line {
+      mask-image: linear-gradient(
+        var(--neshel-mask-angle, 90deg),
+        #000 calc(var(--neshel-mask-e, 1) * 120% - 20%),
+        transparent calc(var(--neshel-mask-e, 1) * 120%)
+      );
+    }
+
+    .neshel-split[data-neshel-fx~="text-mask"][data-neshel-mask="wipe"]:dir(rtl)
+      > .neshel-split-line {
+      --neshel-mask-angle: 270deg;
+    }
+  }
+
+  @keyframes neshel-caret-blink {
+    50% {
+      opacity: 0;
+    }
+  }
+}
