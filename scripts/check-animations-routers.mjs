@@ -312,15 +312,30 @@ async function scenario(context, origin, name, { broken }) {
     supersededState === "idle",
     `${name}: a navigation superseded without commit does not stay pending (${supersededState}, at ${supersededPath})`,
   );
-  await page.evaluate("window.__progressStates.length = 0");
+  const beforeRestart = await state(
+    `({ path: location.pathname, state: document.querySelector(".neshel-route-progress")?.getAttribute("data-state") })`,
+  );
+  await page.evaluate(
+    "window.__progressStates.length = 0; window.__clickedAt = performance.now();",
+  );
   await page.click("#to-slow");
-  const restarted = await until(`window.__progressStates.includes("pending")`, 700);
+  // Pending must appear before the slow route (900 ms) commits.
+  const restarted = await until(
+    `window.__progressStates.includes("pending") || document.getElementById("title-slow")`,
+    3000,
+  ).then(() => state(`window.__progressStates.includes("pending")`));
+  const restartFacts = await state(
+    `({ states: window.__progressStates.slice(), ms: Math.round(performance.now() - window.__clickedAt), path: location.pathname })`,
+  );
   await until(`document.getElementById("title-slow")`, 5000);
   await until(
     `document.querySelector(".neshel-route-progress")?.getAttribute("data-state") === "idle"`,
     3000,
   );
-  check(restarted, `${name}: the next navigation shows its own pending state`);
+  check(
+    restarted,
+    `${name}: the next navigation shows its own pending state (before ${JSON.stringify(beforeRestart)}, after ${JSON.stringify(restartFacts)})`,
+  );
 
   if (broken) {
     await page.click("#to-broken");

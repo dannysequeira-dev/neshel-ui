@@ -181,6 +181,12 @@ approved budget was not raised: the storyboard frame change now uses one 009 twe
 writers instead of a whole timeline (same behaviour; unit, CDP and engine cases pass), so Storyboard measures
 9.36 KiB. No rerun was used to obtain green.
 
+CI on `c06d711` (run 44465339193, attempt 1): 13/14 — `browsers / macos-latest` failed the new review-D case
+“React Router: the next navigation shows its own pending state”, which waited at most 700 ms for the pending
+state. Measured locally with diagnostics: React Router showed it 465 ms after the click (Next: 19 ms); the cause
+of that latency was not investigated. The case now requires the pending state to appear before the slow route
+(900 ms) commits, with a 3 s ceiling, and reports the observed states and timing. No rerun was used.
+
 Final local gates (head after this section's commit): see the PR comment for the exact numbers and CI run.
 K-2 and K-3 remain documented as observed, without attributed causes. #9 stays open: feature-branch runs do
 not count toward its three clean first-pass runs on `main` (only 44334734060 counted so far).
