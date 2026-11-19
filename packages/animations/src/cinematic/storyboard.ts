@@ -2,7 +2,8 @@
  * C09 — Autoplay storyboard with pause/stop controls (catalogue §7, structure G; contracts/cinematic-api.md,
  * research R9, WCAG 2.2.2).
  *
- * Frames are the consumer's elements; one is current. A frame change is a short C01 timeline of pose tracks
+ * Frames are the consumer's elements; one is current. A frame change is one 009 tween (`animateValue`) rendered
+ * as two poses
  * on the outgoing and incoming frames (fade, or slide by direction). Autoplay is opt-in and advances with a
  * timer only while ALL hold: the user has not paused, motion is not reduced, the storyboard is at least half
  * visible (IntersectionObserver), the page is visible, and neither pointer hover nor keyboard focus is
@@ -11,16 +12,22 @@
  * Without JavaScript every frame is visible (a list). With the engine, non-current frames get `inert` and
  * `aria-hidden` and the root gets `data-neshel-storyboard` (CSS stacks the frames).
  */
+
+import { animateValue, type MotionControl } from "../core/controls.js";
+import { easings } from "../core/easing.js";
+import { motionValue } from "../core/motion-value.js";
 import {
   prefersReducedMotion,
   type ReducedMotion,
   shouldReduceMotion,
   subscribeReducedMotion,
 } from "../core/reduced-motion.js";
+import { getFrameScheduler } from "../core/scheduler.js";
+import { whenSettled } from "../core/springs.js";
 import { validator } from "../core/validate.js";
 import { counters } from "./engine/debug.js";
 import type { Styled } from "./engine/pose.js";
-import { createTimeline, type Timeline } from "./engine/timeline.js";
+import { createPoseWriter, type PoseWriter } from "./engine/pose.js";
 
 export interface StoryboardOptions {
   /** ms per frame while autoplaying (2000–30000, default 5000). */
@@ -90,7 +97,8 @@ export function createStoryboard(
   let timer: ReturnType<typeof setTimeout> | undefined;
   let remaining = interval;
   let startedAt = 0;
-  let change: Timeline | undefined;
+  /** The running frame change: its controller and its cleanup (pose writers, data-leaving). */
+  let change: { control: MotionControl; end(): void } | undefined;
   let destroyed = false;
 
   const hadRootAttribute = root.getAttribute("data-neshel-storyboard");
@@ -156,7 +164,7 @@ export function createStoryboard(
     if (destroyed || next === index) return;
     const outgoing = frames[index] as Styled;
     const incoming = frames[next] as Styled;
-    change?.destroy();
+    change?.end();
     change = undefined;
     index = next;
     present(index);
@@ -164,29 +172,40 @@ export function createStoryboard(
     if (reduced() || duration === 0) return; // off: instant frame change
     outgoing.setAttribute("data-leaving", "");
     const travel = transition === "slide" ? 48 * direction : 0;
-    const timeline = createTimeline({
-      onComplete: () => {
-        outgoing.removeAttribute("data-leaving");
-        timeline.destroy();
-        if (change === timeline) change = undefined;
-      },
+    const out: PoseWriter = createPoseWriter(outgoing, { id: "cinematic/storyboard-out" });
+    const into: PoseWriter = createPoseWriter(incoming, { id: "cinematic/storyboard-in" });
+    const value = motionValue(0);
+    const unsubscribe = value.subscribe((t) => {
+      const a = easings.accelerate(t);
+      const d = easings.decelerate(t);
+      out.set({ opacity: 1 - a, x: -travel * a });
+      into.set({ opacity: d, x: travel * (1 - d) });
     });
-    timeline.add({
-      target: outgoing,
-      from: {},
-      to: { opacity: 0, x: -travel },
-      duration,
-      easing: "accelerate",
-    });
-    timeline.add(
-      { target: incoming, from: { opacity: 0, x: travel }, to: {}, duration, easing: "decelerate" },
-      "<",
+    const control = animateValue(
+      value,
+      1,
+      { type: "tween", duration, easing: "linear" },
+      { reducedMotion: "never" },
     );
-    change = timeline;
-    timeline.play();
-    void timeline.finished.then((result) => {
-      if (result.status !== "completed") outgoing.removeAttribute("data-leaving");
-    });
+    const current = {
+      control,
+      end() {
+        control.cancel();
+        unsubscribe();
+        out.clear();
+        into.clear();
+        outgoing.removeAttribute("data-leaving");
+        if (change === current) change = undefined;
+      },
+    };
+    change = current;
+    // Settle in the write phase of the frame the change ends in (deterministic, unlike a promise).
+    const stopWatch = whenSettled(getFrameScheduler(), control, () => current.end());
+    const end = current.end;
+    current.end = () => {
+      stopWatch();
+      end();
+    };
   }
 
   const onEnter = () => {
@@ -214,7 +233,7 @@ export function createStoryboard(
   if (typeof document !== "undefined") document.addEventListener("visibilitychange", onVisibility);
   const unsubscribeReduced = subscribeReducedMotion(() => {
     if (reduced()) {
-      change?.finish();
+      change?.control.finish();
       setPlaying(false);
     }
     sync();
@@ -286,7 +305,7 @@ export function createStoryboard(
       if (destroyed) return;
       destroyed = true;
       clearTimer();
-      change?.destroy();
+      change?.end();
       unsubscribeReduced();
       observer?.disconnect();
       if (observer) counters.observers = Math.max(0, counters.observers - 1);

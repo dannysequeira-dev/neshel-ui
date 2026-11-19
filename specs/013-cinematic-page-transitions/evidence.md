@@ -113,7 +113,7 @@ scrubbable Entrance `progress` option. Measured after the change: `fadeIn` defin
 / 6.75**, `Reveal + fadeUp` 12.05/12.25, Entrance entire 13.97/14.25 (both unchanged budgets, met).
 
 New entries (measured / approved budget, KiB): `createTimeline` 11.57/11.75 · `useTimeline` 11.83/12.00 ·
-SceneChapters 15.05/15.25 · CameraStage 8.89/9.25 · Storyboard 13.98/14.00 (narrow margin) · cinematic
+SceneChapters 15.05/15.25 · CameraStage 8.89/9.25 · Storyboard 9.36/14.00 (after the change below) · cinematic
 entire 24.27/25.00 · `startPageTransition` 8.04/8.50 · PageTransition + SharedElement 2.69/2.90 ·
 RouteProgress 3.21/3.40 · page-transitions entire 12.43/13.00 · Next adapter 4.57/4.80 · React Router adapter
 4.26/4.50 · `cinematic.css` 1.65/1.75 · `page-transitions.css` 1.72/1.80 · `page-transitions-mpa.css`
@@ -173,6 +173,13 @@ ways, no own clock, play/pause/reverse mid-way/seek while running, t = 0 with an
 reduced motion (`fade` / `instant`, switching back restores the pose), composition with Hover lift, Press
 scale and Scroll parallax on one element with exact restoration, E11 spring span, explicit `trigger` mode,
 invalid inputs. Package tests after the review: 396/396 (animations).
+
+CI on `addd74c` (run 44425908497, attempt 1): 13/14 — `macos-latest / Node 26` failed `check:animations:bundles`:
+`cinematic: Storyboard` 14363 B > 14336 B. macOS builds measured larger than Windows in every entry
+(e.g. `fadeIn` minified 21718 vs 21028 B; the cause of the platform difference was not investigated). The
+approved budget was not raised: the storyboard frame change now uses one 009 tween (`animateValue`) and two pose
+writers instead of a whole timeline (same behaviour; unit, CDP and engine cases pass), so Storyboard measures
+9.36 KiB. No rerun was used to obtain green.
 
 Final local gates (head after this section's commit): see the PR comment for the exact numbers and CI run.
 K-2 and K-3 remain documented as observed, without attributed causes. #9 stays open: feature-branch runs do
