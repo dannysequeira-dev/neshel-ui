@@ -4,7 +4,7 @@ Local machine: Windows 11, Node 26.13.0, pnpm 12.16.1, Chrome 157 (CDP lab), Pla
 158.0.8127.18, Firefox 159.0, WebKit 27.2 — **Playwright's WebKit, not Safari**). Branch
 `feature/013-cinematic-page-transitions` from `b7bfe14`. Status words: **verified locally**, **native
 verified** / **fallback verified** (support matrix), **unverified**, **pending**. GitHub Actions results are
-recorded in the PR, never here before they exist. `@neshel-ui/animations` stays private `0.0.0`; no version,
+recorded in PR #13 for each exact head (a commit cannot contain its own CI result). `@neshel-ui/animations` stays private `0.0.0`; no version,
 tag, publication or release change; the five public packages and the release workflow are untouched.
 
 ## 1 · Research probes
@@ -51,7 +51,7 @@ scripts run from the repository root (results: [research.md](research.md) R1–R
 | `pnpm check:animations:routers`       | **35/35** — React Router 8.5.0 and Next.js 16.4.5 consumers from the tarball (§6)                                                                                                             |
 | `pnpm check:animations:bundles`       | **pass** — every earlier budget unchanged and met; new entries within proposed budgets (§8)                                                                                                   |
 | Storybook / Playground builds         | **pass**                                                                                                                                                                                      |
-| Three-OS CI on the PR head            | **pending** (recorded in the PR)                                                                                                                                                              |
+| Three-OS CI on the PR head            | first head `a07a8fc`: run 44412815373, 14/14 at attempt 1; final head: recorded in PR #13                                                                                                     |
 
 ## 4 · Browser results and native/fallback statuses
 
@@ -105,22 +105,19 @@ layers are `hidden`/`aria-hidden`. Focus after route commits only to `[data-nesh
 during a transition, never on traverse. **Pending owner checks**: NVDA/VoiceOver passes of the storyboard and
 the router demos, real Safari, real mobile devices.
 
-## 8 · Bundle sizes (packed tarball, gzip) and budget decision
+## 8 · Bundle sizes (packed tarball, gzip) and budget decisions
 
-Earlier budgets: unchanged and met. Entrance stays at the `main` baseline (`fadeIn` definition 6.45 KiB of
-6.50). A scrubbable Entrance `progress` option was built and measured at **+123 B** on the `fadeIn`
-definition (6605 → 6728 B, over the approved 6656 B) and was set aside: timelines trigger Entrance through
-its existing contract instead. **Owner decision requested:** raise `entrance: fadeIn definition` to 6.75 KiB
-to allow scrubbable entrances, or keep the triggered model.
+Owner decisions (review of PR #13, 2026-11-18): the 15 new Phase 013 budgets are approved as declared; the
+earlier budgets stay fixed except `entrance: fadeIn definition (no React)` **6656 → 6912 B** for the
+scrubbable Entrance `progress` option. Measured after the change: `fadeIn` definition **6.57 KiB (6728 B)
+/ 6.75**, `Reveal + fadeUp` 12.05/12.25, Entrance entire 13.97/14.25 (both unchanged budgets, met).
 
-Proposed budgets for the new entries (added as gates in `scripts/animations-bundle-budgets.json`; earlier
-keys untouched): `createTimeline` 11.14/11.75 KiB · `useTimeline` 11.40/12.00 · SceneChapters 14.64/15.25 ·
-CameraStage 8.89/9.25 · Storyboard 13.56/14.00 · cinematic entire 23.95/25.00 · `startPageTransition`
-8.04/8.50 · PageTransition + SharedElement 2.69/2.90 · RouteProgress 3.21/3.40 · page-transitions entire
-12.43/13.00 · Next adapter 4.57/4.80 · React Router adapter 4.26/4.50 · `cinematic.css` 1.65/1.75 ·
-`page-transitions.css` 1.72/1.80 · `page-transitions-mpa.css` 1.86/1.95. Tree-shaking markers: no Entrance,
-Scroll, Gestures, Layout or page code in the cinematic entry; no cinematic code in page transitions; routers
-external in the adapters.
+New entries (measured / approved budget, KiB): `createTimeline` 11.57/11.75 · `useTimeline` 11.83/12.00 ·
+SceneChapters 15.05/15.25 · CameraStage 8.89/9.25 · Storyboard 13.98/14.00 (narrow margin) · cinematic
+entire 24.27/25.00 · `startPageTransition` 8.04/8.50 · PageTransition + SharedElement 2.69/2.90 ·
+RouteProgress 3.21/3.40 · page-transitions entire 12.43/13.00 · Next adapter 4.57/4.80 · React Router adapter
+4.26/4.50 · `cinematic.css` 1.65/1.75 · `page-transitions.css` 1.72/1.80 · `page-transitions-mpa.css`
+1.86/1.95 (final values: §13). Tree-shaking markers unchanged.
 
 ## 9 · Performance
 
@@ -149,8 +146,34 @@ PR's CI runs are on the feature branch and do not count.
 
 ## 12 · Known limitations
 
-K-1 Effect tracks trigger Entrance (not scrubbable) pending the §8 decision. K-2 Chromium cross-document
+K-1 (closed) Entrance is scrubbable since the owner-approved budget (§8, §13). K-2 Chromium cross-document
 reveal (§5). K-3 Playwright WebKit renderer crash (§4). K-4 Router back/forward are not animated by Next
 16.4.5 or React Router 8.5.0. K-5 React < 19.3 has no `ViewTransition`: boundaries render plain children.
 K-6 C02 segments are hidden at their start pose until the scroll source reaches them (visible without JS
 and under reduced motion). K-7 Router runs in Chromium only; real Safari, devices and screen readers pending.
+
+## 13 · Owner review of PR #13 (comment 6994532003) — regression-first results
+
+Each case was written as a test first and run against the unmodified head `a07a8fc` (built `dist`), then
+fixed minimally and rerun.
+
+| Case                                                            | Test                       | Before (a07a8fc)                                                                                               | Fix                                                                                                    | After                                                    |
+| --------------------------------------------------------------- | -------------------------- | -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | -------------------------------------------------------- |
+| A1 reverse while an awaited call is pending                     | `test/review-013.test.mjs` | **fail** — state `running`, time 100: clock never restarted                                                    | `reverse()` restarts the clock when still running                                                      | pass; stale resolution ignored                           |
+| A2 seek while an awaited call is pending                        | same                       | **fail** — state `running`, time 300                                                                           | `seekTo()` restarts the clock when running and not waiting                                             | pass; stale rejection ignored                            |
+| B triggered Entrance at t = 0 with the scheduler already active | same                       | **fail** — opacity 1 (shown at the end state, no animation)                                                    | a first render already past the start animates when playing                                            | pass; scrub mode covered too (`timeline-scrub.test.mjs`) |
+| C1 pre-existing `data-neshel-pt-direction`                      | same                       | **fail** — left at `forward`                                                                                   | restore the saved value when the attribute still holds the transition's value                          | pass                                                     |
+| C2 live tracker changes the direction during a transition       | same                       | pass — **refuted** (the tracker's value was already kept)                                                      | —                                                                                                      | pass                                                     |
+| D route progress without commit (unit)                          | same                       | **fail** — no watchdog report, no restart for a new navigation                                                 | `onTimeout` option, `navigation` identity restarts the indicator                                       | pass                                                     |
+| D Next adapter, superseded navigation (real Next 16.4.5)        | `check:animations:routers` | **fail** — stayed `pending` 1.6 s after the slow route's time; the next navigation showed no own pending state | a link to the current location clears pending; the watchdog clears it; each navigation has an identity | pass                                                     |
+| D React Router 8.5.0 (same scenario)                            | same                       | pass — **refuted** for React Router (its navigation state settles)                                             | —                                                                                                      | pass                                                     |
+
+Scrubbable Entrance (decision 3): `test/timeline-scrub.test.mjs` — progress 0 / intermediate / 1, seek both
+ways, no own clock, play/pause/reverse mid-way/seek while running, t = 0 with an active scheduler, live
+reduced motion (`fade` / `instant`, switching back restores the pose), composition with Hover lift, Press
+scale and Scroll parallax on one element with exact restoration, E11 spring span, explicit `trigger` mode,
+invalid inputs. Package tests after the review: 396/396 (animations).
+
+Final local gates (head after this section's commit): see the PR comment for the exact numbers and CI run.
+K-2 and K-3 remain documented as observed, without attributed causes. #9 stays open: feature-branch runs do
+not count toward its three clean first-pass runs on `main` (only 44334734060 counted so far).

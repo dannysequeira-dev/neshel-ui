@@ -1,6 +1,6 @@
 # Contract — Cinematic & Scenes API (C02–C10)
 
-**Status: implemented and verified locally ([evidence](../evidence.md)); CI pending.** Subpath
+**Status: implemented and verified ([evidence](../evidence.md)); CI results recorded in PR #13.** Subpath
 `@neshel-ui/animations/cinematic` (family `cinematic`), opt-in stylesheet
 `@neshel-ui/animations/cinematic.css` for package-rendered parts. Every effect: framework-free engine
 function + React component (`"use client"`), server markup equal to the visible content, nothing hidden

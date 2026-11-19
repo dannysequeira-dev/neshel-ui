@@ -1,7 +1,7 @@
 # ADR 0028 — Timelines, scenes and page transitions
 
-- Status: **Proposed** (2026-11-18) — awaiting the owner's review of the Phase 013 PR; implementation and
-  verification status in [specs/013 evidence](../../specs/013-cinematic-page-transitions/evidence.md)
+- Status: **Accepted** (owner approval 2026-11-18, review of PR #13 — architectural direction, the Phase 013
+  budgets and the scrubbable Entrance exception; implemented and verified — [evidence](../../specs/013-cinematic-page-transitions/evidence.md))
 - Date: 2026-11-18
 - Feature: [013](../../specs/013-cinematic-page-transitions/spec.md); research R1–R10; contracts
   [timeline-engine.md](../../specs/013-cinematic-page-transitions/contracts/timeline-engine.md),
@@ -29,11 +29,13 @@ view transitions into its commit (research R1–R4).
 2. **The timeline is a sequencer, not an engine.** A timeline is a pure function of time rendered by one
    `update` task of the 009 scheduler while running; tracks render through motion values and Motion Hosts;
    run state and `finished` reuse `createRunCore`. No frame loop, no style writes outside the host.
-3. **Coordinating existing definitions as values.** Effect tracks trigger Entrance definitions through their
-   existing public contract (`hold`/`playback` of ADR 0026 §7, `continuous`, `replay`): Entrance and its
-   approved budgets are unchanged; scrubbable motion uses pose and value tracks. A scrubbable `progress` option
-   (+123 B on the `fadeIn` definition) is proposed to the owner, not adopted. Scroll progress sources reach
-   scene chapters as values (`{ get, subscribe }`), so `./cinematic` never imports `./scroll`.
+3. **Coordinating existing definitions as values.** Entrance definitions reach the timeline as values, in
+   two modes: `scrub` (default) drives the additive Entrance option `progress` from the timeline clock — no
+   second clock — and `trigger` plays the definition with its own clock through its existing contract
+   (`hold`/`playback` of ADR 0026 §7, `continuous`, `replay`). The owner approved the option and raising
+   `entrance: fadeIn definition` 6656 → 6912 B (measured 6728 B); no other earlier budget changed. Scroll
+   progress sources reach scene chapters as values (`{ get, subscribe }`), so `./cinematic` never imports
+   `./scroll`.
 4. **R-1 and View Transitions.** Page-transition CSS animates only `::view-transition-*` pseudo-elements —
    browser-generated snapshots, not the consumer's elements — keyed on `neshel-pt-*` classes; R-1 holds.
    `view-transition-name`/`view-transition-class` are written through the Motion Host as internal exclusive
@@ -60,7 +62,8 @@ view transitions into its commit (research R1–R4).
   controller still works for synchronous updates.
 - Two optional peer dependencies (`next`, `react-router`) appear in the private package's manifest; the
   release PR (owner-approved) decides how they are published.
-- New bundle budgets are proposed from measurements; earlier budgets change only with approval.
+- New bundle budgets were approved by the owner (2026-11-18); earlier budgets are unchanged except the
+  approved `entrance: fadeIn definition` exception.
 
 ## Alternatives rejected
 

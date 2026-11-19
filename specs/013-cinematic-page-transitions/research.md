@@ -116,8 +116,9 @@ Entrance definitions (E01–E09, E11) run their own `animateValue` clock. Two op
 (a) an additive Entrance option `progress?: MotionValue` (the definition renders an external progress —
 scrubbable) — **+123 B gzip** on `entrance: fadeIn definition` (6605 → 6728 B, approved budget 6656 B);
 (b) triggering the definition through its existing public contract (`hold`, `playback`, `continuous`,
-`replay`), as the 011 scroll triggers do — **0 B** on Entrance. Chosen: (b), because earlier budgets are not
-raised without the owner's approval; (a) is proposed in evidence.md §8. Families still never import each
+`replay`), as the 011 scroll triggers do — **0 B** on Entrance. Initially (b), because earlier budgets are not
+raised without approval; the owner then approved (a) and the budget increase (review of PR #13): (a) is the
+default `scrub` mode and (b) remains as the explicit `trigger` mode. Families still never import each
 other: definitions travel as values.
 
 ## R7 — Scene chapters without importing `./scroll`

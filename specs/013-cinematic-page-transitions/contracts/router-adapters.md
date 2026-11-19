@@ -1,6 +1,6 @@
 # Contract — Router adapters (PT10)
 
-**Status: implemented and verified locally ([evidence](../evidence.md)); CI pending.**
+**Status: implemented and verified ([evidence](../evidence.md)); CI results recorded in PR #13.**
 
 ## 1. Router-independent contract (in `./page-transitions`)
 
@@ -39,7 +39,10 @@ nothing in `./page-transitions` or the root imports it.
 - `<TransitionLink>` — `next/link` with `transitionTypes` (`neshel-<effect>`, `neshel-<direction>`) added
   for React's view transition, and `onNavigate` marking the navigation pending (Next calls `onNavigate`
   only for client-side navigations — not for modified clicks, new tabs or external URLs, so those stay
-  native). Pending ends when the new location commits; the watchdog ends navigations that never commit.
+  native). Pending ends when the new location commits; a link to the current location (which supersedes
+  a pending navigation and commits nothing new) clears it; the progress watchdog clears navigations that
+  never commit (`onTimeout`), and every new navigation restarts the indicator (owner review D, reproduced in
+  the real Next consumer and fixed; React Router was not affected).
 - Observed (evidence.md §6): link/push navigations run inside a native View Transition with the
   `neshel-<effect>` / `neshel-forward` types; Next writes history **after** React commits, so the direction of
   a push reaches CSS as a transition type (types win over the attribute); browser back/forward are committed

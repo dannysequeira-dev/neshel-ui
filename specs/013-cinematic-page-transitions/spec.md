@@ -5,7 +5,7 @@
 
 **Created**: 2026-11-18
 
-**Status**: **Implemented; verified locally — see [evidence.md](evidence.md); three-OS CI and the owner's review of the PR pending.**
+**Status**: **Implemented; verified locally — see [evidence.md](evidence.md); owner review cases A–D closed (evidence.md §13); three-OS CI recorded in the PR.**
 `@neshel-ui/animations` stays private (0.0.0).
 
 **Input**: Owner direction 2026-11-18, summarised in [brief.md](brief.md).
@@ -57,9 +57,9 @@ PR; Press changes unrelated to Phase 013; closing issue #9.
   `cinematic.css`, `page-transitions.css`, `page-transitions-mpa.css`; adapters in
   `./page-transitions/next` and `./page-transitions/react-router` with optional peers (ADR 0028 §1).
 - D-2 The timeline lives in `./cinematic` (not `./core`, whose approved budget stays unchanged).
-- D-3 Timelines trigger Entrance definitions through their existing contract (`hold`, `playback`,
-  `continuous`, `replay`); Entrance and its budgets are unchanged (research R6; the scrubbable alternative is
-  proposed in evidence.md §8).
+- D-3 Timeline effect tracks drive Entrance through the additive `progress` option (`scrub`, default) or
+  trigger it through its existing contract (`trigger`). Owner review 2026-11-18 approved the option and the
+  `entrance: fadeIn definition` budget 6656 → 6912 B (research R6).
 - D-4 `view-transition-name`/`-class` become internal host channels excluded from `will-change` (one-line
   host change, same pattern as Phase 012's `touch-action`).
 - D-5 React adapters use React's `<ViewTransition>` (19.3+) instead of calling `startViewTransition`
@@ -77,7 +77,7 @@ Timeline (013.1)
   another advances, reverse mid-way, seek while active, detached target, mutating callback, failing
   awaited action, hidden page, reduced motion during playback).
 - FR-004 Zero scheduler tasks when idle/paused/settled/destroyed; no layout reads by the engine.
-- FR-005 Effect tracks trigger Entrance definitions through their contract — timeline-engine.md §3.
+- FR-005 Entrance effect tracks in `scrub` and `trigger` modes — timeline-engine.md §3.
 - FR-006 `useTimeline` with a stable handle; StrictMode safe; inert on the server.
 
 Cinematic (013.2)

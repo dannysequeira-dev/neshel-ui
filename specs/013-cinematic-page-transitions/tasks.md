@@ -15,8 +15,8 @@ Dependency-ordered. `[x]` done, `[ ]` open. Authorised by the owner brief of 202
 ## 013.1 — Timeline foundation
 
 - [x] T010 Host excludes `view-transition-*` from `will-change` (D-4)
-- [x] T011 Effect tracks trigger Entrance through its contract (D-3; the `progress` variant measured and set
-  aside: +123 B over the approved `fadeIn` budget)
+- [x] T011 Entrance `progress` option (scrub mode, default) and trigger mode; owner-approved budget
+  `entrance: fadeIn definition` 6912 B
 - [x] T012 Timeline engine: positions, labels, tracks, controls, callbacks, waits, retarget (FR-001, FR-002)
 - [x] T013 Edge-case tests of research R5 (FR-003, FR-004)
 - [x] T014 `useTimeline` (FR-006)
@@ -53,3 +53,9 @@ Dependency-ordered. `[x]` done, `[ ]` open. Authorised by the owner brief of 202
 - [x] T054 Packed consumer (SSR + hydration); bundle budgets proposed
 - [x] T055 Package contract/pack checks, catalogue, README, docs; `pnpm check`; builds
 - [ ] T056 Push, PR, three-OS CI on the head commit; evidence
+
+## Owner review of PR #13 (2026-11-18)
+
+- [x] T060 Regression tests A–D first (test/review-013.test.mjs, Next consumer case D); fixes A, B, C, D
+- [x] T061 Scrubbable Entrance in timelines (test/timeline-scrub.test.mjs); docs, ADR 0028 accepted
+- [x] T062 All gates on the final head; three-OS CI recorded in the PR

@@ -183,8 +183,8 @@ Page transitions never block a navigation: without the API, under reduced motion
 hidden page or after a failure the update simply runs; names exist only during a transition and are
 restored. Cinematic effects keep server-rendered content visible (covers, lenses and bars are package
 layers shown only by JavaScript), the storyboard's autoplay is opt-in and pausable (WCAG 2.2.2), and
-timelines trigger Entrance definitions through their existing contract (pose and value tracks are
-scrubbable).
+timelines drive Entrance definitions through their `progress` option (seek, scrub, reverse) or trigger
+them with their own clock (`mode: "trigger"`).
 
 Peer dependencies: `react ^19.0.0`; optional `next >=16.4.0` and `react-router >=8.0.0` (only for their
 adapter subpaths). Runtime dependency: `@radix-ui/react-slot`.

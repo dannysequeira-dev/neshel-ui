@@ -1,6 +1,6 @@
 # Contract — Page transitions (PT01–PT09)
 
-**Status: implemented and verified locally ([evidence](../evidence.md)); CI pending.** Subpath
+**Status: implemented and verified ([evidence](../evidence.md)); CI results recorded in PR #13.** Subpath
 `@neshel-ui/animations/page-transitions` (family `page`); opt-in stylesheets
 `@neshel-ui/animations/page-transitions.css` (effects on View Transition pseudo-elements, route progress
 bar) and `@neshel-ui/animations/page-transitions-mpa.css` (the cross-document opt-in, PT09). Router
@@ -100,7 +100,9 @@ Package-rendered `div.neshel-route-progress` with `role="progressbar"`, an acces
 `aria-valuenow` (indeterminate — never a fake percentage); `hidden` while idle. `start()` shows it after
 `delay` (fast navigations never flash); `done()` completes (fills, fades out, back to idle after
 `minVisible`); `fail()` shows the failed state briefly then idle; `cancel()` goes idle at once; `timeout`
-cancels a navigation that never settles (development warning). Optional one-shot status announcement
+cancels a navigation that never settles (development warning) and calls `onTimeout`, so the owner of
+the pending state can clear it. React `<RouteProgress navigation>`: a new navigation identity while still
+pending restarts the indicator (review D). Optional one-shot status announcement
 (`announce`) in a visually hidden `role="status"` — never per frame. Reduced motion (`reduced`): no
 indeterminate sweep; a static bar.
 
