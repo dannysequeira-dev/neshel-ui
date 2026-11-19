@@ -389,7 +389,11 @@ export async function runTextSvgSuite(): Promise<Case[]> {
         check(dashed.style.strokeDasharray !== "", "drawing writes inline dash");
         await until(
           "released",
-          () => dashed.style.strokeDasharray.replace(/px/g, "").replace(/,/g, "").replace(/\s+/g, " ") === "4 3",
+          () =>
+            dashed.style.strokeDasharray
+              .replace(/px/g, "")
+              .replace(/,/g, "")
+              .replace(/\s+/g, " ") === "4 3",
           () => dashed.style.strokeDasharray,
           4000,
         );

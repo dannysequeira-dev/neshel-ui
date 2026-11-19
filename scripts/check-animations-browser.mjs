@@ -823,7 +823,10 @@ async function main() {
         const { nodes } = await p.send("Accessibility.getFullAXTree");
         const named = (role, name) =>
           nodes.filter((n) => !n.ignored && n.role?.value === role && n.name?.value === name);
-        check(named("heading", "Rooted in faith 👨‍👩‍👧‍👦").length === 1, "heading named by its whole text");
+        check(
+          named("heading", "Rooted in faith 👨‍👩‍👧‍👦").length === 1,
+          "heading named by its whole text",
+        );
         const letters = nodes.filter(
           (n) => !n.ignored && n.role?.value === "StaticText" && n.name?.value === "R",
         );
@@ -842,7 +845,10 @@ async function main() {
         const facts = await p.evaluate("window.__neshelLab.textSvg.reducedFacts()");
         await motionPreference("no-preference");
         check(facts.reduced === true, JSON.stringify(facts));
-        check(facts.revealProgress === "1" || facts.revealProgress === "unset", JSON.stringify(facts));
+        check(
+          facts.revealProgress === "1" || facts.revealProgress === "unset",
+          JSON.stringify(facts),
+        );
         check(facts.waveTransform === false, `wave moved: ${JSON.stringify(facts)}`);
         check(["0", "0px", ""].includes(facts.antsOffset), JSON.stringify(facts));
         check(facts.filters === 0, JSON.stringify(facts));
