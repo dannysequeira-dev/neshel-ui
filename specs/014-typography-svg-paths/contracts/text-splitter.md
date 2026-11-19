@@ -71,11 +71,11 @@ interface SplitText {
 
 ### Supported content (the limitation is deliberate)
 
-| Content                                                                                                                                                 | Behaviour                                                      |
-| ------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
-| Text nodes, `<br>`, phrasing elements `abbr b bdi bdo cite code data dfn em i kbd mark q s samp small span strong sub sup time u var` (nested)          | split                                                          |
+| Content                                                                                                                                                                                                                          | Behaviour                                                                                                                                           |
+| -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Text nodes, `<br>`, phrasing elements `abbr b bdi bdo cite code data dfn em i kbd mark q s samp small span strong sub sup time u var` (nested)                                                                                   | split                                                                                                                                               |
 | Anything else (`a`, `button`, `input`, `label`, `select`, `textarea`, `img`, `svg`, `video`, `iframe`, `math`, `ruby`, …), `[tabindex]`, `[contenteditable]`, an editable ancestor, an already split element (other granularity) | **not split**: `state: "unsupported"`, content untouched, development warning; effects fall back to their reduced end state (content fully visible) |
-| Empty or whitespace-only text                                                                                                                           | `state: "unsupported"`, reason `"empty"`                       |
+| Empty or whitespace-only text                                                                                                                                                                                                    | `state: "unsupported"`, reason `"empty"`                                                                                                            |
 
 Links and buttons inside animated text are therefore never cloned or duplicated: wrap them outside the
 split element or animate the element as a whole (Entrance).

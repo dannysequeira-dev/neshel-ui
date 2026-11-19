@@ -65,18 +65,18 @@ interface MorphOptions {
 }
 ```
 
-| Rule                              | Policy                                                                                                                                       |
-| --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| Command equality                  | after the exact normal form, command `k` of both paths has the same type; `"cubic"` first promotes `L`/`Q` to `C` (exact degree elevation)  |
-| Segment correspondence            | by index; no reordering, rotation of start points or reversal                                                                                |
-| Point counts                      | must be equal (consequence of command equality); no resampling or insertion                                                                  |
-| Cubic / quadratic                 | interpolated per control point; mixed only with `"cubic"`                                                                                    |
-| Arcs                              | `rx`, `ry`, `angle`, end point interpolated; `large` and `sweep` flags must be equal; `"cubic"` does not convert arcs                        |
-| Subpaths / closed paths           | same number of `M` and `Z` at the same indexes                                                                                               |
-| Direction / orientation           | not normalised: a reversed path morphs through a fold (author paths in the same direction)                                                  |
-| Precision                         | output rounded to `precision`; `t` clamped to 0–1; `t = 0` / `1` return the normal forms of the inputs                                       |
-| Invalid geometry, NaN, ±Infinity  | rejected by the parser (§1)                                                                                                                  |
-| Incompatible                      | `interpolatePath` throws `NeshelAnimationsError` naming the first mismatching command; effects offer `incompatible: "swap"` (switch at 0.5) |
+| Rule                             | Policy                                                                                                                                      |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| Command equality                 | after the exact normal form, command `k` of both paths has the same type; `"cubic"` first promotes `L`/`Q` to `C` (exact degree elevation)  |
+| Segment correspondence           | by index; no reordering, rotation of start points or reversal                                                                               |
+| Point counts                     | must be equal (consequence of command equality); no resampling or insertion                                                                 |
+| Cubic / quadratic                | interpolated per control point; mixed only with `"cubic"`                                                                                   |
+| Arcs                             | `rx`, `ry`, `angle`, end point interpolated; `large` and `sweep` flags must be equal; `"cubic"` does not convert arcs                       |
+| Subpaths / closed paths          | same number of `M` and `Z` at the same indexes                                                                                              |
+| Direction / orientation          | not normalised: a reversed path morphs through a fold (author paths in the same direction)                                                  |
+| Precision                        | output rounded to `precision`; `t` clamped to 0–1; `t = 0` / `1` return the normal forms of the inputs                                      |
+| Invalid geometry, NaN, ±Infinity | rejected by the parser (§1)                                                                                                                 |
+| Incompatible                     | `interpolatePath` throws `NeshelAnimationsError` naming the first mismatching command; effects offer `incompatible: "swap"` (switch at 0.5) |
 
 The normal form changes the `d` string's spelling (absolute commands) but not the geometry; the restored
 `d` after `destroy()` is the consumer's original attribute value, character for character.

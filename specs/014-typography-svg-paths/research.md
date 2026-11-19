@@ -24,11 +24,11 @@ WebKit — WebKit is not Safari) and are recorded in [evidence.md](evidence.md).
 
 ## R2 — One accessible copy
 
-| Strategy                                                    | Problem                                                                                                                                       |
-| ----------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
-| Leave pieces exposed (no ARIA)                              | VoiceOver (Safari) reads inline-block pieces one by one; NVDA browse mode may split words (known reports; to be confirmed in the manual pass) |
-| `aria-label` on the element + `aria-hidden` pieces          | ARIA 1.2 prohibits naming `generic`/`paragraph` roles; labels on `<p>`/`<span>` are ignored by some readers; translation tools skip them      |
-| **Visually hidden original + `aria-hidden` visual pieces**  | the original text (and its inline markup) stays in the accessibility tree inside the original element; heading names come from content       |
+| Strategy                                                   | Problem                                                                                                                                       |
+| ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| Leave pieces exposed (no ARIA)                             | VoiceOver (Safari) reads inline-block pieces one by one; NVDA browse mode may split words (known reports; to be confirmed in the manual pass) |
+| `aria-label` on the element + `aria-hidden` pieces         | ARIA 1.2 prohibits naming `generic`/`paragraph` roles; labels on `<p>`/`<span>` are ignored by some readers; translation tools skip them      |
+| **Visually hidden original + `aria-hidden` visual pieces** | the original text (and its inline markup) stays in the accessibility tree inside the original element; heading names come from content        |
 
 **Decision:** the third. The original child nodes are **moved** (not cloned) into a visually hidden span
 inside the element (`.neshel-text-a11y`, inline styles so it works without any stylesheet), and the visual
@@ -170,10 +170,10 @@ never runs under reduced motion (catalogue `off`/`static`). React components acc
 
 ## R15 — Dependencies considered (ADR 0020)
 
-| Candidate                                 | Why rejected                                                                                                  |
-| ----------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| GSAP SplitText / MorphSVG / DrawSVG       | ADR 0018: GSAP is never a dependency; second engine                                                           |
-| splitting.js, SplitType                   | code-unit/character splitting, `aria-label` approach (R2), no bidi runs                                       |
-| grapheme-splitter, graphemer              | `Intl.Segmenter` ships in all target engines                                                                  |
-| flubber, polymorph, svg-path-morph        | heuristic resampling changes geometry (R9); 10–40 KiB                                                         |
-| svgpath, svg-path-properties, path-data   | small, but the R8 parser + geometry is ~4 KiB gzip of our own, testable in jsdom, and shared with S02/S03/S06 |
+| Candidate                               | Why rejected                                                                                                  |
+| --------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| GSAP SplitText / MorphSVG / DrawSVG     | ADR 0018: GSAP is never a dependency; second engine                                                           |
+| splitting.js, SplitType                 | code-unit/character splitting, `aria-label` approach (R2), no bidi runs                                       |
+| grapheme-splitter, graphemer            | `Intl.Segmenter` ships in all target engines                                                                  |
+| flubber, polymorph, svg-path-morph      | heuristic resampling changes geometry (R9); 10–40 KiB                                                         |
+| svgpath, svg-path-properties, path-data | small, but the R8 parser + geometry is ~4 KiB gzip of our own, testable in jsdom, and shared with S02/S03/S06 |

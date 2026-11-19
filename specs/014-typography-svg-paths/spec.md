@@ -45,29 +45,29 @@ issue #9.
 
 ## Inventory (the 21 catalogue entries)
 
-| Id  | Effect                        | Catalogue driver → Phase 014 driver                         | Structure | Reduced | Engine / React                                  |
-| --- | ----------------------------- | ----------------------------------------------------------- | --------- | ------- | ----------------------------------------------- |
-| T01 | Split reveal (chars/words/lines) | CSS → one host value + CSS piece math                    | S         | instant | `createTextReveal` / `TextReveal`               |
-| T02 | Typewriter                    | JS → one host value + CSS step math; caret attribute         | S         | instant | `createTypewriter` / `Typewriter`               |
-| T03 | Scramble / decode             | JS → one host value + deterministic glyph attributes        | S         | instant | `createScramble` / `ScrambleText`               |
-| T04 | Gradient sweep text           | CSS → host value + token styles (R-1)                       | —         | static  | `createGradientSweep` / `GradientText`          |
-| T05 | Number roll                   | CSS → one host value + CSS column math                      | S         | instant | `createNumberRoll` / `NumberRoll`               |
-| T06 | Rotating words                | CSS → host value per swap + CSS stack                       | S         | static  | `createRotatingWords` / `RotatingWords`         |
-| T07 | Kinetic wave                  | CSS → one host phase value + CSS `sin()`                    | S         | off     | `createTextWave` / `WaveText`                   |
-| T08 | Highlighter draw              | CSS → host value + token background band                    | —         | instant | `createHighlighter` / `Highlight`               |
-| T09 | Text mask reveal              | CSS → host value + line clip/mask (or element `mask`)       | S / —     | instant | `createTextMask` / `TextMask`                   |
-| T10 | Variable-font axis animation  | CSS → host channels (font-weight/stretch/style/fvs)         | —         | static  | `createFontAxes` / `FontAxes`                   |
-| T11 | Line-by-line reveal on scroll | SDA → progress source value (011 contract) + CSS line math  | S         | instant | `createLineReveal` / `LineReveal`               |
-| S01 | Path draw                     | CSS → host dash channels                                    | —         | instant | `createPathDraw` / `usePathDraw`, `PathDraw`    |
-| S02 | Path morph                    | WAAPI → scheduler + attribute ledger (`d`; WebKit lacks CSS `d`) | —    | instant | `createPathMorph` / `usePathMorph`              |
-| S03 | Motion along a path           | CSS → host `offset-*` channels; JS geometry fallback        | —         | static  | `createMotionPath` / `useMotionPath`            |
-| S04 | Icon morph (menu ↔ close)     | CSS → S02 with named states                                 | —         | instant | `createIconMorph` / `MorphIcon`                 |
-| S05 | Animated gradient stops       | CSS → host `stop-*` channels (`color-mix`) + offset ledger  | —         | static  | `createGradientStops` / `useGradientStops`      |
-| S06 | Line-chart draw-in            | CSS → S01 per line + point reveal                           | —         | instant | `createChartDraw` / `useChartDraw`              |
-| S07 | Turbulence wobble             | JS → package filter + arbitrated `filter`                   | —         | off     | `createTurbulence` / `useTurbulence`            |
-| S08 | Logo reveal mask              | CSS → arbitrated `mask` channel                             | —         | instant | `createLogoReveal` / `useLogoReveal`            |
-| S09 | Dash flow (marching ants)     | CSS → host dash channels in a gated loop                    | —         | static  | `createDashFlow` / `useDashFlow`                |
-| S10 | Success checkmark draw        | CSS → S01 sequenced                                         | —         | instant | `createCheckmark` / `SuccessCheck`              |
+| Id  | Effect                           | Catalogue driver → Phase 014 driver                              | Structure | Reduced | Engine / React                               |
+| --- | -------------------------------- | ---------------------------------------------------------------- | --------- | ------- | -------------------------------------------- |
+| T01 | Split reveal (chars/words/lines) | CSS → one host value + CSS piece math                            | S         | instant | `createTextReveal` / `TextReveal`            |
+| T02 | Typewriter                       | JS → one host value + CSS step math; caret attribute             | S         | instant | `createTypewriter` / `Typewriter`            |
+| T03 | Scramble / decode                | JS → one host value + deterministic glyph attributes             | S         | instant | `createScramble` / `ScrambleText`            |
+| T04 | Gradient sweep text              | CSS → host value + token styles (R-1)                            | —         | static  | `createGradientSweep` / `GradientText`       |
+| T05 | Number roll                      | CSS → one host value + CSS column math                           | S         | instant | `createNumberRoll` / `NumberRoll`            |
+| T06 | Rotating words                   | CSS → host value per swap + CSS stack                            | S         | static  | `createRotatingWords` / `RotatingWords`      |
+| T07 | Kinetic wave                     | CSS → one host phase value + CSS `sin()`                         | S         | off     | `createTextWave` / `WaveText`                |
+| T08 | Highlighter draw                 | CSS → host value + token background band                         | —         | instant | `createHighlighter` / `Highlight`            |
+| T09 | Text mask reveal                 | CSS → host value + line clip/mask (or element `mask`)            | S / —     | instant | `createTextMask` / `TextMask`                |
+| T10 | Variable-font axis animation     | CSS → host channels (font-weight/stretch/style/fvs)              | —         | static  | `createFontAxes` / `FontAxes`                |
+| T11 | Line-by-line reveal on scroll    | SDA → progress source value (011 contract) + CSS line math       | S         | instant | `createLineReveal` / `LineReveal`            |
+| S01 | Path draw                        | CSS → host dash channels                                         | —         | instant | `createPathDraw` / `usePathDraw`, `PathDraw` |
+| S02 | Path morph                       | WAAPI → scheduler + attribute ledger (`d`; WebKit lacks CSS `d`) | —         | instant | `createPathMorph` / `usePathMorph`           |
+| S03 | Motion along a path              | CSS → host `offset-*` channels; JS geometry fallback             | —         | static  | `createMotionPath` / `useMotionPath`         |
+| S04 | Icon morph (menu ↔ close)        | CSS → S02 with named states                                      | —         | instant | `createIconMorph` / `MorphIcon`              |
+| S05 | Animated gradient stops          | CSS → host `stop-*` channels (`color-mix`) + offset ledger       | —         | static  | `createGradientStops` / `useGradientStops`   |
+| S06 | Line-chart draw-in               | CSS → S01 per line + point reveal                                | —         | instant | `createChartDraw` / `useChartDraw`           |
+| S07 | Turbulence wobble                | JS → package filter + arbitrated `filter`                        | —         | off     | `createTurbulence` / `useTurbulence`         |
+| S08 | Logo reveal mask                 | CSS → arbitrated `mask` channel                                  | —         | instant | `createLogoReveal` / `useLogoReveal`         |
+| S09 | Dash flow (marching ants)        | CSS → host dash channels in a gated loop                         | —         | static  | `createDashFlow` / `useDashFlow`             |
+| S10 | Success checkmark draw           | CSS → S01 sequenced                                              | —         | instant | `createCheckmark` / `SuccessCheck`           |
 
 Driver changes follow rule R-1 (ADR 0025): the consumer's element is animated only by the engine; CSS
 renders package-owned DOM keyed on engine tokens and host-written values.

@@ -7,29 +7,29 @@ S10 join cinematic timelines through `track()` and scroll through `drive()`.
 
 ## 1. Writes
 
-| Target                          | Mechanism                                                                                                                         |
-| ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| Consumer's path/stop/element styles | Motion Host internal exclusive channels: `stroke-dasharray`, `stroke-dashoffset`, `offset-path`, `offset-distance`, `offset-rotate`, `stop-color`, `stop-opacity`, `filter`, `mask`; transform layers and opacity contributions | 
-| Consumer's attributes (`d`, `offset` of a stop) | svg attribute ledger: original value captured on first write, writes coalesced to the scheduler write phase, exact restoration (attribute removed if it was absent) |
-| Package-rendered DOM (filter element, check/icon svgs) | created and removed by the effect; `aria-hidden` |
+| Target                                                 | Mechanism                                                                                                                                                                                                                       |
+| ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Consumer's path/stop/element styles                    | Motion Host internal exclusive channels: `stroke-dasharray`, `stroke-dashoffset`, `offset-path`, `offset-distance`, `offset-rotate`, `stop-color`, `stop-opacity`, `filter`, `mask`; transform layers and opacity contributions |
+| Consumer's attributes (`d`, `offset` of a stop)        | svg attribute ledger: original value captured on first write, writes coalesced to the scheduler write phase, exact restoration (attribute removed if it was absent)                                                             |
+| Package-rendered DOM (filter element, check/icon svgs) | created and removed by the effect; `aria-hidden`                                                                                                                                                                                |
 
 Inline host writes win over the consumer's stylesheet and presentation attributes while the effect runs and
 are restored exactly (inline value and priority) on release, so consumer dash patterns and colours come back.
 
 ## 2. Entries
 
-| Id  | Engine / React                                      | Options (defaults)                                                                                                       | Reduced |
-| --- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ------- |
-| S01 | `createPathDraw(paths)` / `usePathDraw`, `<PathDraw>` | `duration: 1200`, `easing`, `stagger: 0` (ms between paths), `reverse: false`, `release: true` (restore the consumer's dash styles at the end) | instant |
-| S02 | `createPathMorph(path, { shapes })` / `usePathMorph` | `shapes: string[]`, `normalize`, `precision`, `incompatible: "error" \| "swap"`, `duration: 500`; `to(index)`, `trackTo(index)` | instant |
-| S03 | `createMotionPath(element, { path })` / `useMotionPath` | `path` (CSS px, element-relative), `rotate: "auto" \| "reverse" \| number`, `mode: "auto" \| "native" \| "js"`, `duration: 1600`, `repeat: 0`, `yoyo` | static  |
-| S04 | `createIconMorph(path, { shapes, state })` / `<MorphIcon>` | `shapes: Record<string, string>` (compatible), `state`, `duration: 350`; `menuCloseShapes`                       | instant |
-| S05 | `createGradientStops(gradient, { stops })` / `useGradientStops` | `stops: [{ color?: [from, to], opacity?: [a, b], offset?: [a, b] }]` (by index), `duration: 2400`, `repeat: 0`, `yoyo: true` | static  |
-| S06 | `createChartDraw(svg, { lines, points })` / `useChartDraw` | `lines` (selector/elements), `points` (selector/elements), `stagger: 150`, `duration: 1400`                          | instant |
-| S07 | `createTurbulence(element)` / `useTurbulence`        | `frequency: 0.02` (0.001–0.2), `amplitude: 6` (0–24 px), `octaves: 1` (1–3), `speed: 0.5` (0–2 cycles/s), `rate: 20` (1–30 Hz), `region: 0.1` (0–0.25), `repeat: 0`, `duration: 4000` | off     |
-| S08 | `createLogoReveal(element)` / `useLogoReveal`        | `pattern: "wipe-right" \| "wipe-left" \| "wipe-up" \| "wipe-down" \| "circle"`, `softness: 0.15`, `duration: 1000`, `outline` (paths drawn with S01 first) | instant |
-| S09 | `createDashFlow(paths)` / `useDashFlow`               | `dash: 6`, `gap: 4` (user units), `speed: 40` (units/s, ±), `repeat` in seconds of flow (`duration: 4000`; `Infinity` explicit) | static  |
-| S10 | `createCheckmark(svg)` / `<SuccessCheck>`             | `duration: 600`, `circle: true`; `<SuccessCheck>` renders an `aria-hidden` SVG unless `title` is given (`role="img"`)     | instant |
+| Id  | Engine / React                                                  | Options (defaults)                                                                                                                                                                    | Reduced |
+| --- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| S01 | `createPathDraw(paths)` / `usePathDraw`, `<PathDraw>`           | `duration: 1200`, `easing`, `stagger: 0` (ms between paths), `reverse: false`, `release: true` (restore the consumer's dash styles at the end)                                        | instant |
+| S02 | `createPathMorph(path, { shapes })` / `usePathMorph`            | `shapes: string[]`, `normalize`, `precision`, `incompatible: "error" \| "swap"`, `duration: 500`; `to(index)`, `trackTo(index)`                                                       | instant |
+| S03 | `createMotionPath(element, { path })` / `useMotionPath`         | `path` (CSS px, element-relative), `rotate: "auto" \| "reverse" \| number`, `mode: "auto" \| "native" \| "js"`, `duration: 1600`, `repeat: 0`, `yoyo`                                 | static  |
+| S04 | `createIconMorph(path, { shapes, state })` / `<MorphIcon>`      | `shapes: Record<string, string>` (compatible), `state`, `duration: 350`; `menuCloseShapes`                                                                                            | instant |
+| S05 | `createGradientStops(gradient, { stops })` / `useGradientStops` | `stops: [{ color?: [from, to], opacity?: [a, b], offset?: [a, b] }]` (by index), `duration: 2400`, `repeat: 0`, `yoyo: true`                                                          | static  |
+| S06 | `createChartDraw(svg, { lines, points })` / `useChartDraw`      | `lines` (selector/elements), `points` (selector/elements), `stagger: 150`, `duration: 1400`                                                                                           | instant |
+| S07 | `createTurbulence(element)` / `useTurbulence`                   | `frequency: 0.02` (0.001–0.2), `amplitude: 6` (0–24 px), `octaves: 1` (1–3), `speed: 0.5` (0–2 cycles/s), `rate: 20` (1–30 Hz), `region: 0.1` (0–0.25), `repeat: 0`, `duration: 4000` | off     |
+| S08 | `createLogoReveal(element)` / `useLogoReveal`                   | `pattern: "wipe-right" \| "wipe-left" \| "wipe-up" \| "wipe-down" \| "circle"`, `softness: 0.15`, `duration: 1000`, `outline` (paths drawn with S01 first)                            | instant |
+| S09 | `createDashFlow(paths)` / `useDashFlow`                         | `dash: 6`, `gap: 4` (user units), `speed: 40` (units/s, ±), `repeat` in seconds of flow (`duration: 4000`; `Infinity` explicit)                                                       | static  |
+| S10 | `createCheckmark(svg)` / `<SuccessCheck>`                       | `duration: 600`, `circle: true`; `<SuccessCheck>` renders an `aria-hidden` SVG unless `title` is given (`role="img"`)                                                                 | instant |
 
 Foundation exports: `parsePathData`, `serializePathData`, `getPathGeometry`, `measurePath`,
 `getPathMorphCompatibility`, `interpolatePath`, `getSvgSupport`, `getSvgDebugInfo`.

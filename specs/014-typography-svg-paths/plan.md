@@ -33,14 +33,14 @@ packages/animations/src/
 
 ## Slices
 
-| Slice | Content                                                                                                         | Gate                                 |
-| ----- | --------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
-| 014.0 | brief, spec, research, contracts, ADR 0029, plan, tasks, analysis, manual checks                                | documents consistent (analysis.md)   |
-| 014.1 | core internals, segmentation, splitter, `useSplitText`, tests (Unicode corpus, restoration, lines, SSR)         | unit tests; earlier suites unchanged |
-| 014.2 | T01–T11 engines + React + `text.css` + tests                                                                    | unit tests; typecheck; lint          |
-| 014.3 | path data, geometry, morph, attribute ledger, tests (valid/invalid corpus)                                      | unit tests                           |
-| 014.4 | S01–S10 engines + React + `svg.css` + tests                                                                     | unit tests                           |
-| 014.5 | gallery + suite, CDP/Playwright cases, Storybook, composition tests, packed consumer, budgets, docs, CI         | `pnpm check`; browser checks; 3-OS CI |
+| Slice | Content                                                                                                 | Gate                                  |
+| ----- | ------------------------------------------------------------------------------------------------------- | ------------------------------------- |
+| 014.0 | brief, spec, research, contracts, ADR 0029, plan, tasks, analysis, manual checks                        | documents consistent (analysis.md)    |
+| 014.1 | core internals, segmentation, splitter, `useSplitText`, tests (Unicode corpus, restoration, lines, SSR) | unit tests; earlier suites unchanged  |
+| 014.2 | T01–T11 engines + React + `text.css` + tests                                                            | unit tests; typecheck; lint           |
+| 014.3 | path data, geometry, morph, attribute ledger, tests (valid/invalid corpus)                              | unit tests                            |
+| 014.4 | S01–S10 engines + React + `svg.css` + tests                                                             | unit tests                            |
+| 014.5 | gallery + suite, CDP/Playwright cases, Storybook, composition tests, packed consumer, budgets, docs, CI | `pnpm check`; browser checks; 3-OS CI |
 
 ## Test strategy
 
@@ -57,10 +57,10 @@ packages/animations/src/
 
 ## Risks
 
-| Risk                                                     | Mitigation                                                                  |
-| -------------------------------------------------------- | --------------------------------------------------------------------------- |
-| Bidi/shaping regressions in engines                      | lab checks piece boxes per engine; shaping scripts never char-split         |
-| `calc()` in `translate`/`opacity` precision per engine   | lab compares computed values against the JS formula                         |
-| WebKit differences (Playwright build ≠ Safari)           | statuses recorded per engine; Safari unverified                             |
-| Budget pressure                                          | new entries only; measured; proposed for owner review                       |
-| Issue #9 intermittency                                   | observed separately on `main`; no Press changes in this branch              |
+| Risk                                                   | Mitigation                                                          |
+| ------------------------------------------------------ | ------------------------------------------------------------------- |
+| Bidi/shaping regressions in engines                    | lab checks piece boxes per engine; shaping scripts never char-split |
+| `calc()` in `translate`/`opacity` precision per engine | lab compares computed values against the JS formula                 |
+| WebKit differences (Playwright build ≠ Safari)         | statuses recorded per engine; Safari unverified                     |
+| Budget pressure                                        | new entries only; measured; proposed for owner review               |
+| Issue #9 intermittency                                 | observed separately on `main`; no Press changes in this branch      |

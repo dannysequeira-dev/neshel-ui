@@ -7,19 +7,32 @@ modules. Families never import each other: scroll progress (T11) and timelines r
 ## 1. Shared control (also used by `./svg`)
 
 ```ts
-interface ProgressSource { get(): number; subscribe(listener: (progress: number) => void): () => void }
+interface ProgressSource {
+  get(): number;
+  subscribe(listener: (progress: number) => void): () => void;
+}
 
 interface ProgressControl {
-  readonly state: MotionState;            // "idle" | "running" | "paused" | "completed" | "cancelled" | "interrupted"
-  readonly progress: number;              // 0–1
+  readonly state: MotionState; // "idle" | "running" | "paused" | "completed" | "cancelled" | "interrupted"
+  readonly progress: number; // 0–1
   readonly finished: Promise<MotionResult>;
-  play(): void; pause(): void; reverse(): void; finish(): void; cancel(): void;
-  seek(progress: number): void;           // deterministic render at a progress
+  play(): void;
+  pause(): void;
+  reverse(): void;
+  finish(): void;
+  cancel(): void;
+  seek(progress: number): void; // deterministic render at a progress
   /** A C01 value track: `timeline.add(effect.track())` — the timeline clock drives the effect. */
-  track(options?: { id?: string; from?: number; to?: number; duration?: number; easing?: Easing | EasingPreset }): ProgressTrack;
+  track(options?: {
+    id?: string;
+    from?: number;
+    to?: number;
+    duration?: number;
+    easing?: Easing | EasingPreset;
+  }): ProgressTrack;
   /** Follow any 0–1 source (`ScrollProgress`, motion value); replaces the own clock; returns the unsubscribe. */
   drive(source: ProgressSource): () => void;
-  destroy(): void;                        // idempotent; exact restoration
+  destroy(): void; // idempotent; exact restoration
 }
 ```
 
@@ -36,19 +49,19 @@ interface ProgressControl {
 
 ## 2. Entries
 
-| Id  | Engine / React                                 | Structure (catalogue)                                                       | Key options (defaults)                                                                                                       | Reduced  |
-| --- | ---------------------------------------------- | --------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | -------- |
-| T01 | `createTextReveal` / `<TextReveal>`            | S — splitter (`chars`/`words`/`lines`)                                      | `split: "words"`, `variant: "fade-up" \| "fade" \| "fade-down" \| "blur" \| "scale"`, `stagger: 0.2`, `order: "start" \| "end" \| "center" \| "random"`, `seed`, `distance: "0.6em"`, `duration: 900` | instant  |
-| T02 | `createTypewriter` / `<Typewriter>`            | S — chars                                                                   | `speed: 30` graphemes/s, `caret: "typing" \| "always" \| "none"`; `restart()`                                                | instant  |
-| T03 | `createScramble` / `<ScrambleText>`            | S — chars; glyph overlay `::after { content: attr(data-glyph) }`            | `charset` (graphemes), `seed: 1`, `rate: 24` (1–60 changes/s), `duration: 1200`                                              | instant  |
-| T04 | `createGradientSweep` / `<GradientText>`       | — element token `text-sweep`, `--neshel-sweep-progress`                     | `color` (highlight, CSS), `width: 0.25`, `angle: 100`, `duration: 1600`, `repeat: 0` (`Infinity` explicit)                   | static   |
-| T05 | `createNumberRoll` / `<NumberRoll>`            | S — package-rendered digit columns                                          | `value`, `locale`, `format` (`Intl.NumberFormatOptions`), `duration: 800`; `set(value)`                                      | instant  |
-| T06 | `createRotatingWords` / `<RotatingWords>`      | S — package-rendered stacked words                                          | `words`, `interval: 2500`, `duration: 450`, `variant: "slide-up" \| "slide-down" \| "fade"`, `repeat: 0`, `pauseOnHover: true`, `accessibleText` | static   |
-| T07 | `createTextWave` / `<WaveText>`                | S — chars                                                                   | `amplitude: "0.18em"` (≤ 0.5em), `spread: 0.5`, `duration: 1200` per cycle (≥ 400), `repeat: 2`                              | off      |
-| T08 | `createHighlighter` / `<Highlight>`            | — element token `highlight`, `--neshel-highlight-progress`                  | `variant: "marker" \| "underline"`, `color` (CSS), `duration: 700`                                                           | instant  |
-| T09 | `createTextMask` / `<TextMask>`                | S — lines; or `scope: "element"` (host `mask` channel)                      | `variant: "rise" \| "wipe"`, `scope: "lines"`, `stagger: 0.25`, `duration: 900`                                              | instant  |
-| T10 | `createFontAxes` / `<FontAxes>`                | — host channels `font-weight`, `font-stretch`, `font-style`, `font-variation-settings` | `from`, `to` (axis → number), `duration: 600`; `to(axes)`                                                         | static   |
-| T11 | `createLineReveal` / `<LineReveal>`            | S — lines                                                                   | `source` (`ProgressSource`), `mode: "scrub" \| "enter"`, `threshold: 0.25`, `variant` (T01 variants), `stagger: 0.5`        | instant  |
+| Id  | Engine / React                            | Structure (catalogue)                                                                  | Key options (defaults)                                                                                                                                                                                | Reduced |
+| --- | ----------------------------------------- | -------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| T01 | `createTextReveal` / `<TextReveal>`       | S — splitter (`chars`/`words`/`lines`)                                                 | `split: "words"`, `variant: "fade-up" \| "fade" \| "fade-down" \| "blur" \| "scale"`, `stagger: 0.2`, `order: "start" \| "end" \| "center" \| "random"`, `seed`, `distance: "0.6em"`, `duration: 900` | instant |
+| T02 | `createTypewriter` / `<Typewriter>`       | S — chars                                                                              | `speed: 30` graphemes/s, `caret: "typing" \| "always" \| "none"`; `restart()`                                                                                                                         | instant |
+| T03 | `createScramble` / `<ScrambleText>`       | S — chars; glyph overlay `::after { content: attr(data-glyph) }`                       | `charset` (graphemes), `seed: 1`, `rate: 24` (1–60 changes/s), `duration: 1200`                                                                                                                       | instant |
+| T04 | `createGradientSweep` / `<GradientText>`  | — element token `text-sweep`, `--neshel-sweep-progress`                                | `color` (highlight, CSS), `width: 0.25`, `angle: 100`, `duration: 1600`, `repeat: 0` (`Infinity` explicit)                                                                                            | static  |
+| T05 | `createNumberRoll` / `<NumberRoll>`       | S — package-rendered digit columns                                                     | `value`, `locale`, `format` (`Intl.NumberFormatOptions`), `duration: 800`; `set(value)`                                                                                                               | instant |
+| T06 | `createRotatingWords` / `<RotatingWords>` | S — package-rendered stacked words                                                     | `words`, `interval: 2500`, `duration: 450`, `variant: "slide-up" \| "slide-down" \| "fade"`, `repeat: 0`, `pauseOnHover: true`, `accessibleText`                                                      | static  |
+| T07 | `createTextWave` / `<WaveText>`           | S — chars                                                                              | `amplitude: "0.18em"` (≤ 0.5em), `spread: 0.5`, `duration: 1200` per cycle (≥ 400), `repeat: 2`                                                                                                       | off     |
+| T08 | `createHighlighter` / `<Highlight>`       | — element token `highlight`, `--neshel-highlight-progress`                             | `variant: "marker" \| "underline"`, `color` (CSS), `duration: 700`                                                                                                                                    | instant |
+| T09 | `createTextMask` / `<TextMask>`           | S — lines; or `scope: "element"` (host `mask` channel)                                 | `variant: "rise" \| "wipe"`, `scope: "lines"`, `stagger: 0.25`, `duration: 900`                                                                                                                       | instant |
+| T10 | `createFontAxes` / `<FontAxes>`           | — host channels `font-weight`, `font-stretch`, `font-style`, `font-variation-settings` | `from`, `to` (axis → number), `duration: 600`; `to(axes)`                                                                                                                                             | static  |
+| T11 | `createLineReveal` / `<LineReveal>`       | S — lines                                                                              | `source` (`ProgressSource`), `mode: "scrub" \| "enter"`, `threshold: 0.25`, `variant` (T01 variants), `stagger: 0.5`                                                                                  | instant |
 
 Foundation exports: `splitText`, `segmentGraphemes`, `segmentWords`, `getSegmenterSupport`,
 `getTextSupport`, `getTextDebugInfo`; React `useSplitText(ref, options)`.
