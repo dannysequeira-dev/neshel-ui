@@ -26,6 +26,7 @@
 </p>
 
 <p align="center">
+  <a href="#showcase">Showcase</a> ·
   <a href="#packages">Packages</a> ·
   <a href="#quick-start">Quick start</a> ·
   <a href="#documentation">Documentation</a> ·
@@ -46,6 +47,24 @@ supported), needs no runtime provider for theming, and works in React Server Com
 
 The navy, ivory and gold appearance is Neshel's default; your application owns its identity through
 `neshel.config.ts`.
+
+## Showcase
+
+A preview of the **published design-system components** in a real Storybook application, captured
+during the project's [browser visual verification](specs/005-components-navigation-shell/visual-verification/README.md).
+These are screenshots of working examples, not design mockups.
+
+<p align="center">
+  <img src="specs/005-components-navigation-shell/visual-verification/demo-a-desktop-light.png" width="49%" alt="Responsive dashboard built with Neshel-UI in light theme: navigation, cards and status badges" />
+  <img src="specs/005-components-navigation-shell/visual-verification/demo-a-desktop-dark.png" width="49%" alt="The same Neshel-UI dashboard rendered with dark theme tokens" />
+</p>
+
+More examples: [mobile navigation](specs/005-components-navigation-shell/visual-verification/demo-a-mobile-drawer.png) ·
+[form controls](specs/005-components-navigation-shell/visual-verification/demo-b-form.png) ·
+[metrics-aware typography](specs/004-typography-breakpoints/visual-verification/capsize-trimmed-vs-untrimmed.png).
+
+**Try the components:** [interactive documentation](https://neshel-ui.vercel.app/en/docs/components/) ·
+[downloadable starters](https://neshel-ui.vercel.app/en/docs/examples/starters/).
 
 ## Packages
 
@@ -146,12 +165,18 @@ Working agreements: [constitution](.specify/memory/constitution.md), [architectu
 
 ## Project status
 
-| Phase   | Focus                                                                | Status               |
-| ------- | -------------------------------------------------------------------- | -------------------- |
-| 001–005 | Foundation, tokens and CLI, layout, typography, components and shell | Done                 |
-| 006     | Documentation website, developer experience, release candidate       | Done                 |
-| 007     | First npm publication: 0.1.0                                         | Done                 |
-| 008.0   | Animations foundation (private), core engine and technical spikes    | Merged; experimental |
+| Phase   | Focus                                                                | Status                                       |
+| ------- | -------------------------------------------------------------------- | -------------------------------------------- |
+| 001–005 | Foundation, tokens and CLI, layout, typography, components and shell | Done                                         |
+| 006     | Documentation website, developer experience, release candidate       | Done                                         |
+| 007     | First npm publication: 0.1.0                                         | Done                                         |
+| 008–009 | Animations foundation, motion engine, scheduler and drivers          | Implemented on `main`; private, experimental |
+| 010–011 | Entrance, hover, press, scroll and parallax effects                  | Implemented on `main`; private, experimental |
+| 012–013 | Physics, gestures, layout, cinematic scenes and page transitions     | Implemented on `main`; private, experimental |
+
+**Animations are not part of the published 0.1.0 release.** Phases 008–013 are merged into
+`main` for review and development, but `@neshel-ui/animations` remains `private: true` at
+`0.0.0`, and its APIs are experimental. See [Phase 013 evidence](specs/013-cinematic-page-transitions/evidence.md).
 
 Release readiness: [docs/release-readiness.md](docs/release-readiness.md). Publication evidence for
 0.1.0 (tag `v0.1.0`, provenance, integrity, clean installation):
