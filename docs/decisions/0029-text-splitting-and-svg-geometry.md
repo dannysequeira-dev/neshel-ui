@@ -51,6 +51,14 @@ family boundary rule (ADR 0022, 0023, 0025, 0028).
 - Driver column changes for most catalogue rows (CSS → host values + CSS math; S02 WAAPI → attribute ledger);
   recorded in the spec inventory.
 - New bundle entries get proposed budgets; earlier budgets are unchanged.
+- `text.css` registers the progress and per-piece intermediate custom properties as `<number>` (`@property`):
+  measured to cut the 600-cluster reveal frame cost in Chromium from ~37 to ~22–25 ms; hundreds of
+  simultaneously animated clusters still exceed a 60 fps budget in Chromium/WebKit headless (evidence K-5).
+
+## Verification
+
+[evidence.md](../../specs/014-typography-svg-paths/evidence.md): unit (456 animations tests), CDP 147 cases,
+three engines 161 cases each, packed SSR consumer, bundles, routers; three-OS CI in the PR.
 
 ## Alternatives rejected
 

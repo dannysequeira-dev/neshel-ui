@@ -1,6 +1,7 @@
 # Contract — Native support and fallback matrix (Phase 014)
 
-**Planned; observed values are filled from the lab (evidence.md).** WebKit = Playwright's WebKit build, not
+**Observed per engine in [evidence.md §4](../evidence.md) (all native in Chromium 158, Firefox 159 and WebKit
+27.2 except CSS `d`, absent in WebKit).** WebKit = Playwright's WebKit build, not
 Safari; Safari behaviour is unverified until checked on real Safari.
 
 | Capability / entry                         | Used by                | Fallback (any engine without it)                                 |

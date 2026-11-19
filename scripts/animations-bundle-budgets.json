@@ -58,7 +58,7 @@
   "page-transitions: entire entry": 13312,
   "page-transitions/next: adapter (next external)": 4915,
   "page-transitions/react-router: adapter (react-router external)": 4608,
-  "css: text.css": 2816,
+  "css: text.css": 2944,
   "css: svg.css": 512,
   "text: splitText (engine, no React)": 5248,
   "text: createTextReveal (engine, no React)": 13312,

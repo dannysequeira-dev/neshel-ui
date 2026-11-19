@@ -14,41 +14,41 @@ Dependency-ordered. `[x]` done, `[ ]` open. Authorised by the owner brief of 202
 
 ## 014.1 — Accessible text foundation
 
-- [ ] T010 Core internals: progress driver, loop, channel writer (D-2)
-- [ ] T011 Segmentation + fallback (FR-001)
-- [ ] T012 `splitText` (FR-002): accessible copy, content policy, runs, shaping rule, lines, revert, counters
-- [ ] T013 `useSplitText` (FR-003); Unicode corpus, restoration, SSR and StrictMode tests
+- [x] T010 Core internals: progress driver, loop, channel writer (D-2)
+- [x] T011 Segmentation + fallback (FR-001)
+- [x] T012 `splitText` (FR-002): accessible copy, content policy, runs, shaping rule, lines, revert, counters
+- [x] T013 `useSplitText` (FR-003); Unicode corpus, restoration, SSR and StrictMode tests
 
 ## 014.2 — Typography effects
 
-- [ ] T020 T01 reveal + T11 line reveal
-- [ ] T021 T02 typewriter, T03 scramble
-- [ ] T022 T04 sweep, T08 highlighter, T09 mask
-- [ ] T023 T05 number roll (FR-011)
-- [ ] T024 T06 rotating words, T07 wave
-- [ ] T025 T10 font axes (FR-012)
-- [ ] T026 React components, `text.css`, unit tests incl. restoration, reduced motion and StrictMode
+- [x] T020 T01 reveal + T11 line reveal
+- [x] T021 T02 typewriter, T03 scramble
+- [x] T022 T04 sweep, T08 highlighter, T09 mask
+- [x] T023 T05 number roll (FR-011)
+- [x] T024 T06 rotating words, T07 wave
+- [x] T025 T10 font axes (FR-012)
+- [x] T026 React components, `text.css`, unit tests incl. restoration, reduced motion and StrictMode
 
 ## 014.3 — SVG geometry foundation
 
-- [ ] T030 Path data parser/serializer (FR-020)
-- [ ] T031 Geometry + `measurePath` (FR-021)
-- [ ] T032 Morph compatibility/interpolation (FR-022); attribute ledger; corpus tests
+- [x] T030 Path data parser/serializer (FR-020)
+- [x] T031 Geometry + `measurePath` (FR-021)
+- [x] T032 Morph compatibility/interpolation (FR-022); attribute ledger; corpus tests
 
 ## 014.4 — SVG effects
 
-- [ ] T040 S01 draw, S06 chart, S10 checkmark
-- [ ] T041 S02 morph, S04 icon morph
-- [ ] T042 S03 motion path (native + fallback)
-- [ ] T043 S05 stops, S07 turbulence, S08 logo, S09 dash flow
-- [ ] T044 React hooks/components, `svg.css`, unit tests
+- [x] T040 S01 draw, S06 chart, S10 checkmark
+- [x] T041 S02 morph, S04 icon morph
+- [x] T042 S03 motion path (native + fallback)
+- [x] T043 S05 stops, S07 turbulence, S08 logo, S09 dash flow
+- [x] T044 React hooks/components, `svg.css`, unit tests
 
 ## 014.5 — Integration & quality gates
 
-- [ ] T050 Playground text/SVG gallery + in-page suite (21 entries); real variable font
-- [ ] T051 CDP and Playwright cases; ≥ 125 earlier CDP cases kept
-- [ ] T052 Storybook stories (21 entries)
-- [ ] T053 Composition tests (18 rows); performance measurements
-- [ ] T054 Packed consumer (SSR + hydration); bundle budgets proposed
-- [ ] T055 Package contract/pack checks, catalogue, README, docs; `pnpm check`; builds
+- [x] T050 Playground text/SVG gallery + in-page suite (21 entries); real variable font
+- [x] T051 CDP and Playwright cases; ≥ 125 earlier CDP cases kept
+- [x] T052 Storybook stories (21 entries)
+- [x] T053 Composition tests (18 rows); performance measurements
+- [x] T054 Packed consumer (SSR + hydration); bundle budgets proposed
+- [x] T055 Package contract/pack checks, catalogue, README, docs; `pnpm check`; builds
 - [ ] T056 Push, PR, three-OS CI on the head commit; evidence

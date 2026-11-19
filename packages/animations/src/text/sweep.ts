@@ -3,7 +3,7 @@
  * `text-sweep` token; `text.css` paints its text with a gradient whose base is `currentColor` (inside
  * `@supports (background-clip: text)` and `@media (forced-colors: none)`), so the text keeps the consumer's
  * colour wherever the highlight band is not, and is plain text without the capability or under forced
- * colours. The band position is `--neshel-sweep-progress`, written by the engine through the Motion Host
+ * colours. The band position is `--neshel-text-sweep-progress`, written by the engine through the Motion Host
  * (rule R-1: no CSS animation on the consumer's element). One sweep by default; `repeat: Infinity` explicit.
  * Reduced motion (`static`): no sweep.
  */
@@ -38,17 +38,17 @@ export function createGradientSweep(
   if (typeof angle !== "number" || !Number.isFinite(angle) || Math.abs(angle) > 360)
     throw new TypeError('createGradientSweep: "angle" must be from -360 to 360.');
   const vars: Record<string, string> = {
-    "--neshel-sweep-width": String(width),
-    "--neshel-sweep-angle": `${angle}deg`,
+    "--neshel-text-sweep-width": String(width),
+    "--neshel-text-sweep-angle": `${angle}deg`,
   };
   const effect = createLoopTextEffect(element, element, options, {
     name: "createGradientSweep",
     token: "text-sweep",
-    channels: ["--neshel-sweep-progress"],
+    channels: ["--neshel-text-sweep-progress"],
     defaults: { duration: 1600, repeat: 0 },
-    vars: color === undefined ? vars : { ...vars, "--neshel-sweep-color": color },
-    frame: (time, period) => ({ "--neshel-sweep-progress": round((time % period) / period) }),
-    rest: () => ({ "--neshel-sweep-progress": undefined }),
+    vars: color === undefined ? vars : { ...vars, "--neshel-text-sweep-color": color },
+    frame: (time, period) => ({ "--neshel-text-sweep-progress": round((time % period) / period) }),
+    rest: () => ({ "--neshel-text-sweep-progress": undefined }),
   });
   if (color !== undefined) effect.v.css("color", color, "");
   return effect.control;

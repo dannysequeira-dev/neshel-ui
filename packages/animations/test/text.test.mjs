@@ -388,13 +388,13 @@ test("T03 scramble: glyphs deterministic for (seed, progress), never in the acce
 });
 
 test("T04 gradient sweep: token + host property on the element; consumer inline style restored exactly", () => {
-  const p = el("Sweep", "span", { style: "color: red; --neshel-sweep-progress: 0.5" });
+  const p = el("Sweep", "span", { style: "color: red; --neshel-text-sweep-progress: 0.5" });
   const before = p.style.cssText;
   const control = text.createGradientSweep(p, { duration: 200, color: "gold" });
   assert.ok(p.getAttribute("data-neshel-fx").includes("text-sweep"));
   frames.flush(4);
-  assert.notEqual(prop(p, "--neshel-sweep-progress"), "0.5");
-  assert.equal(prop(p, "--neshel-sweep-color"), "gold");
+  assert.notEqual(prop(p, "--neshel-text-sweep-progress"), "0.5");
+  assert.equal(prop(p, "--neshel-text-sweep-color"), "gold");
   settle();
   assert.equal(control.state, "completed");
   assert.equal(getFrameScheduler().size, 0);

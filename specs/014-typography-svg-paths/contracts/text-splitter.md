@@ -63,8 +63,8 @@ interface SplitText {
   duplicated visually even without `text.css`. Essential layout of pieces is inline as well
   (`display:inline-block` for chars/words, `display:block` for lines); `text.css` adds effect rules only.
 - Inline phrasing elements are reproduced in the visual copy as shallow clones without `id`, `name`,
-  `role`, `tabindex`, `contenteditable`, `aria-*`, `on*` and `style` attributes (classes, `lang`, `dir`
-  kept); `<br>` becomes a visual `<br>`.
+  `role`, `tabindex`, `contenteditable`, `aria-*` and `on*` attributes (`class`, `lang`, `dir`, `style`,
+  `hidden`, `translate` kept, so the visual copy looks like the original); `<br>` becomes a visual `<br>`.
 - Direction runs (R3) are `<span dir>` isolates; RTL/LTR words carry `dir`; words of joining/shaping scripts
   are never split into chars (`data-neshel-split-whole`).
 - Indexes: `--neshel-i` on each animated piece, `--neshel-n` (count) on the root.

@@ -5,6 +5,72 @@
  * Per-piece values are computed here from one progress value: t = clamp(0, p·(1 + (n−1)·k) − i·k, 1), eased by
  * smoothstep t²(3 − 2t). Without this stylesheet split text is fully visible and static.
  */
+@property --neshel-reveal-progress {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+@property --neshel-type-progress {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+@property --neshel-mask-progress {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+@property --neshel-number-progress {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+@property --neshel-rotate-progress {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 1;
+}
+@property --neshel-wave-phase {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+@property --neshel-wave-energy {
+  syntax: "<number>";
+  inherits: true;
+  initial-value: 0;
+}
+@property --neshel-reveal-t {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 1;
+}
+@property --neshel-reveal-e {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 1;
+}
+@property --neshel-mask-t {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 1;
+}
+@property --neshel-mask-e {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 1;
+}
+@property --neshel-rotate-t {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 1;
+}
+@property --neshel-rotate-e {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 1;
+}
+
 @layer components.neshel {
   /* Animated pieces of a split: clusters (or whole shaping words), words or lines. */
   .neshel-split[data-split="chars"]
@@ -124,18 +190,18 @@
   @supports (background-clip: text) or (-webkit-background-clip: text) {
     @media (forced-colors: none) {
       [data-neshel-fx~="text-sweep"] {
-        --neshel-sweep-w: var(--neshel-sweep-width, 0.25);
-        --neshel-sweep-pos: calc(
-          var(--neshel-sweep-progress, 0) *
-          (1 + 2 * var(--neshel-sweep-w)) -
-          var(--neshel-sweep-w)
+        --neshel-text-sweep-w: var(--neshel-text-sweep-width, 0.25);
+        --neshel-text-sweep-pos: calc(
+          var(--neshel-text-sweep-progress, 0) *
+          (1 + 2 * var(--neshel-text-sweep-w)) -
+          var(--neshel-text-sweep-w)
         );
         background-image: linear-gradient(
-          var(--neshel-sweep-angle, 100deg),
-          currentColor calc((var(--neshel-sweep-pos) - var(--neshel-sweep-w)) * 100%),
-          var(--neshel-sweep-color, var(--neshel-primary, #6366f1))
-            calc(var(--neshel-sweep-pos) * 100%),
-          currentColor calc((var(--neshel-sweep-pos) + var(--neshel-sweep-w)) * 100%)
+          var(--neshel-text-sweep-angle, 100deg),
+          currentColor calc((var(--neshel-text-sweep-pos) - var(--neshel-text-sweep-w)) * 100%),
+          var(--neshel-text-sweep-color, var(--neshel-primary, #6366f1))
+            calc(var(--neshel-text-sweep-pos) * 100%),
+          currentColor calc((var(--neshel-text-sweep-pos) + var(--neshel-text-sweep-w)) * 100%)
         );
         -webkit-background-clip: text;
         background-clip: text;

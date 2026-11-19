@@ -5,8 +5,8 @@ merge)
 
 **Created**: 2026-11-19
 
-**Status**: **Specified (014.0).** Implementation status per slice in [tasks.md](tasks.md); verification in
-[evidence.md](evidence.md). `@neshel-ui/animations` stays private (0.0.0).
+**Status**: **Implemented; verified locally — see [evidence.md](evidence.md); three-OS CI recorded in the PR;
+screen-reader passes pending (manual-checks.md).** `@neshel-ui/animations` stays private (0.0.0).
 
 **Input**: Owner direction 2026-11-19, summarised in [brief.md](brief.md).
 

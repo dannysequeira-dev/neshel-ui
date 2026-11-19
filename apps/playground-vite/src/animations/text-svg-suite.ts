@@ -2,8 +2,19 @@
 // Playwright check (Chromium, Firefox, WebKit). Decided by observable conditions with ceilings, never by fixed
 // sleeps. Capabilities an engine lacks are recorded as notes (native vs fallback), not failures.
 import { getFrameScheduler } from "@neshel-ui/animations/core";
-import { getPathGeometry, getSvgDebugInfo, getSvgSupport } from "@neshel-ui/animations/svg";
-import { getTextDebugInfo, getTextSupport, splitText } from "@neshel-ui/animations/text";
+import {
+  createTurbulence,
+  getPathGeometry,
+  getSvgDebugInfo,
+  getSvgSupport,
+  interpolatePath,
+} from "@neshel-ui/animations/svg";
+import {
+  createTextReveal,
+  getTextDebugInfo,
+  getTextSupport,
+  splitText,
+} from "@neshel-ui/animations/text";
 import { labState } from "./lab-state";
 
 type Case = { id: string; ok: boolean; error?: string };
@@ -523,7 +534,7 @@ export async function runTextSvgSuite(): Promise<Case[]> {
       },
     ],
     [
-      "performance: split cost (600 graphemes, 5000 characters) and frame deltas with 600 animated graphemes",
+      "performance (observations): split cost, frame deltas with 600 revealing graphemes, morph cost, turbulence filter cost",
       async () => {
         const host = document.createElement("p");
         host.className = "ts-perf";
@@ -539,11 +550,54 @@ export async function runTextSvgSuite(): Promise<Case[]> {
         const words = splitText(host, { split: "words" });
         const split5000 = performance.now() - t;
         words.revert();
+        // Frame deltas while 600 graphemes reveal (one host write per frame; per-piece math in CSS).
+        host.textContent = "Lorem ipsum dolor sit amet ".repeat(24).slice(0, 600);
+        host.scrollIntoView({ block: "center" });
+        const deltas = async (count: number) => {
+          const out: number[] = [];
+          let last = performance.now();
+          for (let i = 0; i < count; i++) {
+            await frame();
+            const now = performance.now();
+            out.push(now - last);
+            last = now;
+          }
+          const sorted = [...out].sort((a, b) => a - b);
+          const mean = out.reduce((a, b) => a + b, 0) / out.length;
+          return {
+            mean: Math.round(mean * 10) / 10,
+            p95: Math.round((sorted[Math.floor(out.length * 0.95)] ?? 0) * 10) / 10,
+          };
+        };
+        const idleFrames = await deltas(30);
+        const reveal = createTextReveal(host, { split: "chars", duration: 2000, trigger: "mount" });
+        const revealFrames = await deltas(60);
+        reveal.destroy();
+        // Morph interpolation cost (compiled once; per-frame cost is one call).
+        const morph = interpolatePath(
+          "M10 50 C 30 10, 70 10, 90 50 S 150 90 170 50",
+          "M10 50 C 30 90, 70 90, 90 50 S 150 10 170 50",
+        );
+        t = performance.now();
+        for (let i = 0; i < 2000; i++) morph(i / 2000);
+        const morphMicros = ((performance.now() - t) / 2000) * 1000;
+        // Turbulence filter on a 200×120 box: frame deltas with and without the filter.
+        host.textContent = "Filtered";
+        host.style.cssText = "display:block;width:200px;height:120px;background:#6366f1";
+        const plainFrames = await deltas(30);
+        const wobble = createTurbulence(host, { duration: 4000, rate: 30 });
+        const filterFrames = await deltas(30);
+        wobble.destroy();
         host.remove();
         notes().performance = {
           split600ms: Math.round(split600 * 10) / 10,
           pieces,
           split5000WordsMs: Math.round(split5000 * 10) / 10,
+          frameMsIdle: idleFrames,
+          frameMsReveal600: revealFrames,
+          morphMicrosPerFrame: Math.round(morphMicros * 100) / 100,
+          frameMsNoFilter: plainFrames,
+          frameMsTurbulence: filterFrames,
         };
         check(pieces >= 400, `pieces ${pieces}`);
       },
