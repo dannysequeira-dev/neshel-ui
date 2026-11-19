@@ -2,6 +2,7 @@
 // 010 effects gallery and the Phase 011 scroll gallery use the package; B (CornerRecede) is a prototype.
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import { CinematicGallery } from "./cinematic-gallery";
 import { CornerRecedeLab } from "./corner-recede";
 import { EffectsLab } from "./effects-lab";
 import { EngineLab } from "./engine-lab";
@@ -17,7 +18,7 @@ createRoot(root).render(
   <StrictMode>
     <main className="lab">
       <header className="lab-header">
-        <p className="lab-eyebrow">Neshel-UI · features 008.0–012</p>
+        <p className="lab-eyebrow">Neshel-UI · features 008.0–013</p>
         <h1>Animations lab</h1>
         <p>
           Technical spikes for <code>@neshel-ui/animations</code> (private, unpublished). Tilt3D,
@@ -32,6 +33,7 @@ createRoot(root).render(
       <EffectsLab />
       <ScrollGallery />
       <GesturesGallery />
+      <CinematicGallery />
     </main>
   </StrictMode>,
 );

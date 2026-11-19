@@ -47,12 +47,19 @@ test("exports only implemented entry points, types first (FR-002)", () => {
     "./scroll",
     "./gestures",
     "./layout",
+    "./cinematic",
+    "./page-transitions",
+    "./page-transitions/next",
+    "./page-transitions/react-router",
     "./styles.css",
     "./hover.css",
     "./press.css",
     "./scroll.css",
     "./gestures.css",
     "./layout.css",
+    "./cinematic.css",
+    "./page-transitions.css",
+    "./page-transitions-mpa.css",
   ]);
   for (const subpath of [
     ".",
@@ -63,6 +70,10 @@ test("exports only implemented entry points, types first (FR-002)", () => {
     "./scroll",
     "./gestures",
     "./layout",
+    "./cinematic",
+    "./page-transitions",
+    "./page-transitions/next",
+    "./page-transitions/react-router",
   ]) {
     assert.deepEqual(Object.keys(manifest.exports[subpath]), ["types", "import"]);
   }
@@ -71,7 +82,16 @@ test("exports only implemented entry points, types first (FR-002)", () => {
 });
 
 test("React is a peer; the only runtime dependency is @radix-ui/react-slot; never core (FR-003)", () => {
-  assert.deepEqual(manifest.peerDependencies, { react: "^19.0.0" });
+  // Phase 013: router adapters import their routers as OPTIONAL peers (ADR 0028 §1).
+  assert.deepEqual(manifest.peerDependencies, {
+    react: "^19.0.0",
+    next: ">=16.4.0",
+    "react-router": ">=8.0.0",
+  });
+  assert.deepEqual(manifest.peerDependenciesMeta, {
+    next: { optional: true },
+    "react-router": { optional: true },
+  });
   assert.deepEqual(Object.keys(manifest.dependencies), ["@radix-ui/react-slot"]);
   for (const field of ["dependencies", "peerDependencies", "devDependencies"]) {
     assert.equal(manifest[field]?.["@neshel-ui/core"], undefined, field);
@@ -87,9 +107,18 @@ test("the core entry is framework-free: its modules import nothing but each othe
 
 test("the root entry imports only react and @radix-ui/react-slot (FR-005)", () => {
   const allowed = new Set(["react", "react/jsx-runtime", "@radix-ui/react-slot"]);
+  // Phase 013: only the adapter modules import their (optional peer) routers.
+  const adapters = {
+    [join("dist", "page-transitions", "next.js")]: new Set(["next/link.js", "next/navigation.js"]),
+    [join("dist", "page-transitions", "react-router.js")]: new Set(["react-router"]),
+  };
   for (const file of files(join(root, "dist"), ".js")) {
+    const extra = adapters[relative(root, file)] ?? new Set();
     for (const specifier of bareImports(readFileSync(file, "utf8"))) {
-      assert.ok(allowed.has(specifier), `${relative(root, file)} imports ${specifier}`);
+      assert.ok(
+        allowed.has(specifier) || extra.has(specifier),
+        `${relative(root, file)} imports ${specifier}`,
+      );
     }
   }
 });
@@ -168,7 +197,14 @@ test("no CSS transition or animation targets a consumer element (010 FR-042, ADR
   // a pseudo-element layer, a package class, or a child of a package component.
   // Phase 012: the opt-in gestures.css and layout.css follow the same rule; a package class may carry
   // attribute qualifiers (`.neshel-tab-indicator[data-ready]`).
-  const css = ["styles.css", "gestures.css", "layout.css"]
+  const css = [
+    "styles.css",
+    "gestures.css",
+    "layout.css",
+    "cinematic.css",
+    "page-transitions.css",
+    "page-transitions-mpa.css",
+  ]
     .map((file) => readFileSync(join(root, "dist", file), "utf8"))
     .join(String.fromCharCode(10))
     .replace(/\/\*[\s\S]*?\*\//g, "")
@@ -179,6 +215,8 @@ test("no CSS transition or animation targets a consumer element (010 FR-042, ADR
       const subject = part.trim();
       assert.ok(
         /::(?:before|after)$/.test(subject) ||
+          // Phase 013: browser-generated View Transition snapshots (never the consumer's element).
+          /::view-transition-(?:group|image-pair|old|new)\([^)]*\)$/.test(subject) ||
           /^\.neshel-[a-z-]+(?:\[[^\]]+\])*(?::has\(.*\))?$/.test(subject) ||
           />\s*(?:\[data-slot\]|\.neshel-[a-z-]+)$/.test(subject),
         `transition/animation on a possibly consumer-owned subject: "${subject}"`,
@@ -199,7 +237,16 @@ test("module boundaries: core imports only core; root/react/families never impor
     const where = relative(join(root, "dist"), file).split("\\").join("/");
     for (const target of relativeTargets(file)) {
       if (where.startsWith("core/")) assert.ok(target.startsWith("core/"), `${where} -> ${target}`);
-      for (const family of ["entrance", "hover", "press", "scroll", "gestures", "layout"]) {
+      for (const family of [
+        "entrance",
+        "hover",
+        "press",
+        "scroll",
+        "gestures",
+        "layout",
+        "cinematic",
+        "page-transitions",
+      ]) {
         if (!where.startsWith(`${family}/`))
           assert.ok(!target.startsWith(`${family}/`), `${where} -> ${target}`);
       }

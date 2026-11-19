@@ -213,6 +213,63 @@ export const ENTRIES = {
     source: `export { longPress } from "${A}/press";`,
     markers: { react: false, slot: false, hoverCode: false },
   },
+  // Phase 013 (FR-045): cinematic and page-transition entries; router adapters with their router external.
+  "cinematic: createTimeline (engine, no React)": {
+    source: `export { createTimeline } from "${A}/cinematic";`,
+    markers: { react: false, slot: false, entranceCode: false, scrollCode: false, pageCode: false },
+  },
+  "cinematic: useTimeline": {
+    source: `export { useTimeline } from "${A}/cinematic";`,
+    markers: { react: true, entranceCode: false, pageCode: false },
+  },
+  "cinematic: SceneChapters + Chapter + SceneSegment": {
+    source: `export { SceneChapters, Chapter, SceneSegment } from "${A}/cinematic";`,
+    markers: { react: true, scrollCode: false, entranceCode: false },
+  },
+  "cinematic: CameraStage": {
+    source: `export { CameraStage, useCamera } from "${A}/cinematic";`,
+    markers: { react: true, scrollCode: false },
+  },
+  "cinematic: Storyboard": {
+    source: `export { Storyboard, StoryboardFrame } from "${A}/cinematic";`,
+    markers: { react: true, scrollCode: false },
+  },
+  "cinematic: entire entry": {
+    source: `export * from "${A}/cinematic";`,
+    markers: {
+      entranceCode: false,
+      scrollCode: false,
+      gesturesCode: false,
+      layoutCode: false,
+      pageCode: false,
+    },
+  },
+  "page-transitions: startPageTransition (engine, no React)": {
+    source: `export { startPageTransition } from "${A}/page-transitions";`,
+    markers: { react: false, slot: false, cinematicCode: false },
+  },
+  "page-transitions: PageTransition + SharedElement": {
+    source: `export { PageTransition, SharedElement } from "${A}/page-transitions";`,
+    markers: { react: true, cinematicCode: false },
+  },
+  "page-transitions: RouteProgress": {
+    source: `export { RouteProgress } from "${A}/page-transitions";`,
+    markers: { react: true, cinematicCode: false },
+  },
+  "page-transitions: entire entry": {
+    source: `export * from "${A}/page-transitions";`,
+    markers: { cinematicCode: false, entranceCode: false, layoutCode: false },
+  },
+  "page-transitions/next: adapter (next external)": {
+    source: `export * from "${A}/page-transitions/next";`,
+    markers: { react: true, cinematicCode: false },
+    external: [/^next(?:$|\/)/],
+  },
+  "page-transitions/react-router: adapter (react-router external)": {
+    source: `export * from "${A}/page-transitions/react-router";`,
+    markers: { react: true, cinematicCode: false },
+    external: [/^react-router(?:$|\/)/],
+  },
 };
 
 /** Stylesheets measured from the packed tarball (gzip of the file as shipped). */
@@ -223,6 +280,9 @@ export const STYLESHEETS = [
   "dist/styles.css",
   "dist/gestures.css",
   "dist/layout.css",
+  "dist/cinematic.css",
+  "dist/page-transitions.css",
+  "dist/page-transitions-mpa.css",
 ];
 
 const MARKERS = {
@@ -240,6 +300,10 @@ const MARKERS = {
   entranceCode: (code) => /entrance\/fade-in|entrance\/fade-slide|entrance\/clip-reveal/.test(code),
   gesturesCode: (code) => /physics\/drag|physics\/pinch-zoom|physics\/reorder/.test(code),
   layoutCode: (code) => /layout\/flip|layout\/collapse|layout\/masonry/.test(code),
+  scrollCode: (code) =>
+    /scroll\/depth-parallax|scroll-trigger\/reveal|scroll\/pinned-scene/.test(code),
+  cinematicCode: (code) => /cinematic\/timeline|cinematic\/cover|createTimeline/.test(code),
+  pageCode: (code) => /page\/transition|page\/cross-document/.test(code),
 };
 
 function link(from, to) {
@@ -288,7 +352,7 @@ async function main() {
       join(PACKAGE, "node_modules", "@radix-ui", "react-slot"),
       join(dir, "app", "node_modules", "@radix-ui", "react-slot"),
     );
-    for (const [name, { source, markers, define }] of Object.entries(ENTRIES)) {
+    for (const [name, { source, markers, define, external = [] }] of Object.entries(ENTRIES)) {
       const slug = name.replace(/[^a-z0-9]+/gi, "-").toLowerCase();
       const entry = join(dir, "app", `${slug}.js`);
       writeFileSync(entry, source);
@@ -303,7 +367,7 @@ async function main() {
           emptyOutDir: true,
           minify: true,
           lib: { entry, formats: ["es"], fileName: "out" },
-          rollupOptions: { external: [/^react($|\/)/, /^react-dom($|\/)/] },
+          rollupOptions: { external: [/^react($|\/)/, /^react-dom($|\/)/, ...external] },
         },
       });
       const file = readdirSync(outDir).find((item) => /.m?js$/.test(item));

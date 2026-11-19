@@ -413,18 +413,35 @@ const animationsManifest = {
     "./scroll": { types: "./dist/scroll/index.d.ts", import: "./dist/scroll/index.js" },
     "./gestures": { types: "./dist/gestures/index.d.ts", import: "./dist/gestures/index.js" },
     "./layout": { types: "./dist/layout/index.d.ts", import: "./dist/layout/index.js" },
+    "./cinematic": { types: "./dist/cinematic/index.d.ts", import: "./dist/cinematic/index.js" },
+    "./page-transitions": {
+      types: "./dist/page-transitions/index.d.ts",
+      import: "./dist/page-transitions/index.js",
+    },
+    "./page-transitions/next": {
+      types: "./dist/page-transitions/next.d.ts",
+      import: "./dist/page-transitions/next.js",
+    },
+    "./page-transitions/react-router": {
+      types: "./dist/page-transitions/react-router.d.ts",
+      import: "./dist/page-transitions/react-router.js",
+    },
     "./styles.css": "./dist/styles.css",
     "./hover.css": "./dist/hover.css",
     "./press.css": "./dist/press.css",
     "./scroll.css": "./dist/scroll.css",
     "./gestures.css": "./dist/gestures.css",
     "./layout.css": "./dist/layout.css",
+    "./cinematic.css": "./dist/cinematic.css",
+    "./page-transitions.css": "./dist/page-transitions.css",
+    "./page-transitions-mpa.css": "./dist/page-transitions-mpa.css",
   },
-  peerDependencies: { react: "^19.0.0" },
+  peerDependencies: { react: "^19.0.0", next: ">=16.4.0", "react-router": ">=8.0.0" },
+  peerDependenciesMeta: { next: { optional: true }, "react-router": { optional: true } },
   dependencies: { "@radix-ui/react-slot": "^1.5.0" },
 };
 
-test("animations package contract: private, exact exports, peers and framework-free core (features 008–012)", () => {
+test("animations package contract: private, exact exports, peers and framework-free core (features 008–013)", () => {
   const good = files({
     "dist/index.js": 'export { Tilt3D } from "./tilt/tilt-3d.js";',
     "dist/tilt/tilt-3d.js":
@@ -439,8 +456,34 @@ test("animations package contract: private, exact exports, peers and framework-f
     "dist/layout/effects.js": 'import { createFlipAnimator } from "../core/flip.js";',
     "dist/entrance/reveal.js":
       '"use client";\nimport { useMotionPresets } from "../react/use-motion-presets.js";',
+    "dist/cinematic/engine/timeline.js":
+      'import { getFrameScheduler } from "../../core/scheduler.js";',
+    "dist/page-transitions/engine/names.js": 'import { getMotionHost } from "../../core/host.js";',
+    "dist/page-transitions/next.js":
+      '"use client";\nimport NextLink from "next/link.js";\nimport { usePathname } from "next/navigation.js";',
+    "dist/page-transitions/react-router.js":
+      '"use client";\nimport { useLocation } from "react-router";',
   });
   assert.deepEqual(checkPackageContract(animationsManifest, good), []);
+});
+
+test("negative: routers are importable only by their adapter; peers must stay optional (013, ADR 0028)", () => {
+  const errors = checkPackageContract(
+    { ...animationsManifest, peerDependenciesMeta: { next: { optional: true } } },
+    files({
+      "dist/page-transitions/react.js": 'import { useLocation } from "react-router";',
+      "dist/cinematic/react.js": 'import Link from "next/link.js";',
+    }),
+  );
+  assert.equal(
+    errors.filter((error) => /outside the declared dependencies/.test(error)).length,
+    2,
+    errors.join("\n"),
+  );
+  assert.ok(
+    errors.some((error) => /optional peers/.test(error)),
+    errors.join("\n"),
+  );
 });
 
 test("negative: the gestures family never imports the layout family (012 D-2)", () => {
@@ -479,7 +522,7 @@ test("negative: animations contract detects lifted guard, extra exports/deps and
     {
       ...animationsManifest,
       private: undefined,
-      exports: { ...animationsManifest.exports, "./cinematic": "./dist/cinematic.js" },
+      exports: { ...animationsManifest.exports, "./gpu": "./dist/gpu.js" },
       peerDependencies: { react: "^19.0.0", "react-dom": "^19.0.0" },
       dependencies: { "@radix-ui/react-slot": "^1.5.0", motion: "^12.0.0" },
     },

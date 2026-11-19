@@ -19,7 +19,7 @@ import type { Easing, EasingPreset } from "../core/easing.js";
 import { type ChannelClaim, defineEffect, type EffectDefinition } from "../core/effect.js";
 import { pageHidden, watchVisibility } from "../core/interaction.js";
 import { clamp, mix } from "../core/interpolate.js";
-import { motionValue } from "../core/motion-value.js";
+import { type MotionValue, motionValue } from "../core/motion-value.js";
 import type { ReducedMotion } from "../core/reduced-motion.js";
 import type { SpringOptions } from "../core/spring.js";
 import { afterDelay, whenSettled } from "../core/springs.js";
@@ -59,6 +59,12 @@ export interface EntranceOptions {
    * with the remaining fraction of the duration, instead of restarting from the start pose. Default false.
    */
   continuous?: boolean;
+  /**
+   * Phase 013 (timelines, scene segments): an external progress motion value (0 = start pose, 1 = visible)
+   * renders the entrance instead of its own clock — seekable, scrubbable, reversible. `appear`, `replay`,
+   * `hold`, `playback`, `delay` and `onFinish` are then ignored; reduced motion keeps the declared behaviour.
+   */
+  progress?: MotionValue;
 }
 
 export interface EntranceCommon {
@@ -72,6 +78,7 @@ export interface EntranceCommon {
   hold: boolean;
   playback: "in" | "out";
   continuous: boolean;
+  progress: MotionValue | undefined;
 }
 
 /** Start pose of the entrance; the end pose is the identity. */
@@ -113,6 +120,13 @@ const round = (value: number, digits = 3) => {
   return Math.round(value * factor) / factor;
 };
 
+function externalProgress(v: Validator, value: unknown): MotionValue | undefined {
+  if (value != null && typeof (value as MotionValue).subscribe !== "function") {
+    v.fail('"progress": expected a motion value.');
+  }
+  return (value ?? undefined) as MotionValue | undefined;
+}
+
 export function resolveCommon(
   options: Partial<EntranceOptions>,
   v: Validator,
@@ -129,6 +143,7 @@ export function resolveCommon(
     hold: v.flag("hold", options.hold, false),
     playback: v.oneOf("playback", options.playback, ["in", "out"] as const, "in"),
     continuous: v.flag("continuous", options.continuous, false),
+    progress: externalProgress(v, options.progress),
   };
 }
 
@@ -170,6 +185,8 @@ export function createEntrance<Options extends EntranceOptions, Extra>(
       let holding = false;
       let running: "in" | "out" = "in";
       let printed = false;
+      const modeNow = () =>
+        context.reduced ? (spec.reducedMotion === "instant" ? "none" : "fade") : "full";
       const exclusive = paint.map(
         (channel) => [channel, context.channels.exclusive(channel)] as const,
       );
@@ -273,7 +290,7 @@ export function createEntrance<Options extends EntranceOptions, Extra>(
           return;
         }
         holding = false;
-        mode = context.reduced ? (spec.reducedMotion === "instant" ? "none" : "fade") : "full";
+        mode = modeNow();
         if (mode === "none" || pageHidden()) {
           mode = "none";
           clearAll();
@@ -374,17 +391,32 @@ export function createEntrance<Options extends EntranceOptions, Extra>(
       if (typeof window !== "undefined") window.addEventListener("beforeprint", onBeforePrint);
 
       const unsubscribeValue = progress.subscribe(render);
+      // Phase 013: an external progress value (timelines, scene segments) renders the entrance instead of
+      // its own clock; reduced motion keeps the declared behaviour.
+      const source = o.progress;
+      const sync = () => {
+        mode = modeNow();
+        clearAll();
+        if (source && mode !== "none") render(source.get());
+      };
+      const unsubscribeSource = source?.subscribe(sync);
       const unsubscribeReduced = context.onReducedChange((reduced) => {
-        if (reduced) finishNow();
+        if (source) sync();
+        else if (reduced) finishNow();
       });
       const unsubscribeVisibility = watchVisibility(() => {
         if (running === "in") finishNow();
       });
-      if (o.appear) play(o.playback);
+      if (source) sync();
+      else if (o.appear) play(o.playback);
       else if (o.hold) holdStart();
 
       return {
         update(next) {
+          if (source) {
+            o = next;
+            return sync();
+          }
           const replay = next.replay !== o.replay;
           const hold = next.hold !== o.hold;
           o = next;
@@ -407,6 +439,7 @@ export function createEntrance<Options extends EntranceOptions, Extra>(
           destroyed = true;
           stopRun();
           unsubscribeValue();
+          unsubscribeSource?.();
           unsubscribeReduced();
           unsubscribeVisibility();
           if (typeof window !== "undefined")

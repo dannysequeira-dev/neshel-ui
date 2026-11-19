@@ -128,11 +128,17 @@ function runAttw(tarballPath, manifest) {
   };
 }
 
+const ROUTER_ADAPTERS = new Set([
+  "@neshel-ui/animations/page-transitions/next",
+  "@neshel-ui/animations/page-transitions/react-router",
+]);
+
 /** Import every JS export at runtime and type-check every typed export (NodeNext and Bundler). */
 function checkConsumer(consumerDir, artifacts) {
   const errors = new Map(artifacts.map(({ pkg }) => [pkg.name, []]));
   const specifiers = [];
   const typed = [];
+  const adapters = [];
   for (const { pkg, manifest } of artifacts) {
     const bySubpath = new Map();
     for (const entry of exportEntries(manifest.exports)) {
@@ -144,7 +150,9 @@ function checkConsumer(consumerDir, artifacts) {
         specifiers.push({ pkg: pkg.name, specifier });
       }
       if (entries.some(({ conditions }) => conditions.includes("types"))) {
-        typed.push({ pkg: pkg.name, specifier });
+        // Router adapters are typed against their optional peer's environment (checked separately).
+        if (ROUTER_ADAPTERS.has(specifier)) adapters.push({ pkg: pkg.name, specifier });
+        else typed.push({ pkg: pkg.name, specifier });
       }
     }
   }
@@ -211,7 +219,45 @@ export const modules = [${typed.map((_, index) => `m${index}`).join(", ")}];
       }
     }
   }
-  return { errors, imports: specifiers.length, typed: typed.length };
+  // Phase 013: router adapters import `next` / `react-router` (optional peers). They are type-checked in the
+  // environment such an application has — Node types and `skipLibCheck`, as Next.js generates — so the
+  // peers' own declarations (e.g. `next` referencing `url`) do not fail unrelated packages.
+  if (adapters.length > 0) {
+    linkFromWorkspace("@types/node", repoRoot, join(consumerDir, "node_modules"));
+    writeFileSync(
+      join(consumerDir, "adapters.ts"),
+      `${adapters.map(({ specifier }, index) => `import * as a${index} from "${specifier}";`).join("\n")}
+export const adapters = [${adapters.map((_, index) => `a${index}`).join(", ")}];
+`,
+    );
+    for (const [mode, options] of Object.entries(modes)) {
+      const config = join(consumerDir, `tsconfig.adapters.${mode}.json`);
+      writeFileSync(
+        config,
+        JSON.stringify({
+          compilerOptions: {
+            ...options,
+            target: "ES2022",
+            strict: true,
+            noEmit: true,
+            skipLibCheck: true,
+            types: ["node"],
+            jsx: "react-jsx",
+          },
+          files: ["adapters.ts"],
+        }),
+      );
+      const result = node([tscBin, "-p", config], consumerDir);
+      if (result.status !== 0) {
+        for (const { pkg } of adapters) {
+          errors
+            .get(pkg)
+            .push(`TypeScript (${mode}, router adapters): ${result.stdout}${result.stderr}`);
+        }
+      }
+    }
+  }
+  return { errors, imports: specifiers.length, typed: typed.length + adapters.length };
 }
 
 /** Private packages requested with `--with <dir>` (validated, never `core`, never public ones). */

@@ -8,9 +8,13 @@ merged into `main` as the squash commit `fd3885c` (PR #4). Phase 009 (Motion Eng
 ADR 0025) is merged into `main` as the squash commit `70d852b` (PR #7) and approved by the owner.
 Phase 011 (Scroll Engine, Scroll Triggers ST01–ST10, Scroll & Parallax SP01–SP11; ADR 0026) is merged
 into `main` as the squash commit `804badb` (PR #8) and approved by the owner. Phase 012 (Physics &
-Gestures G01–G11, Layout Animations L01–L10, H11, P11; ADR 0027) is in development on
-`feature/012-physics-gestures-layout` (`specs/012-physics-gestures-layout/`); its PR awaits the owner's
-review — never merge it automatically.
+Gestures G01–G11, Layout Animations L01–L10, H11, P11; ADR 0027) is merged into `main` as the squash
+commit `97a2b22` (PR #10) and approved by the owner; the stabilization of issues #9/#11
+(`specs/stability-9-11/`) is merged as `b7bfe14` (PR #12) — #11 is closed, #9 stays open under
+observation (three distinct first-attempt clean runs on `main` needed; never close it automatically).
+Phase 013 (Cinematic & Scenes C01–C10, Page Transitions PT01–PT10; ADR 0028) is the **current phase**,
+in development on `feature/013-cinematic-page-transitions` (`specs/013-cinematic-page-transitions/`);
+its PR needs the owner's review — never merge it automatically.
 `@neshel-ui/animations` is **private** (0.0.0) and must stay private until the owner approves its
 first publication; it is outside the Changesets fixed group and the release scripts. The five public
 packages are on npm with provenance; `@neshel-ui/core` stays private. `v0.1.0` is immutable: never
@@ -101,11 +105,14 @@ legitimate third-party licence notices. Check every commit message and PR body b
 - `pnpm check` — doctor, lint, typecheck, test, build, check:exports, check:pack (offline; includes
   `--with animations`, which validates the private animations tarball without lifting its guard).
 - `pnpm check:browser:animations` — animations lab (Tilt3D, CornerRecede, ScrollScene, engine, Phase 010
-  effects gallery, Phase 011 scroll gallery, Phase 012 gestures/layout gallery) in headless Chrome with real input and axe; requires
+  effects gallery, Phase 011 scroll gallery, Phase 012 gestures/layout gallery, Phase 013 cinematic/page-transitions
+  gallery) in headless Chrome with real input and axe; requires
   `pnpm build:playground`.
 - `pnpm check:animations:engines` — the same lab in Playwright Chromium, Firefox and WebKit.
 - `pnpm check:animations:consumer` — external app from the packed animations tarball (SSR + hydration).
 - `pnpm check:animations:bundles` — packed-tarball bundle sizes against the approved budgets.
+- `pnpm check:animations:routers` — Phase 013 router consumers from the packed tarball (React Router 8.5.0
+  Vite app offline; Next.js 16.4.5 App Router from the registry) in Playwright Chromium.
 - `pnpm test` — `node:test` suites (scripts, tarball reader, validators, portability).
 - `pnpm typecheck` — workspace typecheck.
 - `pnpm lint` / `pnpm format` — Biome.

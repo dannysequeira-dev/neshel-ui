@@ -1,0 +1,32 @@
+# Contract — Accessibility matrix (Phase 013)
+
+**Status: implemented and verified locally; results in [../evidence.md](../evidence.md) §7 (screen-reader passes pending).**
+
+Extends the 008–012 accessibility contracts; nothing earlier is relaxed.
+
+| Id        | No JS / SSR                                  | Reduced motion (live)                                | Keyboard / focus                                                      | Screen reader                                                                   | 2.2.2 / 2.3.3                                                                 |
+| --------- | -------------------------------------------- | ---------------------------------------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| C01       | nothing rendered before play                 | `play()` finishes; on → `finish()`                   | n/a (engine)                                                          | n/a                                                                             | consumer controls; `repeat: Infinity` documented as needing C09-like controls |
+| C02       | chapters are normal content                  | static end state, no scrub                           | content order = DOM order; no focus moves                             | `data-active` only; no announcements                                            | scroll-driven (user-initiated)                                                |
+| C03       | scrollable labelled region                   | poses jump                                           | focus inside the canvas pans the camera to the focused element        | canvas content stays in the tree                                                | user/consumer-initiated                                                       |
+| C04/C05   | panels `hidden`; content visible             | cover removed instantly                              | panels `inert`, never focusable                                       | panels `aria-hidden`                                                            | short (≤ 2 s)                                                                 |
+| C06       | lines visible                                | fade only                                            | no focus change                                                       | text is the consumer's real text, read once                                     | ≤ 5 s total by default                                                        |
+| C07       | lens absent                                  | lens placed without motion                           | dimmed content stays interactive                                      | lens `aria-hidden`                                                              | consumer-initiated                                                            |
+| C08       | layers sharp                                 | no blur                                              | n/a                                                                   | unaffected                                                                      | consumer-initiated                                                            |
+| C09       | all frames visible as a list                 | no autoplay, no travel (instant frame change)        | rotation control first; Prev/Next/Stop buttons; pause on focus within | APG carousel roles; live region `off` while rotating, `polite` on manual change | **pause, stop and hide** controls; autoplay opt-in                            |
+| C10       | bars absent                                  | bars without travel                                  | n/a                                                                   | bars `aria-hidden`                                                              | short                                                                         |
+| PT01–PT06 | links are plain links; MPA works             | `instant` → no transition; `fade` → short cross-fade | focus untouched by the transition; moved only after commit (§router)  | content in the DOM throughout (snapshots are visual only)                       | ≤ 500 ms defaults                                                             |
+| PT07      | not rendered                                 | static bar                                           | not focusable                                                         | `progressbar`, indeterminate, labelled; one optional status                     | n/a                                                                           |
+| PT08      | element rendered normally                    | instant                                              | element keeps focus if it had it (same node)                          | unchanged                                                                       | n/a                                                                           |
+| PT09      | normal navigation                            | opt-in disabled under reduced motion (CSS)           | browser default                                                       | browser default                                                                 | n/a                                                                           |
+| PT10      | links work without JS (Next/RR render `<a>`) | per effect                                           | modified clicks/new tabs/back-forward untouched; focus after commit   | Next route announcer kept; no extra live regions                                | n/a                                                                           |
+
+Additional rules:
+
+- No `aria-live` update per frame anywhere; announcements are one-shot and opt-in.
+- No effect hides essential content when JavaScript fails or before hydration; package covers are only
+  shown by JavaScript and always end open (destroy/unmount/reduced motion/hidden page included).
+- During a View Transition the snapshot overlay receives pointer hit-testing; default durations stay
+  ≤ 500 ms so input is not blocked noticeably; keyboard input is never blocked.
+- Manual checks (reproducible scripts in evidence.md §7): keyboard-only walk of the C09 storyboard and
+  the router demo, NVDA/VoiceOver passes listed as **pending owner checks** — never claimed.

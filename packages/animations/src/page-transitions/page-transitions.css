@@ -1,0 +1,247 @@
+/*
+ * @neshel-ui/animations/page-transitions.css — Page Transitions family (Phase 013). Opt-in.
+ *
+ * Effects animate ONLY the browser's View Transition snapshot pseudo-elements (`::view-transition-*`),
+ * keyed on `view-transition-class` values written by the engine or by React's <ViewTransition>; the
+ * consumer's elements are never animated (rule R-1, ADR 0028 §4). Direction variants follow the
+ * `data-neshel-pt-direction` attribute (every engine) and the `neshel-back` type (where supported).
+ * The route progress bar is a package-rendered element. Reduced motion: slide/scale become a short fade;
+ * everything else is instant.
+ */
+
+/* PT01 — cross-fade (the browser's default cross-fade, tuned). */
+::view-transition-group(.neshel-pt-fade) {
+  animation-duration: var(--neshel-pt-duration, 280ms);
+  animation-timing-function: var(--neshel-pt-easing, cubic-bezier(0.2, 0, 0, 1));
+}
+::view-transition-old(.neshel-pt-fade),
+::view-transition-new(.neshel-pt-fade) {
+  animation-duration: var(--neshel-pt-duration, 280ms);
+}
+
+/* PT03 / PT04 — slide (push) by direction. */
+::view-transition-old(.neshel-pt-slide) {
+  animation: var(--neshel-pt-duration, 380ms) var(--neshel-pt-easing, cubic-bezier(0.2, 0, 0, 1))
+    both neshel-pt-slide-out;
+}
+::view-transition-new(.neshel-pt-slide) {
+  animation: var(--neshel-pt-duration, 380ms) var(--neshel-pt-easing, cubic-bezier(0.2, 0, 0, 1))
+    both neshel-pt-slide-in;
+}
+html[data-neshel-pt-direction="back"]::view-transition-old(.neshel-pt-slide) {
+  animation-name: neshel-pt-slide-out-back;
+}
+html[data-neshel-pt-direction="back"]::view-transition-new(.neshel-pt-slide) {
+  animation-name: neshel-pt-slide-in-back;
+}
+html[data-neshel-pt-direction="unknown"]::view-transition-old(.neshel-pt-slide),
+html[data-neshel-pt-direction="replace"]::view-transition-old(.neshel-pt-slide) {
+  animation-name: neshel-pt-fade-out;
+}
+html[data-neshel-pt-direction="unknown"]::view-transition-new(.neshel-pt-slide),
+html[data-neshel-pt-direction="replace"]::view-transition-new(.neshel-pt-slide) {
+  animation-name: neshel-pt-fade-in;
+}
+
+/* Transition types describe THIS transition (routers such as Next.js write history after React commits,
+ * so the attribute may still describe the previous navigation): they win over the attribute. */
+html:active-view-transition-type(neshel-back)::view-transition-old(.neshel-pt-slide) {
+  animation-name: neshel-pt-slide-out-back;
+}
+html:active-view-transition-type(neshel-back)::view-transition-new(.neshel-pt-slide) {
+  animation-name: neshel-pt-slide-in-back;
+}
+html:active-view-transition-type(neshel-forward)::view-transition-old(.neshel-pt-slide) {
+  animation-name: neshel-pt-slide-out;
+}
+html:active-view-transition-type(neshel-forward)::view-transition-new(.neshel-pt-slide) {
+  animation-name: neshel-pt-slide-in;
+}
+/* PT05 — scale-through. */
+::view-transition-old(.neshel-pt-scale) {
+  animation: var(--neshel-pt-duration, 360ms) var(--neshel-pt-easing, cubic-bezier(0.2, 0, 0, 1))
+    both neshel-pt-scale-out;
+}
+::view-transition-new(.neshel-pt-scale) {
+  animation: var(--neshel-pt-duration, 360ms) var(--neshel-pt-easing, cubic-bezier(0.2, 0, 0, 1))
+    both neshel-pt-scale-in;
+}
+
+/* PT06 — curtain wipe: the new page is revealed over the old one. */
+::view-transition-old(.neshel-pt-wipe) {
+  animation: none;
+}
+::view-transition-new(.neshel-pt-wipe) {
+  animation: var(--neshel-pt-duration, 520ms)
+    var(--neshel-pt-easing, cubic-bezier(0.65, 0, 0.35, 1)) both neshel-pt-wipe;
+}
+html[data-neshel-pt-direction="back"]::view-transition-new(.neshel-pt-wipe) {
+  animation-name: neshel-pt-wipe-back;
+}
+html:active-view-transition-type(neshel-back)::view-transition-new(.neshel-pt-wipe) {
+  animation-name: neshel-pt-wipe-back;
+}
+
+/* PT02 — shared-element morph (the group animates size and position). */
+::view-transition-group(.neshel-pt-morph) {
+  animation-duration: var(--neshel-pt-duration, 380ms);
+  animation-timing-function: var(--neshel-pt-easing, cubic-bezier(0.2, 0, 0, 1));
+}
+
+/* PT08 — persistent element: no motion and no cross-fade; the new state shows at once, above the page. */
+::view-transition-group(.neshel-pt-persist),
+::view-transition-new(.neshel-pt-persist) {
+  animation: none;
+}
+::view-transition-old(.neshel-pt-persist) {
+  animation: none;
+  display: none;
+}
+
+/* "none": no root animation (shared and persistent elements still transition). */
+::view-transition-old(.neshel-pt-none),
+::view-transition-new(.neshel-pt-none),
+::view-transition-group(.neshel-pt-none) {
+  animation: none;
+}
+
+@keyframes neshel-pt-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes neshel-pt-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes neshel-pt-slide-out {
+  to {
+    opacity: 0;
+    transform: translateX(var(--neshel-pt-distance-out, -24%));
+  }
+}
+@keyframes neshel-pt-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(var(--neshel-pt-distance-in, 24%));
+  }
+}
+@keyframes neshel-pt-slide-out-back {
+  to {
+    opacity: 0;
+    transform: translateX(var(--neshel-pt-distance-in, 24%));
+  }
+}
+@keyframes neshel-pt-slide-in-back {
+  from {
+    opacity: 0;
+    transform: translateX(var(--neshel-pt-distance-out, -24%));
+  }
+}
+@keyframes neshel-pt-scale-out {
+  to {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+}
+@keyframes neshel-pt-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(1.06);
+  }
+}
+@keyframes neshel-pt-wipe {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes neshel-pt-wipe-back {
+  from {
+    clip-path: inset(0 0 0 100%);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-old(.neshel-pt-slide),
+  ::view-transition-old(.neshel-pt-scale) {
+    animation: 160ms ease both neshel-pt-fade-out;
+  }
+  ::view-transition-new(.neshel-pt-slide),
+  ::view-transition-new(.neshel-pt-scale) {
+    animation: 160ms ease both neshel-pt-fade-in;
+  }
+  ::view-transition-group(.neshel-pt-fade),
+  ::view-transition-old(.neshel-pt-fade),
+  ::view-transition-new(.neshel-pt-fade),
+  ::view-transition-group(.neshel-pt-wipe),
+  ::view-transition-new(.neshel-pt-wipe),
+  ::view-transition-group(.neshel-pt-morph),
+  ::view-transition-old(.neshel-pt-morph),
+  ::view-transition-new(.neshel-pt-morph) {
+    animation: none;
+  }
+}
+
+/* PT07 — route progress (package-rendered; indeterminate sweep, never a percentage). */
+.neshel-route-progress {
+  position: fixed;
+  inset-block-start: 0;
+  inset-inline: 0;
+  z-index: var(--neshel-route-progress-z, 60);
+  block-size: var(--neshel-route-progress-size, 3px);
+  overflow: hidden;
+  pointer-events: none;
+  color: var(--neshel-route-progress-color, currentColor);
+}
+.neshel-route-progress[hidden] {
+  display: none;
+}
+.neshel-route-progress::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inline-size: 40%;
+  background: currentColor;
+  animation: neshel-route-sweep 1.1s ease-in-out infinite;
+}
+.neshel-route-progress[data-state="complete"]::before {
+  inline-size: 100%;
+  animation: none;
+  opacity: 0;
+  transition: opacity 280ms ease 120ms;
+}
+.neshel-route-progress[data-state="failed"]::before {
+  inline-size: 100%;
+  animation: none;
+  background: var(--neshel-route-progress-error, #b42318);
+}
+.neshel-route-progress-status {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+@keyframes neshel-route-sweep {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(250%);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .neshel-route-progress::before {
+    animation: none;
+    inline-size: 100%;
+    opacity: 0.6;
+  }
+}

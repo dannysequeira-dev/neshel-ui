@@ -1,0 +1,10 @@
+/*
+ * @neshel-ui/animations/page-transitions-mpa.css — PT09 cross-document View Transitions opt-in (Phase 013).
+ * Include it in BOTH same-origin documents. Engines without cross-document support navigate normally;
+ * under reduced motion the opt-in is off (plain navigation). The page-transitions.css rules follow.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+}

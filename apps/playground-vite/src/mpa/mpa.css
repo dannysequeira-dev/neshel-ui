@@ -1,0 +1,19 @@
+body.mpa {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+}
+#mpa-main {
+  display: grid;
+  gap: 12px;
+  max-width: 640px;
+  margin: 40px auto;
+  padding: 0 16px;
+}
+.mpa-hero {
+  height: 120px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #6366f1, #ec4899);
+}
+.mpa-hero-b {
+  height: 240px;
+}
