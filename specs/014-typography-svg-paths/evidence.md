@@ -118,9 +118,9 @@ measured when the budgets were proposed. No budget was changed.
 | text: entire entry                             | 20892 B        | 21114 B          | 21760 B         |
 | svg: path data + geometry + morph (pure)       | 3947 B         | 3946 B           | 4224 B          |
 | svg: createPathDraw (engine)                   | 11994 B        | 11993 B          | 12544 B         |
-| svg: createPathMorph (engine)                  | 8382 B         | 8676 B           | 8832 B          |
-| svg: MorphIcon                                 | 9167 B         | 9477 B           | 9600 B          |
-| svg: entire entry                              | 20980 B        | 21296 B          | 21888 B         |
+| svg: createPathMorph (engine)                  | 8382 B         | 8679 B           | 8832 B          |
+| svg: MorphIcon                                 | 9167 B         | 9471 B           | 9600 B          |
+| svg: entire entry                              | 20980 B        | 21299 B          | 21888 B         |
 | css: text.css (with `@property` registrations) | 2755 B         | 2758 B           | 2944 B          |
 | css: svg.css                                   | 446 B          | 446 B            | 512 B           |
 

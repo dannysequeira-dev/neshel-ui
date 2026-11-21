@@ -30,9 +30,8 @@ type Slot = { base: string | null; written?: string | null; claims: Map<object, 
 const ledgers = new WeakMap<Element, Map<string, Slot>>();
 
 export function createAttributeWriter(element: Element, id = "svg"): AttributeWriter {
-  let ledger = ledgers.get(element);
-  if (!ledger) ledgers.set(element, (ledger = new Map()));
-  const slots = ledger;
+  const slots = ledgers.get(element) ?? new Map<string, Slot>();
+  ledgers.set(element, slots);
   const self = {};
   const names = new Set<string>();
   let cancel: (() => void) | undefined;
@@ -64,8 +63,8 @@ export function createAttributeWriter(element: Element, id = "svg"): AttributeWr
 
   return {
     set(name, value) {
-      let slot = slots.get(name);
-      if (!slot) slots.set(name, (slot = { base: element.getAttribute(name), claims: new Map() }));
+      const slot = slots.get(name) ?? { base: element.getAttribute(name), claims: new Map() };
+      slots.set(name, slot);
       names.add(name);
       slot.claims.set(self, value);
       if (owner(slot) !== self) {
