@@ -56,6 +56,19 @@ export interface LabState {
     camera(): import("@neshel-ui/animations/cinematic").CameraHandle;
     setPage(page: "list" | "detail"): void;
   };
+  /** Phase 014 text/SVG gallery (set after mount). */
+  textSvg?: {
+    runTextSvgSuite(): Promise<Array<{ id: string; ok: boolean; error?: string }>>;
+    reducedFacts(): Promise<Record<string, unknown>>;
+    debug(): unknown;
+    commits(): number;
+    replay(): void;
+    setValue(value: number): void;
+    setBold(value: boolean): void;
+    rotate(): void;
+    stopRotate(): void;
+    svg?: Record<string, { current: any }>;
+  };
   /** Observations reported by in-page suites (not pass/fail). */
   notes: Record<string, unknown>;
 }

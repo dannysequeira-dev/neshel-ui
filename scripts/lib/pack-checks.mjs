@@ -473,6 +473,8 @@ export function checkAnimationsContract(manifest, files) {
     "./page-transitions",
     "./page-transitions/next",
     "./page-transitions/react-router",
+    "./text",
+    "./svg",
     "./styles.css",
     "./hover.css",
     "./press.css",
@@ -482,6 +484,8 @@ export function checkAnimationsContract(manifest, files) {
     "./cinematic.css",
     "./page-transitions.css",
     "./page-transitions-mpa.css",
+    "./text.css",
+    "./svg.css",
   ];
   const FAMILY_DIRS = [
     "entrance",
@@ -492,6 +496,8 @@ export function checkAnimationsContract(manifest, files) {
     "layout",
     "cinematic",
     "page-transitions",
+    "text",
+    "svg",
   ];
   // Optional peers, each importable only by its adapter module (ADR 0028 §1).
   const ADAPTERS = {

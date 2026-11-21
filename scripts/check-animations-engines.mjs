@@ -339,6 +339,39 @@ async function runEngine(playwright, engine, url, throttle) {
         );
       },
     );
+    // Phase 014 text & SVG gallery: the same in-page suite as the Chrome check; reduced motion on a fresh page.
+    if (process.env.NESHEL_TRACE) console.info(`trace ${engine}: text/svg suite`);
+    const textSvgSuite = await page.evaluate(() => window.__neshelLab.textSvg.runTextSvgSuite());
+    for (const item of textSvgSuite) cases.push(item);
+    await run(
+      "phase 014: reduced motion live — reveals instant, wave off, ants static, no turbulence filter",
+      async () => {
+        const fresh = await context.newPage();
+        await fresh.goto(url);
+        await fresh.waitForFunction(() => window.__neshelLab?.textSvg !== undefined);
+        await fresh.emulateMedia({ reducedMotion: "reduce" });
+        const facts = await fresh.evaluate(() => window.__neshelLab.textSvg.reducedFacts());
+        await fresh.close();
+        check(
+          facts.reduced === true &&
+            facts.waveTransform === false &&
+            facts.filters === 0 &&
+            ["0", "0px", ""].includes(facts.antsOffset),
+          JSON.stringify(facts),
+        );
+      },
+    );
+    notes.textSvg = await page.evaluate(() => {
+      const n = window.__neshelLab.notes;
+      return {
+        textSupport: n.textSupport,
+        svgSupport: n.svgSupport,
+        s03Mode: n.s03Mode,
+        capsize: n.capsizeHeights,
+        t10: n.t10Widths,
+        performance: n.performance,
+      };
+    });
     notes.viewTransitionSupport = await page.evaluate(
       () => window.__neshelLab.notes.viewTransitions,
     );

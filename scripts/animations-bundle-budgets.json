@@ -57,5 +57,17 @@
   "page-transitions: RouteProgress": 3482,
   "page-transitions: entire entry": 13312,
   "page-transitions/next: adapter (next external)": 4915,
-  "page-transitions/react-router: adapter (react-router external)": 4608
+  "page-transitions/react-router: adapter (react-router external)": 4608,
+  "css: text.css": 2944,
+  "css: svg.css": 512,
+  "text: splitText (engine, no React)": 5248,
+  "text: createTextReveal (engine, no React)": 13312,
+  "text: TextReveal": 13952,
+  "text: NumberRoll": 10240,
+  "text: entire entry": 21760,
+  "svg: path data + geometry + morph (pure)": 4224,
+  "svg: createPathDraw (engine, no React)": 12544,
+  "svg: createPathMorph (engine, no React)": 8832,
+  "svg: MorphIcon": 9600,
+  "svg: entire entry": 21888
 }

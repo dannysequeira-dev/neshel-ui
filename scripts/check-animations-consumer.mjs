@@ -33,6 +33,8 @@ import { useMotionEffect } from "@neshel-ui/animations";
 import { Letterbox, Storyboard, StoryboardFrame, SplitReveal, CameraStage, TitleSequence, useTimeline } from "@neshel-ui/animations/cinematic";
 import { PageTransition, SharedElement, RouteProgress, usePageTransition } from "@neshel-ui/animations/page-transitions";
 import { defineEffect } from "@neshel-ui/animations/core";
+import { TextReveal, NumberRoll, RotatingWords, Typewriter } from "@neshel-ui/animations/text";
+import { SuccessCheck, MorphIcon, menuCloseShapes, usePathDraw } from "@neshel-ui/animations/svg";
 import { useRef, useState } from "react";
 
 export const glow = defineEffect({
@@ -107,6 +109,25 @@ function Phase013() {
   );
 }
 
+function Phase014() {
+  const path = useRef(null);
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(1234.5);
+  usePathDraw(path, { trigger: "mount", duration: 200 });
+  return (
+    <section id="p014">
+      <TextReveal as="h2" id="t-reveal" split="chars" trigger="mount" duration={200}>Packed split text</TextReveal>
+      <Typewriter id="t-type" trigger="mount" speed={200}>Typed</Typewriter>
+      <NumberRoll id="t-number" value={value} locale="de-DE" />
+      <button type="button" id="t-change" onClick={() => setValue(4321.5)}>Change</button>
+      <p>We <RotatingWords id="t-words" words={["build", "ship"]} /> it.</p>
+      <svg viewBox="0 0 100 10" width="100" aria-hidden="true"><path ref={path} id="s-path" d="M0 5L100 5" stroke="black" /></svg>
+      <button type="button" id="s-menu" aria-label="Menu" aria-expanded={open} onClick={() => setOpen(!open)}><MorphIcon shapes={menuCloseShapes} state={open ? "close" : "menu"} /></button>
+      <SuccessCheck id="s-check" trigger="mount" duration={200} />
+    </section>
+  );
+}
+
 export function App() {
   return (
     <main>
@@ -136,6 +157,7 @@ export function App() {
       <div style={{ height: "50vh" }} />
       <Phase012 />
       <Phase013 />
+      <Phase014 />
     </main>
   );
 }
@@ -147,6 +169,8 @@ import "@neshel-ui/animations/gestures.css";
 import "@neshel-ui/animations/layout.css";
 import "@neshel-ui/animations/cinematic.css";
 import "@neshel-ui/animations/page-transitions.css";
+import "@neshel-ui/animations/text.css";
+import "@neshel-ui/animations/svg.css";
 window.__vt = [];
 if (document.startViewTransition) {
   const start = document.startViewTransition.bind(document);
@@ -315,6 +339,21 @@ async function main() {
         return false;
       }),
       "SSR (013): cinematic and page-transition components render visible, plain markup",
+    );
+    check(
+      [
+        '<h2 id="t-reveal">Packed split text</h2>',
+        '<span id="t-type">Typed</span>',
+        '<span id="t-number">1.234,5</span>',
+        '<span id="t-words">build</span>',
+        'aria-label="Menu" aria-expanded="false"',
+        'class="neshel-success-check" focusable="false" aria-hidden="true"',
+      ].every((fragment) => {
+        if (html.includes(fragment)) return true;
+        console.info(`missing in SSR markup: ${fragment}`);
+        return false;
+      }) && !/neshel-split|neshel-text-a11y|stroke-dash/.test(html),
+      "SSR (014): text and SVG components render plain, readable markup (split only after hydration)",
     );
     const indexPath = join(app, "dist", "index.html");
     writeFileSync(indexPath, readFileSync(indexPath, "utf8").replace("<!--ssr-->", html));
@@ -544,6 +583,35 @@ async function main() {
         check(
           p013.changed && (!p013.native || p013.vt >= 1),
           `013 usePageTransition commits the update inside a native View Transition (${p013.vt} started)`,
+        );
+        const p014 = await page.evaluate(`(async () => {
+          document.getElementById("p014").scrollIntoView();
+          await new Promise((r) => setTimeout(r, 600));
+          const h = document.getElementById("t-reveal");
+          document.getElementById("t-change").click();
+          document.getElementById("s-menu").click();
+          await new Promise((r) => setTimeout(r, 900));
+          return {
+            copies: h.querySelectorAll(".neshel-text-a11y").length,
+            a11y: h.querySelector(".neshel-text-a11y")?.textContent,
+            hidden: h.querySelector(".neshel-split")?.getAttribute("aria-hidden"),
+            number: document.querySelector("#t-number .neshel-text-a11y")?.textContent,
+            words: document.querySelector("#t-words .neshel-text-a11y")?.textContent,
+            path: document.getElementById("s-path").style.cssText,
+            expanded: document.getElementById("s-menu").getAttribute("aria-expanded"),
+            icon: document.querySelector("#s-menu path").getAttribute("d"),
+          };
+        })()`);
+        check(
+          p014.copies === 1 && p014.a11y === "Packed split text" && p014.hidden === "true",
+          `014 split text from the packed tarball keeps one accessible copy (${JSON.stringify(p014)})`,
+        );
+        check(
+          p014.number === "4.321,5" &&
+            p014.words === "build, ship" &&
+            p014.expanded === "true" &&
+            p014.icon !== "M4 6L20 6M4 12L20 12M4 18L20 18",
+          `014 number roll, rotating words and icon morph work after hydration (${JSON.stringify(p014)})`,
         );
         check(
           page.errors.length === 0,
