@@ -27,7 +27,8 @@ splitText(element: HTMLElement, options?: SplitTextOptions): SplitText
 interface SplitTextOptions {
   split?: "chars" | "words" | "lines";   // default "words"; chars and lines always contain word pieces
   locale?: string;                       // default: closest [lang] of the element, else the document's
-  /** Maximum animated pieces (default 1000, max 5000); above it chars degrade to words, words to lines. */
+  /** Maximum animated pieces (default 1000, max 5000; T01/T07 default 200 — K-5); above it chars degrade to
+   *  words, words to lines. */
   maxPieces?: number;
 }
 

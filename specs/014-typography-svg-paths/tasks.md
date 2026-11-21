@@ -52,3 +52,13 @@ Dependency-ordered. `[x]` done, `[ ]` open. Authorised by the owner brief of 202
 - [x] T054 Packed consumer (SSR + hydration); bundle budgets proposed
 - [x] T055 Package contract/pack checks, catalogue, README, docs; `pnpm check`; builds
 - [x] T056 Push, PR, three-OS CI on the head commit; evidence
+
+## 014.6 — Owner review of PR #15 (issuecomment-7056966484)
+
+- [x] T060 Regression tests first (`test/review-014.test.mjs`): R1 RotatingWords listeners/StrictMode, R2 concurrent
+  attribute writers, R3 loop track subscriptions; failing evidence recorded before the fixes
+- [x] T061 Minimal fixes: focusout handler identity; shared per-element attribute ledger (ADR 0022 policy);
+  track unsubscription on destroy; compacted within the approved budgets
+- [x] T062 K-5 benchmark (`pnpm bench:animations:text`): idle/static/animated, 20–2000 pieces, three engines, 4× CPU
+- [x] T063 K-5 default: TextReveal/TextWave `maxPieces` 200 with dev warning; explicit opt-in kept
+- [x] T064 ADR 0029 Accepted; contracts, evidence §8/§9/§12, roadmap, CLAUDE.md; all local gates; three-OS CI

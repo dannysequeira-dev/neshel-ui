@@ -15,7 +15,8 @@ observation (three distinct first-attempt clean runs on `main` needed; never clo
 Phase 013 (Cinematic & Scenes C01–C10, Page Transitions PT01–PT10; ADR 0028) is merged into `main` as
 the squash commit `7207638` (PR #13) and approved by the owner. Phase 014 (Typography & Text T01–T11, SVG &
 Paths S01–S10; ADR 0029) is the **current phase**, in development on `feature/014-typography-svg-paths`
-(`specs/014-typography-svg-paths/`); its PR needs the owner's review — never merge it automatically.
+(`specs/014-typography-svg-paths/`, PR #15); ADR 0029 accepted and its 12 budgets approved by the owner; the PR
+still needs the owner's final review — never merge it automatically.
 `@neshel-ui/animations` is **private** (0.0.0) and must stay private until the owner approves its
 first publication; it is outside the Changesets fixed group and the release scripts. The five public
 packages are on npm with provenance; `@neshel-ui/core` stays private. `v0.1.0` is immutable: never

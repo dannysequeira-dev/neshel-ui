@@ -68,6 +68,11 @@ Foundation exports: `splitText`, `segmentGraphemes`, `segmentWords`, `getSegment
 
 ## 3. Per-entry rules
 
+- **K-5 default (owner review)** — T01 and T07 animate every piece at once, so their default `maxPieces` is
+  **200** (instead of the splitter's 1000): a longer `chars` text animates by word (a longer `words` text by
+  line), with a one-time development warning. An explicit `maxPieces` (1–5000) keeps the authored granularity
+  (the opt-in to the measured, more expensive path; evidence §9). T02 typewriter and T03 scramble keep the
+  splitter default (pieces change one at a time / not measured).
 - **T01** — pieces start at their hidden pose only when the effect starts (never in SSR markup); lines mode
   re-groups on resize without replaying (the current progress is re-rendered).
 - **T02** — the accessible copy is the complete text from the start (no per-character announcements); the

@@ -163,7 +163,8 @@ export function App() {
 }
 `;
 
-const CLIENT = `import { hydrateRoot } from "react-dom/client";
+const CLIENT = `import { StrictMode } from "react";
+import { hydrateRoot } from "react-dom/client";
 import "@neshel-ui/animations/styles.css";
 import "@neshel-ui/animations/gestures.css";
 import "@neshel-ui/animations/layout.css";
@@ -182,7 +183,9 @@ if (document.startViewTransition) {
 }
 import { App } from "./App.jsx";
 window.__recoverable = [];
-hydrateRoot(document.getElementById("root"), <App />, {
+// StrictMode wrapper (Phase 014 review). This is a production build, where StrictMode does not double-invoke
+// effects; the development double mount/unmount is covered by the unit tests (React development build).
+hydrateRoot(document.getElementById("root"), <StrictMode><App /></StrictMode>, {
   onRecoverableError: (error) => window.__recoverable.push(String(error?.message ?? error)),
 });
 window.__hydrated = true;

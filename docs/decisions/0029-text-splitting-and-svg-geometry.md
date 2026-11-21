@@ -1,6 +1,7 @@
 # ADR 0029 — Accessible text splitting and SVG path geometry
 
-- Status: **Proposed** (Phase 014; owner review in the Phase 014 PR)
+- Status: **Accepted** (owner review of PR #15, issuecomment-7056966484: direction approved, accepted after
+  the review corrections R1–R3 and K-5 below)
 - Date: 2026-11-19
 - Feature: [014](../../specs/014-typography-svg-paths/spec.md); research R1–R15; contracts
   [text-splitter.md](../../specs/014-typography-svg-paths/contracts/text-splitter.md),
@@ -54,10 +55,15 @@ family boundary rule (ADR 0022, 0023, 0025, 0028).
 - `text.css` registers the progress and per-piece intermediate custom properties as `<number>` (`@property`):
   measured to cut the 600-cluster reveal frame cost in Chromium from ~37 to ~22–25 ms; hundreds of
   simultaneously animated clusters still exceed a 60 fps budget in Chromium/WebKit headless (evidence K-5).
+- Review corrections (PR #15): the SVG attribute ledger is shared per element and follows the ADR 0022
+  ownership policy (one writer per attribute, waiting writers resume, original restored once by the last
+  writer, external changes adopted); every listener and track subscription of an effect ends with `destroy()`.
+- K-5: TextReveal and TextWave default to `maxPieces: 200` (a measured knee, evidence §9): longer `chars`
+  texts animate by word with a development warning; an explicit `maxPieces` is the opt-in to more pieces.
 
 ## Verification
 
-[evidence.md](../../specs/014-typography-svg-paths/evidence.md): unit (456 animations tests), CDP 147 cases,
+[evidence.md](../../specs/014-typography-svg-paths/evidence.md): unit (469 animations tests, incl. `test/review-014.test.mjs`), CDP 147 cases,
 three engines 161 cases each, packed SSR consumer, bundles, routers; three-OS CI in the PR.
 
 ## Alternatives rejected
