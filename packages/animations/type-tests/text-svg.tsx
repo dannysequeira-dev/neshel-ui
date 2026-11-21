@@ -1,6 +1,6 @@
 // Phase 014 type fixtures (typechecked by `pnpm typecheck`): valid usage compiles, invalid usage is rejected.
-import { createTimeline } from "@neshel-ui/animations/cinematic";
-import { motionValue } from "@neshel-ui/animations/core";
+import { createTimeline } from "../src/cinematic/index.js";
+import { motionValue } from "../src/core/index.js";
 import {
   createChartDraw,
   createIconMorph,
@@ -12,7 +12,7 @@ import {
   type PathCommand,
   parsePathData,
   SuccessCheck,
-} from "@neshel-ui/animations/svg";
+} from "../src/svg/index.js";
 import {
   createFontAxes,
   createLineReveal,
@@ -24,7 +24,7 @@ import {
   splitText,
   TextReveal,
   Typewriter,
-} from "@neshel-ui/animations/text";
+} from "../src/text/index.js";
 
 declare const el: HTMLElement;
 declare const path: SVGPathElement;
