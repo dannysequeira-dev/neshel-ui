@@ -10,8 +10,7 @@
  * releases, earliest claim first. A writer that releases while waiting changes nothing. A change of the
  * attribute outside the ledger (e.g. a React re-render of `d`) becomes the value restored at the end.
  */
-
-import { describeElement, devWarnOnce, elementKey } from "../../core/dev.js";
+import { devWarnOnce } from "../../core/dev.js";
 import { getFrameScheduler } from "../../core/scheduler.js";
 import { counters } from "./debug.js";
 
@@ -24,92 +23,56 @@ export interface AttributeWriter {
   restore(): void;
 }
 
-interface Writer {
-  readonly id: string;
-  /** Last value per attribute (re-applied when a waiting claim is granted). */
-  readonly values: Map<string, string>;
-}
-
-interface Slot {
-  /** The consumer's value to restore (`null`: absent). */
-  base: string | null;
-  /** Value read back after the ledger's last write (external-change detection). */
-  written: string | null | undefined;
-  /** Claims in arrival order; the first one owns the attribute. */
-  readonly claims: Writer[];
-}
+/** Per attribute: the consumer's value (`null`: absent), the value read back after our last write and the
+ * writers' last values in claim order (the first owns the attribute). */
+type Slot = { base: string | null; written?: string | null; claims: Map<object, string> };
 
 const ledgers = new WeakMap<Element, Map<string, Slot>>();
 
-function adoptExternal(element: Element, name: string, slot: Slot): void {
-  if (slot.written === undefined) return;
-  const current = element.getAttribute(name);
-  if (current === slot.written) return;
-  slot.base = current;
-  slot.written = undefined;
-  if (typeof process !== "undefined" && process.env.NODE_ENV !== "production") {
-    devWarnOnce(
-      `attr-external:${elementKey(element)}:${name}`,
-      `"${name}" on ${describeElement(element)} changed outside the engine; kept as the value to restore.`,
-    );
-  }
-}
-
-function write(element: Element, name: string, slot: Slot, value: string): void {
-  adoptExternal(element, name, slot);
-  if (element.getAttribute(name) !== value) {
-    element.setAttribute(name, value);
-    counters.attributeWrites++;
-  }
-  slot.written = element.getAttribute(name);
-}
-
 export function createAttributeWriter(element: Element, id = "svg"): AttributeWriter {
-  let slots = ledgers.get(element);
-  if (!slots) {
-    slots = new Map();
-    ledgers.set(element, slots);
-  }
-  const ledger = slots;
-  const self: Writer = { id, values: new Map() };
-  const pending = new Set<string>();
+  let ledger = ledgers.get(element);
+  if (!ledger) ledgers.set(element, (ledger = new Map()));
+  const slots = ledger;
+  const self = {};
+  const names = new Set<string>();
   let cancel: (() => void) | undefined;
+
+  const owner = (slot: Slot) => slot.claims.keys().next().value;
+  // Adopt an external change since our last write as the value to restore.
+  const adopt = (name: string, slot: Slot) => {
+    const current = element.getAttribute(name);
+    if (slot.written !== undefined && current !== slot.written) slot.base = current;
+    slot.written = undefined;
+  };
+  const write = (name: string, slot: Slot, value: string) => {
+    adopt(name, slot);
+    if (element.getAttribute(name) !== value) {
+      element.setAttribute(name, value);
+      counters.attributeWrites++;
+    }
+    slot.written = value;
+  };
 
   function flush(): void {
     cancel?.();
     cancel = undefined;
-    for (const name of pending) {
-      const slot = ledger.get(name);
-      const value = self.values.get(name);
-      if (slot && value !== undefined && slot.claims[0] === self) write(element, name, slot, value);
+    for (const name of names) {
+      const slot = slots.get(name);
+      if (slot && owner(slot) === self) write(name, slot, slot.claims.get(self) as string);
     }
-    pending.clear();
   }
 
   return {
     set(name, value) {
-      let slot = ledger.get(name);
-      if (!slot) {
-        slot = { base: element.getAttribute(name), written: undefined, claims: [] };
-        ledger.set(name, slot);
+      let slot = slots.get(name);
+      if (!slot) slots.set(name, (slot = { base: element.getAttribute(name), claims: new Map() }));
+      names.add(name);
+      slot.claims.set(self, value);
+      if (owner(slot) !== self) {
+        if (typeof process !== "undefined" && process.env.NODE_ENV !== "production")
+          devWarnOnce(`attr:${id}:${name}`, `${id} waits: another effect writes "${name}".`);
+        return;
       }
-      self.values.set(name, value);
-      if (!slot.claims.includes(self)) {
-        slot.claims.push(self);
-        const owner = slot.claims[0] as Writer;
-        if (
-          owner !== self &&
-          typeof process !== "undefined" &&
-          process.env.NODE_ENV !== "production"
-        ) {
-          devWarnOnce(
-            `attr-conflict:${elementKey(element)}:${name}:${id}:${owner.id}`,
-            `"${id}" is waiting: "${name}" on ${describeElement(element)} is written by "${owner.id}"; it resumes when that effect is destroyed.`,
-          );
-        }
-      }
-      if (slot.claims[0] !== self) return;
-      pending.add(name);
       cancel ??= getFrameScheduler().schedule(() => {
         cancel = undefined;
         flush();
@@ -119,26 +82,22 @@ export function createAttributeWriter(element: Element, id = "svg"): AttributeWr
     restore() {
       cancel?.();
       cancel = undefined;
-      pending.clear();
-      for (const name of self.values.keys()) {
-        const slot = ledger.get(name);
-        if (!slot) continue;
-        const at = slot.claims.indexOf(self);
-        if (at < 0) continue;
-        slot.claims.splice(at, 1);
-        if (at !== 0) continue; // a waiting writer changed nothing
-        const next = slot.claims[0];
-        const value = next?.values.get(name);
-        if (next && value !== undefined) {
-          write(element, name, slot, value);
-          continue;
+      for (const name of names) {
+        const slot = slots.get(name);
+        if (!slot?.claims.has(self)) continue;
+        const owned = owner(slot) === self;
+        slot.claims.delete(self);
+        if (!owned) continue; // a waiting writer changed nothing
+        const next = owner(slot);
+        if (next) write(name, slot, slot.claims.get(next) as string);
+        else {
+          adopt(name, slot);
+          if (slot.base === null) element.removeAttribute(name);
+          else element.setAttribute(name, slot.base);
+          slots.delete(name);
         }
-        adoptExternal(element, name, slot);
-        if (slot.base === null) element.removeAttribute(name);
-        else element.setAttribute(name, slot.base);
-        ledger.delete(name);
       }
-      self.values.clear();
+      names.clear();
     },
   };
 }

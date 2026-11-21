@@ -7,11 +7,23 @@ S10 join cinematic timelines through `track()` and scroll through `drive()`.
 
 ## 1. Writes
 
-| Target                                                 | Mechanism                                                                                                                                                                                                                       |
-| ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Consumer's path/stop/element styles                    | Motion Host internal exclusive channels: `stroke-dasharray`, `stroke-dashoffset`, `offset-path`, `offset-distance`, `offset-rotate`, `stop-color`, `stop-opacity`, `filter`, `mask`; transform layers and opacity contributions |
-| Consumer's attributes (`d`, `offset` of a stop)        | svg attribute ledger: original value captured on first write, writes coalesced to the scheduler write phase, exact restoration (attribute removed if it was absent)                                                             |
-| Package-rendered DOM (filter element, check/icon svgs) | created and removed by the effect; `aria-hidden`                                                                                                                                                                                |
+| Target                                                 | Mechanism                                                                                                                                                                                                                                                                        |
+| ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Consumer's path/stop/element styles                    | Motion Host internal exclusive channels: `stroke-dasharray`, `stroke-dashoffset`, `offset-path`, `offset-distance`, `offset-rotate`, `stop-color`, `stop-opacity`, `filter`, `mask`; transform layers and opacity contributions                                                  |
+| Consumer's attributes (`d`, `offset` of a stop)        | svg attribute ledger, **one per element** shared by all writers: original value captured on the first claim, writes coalesced to the scheduler write phase, exact restoration by the last writer (attribute removed if it was absent); one writer per attribute at a time (§1.1) |
+| Package-rendered DOM (filter element, check/icon svgs) | created and removed by the effect; `aria-hidden`                                                                                                                                                                                                                                 |
+
+### 1.1 Attribute ownership (owner review R2)
+
+The attribute ledger follows the exclusive-channel policy of ADR 0022: the first writer owns the attribute;
+a later writer of the same attribute (a second `createPathMorph`/`createIconMorph` on the same `<path>`, two
+`createGradientStops` animating the same stop `offset`) **waits**: its writes are kept, not applied, and a
+development warning names both. It resumes with its last value when the owner releases (`destroy()`; for S05
+also the loop's rest). A waiting writer that is destroyed changes nothing. The consumer's original is restored
+once, when the last writer releases. A change of the attribute outside the ledger while an effect owns it (e.g.
+a React re-render with a new `d` prop) is adopted as the value restored at the end; the
+owning effect keeps writing until it is destroyed, so set `d` from React only on paths no morph owns, or
+re-create the morph when the authored shape changes.
 
 Inline host writes win over the consumer's stylesheet and presentation attributes while the effect runs and
 are restored exactly (inline value and priority) on release, so consumer dash patterns and colours come back.
