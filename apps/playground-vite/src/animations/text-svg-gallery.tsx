@@ -38,7 +38,7 @@ import "@neshel-ui/animations/text.css";
 import { Heading } from "@neshel-ui/typography";
 import { Profiler, useEffect, useRef, useState } from "react";
 import { labState } from "./lab-state";
-import { runTextSvgSuite, textSvgReducedFacts } from "./text-svg-suite";
+import { benchTextLoad, runTextSvgSuite, textSvgReducedFacts } from "./text-svg-suite";
 
 const LOGO = "M10 40 L30 10 L50 40 Z M60 40 L60 10 L80 40 L80 10";
 
@@ -336,6 +336,7 @@ export function TextSvgGallery() {
       ...(lab.textSvg ?? ({} as never)),
       runTextSvgSuite,
       reducedFacts: textSvgReducedFacts,
+      benchTextLoad,
       debug: () => ({ text: getTextDebugInfo(), svg: getSvgDebugInfo() }),
       commits: () => commits.current,
       replay: () => setReplay((n) => n + 1),

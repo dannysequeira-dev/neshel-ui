@@ -570,7 +570,12 @@ export async function runTextSvgSuite(): Promise<Case[]> {
           };
         };
         const idleFrames = await deltas(30);
-        const reveal = createTextReveal(host, { split: "chars", duration: 2000, trigger: "mount" });
+        const reveal = createTextReveal(host, {
+          split: "chars",
+          duration: 2000,
+          trigger: "mount",
+          maxPieces: 1000, // K-5 opt-in: measure the expensive path, not the default degradation
+        });
         const revealFrames = await deltas(60);
         reveal.destroy();
         // Morph interpolation cost (compiled once; per-frame cost is one call).
@@ -628,4 +633,121 @@ export async function textSvgReducedFacts(): Promise<Record<string, unknown>> {
     schedulerIdle: idle(),
   };
   return facts;
+}
+
+/**
+ * K-5 benchmark (owner review of PR #15): frame intervals on the same page in three states — idle (plain
+ * text), static (split, nothing animating) and animated (reveal running) — for several piece counts and
+ * granularities, repeated. Observations only (`scripts/bench-animations-text.mjs`), never a pass/fail gate.
+ */
+export async function benchTextLoad(config: {
+  counts: number[];
+  modes: Array<"chars" | "words">;
+  trials: number;
+  frames: number;
+  /** Reveal duration ms (default 6000, longer than the measured window on slow engines). */
+  duration?: number;
+}): Promise<unknown[]> {
+  const sentence = "Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor ";
+  const host = document.createElement("p");
+  host.className = "ts-perf";
+  host.style.cssText = "max-width:72ch;margin:0 auto";
+  document.body.appendChild(host);
+  host.scrollIntoView({ block: "center" });
+  // The first 3 intervals after a state change (split, first style/layout of the pieces) are the start-up
+  // cost, reported apart (`startup`); the next `count` intervals are the steady state.
+  let startup: number[] = [];
+  const deltas = async (count: number, from = performance.now()) => {
+    const out: number[] = [];
+    startup = [];
+    let last = from;
+    for (let i = 0; i < count + 3; i++) {
+      await frame();
+      const now = performance.now();
+      if (i < 3) startup.push(now - last);
+      else out.push(now - last);
+      last = now;
+    }
+    return out;
+  };
+  const worst = (all: number[]) => Math.round(Math.max(...all) * 10) / 10;
+  const summary = (all: number[]) => {
+    const sorted = [...all].sort((a, b) => a - b);
+    const mean = all.reduce((a, b) => a + b, 0) / all.length;
+    const round = (n: number) => Math.round(n * 10) / 10;
+    return {
+      mean: round(mean),
+      p50: round(sorted[Math.floor(all.length * 0.5)] ?? 0),
+      p95: round(sorted[Math.floor(all.length * 0.95)] ?? 0),
+      over25: round((all.filter((d) => d > 25).length / all.length) * 100),
+    };
+  };
+  // Text with `count` grapheme pieces (spaces are not pieces).
+  const textFor = (count: number) => {
+    let out = "";
+    let pieces = 0;
+    for (let i = 0; pieces < count; i = (i + 1) % sentence.length) {
+      const ch = sentence[i] as string;
+      out += ch;
+      if (ch !== " ") pieces++;
+    }
+    return out.trim();
+  };
+  const results: unknown[] = [];
+  for (const count of config.counts) {
+    const text = textFor(count);
+    for (const mode of config.modes) {
+      const idle: number[] = [];
+      const still: number[] = [];
+      const animated: number[] = [];
+      let pieces = 0;
+      let splitMs = 0;
+      const progress: number[] = [];
+      const startStatic: number[] = [];
+      const startAnimated: number[] = [];
+      for (let trial = 0; trial < config.trials; trial++) {
+        host.textContent = text;
+        idle.push(...(await deltas(config.frames)));
+        await frames(3);
+        const t = performance.now();
+        const split = splitText(host, { split: mode, maxPieces: 5000 });
+        splitMs += performance.now() - t;
+        pieces = split.pieces.length;
+        still.push(...(await deltas(config.frames, t)));
+        startStatic.push(worst(startup));
+        split.revert();
+        await frames(3);
+        const t2 = performance.now();
+        const reveal = createTextReveal(host, {
+          split: mode,
+          duration: config.duration ?? 6000,
+          trigger: "mount",
+          maxPieces: 5000,
+        });
+        animated.push(...(await deltas(config.frames, t2)));
+        startAnimated.push(worst(startup));
+        progress.push(Math.round(reveal.progress * 100) / 100); // proves the reveal was running
+        reveal.destroy();
+      }
+      const a = summary(idle);
+      const s = summary(still);
+      const m = summary(animated);
+      results.push({
+        requested: count,
+        mode,
+        pieces,
+        progressAtEnd: progress,
+        startupWorstStatic: startStatic,
+        startupWorstAnimated: startAnimated,
+        splitMs: Math.round((splitMs / config.trials) * 10) / 10,
+        idle: a,
+        static: s,
+        animated: m,
+        incrementalMean: Math.round((m.mean - s.mean) * 10) / 10,
+        incrementalP95: Math.round((m.p95 - s.p95) * 10) / 10,
+      });
+    }
+  }
+  host.remove();
+  return results;
 }

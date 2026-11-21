@@ -60,6 +60,12 @@ export interface LabState {
   textSvg?: {
     runTextSvgSuite(): Promise<Array<{ id: string; ok: boolean; error?: string }>>;
     reducedFacts(): Promise<Record<string, unknown>>;
+    benchTextLoad?(config: {
+      counts: number[];
+      modes: Array<"chars" | "words">;
+      trials: number;
+      frames: number;
+    }): Promise<unknown[]>;
     debug(): unknown;
     commits(): number;
     replay(): void;
