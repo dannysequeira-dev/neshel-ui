@@ -75,7 +75,7 @@ export function createPathMorph(path: Element, options: PathMorphOptions): PathM
   let index = options.initial ?? 0;
   if (!Number.isInteger(index) || index < 0 || index >= shapes.length)
     throw animationsError("createPathMorph", '"initial" must be a shape index.');
-  const attributes = createAttributeWriter(path);
+  const attributes = createAttributeWriter(path, "createPathMorph");
   let from: readonly PathCommand[] = compiled[index] as PathCommand[];
   let target: readonly PathCommand[] = from;
   let current: readonly PathCommand[] = from;

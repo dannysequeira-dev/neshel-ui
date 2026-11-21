@@ -123,6 +123,10 @@ export function createRotatingWords(
   const basePlay = control.play;
   let userPaused = false;
   let held = false;
+  let destroyed = false;
+  effect.onDestroy(() => {
+    destroyed = true;
+  });
   if (options.pauseOnHover !== false) {
     const hold = () => {
       if (held) return;
@@ -130,18 +134,22 @@ export function createRotatingWords(
       if (control.state === "running") basePause();
     };
     const resume = () => {
-      if (!held || element.matches(":hover") || element.contains(doc.activeElement)) return;
+      if (destroyed || !held || element.matches(":hover") || element.contains(doc.activeElement))
+        return;
       held = false;
       if (!userPaused && control.state === "paused") basePlay();
     };
     element.addEventListener("pointerenter", hold);
     element.addEventListener("pointerleave", resume);
     element.addEventListener("focusin", hold);
-    element.addEventListener("focusout", () => queueMicrotask(resume));
+    // Focus moves inside the element fire focusout before focusin: resume after the microtask.
+    const onFocusOut = () => queueMicrotask(resume);
+    element.addEventListener("focusout", onFocusOut);
     effect.onDestroy(() => {
       element.removeEventListener("pointerenter", hold);
       element.removeEventListener("pointerleave", resume);
       element.removeEventListener("focusin", hold);
+      element.removeEventListener("focusout", onFocusOut);
     });
   }
   effect.onDestroy(() => {

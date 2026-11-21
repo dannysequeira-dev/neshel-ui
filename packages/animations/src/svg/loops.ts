@@ -116,7 +116,7 @@ export function createGradientStops(
   const colorMix = getSvgSupport().colorMix;
   const yoyo = options.yoyo !== false;
   const writers = new Map<Element, ChannelWriter>();
-  const attributes = stops.map((stop) => createAttributeWriter(stop));
+  const attributes = stops.map((stop) => createAttributeWriter(stop, "createGradientStops"));
   const writerOf = (stop: Element) => {
     let writer = writers.get(stop);
     if (!writer) {

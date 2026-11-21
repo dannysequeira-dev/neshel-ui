@@ -201,6 +201,9 @@ export function loopEffectControl(
 ): LoopEffectControl {
   const span = Number.isFinite(repeat) ? period * (repeat + 1) : period;
   let unsource: (() => void) | undefined;
+  // Track subscriptions live until the effect is destroyed (review R3): a timeline may keep the value.
+  const untracks = new Set<() => void>();
+  let destroyed = false;
   const control: LoopEffectControl = {
     get state() {
       return loop.state;
@@ -214,7 +217,7 @@ export function loopEffectControl(
     seek: (progress) => loop.seek(clamp(Number.isFinite(progress) ? progress : 0, 0, 1) * span),
     track(options = {}) {
       const value = motionValue(0);
-      value.subscribe((progress) => loop.seek(progress * span));
+      if (!destroyed) untracks.add(value.subscribe((progress) => loop.seek(progress * span)));
       return {
         id: options.id,
         value,
@@ -237,8 +240,12 @@ export function loopEffectControl(
       };
     },
     destroy() {
+      if (destroyed) return;
+      destroyed = true;
       unsource?.();
       unsource = undefined;
+      for (const untrack of untracks) untrack();
+      untracks.clear();
       destroy();
     },
   };
