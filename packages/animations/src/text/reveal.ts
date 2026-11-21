@@ -9,7 +9,11 @@
 import type { ProgressSource } from "../core/progress-driver.js";
 import { prefersReducedMotion, shouldReduceMotion } from "../core/reduced-motion.js";
 import { createTextEffect, type ProgressControl, type TextEffectOptions } from "./engine/effect.js";
-import type { SplitGranularity } from "./engine/split.js";
+import {
+  reportDefaultDegrade,
+  SIMULTANEOUS_PIECES,
+  type SplitGranularity,
+} from "./engine/split.js";
 
 export type RevealVariant = "fade-up" | "fade" | "fade-down" | "blur" | "scale";
 export type RevealOrder = "start" | "end" | "center" | "random";
@@ -82,10 +86,15 @@ function create(
     name,
     token: "text-reveal",
     property: "--neshel-reveal-progress",
-    split: { split, locale: options?.locale, maxPieces: options?.maxPieces },
+    split: {
+      split,
+      locale: options?.locale,
+      maxPieces: options?.maxPieces ?? SIMULTANEOUS_PIECES,
+    },
     defaults: { duration: 900, easing: "linear" },
   });
   const { v, target, split: handle } = pre;
+  reportDefaultDegrade(name, handle, split, options?.maxPieces);
   const o = v.options(options);
   const variant = v.oneOf("variant", o.variant, VARIANTS, "fade-up");
   const stagger = v.number("stagger", o.stagger, split === "lines" ? 0.5 : 0.2, 0, 1);

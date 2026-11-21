@@ -9,7 +9,7 @@ import {
   type LoopEffectControl,
   type LoopTextOptions,
 } from "./engine/loop-effect.js";
-import { splitText } from "./engine/split.js";
+import { reportDefaultDegrade, SIMULTANEOUS_PIECES, splitText } from "./engine/split.js";
 
 export interface TextWaveOptions extends LoopTextOptions {
   /** CSS length (default `"0.18em"`; keep ≤ 0.5em). */
@@ -34,8 +34,9 @@ export function createTextWave(
   const split = splitText(element, {
     split: "chars",
     locale: options?.locale,
-    maxPieces: options?.maxPieces,
+    maxPieces: options?.maxPieces ?? SIMULTANEOUS_PIECES,
   });
+  reportDefaultDegrade("createTextWave", split, "chars", options?.maxPieces);
   const root = split.root;
   if (!root) {
     // Unsupported content: static text, inert control.

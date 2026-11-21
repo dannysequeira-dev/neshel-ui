@@ -351,3 +351,85 @@ test("R3 · a real continuous text effect: a retained timeline track is inert af
   assert.equal(getFrameScheduler().size, 0);
   node.remove();
 });
+
+// --- K-5 (default protection for simultaneous per-character animation) ------------------------------------------
+
+const lorem = (pieces) => {
+  const sentence = "Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor ";
+  let out = "";
+  let count = 0;
+  for (let i = 0; count < pieces; i = (i + 1) % sentence.length) {
+    out += sentence[i];
+    if (sentence[i] !== " ") count++;
+  }
+  return out.trim();
+};
+function textEl(content) {
+  const node = document.createElement("p");
+  node.textContent = content;
+  document.body.appendChild(node);
+  return node;
+}
+
+test("K-5 · TextReveal chars on a long text degrades to words by default (dev warning); short headings stay chars", () => {
+  const warnings = quietWarnings();
+  try {
+    const long = textEl(lorem(489));
+    const reveal = text.createTextReveal(long, { split: "chars", trigger: "manual" });
+    assert.equal(long.getAttribute("data-neshel-split"), "words", "degraded to words");
+    assert.ok(
+      warnings.messages.some((m) => /createTextReveal/.test(m) && /maxPieces/.test(m)),
+      "the degradation is reported in development",
+    );
+    reveal.destroy();
+    assert.equal(long.textContent, lorem(489));
+    const short = textEl("Rooted in faith. Built with hope.");
+    const heading = text.createTextReveal(short, { split: "chars", trigger: "manual" });
+    assert.equal(short.getAttribute("data-neshel-split"), "chars");
+    heading.destroy();
+    long.remove();
+    short.remove();
+  } finally {
+    warnings.restore();
+  }
+});
+
+test("K-5 · an explicit maxPieces keeps the authored granularity (opt-in to the expensive path), no warning", () => {
+  const warnings = quietWarnings();
+  try {
+    const node = textEl(lorem(489));
+    const reveal = text.createTextReveal(node, {
+      split: "chars",
+      trigger: "manual",
+      maxPieces: 1000,
+    });
+    assert.equal(node.getAttribute("data-neshel-split"), "chars");
+    assert.equal(
+      warnings.messages.filter((m) => /maxPieces/.test(m)).length,
+      0,
+      "no warning for an authored limit",
+    );
+    reveal.destroy();
+    node.remove();
+  } finally {
+    warnings.restore();
+  }
+});
+
+test("K-5 · TextWave follows the same default; Typewriter and Scramble (not simultaneous) keep chars", () => {
+  const warnings = quietWarnings();
+  try {
+    const wave = textEl(lorem(489));
+    const w = text.createTextWave(wave, { duration: 400 });
+    assert.equal(wave.getAttribute("data-neshel-split"), "words");
+    w.destroy();
+    const typed = textEl(lorem(489));
+    const t = text.createTypewriter(typed, { trigger: "manual" });
+    assert.equal(typed.getAttribute("data-neshel-split"), "chars");
+    t.destroy();
+    wave.remove();
+    typed.remove();
+  } finally {
+    warnings.restore();
+  }
+});

@@ -16,12 +16,38 @@ import { needsShaping, segmentGraphemes, segmentWords, strongDirection } from ".
 
 export type SplitGranularity = "chars" | "words" | "lines";
 
+/**
+ * Default piece limit of effects that animate every piece at once (T01 reveal, T07 wave; owner review K-5,
+ * evidence §9): above it `chars` degrade to words (words to lines). Measured knee: in headless Chromium the
+ * steady frame cost grows from +0.1 ms (250 clusters) to +4.3 ms (489) over the static baseline, and with a 4×
+ * slower CPU it appears earlier (§9). An explicit `maxPieces` (1–5000) is the opt-in to larger counts.
+ */
+export const SIMULTANEOUS_PIECES = 200;
+
+/** Development notice when the K-5 default (not an authored `maxPieces`) changed the granularity. */
+export function reportDefaultDegrade(
+  name: string,
+  split: SplitText | undefined,
+  requested: SplitGranularity,
+  authored: number | undefined,
+): void {
+  if (authored !== undefined || !split || split.state !== "split" || split.split === requested)
+    return;
+  if (typeof process !== "undefined" && process.env.NODE_ENV !== "production") {
+    devWarnOnce(
+      `k5:${name}:${requested}:${split.split}`,
+      `${name}: "${requested}" would animate more than ${SIMULTANEOUS_PIECES} pieces at once; animating "${split.split}" instead. Pass an explicit maxPieces (up to 5000) to keep "${requested}".`,
+    );
+  }
+}
+
 export interface SplitTextOptions {
   /** Default `"words"`. `chars` and `lines` always contain word pieces. */
   split?: SplitGranularity;
   /** Default: the closest `[lang]` of the element, else the document language. */
   locale?: string;
-  /** Maximum animated pieces (default 1000, 1–5000): chars degrade to words, words to lines above it. */
+  /** Maximum animated pieces (default 1000, 1–5000; TextReveal and TextWave default to 200, K-5): chars degrade
+   * to words, words to lines above it. */
   maxPieces?: number;
 }
 
