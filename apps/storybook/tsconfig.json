@@ -15,6 +15,8 @@
       "@neshel-ui/animations/gestures": ["../../packages/animations/src/gestures/index.ts"],
       "@neshel-ui/animations/layout": ["../../packages/animations/src/layout/index.ts"],
       "@neshel-ui/animations/cinematic": ["../../packages/animations/src/cinematic/index.ts"],
+      "@neshel-ui/animations/text": ["../../packages/animations/src/text/index.ts"],
+      "@neshel-ui/animations/svg": ["../../packages/animations/src/svg/index.ts"],
       "@neshel-ui/animations/page-transitions": [
         "../../packages/animations/src/page-transitions/index.ts"
       ],

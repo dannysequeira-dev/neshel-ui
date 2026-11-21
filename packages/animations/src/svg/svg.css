@@ -1,0 +1,29 @@
+/*
+ * @neshel-ui/animations/svg.css — SVG & Paths family (Phase 014, opt-in). Styles only package-rendered SVGs
+ * (MorphIcon, SuccessCheck, the hidden filter host). Every effect on the consumer's SVG writes through the
+ * Motion Host or the attribute ledger, so this stylesheet declares no transition or animation.
+ */
+@layer components.neshel {
+  .neshel-morph-icon,
+  .neshel-success-check {
+    display: inline-block;
+    flex: none;
+    vertical-align: middle;
+    overflow: visible;
+  }
+
+  .neshel-svg-filter-host {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    pointer-events: none;
+  }
+
+  @media (forced-colors: active) {
+    .neshel-morph-icon,
+    .neshel-success-check {
+      stroke: CanvasText;
+    }
+  }
+}

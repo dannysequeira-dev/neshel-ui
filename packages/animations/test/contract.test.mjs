@@ -51,6 +51,8 @@ test("exports only implemented entry points, types first (FR-002)", () => {
     "./page-transitions",
     "./page-transitions/next",
     "./page-transitions/react-router",
+    "./text",
+    "./svg",
     "./styles.css",
     "./hover.css",
     "./press.css",
@@ -60,6 +62,8 @@ test("exports only implemented entry points, types first (FR-002)", () => {
     "./cinematic.css",
     "./page-transitions.css",
     "./page-transitions-mpa.css",
+    "./text.css",
+    "./svg.css",
   ]);
   for (const subpath of [
     ".",
@@ -74,6 +78,8 @@ test("exports only implemented entry points, types first (FR-002)", () => {
     "./page-transitions",
     "./page-transitions/next",
     "./page-transitions/react-router",
+    "./text",
+    "./svg",
   ]) {
     assert.deepEqual(Object.keys(manifest.exports[subpath]), ["types", "import"]);
   }
@@ -141,6 +147,9 @@ test("no module touches window, document or matchMedia at import time (FR-007)",
   await import("../dist/hover/index.js");
   await import("../dist/press/index.js");
   await import("../dist/scroll/index.js");
+  // Phase 014 families.
+  await import("../dist/text/index.js");
+  await import("../dist/svg/index.js");
   assert.equal(typeof globalThis.window, "undefined");
 });
 
@@ -148,7 +157,7 @@ test("no module touches window, document or matchMedia at import time (FR-007)",
 const SCOPED =
   /^(?::where\()?(?:\.neshel-[a-z0-9-]+|\[data-neshel-fx(?:-active|-reduced)?~="[a-z0-9-]+"\])/;
 
-for (const name of ["styles.css", "hover.css", "press.css", "scroll.css"]) {
+for (const name of ["styles.css", "hover.css", "press.css", "scroll.css", "text.css", "svg.css"]) {
   test(`stylesheet ${name}: one layer, scoped selectors, no resets or global rules (FR-008, 010 FR-040)`, () => {
     const css = readFileSync(join(root, "dist", name), "utf8").replace(/\r\n/g, "\n");
     const body = css.replace(/\/\*[\s\S]*?\*\//g, "");
@@ -204,6 +213,9 @@ test("no CSS transition or animation targets a consumer element (010 FR-042, ADR
     "cinematic.css",
     "page-transitions.css",
     "page-transitions-mpa.css",
+    // Phase 014.
+    "text.css",
+    "svg.css",
   ]
     .map((file) => readFileSync(join(root, "dist", file), "utf8"))
     .join(String.fromCharCode(10))
@@ -246,6 +258,8 @@ test("module boundaries: core imports only core; root/react/families never impor
         "layout",
         "cinematic",
         "page-transitions",
+        "text",
+        "svg",
       ]) {
         if (!where.startsWith(`${family}/`))
           assert.ok(!target.startsWith(`${family}/`), `${where} -> ${target}`);

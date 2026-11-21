@@ -4,14 +4,15 @@
 
 Modular, accessible motion primitives and effects for Neshel-UI.
 
-**Status: experimental, private, unpublished (features 008.0–013).** This package is not on npm and its
+**Status: experimental, private, unpublished (features 008.0–014).** This package is not on npm and its
 API may change before the owner approves a first publication. Specification, catalogue and
 decisions: [`specs/008-animations/`](../../specs/008-animations/spec.md),
 [`specs/009-motion-engine/`](../../specs/009-motion-engine/spec.md),
 [`specs/010-animation-effects/`](../../specs/010-animation-effects/spec.md),
 [`specs/011-scroll-parallax/`](../../specs/011-scroll-parallax/spec.md),
 [`specs/012-physics-gestures-layout/`](../../specs/012-physics-gestures-layout/spec.md),
-[`specs/013-cinematic-page-transitions/`](../../specs/013-cinematic-page-transitions/spec.md), ADRs 0018–0028.
+[`specs/013-cinematic-page-transitions/`](../../specs/013-cinematic-page-transitions/spec.md),
+[`specs/014-typography-svg-paths/`](../../specs/014-typography-svg-paths/spec.md), ADRs 0018–0029.
 
 ## What exists today
 
@@ -73,6 +74,25 @@ decisions: [`specs/008-animations/`](../../specs/008-animations/spec.md),
   `useNavigationDirection`, `useRouteTransition`. Router adapters (PT10, optional peers):
   `@neshel-ui/animations/page-transitions/next` (`<NextPageTransitions>`, `<TransitionLink>`; next ≥ 16.4) and
   `@neshel-ui/animations/page-transitions/react-router` (`<RouterPageTransitions>`; react-router ≥ 8).
+- `@neshel-ui/animations/text` (Phase 014) — the accessible splitter `splitText` (Unicode grapheme clusters
+  and words through `Intl.Segmenter`, bidi runs, shaping-script words kept whole, lines regrouped only on
+  resize/font changes; ONE accessible copy: the original nodes in a visually hidden span, the visual pieces
+  `aria-hidden`; links, controls and editable content are never split) and T01–T11:
+  `createTextReveal`, `createTypewriter`, `createScramble`, `createGradientSweep`, `createNumberRoll`
+  (`Intl.NumberFormat` parts, any decimal numbering system), `createRotatingWords`, `createTextWave`,
+  `createHighlighter`, `createTextMask`, `createFontAxes` (registered axes through high-level properties,
+  custom axes merged with the consumer's `font-variation-settings`), `createLineReveal` (any 0–1 progress
+  source, e.g. a `ScrollProgress`); React: `<TextReveal>`, `<Typewriter>`, `<ScrambleText>`,
+  `<GradientText>`, `<NumberRoll>`, `<RotatingWords>`, `<WaveText>`, `<Highlight>`, `<TextMask>`,
+  `<FontAxes>`, `<LineReveal>`, `useSplitText`. Every effect has `track()` (a `createTimeline` value track)
+  and `drive(source)`.
+- `@neshel-ui/animations/svg` (Phase 014) — pure path utilities (`parsePathData` exact normal form,
+  `getPathGeometry`, `measurePath`, `getPathMorphCompatibility`, `interpolatePath` — strict morph policy,
+  no resampling) and S01–S10: `createPathDraw`, `createPathMorph`, `createMotionPath` (native
+  `offset-path`, JS fallback), `createIconMorph` + `menuCloseShapes`, `createGradientStops`,
+  `createChartDraw`, `createTurbulence`, `createLogoReveal`, `createDashFlow`, `createCheckmark`; React
+  hooks (`usePathDraw`, `usePathMorph`, `useMotionPath`, …) and `<PathDraw>`, `<MorphIcon>`,
+  `<SuccessCheck>`. Consumer dash styles and `d` attributes are restored exactly.
 - `definePreset` / `attachPreset` (`./core`) — presets are values: a definition plus frozen options.
 - Stylesheets (opt-in): `@neshel-ui/animations/hover.css` (Tilt3D depth + decor layers),
   `@neshel-ui/animations/press.css` (ripple, burst, toggle, checkbox, swap),
@@ -82,7 +102,9 @@ decisions: [`specs/008-animations/`](../../specs/008-animations/spec.md),
   tab indicator, cross-fade stack, masonry grid) are separate opt-in files, as are
   `@neshel-ui/animations/cinematic.css` (camera stage, cover panels, spotlight lens, storyboard, letterbox),
   `@neshel-ui/animations/page-transitions.css` (View Transition effects, route progress) and
-  `@neshel-ui/animations/page-transitions-mpa.css` (the same plus the cross-document opt-in).
+  `@neshel-ui/animations/page-transitions-mpa.css` (the same plus the cross-document opt-in),
+  `@neshel-ui/animations/text.css` (per-piece math of the text effects; without it text is visible and
+  static) and `@neshel-ui/animations/svg.css` (package-rendered icons and checkmark).
 
 ```tsx
 import { Tilt3D } from "@neshel-ui/animations/hover";

@@ -12,7 +12,11 @@ in [specs/012 contracts/api-012.md](../../012-physics-gestures-layout/contracts/
 entries animate the consumer's element through the motion host instead of WAAPI, ADR 0027) and the 20
 Phase 013 entries **C01–C10, PT01–PT10** (marked **✓ 013**; API, support matrix and reduced behaviour in
 [specs/013 contracts](../../013-cinematic-page-transitions/contracts/cinematic-api.md) — cinematic effects
-render through the motion host; page transitions animate only View Transition pseudo-elements, ADR 0028). Phase 010
+render through the motion host; page transitions animate only View Transition pseudo-elements, ADR 0028) and the 21
+Phase 014 entries **T01–T11, S01–S10** (marked **✓ 014**; API, drivers and reduced behaviour in
+[specs/014 contracts](../../014-typography-svg-paths/contracts/text-api.md) and
+[svg-api.md](../../014-typography-svg-paths/contracts/svg-api.md) — split text keeps one accessible copy;
+effects write one value per frame through the motion host, ADR 0029). Phase 010
 changed the driver of most CSS rows: the consumer's element is animated only by the motion host (rule
 R-1, ADR 0025) and CSS renders package-owned layers; the Driver column below keeps the original plan
 and the 010 contract records each change. `D05 CornerRecede` exists as a
@@ -201,17 +205,17 @@ Every gesture has a keyboard and single-pointer alternative (WCAG 2.5.1, 2.5.7) 
 
 | Id  | Effect                               | Driver | Structure | Reduced motion | Phase |
 | --- | ------------------------------------ | ------ | --------- | -------------- | ----- |
-| T01 | Split reveal (chars / words / lines) | CSS    | S         | instant        | 014   |
-| T02 | Typewriter                           | JS     | S         | instant        | 014   |
-| T03 | Scramble / decode                    | JS     | S         | instant        | 014   |
-| T04 | Gradient sweep text                  | CSS    | —         | static         | 014   |
-| T05 | Number roll                          | CSS    | S         | instant        | 014   |
-| T06 | Rotating words                       | CSS    | S         | static         | 014   |
-| T07 | Kinetic wave                         | CSS    | S         | off            | 014   |
-| T08 | Highlighter draw                     | CSS    | —         | instant        | 014   |
-| T09 | Text mask reveal                     | CSS    | —         | instant        | 014   |
-| T10 | Variable-font axis animation         | CSS    | —         | static         | 014   |
-| T11 | Line-by-line reveal on scroll        | SDA    | S         | instant        | 014   |
+| T01 | Split reveal (chars / words / lines) | CSS    | S         | instant        | ✓ 014 |
+| T02 | Typewriter                           | JS     | S         | instant        | ✓ 014 |
+| T03 | Scramble / decode                    | JS     | S         | instant        | ✓ 014 |
+| T04 | Gradient sweep text                  | CSS    | —         | static         | ✓ 014 |
+| T05 | Number roll                          | CSS    | S         | instant        | ✓ 014 |
+| T06 | Rotating words                       | CSS    | S         | static         | ✓ 014 |
+| T07 | Kinetic wave                         | CSS    | S         | off            | ✓ 014 |
+| T08 | Highlighter draw                     | CSS    | —         | instant        | ✓ 014 |
+| T09 | Text mask reveal                     | CSS    | —         | instant        | ✓ 014 |
+| T10 | Variable-font axis animation         | CSS    | —         | static         | ✓ 014 |
+| T11 | Line-by-line reveal on scroll        | SDA    | S         | instant        | ✓ 014 |
 
 Split text keeps one accessible copy (`aria-label` on the container or a visually hidden original)
 and must respect Capsize trimming from `@neshel-ui/typography` (ADR 0011).
@@ -220,16 +224,16 @@ and must respect Capsize trimming from `@neshel-ui/typography` (ADR 0011).
 
 | Id  | Effect                              | Driver | Structure | Reduced motion | Phase |
 | --- | ----------------------------------- | ------ | --------- | -------------- | ----- |
-| S01 | Path draw (stroke-dashoffset)       | CSS    | —         | instant        | 014   |
-| S02 | Path morph (compatible commands)    | WAAPI  | —         | instant        | 014   |
-| S03 | Motion along a path (`offset-path`) | CSS    | —         | static         | 014   |
-| S04 | Icon morph (menu ↔ close)           | CSS    | —         | instant        | 014   |
-| S05 | Animated gradient stops             | CSS    | —         | static         | 014   |
-| S06 | Line-chart draw-in                  | CSS    | —         | instant        | 014   |
-| S07 | Turbulence wobble (SVG filter)      | JS     | —         | off            | 014   |
-| S08 | Logo reveal mask                    | CSS    | —         | instant        | 014   |
-| S09 | Dash flow (marching ants)           | CSS    | —         | static         | 014   |
-| S10 | Success checkmark draw              | CSS    | —         | instant        | 014   |
+| S01 | Path draw (stroke-dashoffset)       | CSS    | —         | instant        | ✓ 014 |
+| S02 | Path morph (compatible commands)    | WAAPI  | —         | instant        | ✓ 014 |
+| S03 | Motion along a path (`offset-path`) | CSS    | —         | static         | ✓ 014 |
+| S04 | Icon morph (menu ↔ close)           | CSS    | —         | instant        | ✓ 014 |
+| S05 | Animated gradient stops             | CSS    | —         | static         | ✓ 014 |
+| S06 | Line-chart draw-in                  | CSS    | —         | instant        | ✓ 014 |
+| S07 | Turbulence wobble (SVG filter)      | JS     | —         | off            | ✓ 014 |
+| S08 | Logo reveal mask                    | CSS    | —         | instant        | ✓ 014 |
+| S09 | Dash flow (marching ants)           | CSS    | —         | static         | ✓ 014 |
+| S10 | Success checkmark draw              | CSS    | —         | instant        | ✓ 014 |
 
 ## 12 · Images & Media (M)
 
@@ -318,6 +322,6 @@ real deformation and only for raster content (research R7).
 | Presence / exit orchestration        | L, PT, F          | implemented (012)    |
 | FLIP measurer                        | L, M              | implemented (012)    |
 | Gesture recogniser (drag, pinch)     | G, M              | implemented (012)    |
-| Text splitter (accessible)           | T, C              | planned (014)        |
-| Path utilities (length, morph)       | S                 | planned (014)        |
+| Text splitter (accessible)           | T, C              | implemented (014)    |
+| Path utilities (length, morph)       | S                 | implemented (014)    |
 | GPU surface manager (optional entry) | D, M, B           | planned (016)        |

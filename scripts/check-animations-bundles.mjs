@@ -270,6 +270,47 @@ export const ENTRIES = {
     markers: { react: true, cinematicCode: false },
     external: [/^react-router(?:$|\/)/],
   },
+  // Phase 014 (FR-045): text and SVG families; neither bundles the other, Cinematic or Scroll.
+  "text: splitText (engine, no React)": {
+    source: `export { splitText } from "${A}/text";`,
+    markers: { react: false, slot: false, cinematicCode: false, scrollCode: false, svgCode: false },
+  },
+  "text: createTextReveal (engine, no React)": {
+    source: `export { createTextReveal } from "${A}/text";`,
+    markers: { react: false, cinematicCode: false, scrollCode: false, svgCode: false },
+  },
+  "text: TextReveal": {
+    source: `export { TextReveal } from "${A}/text";`,
+    markers: { react: true, cinematicCode: false, svgCode: false },
+  },
+  "text: NumberRoll": {
+    source: `export { NumberRoll } from "${A}/text";`,
+    markers: { react: true, cinematicCode: false, svgCode: false },
+  },
+  "text: entire entry": {
+    source: `export * from "${A}/text";`,
+    markers: { cinematicCode: false, scrollCode: false, svgCode: false, entranceCode: false },
+  },
+  "svg: path data + geometry + morph (pure)": {
+    source: `export { parsePathData, getPathGeometry, interpolatePath } from "${A}/svg";`,
+    markers: { react: false, scheduler: false, textCode: false },
+  },
+  "svg: createPathDraw (engine, no React)": {
+    source: `export { createPathDraw } from "${A}/svg";`,
+    markers: { react: false, cinematicCode: false, textCode: false },
+  },
+  "svg: createPathMorph (engine, no React)": {
+    source: `export { createPathMorph } from "${A}/svg";`,
+    markers: { react: false, cinematicCode: false, textCode: false },
+  },
+  "svg: MorphIcon": {
+    source: `export { MorphIcon, menuCloseShapes } from "${A}/svg";`,
+    markers: { react: true, textCode: false },
+  },
+  "svg: entire entry": {
+    source: `export * from "${A}/svg";`,
+    markers: { cinematicCode: false, scrollCode: false, textCode: false },
+  },
 };
 
 /** Stylesheets measured from the packed tarball (gzip of the file as shipped). */
@@ -283,6 +324,8 @@ export const STYLESHEETS = [
   "dist/cinematic.css",
   "dist/page-transitions.css",
   "dist/page-transitions-mpa.css",
+  "dist/text.css",
+  "dist/svg.css",
 ];
 
 const MARKERS = {
@@ -304,6 +347,8 @@ const MARKERS = {
     /scroll\/depth-parallax|scroll-trigger\/reveal|scroll\/pinned-scene/.test(code),
   cinematicCode: (code) => /cinematic\/timeline|cinematic\/cover|createTimeline/.test(code),
   pageCode: (code) => /page\/transition|page\/cross-document/.test(code),
+  textCode: (code) => /neshel-text-a11y|text\/text-reveal/.test(code),
+  svgCode: (code) => /parsePathData|svg\/path-draw|svg\/dash-flow/.test(code),
 };
 
 function link(from, to) {

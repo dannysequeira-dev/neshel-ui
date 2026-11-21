@@ -12,9 +12,11 @@ Gestures G01–G11, Layout Animations L01–L10, H11, P11; ADR 0027) is merged i
 commit `97a2b22` (PR #10) and approved by the owner; the stabilization of issues #9/#11
 (`specs/stability-9-11/`) is merged as `b7bfe14` (PR #12) — #11 is closed, #9 stays open under
 observation (three distinct first-attempt clean runs on `main` needed; never close it automatically).
-Phase 013 (Cinematic & Scenes C01–C10, Page Transitions PT01–PT10; ADR 0028) is the **current phase**,
-in development on `feature/013-cinematic-page-transitions` (`specs/013-cinematic-page-transitions/`);
-its PR needs the owner's review — never merge it automatically.
+Phase 013 (Cinematic & Scenes C01–C10, Page Transitions PT01–PT10; ADR 0028) is merged into `main` as
+the squash commit `7207638` (PR #13) and approved by the owner. Phase 014 (Typography & Text T01–T11, SVG &
+Paths S01–S10; ADR 0029) is the **current phase**, in development on `feature/014-typography-svg-paths`
+(`specs/014-typography-svg-paths/`, PR #15); ADR 0029 accepted and its 12 budgets approved by the owner; the PR
+still needs the owner's final review — never merge it automatically.
 `@neshel-ui/animations` is **private** (0.0.0) and must stay private until the owner approves its
 first publication; it is outside the Changesets fixed group and the release scripts. The five public
 packages are on npm with provenance; `@neshel-ui/core` stays private. `v0.1.0` is immutable: never
@@ -106,7 +108,7 @@ legitimate third-party licence notices. Check every commit message and PR body b
   `--with animations`, which validates the private animations tarball without lifting its guard).
 - `pnpm check:browser:animations` — animations lab (Tilt3D, CornerRecede, ScrollScene, engine, Phase 010
   effects gallery, Phase 011 scroll gallery, Phase 012 gestures/layout gallery, Phase 013 cinematic/page-transitions
-  gallery) in headless Chrome with real input and axe; requires
+  gallery, Phase 014 text/SVG gallery) in headless Chrome with real input and axe; requires
   `pnpm build:playground`.
 - `pnpm check:animations:engines` — the same lab in Playwright Chromium, Firefox and WebKit.
 - `pnpm check:animations:consumer` — external app from the packed animations tarball (SSR + hydration).
