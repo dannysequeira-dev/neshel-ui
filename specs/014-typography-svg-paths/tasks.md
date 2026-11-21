@@ -51,4 +51,4 @@ Dependency-ordered. `[x]` done, `[ ]` open. Authorised by the owner brief of 202
 - [x] T053 Composition tests (18 rows); performance measurements
 - [x] T054 Packed consumer (SSR + hydration); bundle budgets proposed
 - [x] T055 Package contract/pack checks, catalogue, README, docs; `pnpm check`; builds
-- [ ] T056 Push, PR, three-OS CI on the head commit; evidence
+- [x] T056 Push, PR, three-OS CI on the head commit; evidence
