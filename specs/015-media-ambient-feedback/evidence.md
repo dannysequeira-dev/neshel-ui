@@ -205,11 +205,11 @@ bytes); K-2, K-3, K-5 to K-9 stay documented. Both review cases were reproduced 
 
 `test/lifecycle-015-review.test.mjs`, fake timers (`setTimeout`, `Date`):
 
-| Test                                                         | Before the fix                                                                     | After |
-| ------------------------------------------------------------ | ---------------------------------------------------------------------------------- | ----- |
-| `show()` after `destroy()` creates no toast, timer or notice | **fail** — returned `neshel-toast-2`, created the record, scheduled a timer        | pass  |
-| `subscribe()` after `destroy()` registers nothing            | **fail** — the late listener was notified twice (`show`, `dismissAll`)             | pass  |
-| `destroy()` idempotent, live counters balanced               | **fail** — one live timer leaked (destroy → show → destroy left `timers` at +1)    | pass  |
+| Test                                                         | Before the fix                                                                  | After |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------------- | ----- |
+| `show()` after `destroy()` creates no toast, timer or notice | **fail** — returned `neshel-toast-2`, created the record, scheduled a timer     | pass  |
+| `subscribe()` after `destroy()` registers nothing            | **fail** — the late listener was notified twice (`show`, `dismissAll`)          | pass  |
+| `destroy()` idempotent, live counters balanced               | **fail** — one live timer leaked (destroy → show → destroy left `timers` at +1) | pass  |
 
 Fix (`src/feedback/toaster.ts`): a destroyed store is inert. `show()` still validates (invalid input throws) and
 returns `""` without creating anything; `subscribe()` returns a no-op unsubscribe; `dismiss`, `dismissAll`,
@@ -264,3 +264,9 @@ Nonblocking follow-up (not changed, outside the two cases): the 250 ms frame wat
 | `pnpm check:animations:bundles`                 | pass — every budget, earlier and Phase 015, unchanged and met      |
 | `pnpm check:animations:routers`                 | pass                                                               |
 | `pnpm build:playground`, `pnpm build:storybook` | succeed                                                            |
+
+### Three-OS CI after the review
+
+Run 45072252850 (`22c8ed0`) **failed** in the five Node-matrix jobs on `pnpm lint`: one table in this file was
+not in Biome's Markdown format (a manual edit after the last local lint). Code, browser, consumer, docs and
+Next/starters jobs passed. Fixed by formatting the file; the next head's run is reported in the PR.
