@@ -53,6 +53,9 @@ test("exports only implemented entry points, types first (FR-002)", () => {
     "./page-transitions/react-router",
     "./text",
     "./svg",
+    "./media",
+    "./ambient",
+    "./feedback",
     "./styles.css",
     "./hover.css",
     "./press.css",
@@ -64,6 +67,9 @@ test("exports only implemented entry points, types first (FR-002)", () => {
     "./page-transitions-mpa.css",
     "./text.css",
     "./svg.css",
+    "./media.css",
+    "./ambient.css",
+    "./feedback.css",
   ]);
   for (const subpath of [
     ".",
@@ -80,6 +86,9 @@ test("exports only implemented entry points, types first (FR-002)", () => {
     "./page-transitions/react-router",
     "./text",
     "./svg",
+    "./media",
+    "./ambient",
+    "./feedback",
   ]) {
     assert.deepEqual(Object.keys(manifest.exports[subpath]), ["types", "import"]);
   }
@@ -216,6 +225,10 @@ test("no CSS transition or animation targets a consumer element (010 FR-042, ADR
     // Phase 014.
     "text.css",
     "svg.css",
+    // Phase 015.
+    "media.css",
+    "ambient.css",
+    "feedback.css",
   ]
     .map((file) => readFileSync(join(root, "dist", file), "utf8"))
     .join(String.fromCharCode(10))
@@ -229,6 +242,8 @@ test("no CSS transition or animation targets a consumer element (010 FR-042, ADR
         /::(?:before|after)$/.test(subject) ||
           // Phase 013: browser-generated View Transition snapshots (never the consumer's element).
           /::view-transition-(?:group|image-pair|old|new)\([^)]*\)$/.test(subject) ||
+          // Phase 015: the browser-generated backdrop of a package dialog (M07 lightbox).
+          /^\.neshel-[a-z-]+(?:\[[^\]]+\])*::backdrop$/.test(subject) ||
           /^\.neshel-[a-z-]+(?:\[[^\]]+\])*(?::has\(.*\))?$/.test(subject) ||
           />\s*(?:\[data-slot\]|\.neshel-[a-z-]+)$/.test(subject),
         `transition/animation on a possibly consumer-owned subject: "${subject}"`,
@@ -260,6 +275,9 @@ test("module boundaries: core imports only core; root/react/families never impor
         "page-transitions",
         "text",
         "svg",
+        "media",
+        "ambient",
+        "feedback",
       ]) {
         if (!where.startsWith(`${family}/`))
           assert.ok(!target.startsWith(`${family}/`), `${where} -> ${target}`);
