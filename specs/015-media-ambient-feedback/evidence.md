@@ -188,4 +188,8 @@ loading button and toast working). `pnpm check:animations:routers` passes (uncha
 
 ## 13. Three-OS CI
 
-Pending: recorded after the PR's CI run on the head commit.
+PR #16. Run 45038066392 (`d68081d`) **failed** in the five Node-matrix jobs: the Playground and Storybook typecheck
+before the packages are built and the new subpaths lacked tsconfig path mappings (TS2307); fixed in `f81dd10`
+(verified locally with `dist` removed). Run **45039777068** (`f81dd10`): **success, 14/14 jobs on the first attempt**
+— Linux Node 22/24/26, Windows Node 26, macOS Node 26, browsers (Linux, macOS), Next + starters (three OSes), docs
+(three OSes), Vercel local build. Later documentation-only commits record this result.

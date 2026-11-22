@@ -59,4 +59,4 @@ Dependency-ordered. `[x]` done, `[ ]` open. Authorised by the owner brief of 202
 - [x] T063 Composition tests (20 rows); benchmarks (performance matrix)
 - [x] T064 Packed consumer (SSR + hydration); bundle budgets proposed; routers check still green
 - [x] T065 Package contract/pack checks, catalogue, README, docs; `pnpm check`; builds
-- [ ] T066 Push, PR, three-OS CI on the head commit; evidence
+- [x] T066 Push, PR #16, three-OS CI (run 45039777068, 14/14 on `f81dd10`); evidence
