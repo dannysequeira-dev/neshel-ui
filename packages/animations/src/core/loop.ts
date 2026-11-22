@@ -228,6 +228,8 @@ export function loopEffectControl(
       };
     },
     drive(source) {
+      // Inert after destroy (Phase 015 §6): no subscription, no pause/seek of the destroyed loop.
+      if (destroyed) return () => {};
       unsource?.();
       loop.pause();
       const apply = (progress: number) => loop.seek(clamp(progress, 0, 1) * span);
