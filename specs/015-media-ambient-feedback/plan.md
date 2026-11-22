@@ -5,8 +5,8 @@
 React 19.3 (peer `^19.0.0`), TypeScript strict, ESM, `tsc` builds per package, `node:test` against `dist` with
 jsdom and a manual `requestAnimationFrame`, Biome, Storybook (React/Vite), Playground lab (Vite), CDP Chrome
 check, Playwright engines check, packed-tarball consumer and bundle checks. No new runtime dependency. Lab media
-are generated locally (canvas-drawn images exported to blobs, a short generated WebM via `MediaRecorder` where
-the engine supports it, otherwise a checked-in tiny test clip is **not** added — M06 browser rows that need a
+are generated locally (canvas-drawn images as data URLs; a 2 s ffmpeg `testsrc2` clip — no third-party content —
+encoded with 4-frame GOPs as WebM VP9 and MP4 H.264, 40 KB each, in `apps/playground-vite/src/animations/media/`; M06 browser rows that need a
 decodable video report `skipped` with the reason).
 
 ## Module structure

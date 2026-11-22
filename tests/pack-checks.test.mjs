@@ -428,6 +428,9 @@ const animationsManifest = {
     },
     "./text": { types: "./dist/text/index.d.ts", import: "./dist/text/index.js" },
     "./svg": { types: "./dist/svg/index.d.ts", import: "./dist/svg/index.js" },
+    "./media": { types: "./dist/media/index.d.ts", import: "./dist/media/index.js" },
+    "./ambient": { types: "./dist/ambient/index.d.ts", import: "./dist/ambient/index.js" },
+    "./feedback": { types: "./dist/feedback/index.d.ts", import: "./dist/feedback/index.js" },
     "./styles.css": "./dist/styles.css",
     "./hover.css": "./dist/hover.css",
     "./press.css": "./dist/press.css",
@@ -439,13 +442,16 @@ const animationsManifest = {
     "./page-transitions-mpa.css": "./dist/page-transitions-mpa.css",
     "./text.css": "./dist/text.css",
     "./svg.css": "./dist/svg.css",
+    "./media.css": "./dist/media.css",
+    "./ambient.css": "./dist/ambient.css",
+    "./feedback.css": "./dist/feedback.css",
   },
   peerDependencies: { react: "^19.0.0", next: ">=16.4.0", "react-router": ">=8.0.0" },
   peerDependenciesMeta: { next: { optional: true }, "react-router": { optional: true } },
   dependencies: { "@radix-ui/react-slot": "^1.5.0" },
 };
 
-test("animations package contract: private, exact exports, peers and framework-free core (features 008–014)", () => {
+test("animations package contract: private, exact exports, peers and framework-free core (features 008–015)", () => {
   const good = files({
     "dist/index.js": 'export { Tilt3D } from "./tilt/tilt-3d.js";',
     "dist/tilt/tilt-3d.js":

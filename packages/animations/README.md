@@ -4,7 +4,7 @@
 
 Modular, accessible motion primitives and effects for Neshel-UI.
 
-**Status: experimental, private, unpublished (features 008.0–014).** This package is not on npm and its
+**Status: experimental, private, unpublished (features 008.0–015).** This package is not on npm and its
 API may change before the owner approves a first publication. Specification, catalogue and
 decisions: [`specs/008-animations/`](../../specs/008-animations/spec.md),
 [`specs/009-motion-engine/`](../../specs/009-motion-engine/spec.md),
@@ -12,7 +12,8 @@ decisions: [`specs/008-animations/`](../../specs/008-animations/spec.md),
 [`specs/011-scroll-parallax/`](../../specs/011-scroll-parallax/spec.md),
 [`specs/012-physics-gestures-layout/`](../../specs/012-physics-gestures-layout/spec.md),
 [`specs/013-cinematic-page-transitions/`](../../specs/013-cinematic-page-transitions/spec.md),
-[`specs/014-typography-svg-paths/`](../../specs/014-typography-svg-paths/spec.md), ADRs 0018–0029.
+[`specs/014-typography-svg-paths/`](../../specs/014-typography-svg-paths/spec.md),
+[`specs/015-media-ambient-feedback/`](../../specs/015-media-ambient-feedback/spec.md), ADRs 0018–0030.
 
 ## What exists today
 
@@ -93,6 +94,29 @@ decisions: [`specs/008-animations/`](../../specs/008-animations/spec.md),
   `createChartDraw`, `createTurbulence`, `createLogoReveal`, `createDashFlow`, `createCheckmark`; React
   hooks (`usePathDraw`, `usePathMorph`, `useMotionPath`, …) and `<PathDraw>`, `<MorphIcon>`,
   `<SuccessCheck>`. Consumer dash styles and `d` attributes are restored exactly.
+- `@neshel-ui/animations/media` (Phase 015) — M01–M10 with native media semantics (`alt`, `srcset`,
+  `sizes`, `loading`, `decoding`, dimensions are never written): `createKenBurns`/`<KenBurns>` (bounded camera),
+  `createBlurUp`/`<BlurUpImage>` and `createLoadReveal`/`<LoadReveal>` (an image is hidden only while it is still
+  loading and is always revealed on load, error, timeout, reduced motion or unmount; `watchImage` never misses a
+  past `load`), `createCompareSlider`/`<CompareSlider>` (a native range input; tap, drag, keyboard),
+  `createDuotone`/`<Duotone>` (SVG filter through the `filter` channel), `createVideoScrub`/`useVideoScrub` (one
+  seek in flight, newest target wins, never plays), `createLightboxZoom`/`<Lightbox>` (native modal `<dialog>`,
+  FLIP zoom, focus restore, reference-counted scroll lock), `createCrossfade`/`<Crossfade>`,
+  `createPixelDissolve`/`<PixelDissolve>` (real block dissolve on a Canvas 2D surface, fade fallback) and
+  `createHoverPan`/`<HoverPan>` (optional keyboard panning).
+- `@neshel-ui/animations/ambient` (Phase 015) — B01–B10, decorative only (`aria-hidden`, no hit testing):
+  `GradientShift`, `Aurora`, `Grain`, `Particles`, `Starfield`, `GridPattern`, `MeshGradient`,
+  `FloatingShapes`, `PointerGlow`, `Waves` (and `create*` engines). They move only on screen, on a visible page,
+  without reduced motion and while the page switch (`ambientMotion`, `<AmbientMotionToggle>`) allows it; 5 s of
+  motion by default, `duration: Infinity` explicit (WCAG 2.2.2). CSS layers animate transforms with soft radial
+  gradients (no `filter: blur`); particles/stars use a bounded Canvas 2D surface (ADR 0030).
+- `@neshel-ui/animations/feedback` (Phase 015) — F01–F10, semantics first: `Spinner`, `DotsPulse`,
+  `ProgressBar`, `ProgressRing` (ARIA progressbars; a value only when known), `SkeletonShimmer` and `<Shimmer>`
+  (hidden from assistive technology; works on the Components `Skeleton`), `SuccessMark` (never announces),
+  `createToaster` + `<Toaster>` (regions before content, one announcement per toast, pause on hover/focus,
+  keyboard close), `createLoadingButton`/`<LoadingButton>` (same element, name and focus; no double activation;
+  use it on a Components `Button` without its `loading` prop), `createOptimisticPulse`/`<OptimisticPulse>`
+  (pending ≠ confirmed; failure rolls back) and `<PendingText>`.
 - `definePreset` / `attachPreset` (`./core`) — presets are values: a definition plus frozen options.
 - Stylesheets (opt-in): `@neshel-ui/animations/hover.css` (Tilt3D depth + decor layers),
   `@neshel-ui/animations/press.css` (ripple, burst, toggle, checkbox, swap),
@@ -104,7 +128,10 @@ decisions: [`specs/008-animations/`](../../specs/008-animations/spec.md),
   `@neshel-ui/animations/page-transitions.css` (View Transition effects, route progress) and
   `@neshel-ui/animations/page-transitions-mpa.css` (the same plus the cross-document opt-in),
   `@neshel-ui/animations/text.css` (per-piece math of the text effects; without it text is visible and
-  static) and `@neshel-ui/animations/svg.css` (package-rendered icons and checkmark).
+  static), `@neshel-ui/animations/svg.css` (package-rendered icons and checkmark),
+  `@neshel-ui/animations/media.css` (frames, compare slider, lightbox dialog, slide stack),
+  `@neshel-ui/animations/ambient.css` (decorative layers, paused unless the engine marks them running) and
+  `@neshel-ui/animations/feedback.css` (indicators, token layers, toasts).
 
 ```tsx
 import { Tilt3D } from "@neshel-ui/animations/hover";
