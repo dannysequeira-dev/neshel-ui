@@ -133,7 +133,7 @@ function MediaDemos() {
       <figure className="gallery-item" id="m01">
         <figcaption>M01 Ken Burns</figcaption>
         <KenBurns trigger="manual" controlRef={kenBurns} style={{ height: 160 }}>
-          <img src={pics.a} alt="Generated gradient picture" width={640} height={400} />
+          <img src={pics.a} alt="Blue gradient with a grid" width={640} height={400} />
         </KenBurns>
         <button type="button" id="m01-play" onClick={() => kenBurns.current?.play()}>
           Play camera
@@ -145,7 +145,7 @@ function MediaDemos() {
           key={`m02-${deferredKey}`}
           id="m02-deferred"
           src={deferred}
-          alt="Deferred picture"
+          alt="Warm gradient, loaded on demand"
           width={320}
           height={200}
           placeholder={pics.tiny}
@@ -153,11 +153,17 @@ function MediaDemos() {
         <button type="button" id="m02-load" onClick={() => setDeferred(pics.b)}>
           Load image
         </button>
-        <BlurUpImage id="m02-cached" src={pics.a} alt="Cached picture" width={160} height={100} />
+        <BlurUpImage
+          id="m02-cached"
+          src={pics.a}
+          alt="Blue gradient (already loaded)"
+          width={160}
+          height={100}
+        />
         <BlurUpImage
           id="m02-broken"
           src={BROKEN}
-          alt="Broken picture (alt text stays visible)"
+          alt="Unavailable file (alt text stays visible)"
           width={160}
           height={100}
         />
@@ -168,7 +174,7 @@ function MediaDemos() {
           <img
             id="m03-img"
             src={deferred}
-            alt="Revealed picture"
+            alt="Warm gradient revealed on load"
             width={320}
             height={200}
             style={FLUID}
@@ -192,7 +198,7 @@ function MediaDemos() {
           <img
             id="m05-img"
             src={pics.c}
-            alt="Duotone picture"
+            alt="Green gradient in duotone"
             width={320}
             height={200}
             style={FLUID}
@@ -237,13 +243,19 @@ function MediaDemos() {
             <img
               id="m07-thumb"
               src={pics.c}
-              alt="Open the third picture"
+              alt="Open the green gradient"
               width={160}
               height={100}
             />
           }
         >
-          <img id="m07-large" src={pics.c} alt="Third picture, enlarged" width={640} height={400} />
+          <img
+            id="m07-large"
+            src={pics.c}
+            alt="Green gradient, enlarged"
+            width={640}
+            height={400}
+          />
         </Lightbox>
       </figure>
       <figure className="gallery-item" id="m08">
@@ -276,7 +288,7 @@ function MediaDemos() {
       <figure className="gallery-item" id="m10">
         <figcaption>M10 Hover pan (keyboard: arrows)</figcaption>
         <HoverPan id="m10-frame" keyboard label="Pan the picture detail" style={{ height: 140 }}>
-          <img src={pics.b} alt="Pannable picture" />
+          <img src={pics.b} alt="Warm gradient detail" />
         </HoverPan>
       </figure>
     </div>

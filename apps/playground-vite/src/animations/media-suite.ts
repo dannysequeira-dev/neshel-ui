@@ -105,7 +105,7 @@ export async function runMediaSuite(): Promise<Case[]> {
             !broken.parentElement?.querySelector(".neshel-blurup-layer"),
           () => ({ opacity: css(broken, "opacity"), complete: broken.complete }),
         );
-        check(broken.getAttribute("alt")?.startsWith("Broken"), "alt kept");
+        check(broken.getAttribute("alt")?.startsWith("Unavailable"), "alt kept");
       },
     ],
     [
@@ -135,7 +135,8 @@ export async function runMediaSuite(): Promise<Case[]> {
           () => ({ opacity: css(img, "opacity"), clip: m03.style.clipPath, state: img.complete }),
         );
         check(
-          img.getAttribute("width") === "320" && img.getAttribute("alt") === "Deferred picture",
+          img.getAttribute("width") === "320" &&
+            img.getAttribute("alt") === "Warm gradient, loaded on demand",
           "native attributes",
         );
       },
