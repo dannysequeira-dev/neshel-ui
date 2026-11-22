@@ -35,6 +35,9 @@ import { PageTransition, SharedElement, RouteProgress, usePageTransition } from 
 import { defineEffect } from "@neshel-ui/animations/core";
 import { TextReveal, NumberRoll, RotatingWords, Typewriter } from "@neshel-ui/animations/text";
 import { SuccessCheck, MorphIcon, menuCloseShapes, usePathDraw } from "@neshel-ui/animations/svg";
+import { BlurUpImage, CompareSlider, Lightbox, KenBurns } from "@neshel-ui/animations/media";
+import { Aurora, Particles, AmbientMotionToggle } from "@neshel-ui/animations/ambient";
+import { Spinner, ProgressBar, SuccessMark, Toaster, createToaster, LoadingButton } from "@neshel-ui/animations/feedback";
 import { useRef, useState } from "react";
 
 export const glow = defineEffect({
@@ -128,6 +131,30 @@ function Phase014() {
   );
 }
 
+const PIXEL = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
+const toaster = createToaster();
+
+function Phase015() {
+  const [loading, setLoading] = useState(false);
+  return (
+    <section id="p015">
+      <BlurUpImage id="m-blur" src={PIXEL} alt="Packed pixel" width={40} height={40} />
+      <CompareSlider id="m-compare" label="Compare packed" before={<img alt="Before" src={PIXEL} />} after={<img alt="After" src={PIXEL} />} style={{ width: 200, height: 100 }} />
+      <Lightbox label="Packed lightbox" thumbnail={<img id="m-thumb" alt="Open packed" src={PIXEL} width={40} height={40} />}><img alt="Large packed" src={PIXEL} width={200} height={200} /></Lightbox>
+      <KenBurns trigger="manual" style={{ width: 100, height: 60 }}><img alt="Camera" src={PIXEL} /></KenBurns>
+      <AmbientMotionToggle id="b-toggle" />
+      <Aurora id="b-aurora" style={{ height: 60 }}><span>Aurora content</span></Aurora>
+      <Particles id="b-particles" style={{ height: 60 }} />
+      <Spinner id="f-spinner" label="Loading packed" />
+      <ProgressBar id="f-bar" label="Packed progress" value={30} />
+      <SuccessMark id="f-mark" show={false} />
+      <LoadingButton loading={loading}><button type="button" id="f-pay" onClick={() => setLoading(true)}>Pay</button></LoadingButton>
+      <button type="button" id="f-toast" onClick={() => toaster.show({ title: "Packed toast" })}>Toast</button>
+      <Toaster toaster={toaster} />
+    </section>
+  );
+}
+
 export function App() {
   return (
     <main>
@@ -158,6 +185,7 @@ export function App() {
       <Phase012 />
       <Phase013 />
       <Phase014 />
+      <Phase015 />
     </main>
   );
 }
@@ -172,6 +200,9 @@ import "@neshel-ui/animations/cinematic.css";
 import "@neshel-ui/animations/page-transitions.css";
 import "@neshel-ui/animations/text.css";
 import "@neshel-ui/animations/svg.css";
+import "@neshel-ui/animations/media.css";
+import "@neshel-ui/animations/ambient.css";
+import "@neshel-ui/animations/feedback.css";
 window.__vt = [];
 if (document.startViewTransition) {
   const start = document.startViewTransition.bind(document);
@@ -357,6 +388,24 @@ async function main() {
         return false;
       }) && !/neshel-split|neshel-text-a11y|stroke-dash/.test(html),
       "SSR (014): text and SVG components render plain, readable markup (split only after hydration)",
+    );
+    check(
+      [
+        '<span class="neshel-blurup"><img alt="Packed pixel" id="m-blur"',
+        'type="range" class="neshel-compare-input" aria-label="Compare packed"',
+        '<dialog class="neshel-lightbox" aria-label="Packed lightbox">',
+        '<div class="neshel-ambient" id="b-aurora"',
+        'class="neshel-ambient-toggle" aria-pressed="false"',
+        ">Pause background motion</button>",
+        'role="progressbar" aria-label="Loading packed"',
+        'aria-valuenow="30"',
+        'role="status" aria-live="polite"',
+      ].every((fragment) => {
+        if (html.includes(fragment)) return true;
+        console.info(`missing in SSR markup: ${fragment}`);
+        return false;
+      }) && !/neshel-blurup-layer|neshel-ambient-layer|<canvas|<dialog[^>]*open/.test(html),
+      "SSR (015): media, ambient and feedback render native, visible markup (decorations only after hydration)",
     );
     const indexPath = join(app, "dist", "index.html");
     writeFileSync(indexPath, readFileSync(indexPath, "utf8").replace("<!--ssr-->", html));
@@ -615,6 +664,40 @@ async function main() {
             p014.expanded === "true" &&
             p014.icon !== "M4 6L20 6M4 12L20 12M4 18L20 18",
           `014 number roll, rotating words and icon morph work after hydration (${JSON.stringify(p014)})`,
+        );
+        const p015 = await page.evaluate(`(async () => {
+          document.getElementById("p015").scrollIntoView();
+          await new Promise((r) => setTimeout(r, 400));
+          const layer = document.querySelector("#b-aurora .neshel-ambient-layer");
+          document.getElementById("m-thumb").closest("button").click();
+          await new Promise((r) => setTimeout(r, 200));
+          const dialog = document.querySelector("dialog.neshel-lightbox");
+          const open = dialog.open && document.activeElement === dialog.querySelector("[data-neshel-lightbox-close]");
+          dialog.querySelector("[data-neshel-lightbox-close]").click();
+          await new Promise((r) => setTimeout(r, 700));
+          document.getElementById("f-pay").click();
+          await new Promise((r) => setTimeout(r, 100));
+          document.getElementById("f-toast").click();
+          await new Promise((r) => setTimeout(r, 300));
+          return {
+            layer: layer?.getAttribute("aria-hidden"),
+            canvas: document.querySelector("#b-particles canvas")?.getAttribute("aria-hidden"),
+            open,
+            closed: !dialog.open,
+            pay: document.getElementById("f-pay").getAttribute("aria-disabled"),
+            toast: document.querySelector(".neshel-toaster [role=status]")?.textContent,
+            blur: document.getElementById("m-blur").style.opacity,
+          };
+        })()`);
+        check(
+          p015.layer === "true" &&
+            p015.canvas === "true" &&
+            p015.open &&
+            p015.closed &&
+            p015.pay === "true" &&
+            p015.toast === "Packed toast" &&
+            p015.blur === "",
+          `015 media/ambient/feedback hydrate and work from the packed tarball (${JSON.stringify(p015)})`,
         );
         check(
           page.errors.length === 0,

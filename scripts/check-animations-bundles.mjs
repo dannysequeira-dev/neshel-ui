@@ -311,6 +311,74 @@ export const ENTRIES = {
     source: `export * from "${A}/svg";`,
     markers: { cinematicCode: false, scrollCode: false, textCode: false },
   },
+  // Phase 015 (FR-065): media, ambient and feedback families; none bundles another family; basic entries never
+  // bundle the canvas surface or the toaster.
+  "media: watchImage (pure, no React)": {
+    source: `export { watchImage } from "${A}/media";`,
+    markers: { react: false, scheduler: false, surface: false },
+  },
+  "media: createBlurUp + createLoadReveal (engine, no React)": {
+    source: `export { createBlurUp, createLoadReveal } from "${A}/media";`,
+    markers: { react: false, surface: false, ambientCode: false, feedbackCode: false },
+  },
+  "media: createVideoScrub (engine, no React)": {
+    source: `export { createVideoScrub } from "${A}/media";`,
+    markers: { react: false, surface: false, scrollCode: false },
+  },
+  "media: createPixelDissolve (engine, no React)": {
+    source: `export { createPixelDissolve } from "${A}/media";`,
+    markers: { react: false, surface: true },
+  },
+  "media: CompareSlider": {
+    source: `export { CompareSlider } from "${A}/media";`,
+    markers: { react: true, surface: false },
+  },
+  "media: Lightbox": {
+    source: `export { Lightbox } from "${A}/media";`,
+    markers: { react: true, surface: false, layoutCode: false },
+  },
+  "media: entire entry": {
+    source: `export * from "${A}/media";`,
+    markers: {
+      ambientCode: false,
+      feedbackCode: false,
+      svgCode: false,
+      textCode: false,
+      scrollCode: false,
+    },
+  },
+  "ambient: createAurora (engine, no React)": {
+    source: `export { createAurora } from "${A}/ambient";`,
+    markers: { react: false, surface: false, mediaCode: false },
+  },
+  "ambient: createParticles (engine, no React)": {
+    source: `export { createParticles } from "${A}/ambient";`,
+    markers: { react: false, surface: true, mediaCode: false },
+  },
+  "ambient: Aurora + AmbientMotionToggle": {
+    source: `export { Aurora, AmbientMotionToggle } from "${A}/ambient";`,
+    markers: { react: true },
+  },
+  "ambient: entire entry": {
+    source: `export * from "${A}/ambient";`,
+    markers: { mediaCode: false, feedbackCode: false, svgCode: false },
+  },
+  "feedback: Spinner + ProgressBar": {
+    source: `export { Spinner, ProgressBar } from "${A}/feedback";`,
+    markers: { react: true, toaster: false, surface: false },
+  },
+  "feedback: createToaster (no React)": {
+    source: `export { createToaster } from "${A}/feedback";`,
+    markers: { react: false, scheduler: false },
+  },
+  "feedback: Toaster": {
+    source: `export { Toaster, createToaster } from "${A}/feedback";`,
+    markers: { react: true, layoutCode: false },
+  },
+  "feedback: entire entry": {
+    source: `export * from "${A}/feedback";`,
+    markers: { mediaCode: false, ambientCode: false, svgCode: false, layoutCode: false },
+  },
 };
 
 /** Stylesheets measured from the packed tarball (gzip of the file as shipped). */
@@ -326,6 +394,9 @@ export const STYLESHEETS = [
   "dist/page-transitions-mpa.css",
   "dist/text.css",
   "dist/svg.css",
+  "dist/media.css",
+  "dist/ambient.css",
+  "dist/feedback.css",
 ];
 
 const MARKERS = {
@@ -349,6 +420,11 @@ const MARKERS = {
   pageCode: (code) => /page\/transition|page\/cross-document/.test(code),
   textCode: (code) => /neshel-text-a11y|text\/text-reveal/.test(code),
   svgCode: (code) => /parsePathData|svg\/path-draw|svg\/dash-flow/.test(code),
+  mediaCode: (code) => /media\/ken-burns|media\/compare|media\/duotone/.test(code),
+  ambientCode: (code) => /neshel-ambient-layer|createAurora|ambient-infinite/.test(code),
+  feedbackCode: (code) => /feedback\/loading-button|feedback\/optimistic|neshel-toast/.test(code),
+  surface: (code) => /contextrestored/.test(code),
+  toaster: (code) => /toaster\.show/.test(code),
 };
 
 function link(from, to) {
