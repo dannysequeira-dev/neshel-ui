@@ -43,8 +43,15 @@ announces outcomes.
 createToaster({ max = 3, duration = "auto" }): Toaster
 toaster.show({ title, description?, tone?: "neutral" | "success" | "error", duration?, action?: { label, onAction } }): string
 toaster.dismiss(id); toaster.pause(); toaster.resume(); toaster.subscribe(fn); toaster.toasts
+toaster.destroy()
 <Toaster toaster label="Notifications" hotkey="F8" closeLabel="Close" />
 ```
+
+- Lifecycle: the consumer owns the store; `<Toaster>` never destroys it. `destroy()` clears every toast, timer,
+  pause reason and listener and is idempotent. A destroyed store is **inert** (PR #16 review R1): `show()` still
+  validates its input (invalid input throws) but returns `""` and creates no toast, timer or notification;
+  `subscribe()` registers nothing and returns a no-op unsubscribe; `dismiss`, `dismissAll`, `pause`, `resume` and
+  `protect` do nothing. No error is thrown, so late callbacks (a resolved request after unmount) are harmless.
 
 - Two regions exist before any toast: `role="status"` (polite) and `role="alert"` (only `tone: "error"`); each
   toast's text is inserted once (never re-rendered per frame).

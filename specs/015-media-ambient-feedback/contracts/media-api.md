@@ -64,7 +64,9 @@ the native `img` + an `aria-hidden` placeholder layer), `LoadReveal` (Slot aroun
   animation). No-JS/SSR markup shows the image.
 - **Bounds (M01/M10):** R2; no distortion (uniform `scale`), frame clips.
 - **M04:** pointer press positions, captured drag follows, `touch-action` keeps native scroll on the other axis;
-  keyboard via the native range; value text announced by the input (no live region).
+  keyboard via the native range; value text announced by the input (no live region). The capture ends on
+  `pointerup`/`pointercancel` **and on `destroy()` during a drag** (PR #16 review R2), so a root that stays mounted
+  never keeps routing the pointer to itself; a capture the browser already dropped is not an error.
 - **M06:** never `play()`; seeks coalesced; metadata awaited; reduced → `restTime` frame, source ignored.
 - **M07:** native `<dialog>`; close button focused first; Escape, backdrop click and close button close;
   focus restored to the opener; scroll lock reference-counted; background inert by the UA; reduced → fade.

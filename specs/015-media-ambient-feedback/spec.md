@@ -153,7 +153,7 @@ Quality (015.6)
   and Playwright engines (≥ 161 earlier cases each).
 - FR-063 Storybook stories for all 30 entries.
 - FR-064 Packed consumer SSR + hydration of the new subpaths; router consumers unchanged and passing.
-- FR-065 Measured gzip budgets proposed for the new entries; earlier budgets unchanged.
+- FR-065 Measured gzip budgets for the new entries (approved by the owner 2026-11-22); earlier budgets unchanged.
 - FR-066 Benchmarks per performance-matrix-015.md (initialisation vs sustained), local observations.
 - FR-067 `pnpm check`, Storybook/Playground builds, three-OS CI on the PR's head commit.
 

@@ -63,5 +63,5 @@ packages/animations/src/
 | jsdom lacks media/canvas/dialog                             | small explicit fakes in tests; browser suite covers the real behaviour     |
 | Headless engines misrepresent GPU                           | no GPU claims; CPU submission time only; SwiftShader noted                 |
 | Video decoding differs per engine; no test clip in the repo | generated clip where `MediaRecorder` exists; otherwise rows marked skipped |
-| Budget pressure                                             | new entries only; measured; proposed for owner review                      |
+| Budget pressure                                             | new entries only; measured; approved by the owner (2026-11-22)             |
 | Ambient defaults stopping after 5 s surprise consumers      | documented; `Infinity` + toggle path in examples and stories               |

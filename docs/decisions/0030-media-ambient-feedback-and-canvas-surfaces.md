@@ -1,6 +1,7 @@
 # ADR 0030 — Media, ambient and feedback families; Canvas 2D surfaces instead of an early GPU layer
 
-- Status: **Proposed** (Phase 015; owner review of the PR)
+- Status: **Accepted** (owner, 2026-11-22, PR #16 review; accepted after the two lifecycle review cases R1/R2 were
+  fixed — `specs/015-media-ambient-feedback/evidence.md` §14)
 - Date: 2026-11-21
 - Feature: [015](../../specs/015-media-ambient-feedback/spec.md); research R1–R17; contracts
   [media-api.md](../../specs/015-media-ambient-feedback/contracts/media-api.md),
@@ -50,7 +51,9 @@ graphics engine, and for no public `./gpu` subpath or graphics dependency withou
   it. The per-pixel noise dissolve and dense (> 1000) particle fields are 016 work.
 - Canvas 2D cost grows linearly with density; the caps are enforced, not configurable past.
 - Ambient decorations stop after 5 s unless the consumer opts into `Infinity` and offers the toggle.
-- New bundle entries get proposed budgets; earlier budgets are unchanged.
+- New bundle entries get measured budgets (the 21 Phase 015 budgets were approved by the owner as proposed);
+  earlier budgets are unchanged.
+- A GPU Surface Manager may be revisited independently in Phase 016; the internal canvas surface is its seam.
 
 ## Alternatives rejected
 

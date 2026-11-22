@@ -20,9 +20,9 @@ engines, §4); its fade path is exercised and reported separately.
 
 | Suite                                   | Result                                                                                                   |
 | --------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| `@neshel-ui/animations` (`node --test`) | **538 / 538** (469 earlier + 69 new)                                                                     |
+| `@neshel-ui/animations` (`node --test`) | **544 / 544** (469 earlier + 69 new + 6 review R1/R2, §14)                                               |
 | New files                               | `loop-destroy-015` 3 · `media` 26 · `ambient` 11 · `feedback` 11 · `composition-015` 18 (20 matrix rows) |
-| All packages (`pnpm test:packages`)     | 742 / 742                                                                                                |
+| All packages (`pnpm test:packages`)     | 748 / 748                                                                                                |
 | Root (`pnpm test`)                      | 110 tests, 109 pass, 1 skipped (pre-existing skip), 0 fail                                               |
 | Type tests                              | `type-tests/media-ambient-feedback.tsx` (valid + `@ts-expect-error`) — `pnpm typecheck` clean            |
 
@@ -34,8 +34,8 @@ R1–R3 (`review-014`) stay green (16/16 together). Commit `4374914`.
 
 | Check                                 | Result                                                                                                                                                |
 | ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `pnpm check:browser:animations` (CDP) | **173 / 173** (147 earlier + 26 Phase 015)                                                                                                            |
-| `pnpm check:animations:engines`       | **182 / 182** in Chromium, Firefox and WebKit (161 earlier + 21 Phase 015 each)                                                                       |
+| `pnpm check:browser:animations` (CDP) | **175 / 175** (147 earlier + 26 Phase 015 + 2 review R2, §14)                                                                                         |
+| `pnpm check:animations:engines`       | **183 / 183** in Chromium, Firefox and WebKit (161 earlier + 21 Phase 015 + 1 review R2 each)                                                         |
 | Phase 015 CDP-only cases              | M04 real arrows (value 52, divider 52 %), M07 real Escape + focus restore, F06 F8 + Escape, Chrome accessibility tree, forced colours, reduced motion |
 
 Before the gallery was mounted the CDP check passed 147/147 (`MediaGallery` commented out); with the gallery's
@@ -75,30 +75,31 @@ All 20 rows of [composition-matrix-015.md](contracts/composition-matrix-015.md) 
 `test/composition-015.test.mjs` (rows 12/15 and 19/20 share a test); rows 19/20 also pass in the lab (page
 toggle and off-screen cases, three engines).
 
-## 7. Bundle sizes (packed tarball, Vite/Rolldown minified, gzip) and proposed budgets
+## 7. Bundle sizes (packed tarball, Vite/Rolldown minified, gzip) and approved budgets
 
-| Entry                                  | gzip KiB | proposed budget KiB |
-| -------------------------------------- | -------- | ------------------- |
-| css: media.css                         | 1.49     | 1.56                |
-| css: ambient.css                       | 2.06     | 2.19                |
-| css: feedback.css                      | 2.61     | 2.75                |
-| media: watchImage (pure, no React)     | 0.73     | 0.81                |
-| media: createBlurUp + createLoadReveal | 9.06     | 9.56                |
-| media: createVideoScrub                | 3.42     | 3.62                |
-| media: createPixelDissolve             | 8.87     | 9.38                |
-| media: CompareSlider                   | 6.75     | 7.12                |
-| media: Lightbox                        | 7.84     | 8.25                |
-| media: entire entry                    | 22.70    | 23.88               |
-| ambient: createAurora                  | 4.93     | 5.19                |
-| ambient: createParticles               | 6.34     | 6.69                |
-| ambient: Aurora + AmbientMotionToggle  | 5.80     | 6.12                |
-| ambient: entire entry                  | 12.55    | 13.19               |
-| feedback: Spinner + ProgressBar        | 0.70     | 0.75                |
-| feedback: createToaster (no React)     | 1.24     | 1.31                |
-| feedback: Toaster                      | 3.67     | 3.88                |
-| feedback: entire entry                 | 11.46    | 12.06               |
+| Entry                                  | gzip KiB | budget KiB (approved) |
+| -------------------------------------- | -------- | --------------------- |
+| css: media.css                         | 1.49     | 1.56                  |
+| css: ambient.css                       | 2.06     | 2.19                  |
+| css: feedback.css                      | 2.61     | 2.75                  |
+| media: watchImage (pure, no React)     | 0.73     | 0.81                  |
+| media: createBlurUp + createLoadReveal | 9.06     | 9.56                  |
+| media: createVideoScrub                | 3.42     | 3.63                  |
+| media: createPixelDissolve             | 8.87     | 9.38                  |
+| media: CompareSlider                   | 6.77     | 7.13                  |
+| media: Lightbox                        | 7.84     | 8.25                  |
+| media: entire entry                    | 22.71    | 23.88                 |
+| ambient: createAurora                  | 4.93     | 5.19                  |
+| ambient: createParticles               | 6.34     | 6.69                  |
+| ambient: Aurora + AmbientMotionToggle  | 5.80     | 6.13                  |
+| ambient: entire entry                  | 12.55    | 13.19                 |
+| feedback: Spinner + ProgressBar        | 0.70     | 0.75                  |
+| feedback: createToaster (no React)     | 1.26     | 1.31                  |
+| feedback: Toaster                      | 3.70     | 3.88                  |
+| feedback: entire entry                 | 11.49    | 12.06                 |
 
-Budgets = measurement + 5 % rounded up to 64 B, **proposed for owner approval**; every earlier budget is unchanged
+Budgets = measurement + 5 % rounded up to 64 B, **approved by the owner exactly as proposed** (2026-11-22); the
+figures above are the re-measurement after the review fixes (§14). Every earlier budget is unchanged
 and still met (the core moves of Presence, the SVG effect base and the checkmark shape did not change any earlier
 entry beyond its budget). Tree-shaking markers: no family bundles another; `watchImage`, the reveal engines, the
 video scrub, `CompareSlider` and `Lightbox` do not bundle the canvas surface; `Spinner + ProgressBar` bundles
@@ -193,3 +194,73 @@ before the packages are built and the new subpaths lacked tsconfig path mappings
 (verified locally with `dist` removed). Run **45039777068** (`f81dd10`): **success, 14/14 jobs on the first attempt**
 — Linux Node 22/24/26, Windows Node 26, macOS Node 26, browsers (Linux, macOS), Next + starters (three OSes), docs
 (three OSes), Vercel local build. Later documentation-only commits record this result.
+
+## 14. Owner review of PR #16 (comment 7085172024, 2026-11-22)
+
+Owner decisions: ADR 0030 approved (now **Accepted**); the 21 budgets approved exactly as proposed (the budget file
+is unchanged; §7 figures re-measured after the fixes, display rounded like the checker: budgets are stored in
+bytes); K-2, K-3, K-5 to K-9 stay documented. Both review cases were reproduced test-first.
+
+### R1 — `createToaster()` after `destroy()` (confirmed, fixed)
+
+`test/lifecycle-015-review.test.mjs`, fake timers (`setTimeout`, `Date`):
+
+| Test                                                         | Before the fix                                                                     | After |
+| ------------------------------------------------------------ | ---------------------------------------------------------------------------------- | ----- |
+| `show()` after `destroy()` creates no toast, timer or notice | **fail** — returned `neshel-toast-2`, created the record, scheduled a timer        | pass  |
+| `subscribe()` after `destroy()` registers nothing            | **fail** — the late listener was notified twice (`show`, `dismissAll`)             | pass  |
+| `destroy()` idempotent, live counters balanced               | **fail** — one live timer leaked (destroy → show → destroy left `timers` at +1)    | pass  |
+
+Fix (`src/feedback/toaster.ts`): a destroyed store is inert. `show()` still validates (invalid input throws) and
+returns `""` without creating anything; `subscribe()` returns a no-op unsubscribe; `dismiss`, `dismissAll`,
+`pause`, `resume` and `protect` do nothing; `destroy()` also clears the protected id. No public type changed.
+`<Toaster>` never destroys the store it receives, so StrictMode double effects are unaffected (the existing
+StrictMode toaster test stays green).
+
+### R2 — comparison slider pointer capture on mid-drag destroy (confirmed, fixed; cancel refuted)
+
+Real-browser reproduction (standalone page, real Playwright mouse: press, move, `destroy()`, move over a second
+control with the button held, release, click the second control):
+
+| Observation                           | Before (Chromium, Firefox, WebKit) | After (Chromium, Firefox, WebKit)                |
+| ------------------------------------- | ---------------------------------- | ------------------------------------------------ |
+| capture during the drag               | `true`                             | `true`                                           |
+| `hasPointerCapture` after `destroy()` | **`true`**                         | `false` (`lostpointercapture` fired on the root) |
+| held moves over the next control      | **routed to the root**             | delivered to the next control                    |
+| capture after `pointerup`             | `false` (implicit release)         | `false`                                          |
+| next control click                    | received                           | received                                         |
+| second `destroy()`                    | no throw                           | no throw                                         |
+
+So the defect is real but bounded: until the user releases the button, a root that stays mounted keeps receiving
+the pointer. `pointercancel` was **not** a defect: the existing handler already released the capture (the cancel
+step of the new touch case passed before the fix).
+
+| Test                                                                   | Before the fix                                    | After   |
+| ---------------------------------------------------------------------- | ------------------------------------------------- | ------- |
+| unit: `destroy()` during a drag releases the capture                   | **fail**                                          | pass    |
+| unit: `destroy()` after the browser dropped the capture does not throw | pass                                              | pass    |
+| unit: `pointercancel` releases; later presses capture again            | pass                                              | pass    |
+| CDP real mouse: destroy mid-drag, next control receives input          | **fail** (`captured: true` after destroy)         | pass    |
+| CDP real touch: cancel releases; destroy mid-touch-drag releases       | **fail** at the destroy step (cancel step passed) | pass    |
+| Playwright real mouse (Chromium, Firefox, WebKit), same scenario       | — (added with the fix; mirrors the CDP case)      | pass ×3 |
+
+Fix (`src/media/compare.ts`): one `endDrag()` used by `pointerup`, `pointercancel` and `destroy()`; it releases
+only a capture the root still holds and ignores a capture the browser already dropped. Keyboard semantics, focus
+and every earlier restore assertion are unchanged. The lab gallery gained an imperative probe
+(`#m04-probe`, `compareProbe` lab API) whose root stays mounted.
+
+Nonblocking follow-up (not changed, outside the two cases): the 250 ms frame watchdog in
+`src/media/engine/seek.ts` keeps its closure until it fires after destroy; `destroyed` prevents any action.
+
+### Gates re-run on the fixed tree (Windows 11, Node 26.13.0)
+
+| Gate                                            | Result                                                             |
+| ----------------------------------------------- | ------------------------------------------------------------------ |
+| `pnpm check`                                    | exit 0 (root 110: 109 pass, 1 pre-existing skip; packages 748/748) |
+| Animations `node --test`                        | 544 / 544 (composition matrix 20 rows included)                    |
+| `pnpm check:browser:animations`                 | 175 / 175 (173 earlier + 2)                                        |
+| `pnpm check:animations:engines`                 | 183 / 183 in Chromium, Firefox and WebKit (182 earlier + 1)        |
+| `pnpm check:animations:consumer`                | pass (packed tarball, Vite build, SSR, hydration, interaction)     |
+| `pnpm check:animations:bundles`                 | pass — every budget, earlier and Phase 015, unchanged and met      |
+| `pnpm check:animations:routers`                 | pass                                                               |
+| `pnpm build:playground`, `pnpm build:storybook` | succeed                                                            |

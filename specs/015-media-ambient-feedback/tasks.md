@@ -60,3 +60,11 @@ Dependency-ordered. `[x]` done, `[ ]` open. Authorised by the owner brief of 202
 - [x] T064 Packed consumer (SSR + hydration); bundle budgets proposed; routers check still green
 - [x] T065 Package contract/pack checks, catalogue, README, docs; `pnpm check`; builds
 - [x] T066 Push, PR #16, three-OS CI (run 45039777068, 14/14 on `f81dd10`); evidence
+
+## 015.7 — Owner review (PR #16 comment 7085172024, 2026-11-22)
+
+- [x] T070 R1 toaster after destroy: regression tests first (3 failing), inert destroyed store, idempotent destroy
+- [x] T071 R2 compare slider capture: browser reproduction (Chromium, Firefox, WebKit), unit + real-input CDP and
+  Playwright cases first (failing), release on destroy mid-drag; `pointercancel` refuted as a defect
+- [x] T072 ADR 0030 Accepted; 21 budgets approved; docs and evidence (§14); all gates re-run; three-OS CI on the
+  final head
