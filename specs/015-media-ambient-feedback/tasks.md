@@ -15,48 +15,48 @@ Dependency-ordered. `[x]` done, `[ ]` open. Authorised by the owner brief of 202
 
 ## 015.1 — Media foundations
 
-- [ ] T010 Move Presence to `core/presence.ts` and the checkmark shape to `core/marks.ts` (exports unchanged)
-- [ ] T011 Load watcher `core/media-load.ts` (FR-001) + tests (cached, error, decode reject, src change, stale)
-- [ ] T012 Seek coalescer `media/engine/seek.ts` (FR-002) + tests (burst, reverse, metadata wait, seekable, rVFC)
+- [x] T010 Move Presence to `core/presence.ts` and the checkmark shape to `core/marks.ts` (exports unchanged)
+- [x] T011 Load watcher `core/media-load.ts` (FR-001) + tests (cached, error, decode reject, src change, stale)
+- [x] T012 Seek coalescer `media/engine/seek.ts` (FR-002) + tests (burst, reverse, metadata wait, seekable, rVFC)
 
 ## 015.2 — Images & Media
 
-- [ ] T020 M01 Ken Burns, M10 hover pan (bounds, spring, keyboard option)
-- [ ] T021 M02 blur-up, M03 reveal mask (never-invisible rules)
-- [ ] T022 M04 comparison slider (native range, pointer, touch-action)
-- [ ] T023 M05 duotone (SVG filter + fallback)
-- [ ] T024 M06 video scrub
-- [ ] T025 M07 lightbox (dialog, FLIP, scroll lock, focus)
-- [ ] T026 M08 crossfade, M09 pixel dissolve (canvas surface from T030)
-- [ ] T027 React components, `media.css`, unit tests incl. StrictMode and SSR
+- [x] T020 M01 Ken Burns, M10 hover pan (bounds, spring, keyboard option)
+- [x] T021 M02 blur-up, M03 reveal mask (never-invisible rules)
+- [x] T022 M04 comparison slider (native range, pointer, touch-action)
+- [x] T023 M05 duotone (SVG filter + fallback)
+- [x] T024 M06 video scrub
+- [x] T025 M07 lightbox (dialog, FLIP, scroll lock, focus)
+- [x] T026 M08 crossfade, M09 pixel dissolve (canvas surface from T030)
+- [x] T027 React components, `media.css`, unit tests incl. StrictMode and SSR
 
 ## 015.3 — Ambient foundations
 
-- [ ] T030 Canvas surface `core/surface.ts` (FR-021) + tests (lazy, DPR, resize, loss/restore, release)
-- [ ] T031 Ambient registry, lifecycle, `ambientMotion`, finite default + dev warning (FR-020) + tests
+- [x] T030 Canvas surface `core/surface.ts` (FR-021) + tests (lazy, DPR, resize, loss/restore, release)
+- [x] T031 Ambient registry, lifecycle, `ambientMotion`, finite default + dev warning (FR-020) + tests
 
 ## 015.4 — Background & Ambient
 
-- [ ] T040 B01 gradient shift, B02 aurora, B03 grain, B06 grid/dots, B07 mesh, B10 waves (CSS layers)
-- [ ] T041 B04 particles, B05 starfield (Canvas 2D)
-- [ ] T042 B08 floating shapes, B09 pointer glow
-- [ ] T043 React components, `AmbientMotionToggle`, `ambient.css`, unit tests
+- [x] T040 B01 gradient shift, B02 aurora, B03 grain, B06 grid/dots, B07 mesh, B10 waves (CSS layers)
+- [x] T041 B04 particles, B05 starfield (Canvas 2D)
+- [x] T042 B08 floating shapes, B09 pointer glow
+- [x] T043 React components, `AmbientMotionToggle`, `ambient.css`, unit tests
 
 ## 015.5 — Loading & Feedback
 
-- [ ] T050 F01 spinner, F03 progress bar, F04 dots, F09 progress ring (semantics + reduced)
-- [ ] T051 F02 shimmer, F10 pending text
-- [ ] T052 F05 success mark (shared shape)
-- [ ] T053 F06 toaster + `Toaster` (regions, timers, keyboard, Presence)
-- [ ] T054 F07 loading button, F08 optimistic pulse
-- [ ] T055 `feedback.css`, unit tests
+- [x] T050 F01 spinner, F03 progress bar, F04 dots, F09 progress ring (semantics + reduced)
+- [x] T051 F02 shimmer, F10 pending text
+- [x] T052 F05 success mark (shared shape)
+- [x] T053 F06 toaster + `Toaster` (regions, timers, keyboard, Presence)
+- [x] T054 F07 loading button, F08 optimistic pulse
+- [x] T055 `feedback.css`, unit tests
 
 ## 015.6 — Integration & verification
 
-- [ ] T060 Playground gallery + in-page suite (30 entries)
-- [ ] T061 CDP and Playwright cases; ≥ 147 / 161 earlier cases kept
-- [ ] T062 Storybook stories (30 entries)
-- [ ] T063 Composition tests (20 rows); benchmarks (performance matrix)
-- [ ] T064 Packed consumer (SSR + hydration); bundle budgets proposed; routers check still green
-- [ ] T065 Package contract/pack checks, catalogue, README, docs; `pnpm check`; builds
+- [x] T060 Playground gallery + in-page suite (30 entries)
+- [x] T061 CDP and Playwright cases; ≥ 147 / 161 earlier cases kept
+- [x] T062 Storybook stories (30 entries)
+- [x] T063 Composition tests (20 rows); benchmarks (performance matrix)
+- [x] T064 Packed consumer (SSR + hydration); bundle budgets proposed; routers check still green
+- [x] T065 Package contract/pack checks, catalogue, README, docs; `pnpm check`; builds
 - [ ] T066 Push, PR, three-OS CI on the head commit; evidence

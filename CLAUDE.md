@@ -109,11 +109,13 @@ legitimate third-party licence notices. Check every commit message and PR body b
   `--with animations`, which validates the private animations tarball without lifting its guard).
 - `pnpm check:browser:animations` — animations lab (Tilt3D, CornerRecede, ScrollScene, engine, Phase 010
   effects gallery, Phase 011 scroll gallery, Phase 012 gestures/layout gallery, Phase 013 cinematic/page-transitions
-  gallery, Phase 014 text/SVG gallery) in headless Chrome with real input and axe; requires
-  `pnpm build:playground`.
+  gallery, Phase 014 text/SVG gallery, Phase 015 media/ambient/feedback gallery) in headless Chrome with real input
+  and axe; requires `pnpm build:playground`.
 - `pnpm check:animations:engines` — the same lab in Playwright Chromium, Firefox and WebKit.
 - `pnpm check:animations:consumer` — external app from the packed animations tarball (SSR + hydration).
 - `pnpm check:animations:bundles` — packed-tarball bundle sizes against the approved budgets.
+- `pnpm bench:animations:text` / `pnpm bench:animations:media-ambient` / `pnpm bench:animations:spike-015` —
+  local performance observations (K-5; Phase 015 matrix; Canvas/WebGL/CSS spike), never gates.
 - `pnpm check:animations:routers` — Phase 013 router consumers from the packed tarball (React Router 8.5.0
   Vite app offline; Next.js 16.4.5 App Router from the registry) in Playwright Chromium.
 - `pnpm test` — `node:test` suites (scripts, tarball reader, validators, portability).
