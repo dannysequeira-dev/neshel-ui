@@ -650,3 +650,140 @@ export async function mediaReducedFacts(): Promise<Record<string, unknown>> {
     kenBurnsScale: kb.style.scale,
   };
 }
+
+// --- Performance matrix (performance-matrix-015.md): observations, never a pass/fail gate -----------------
+
+type Stats = { mean: number; p95: number; max: number };
+function stats(values: number[]): Stats {
+  const sorted = [...values].sort((a, b) => a - b);
+  const mean = sorted.reduce((sum, v) => sum + v, 0) / Math.max(1, sorted.length);
+  const pick = (q: number) =>
+    sorted[Math.min(sorted.length - 1, Math.floor(sorted.length * q))] ?? 0;
+  const round = (n: number) => Math.round(n * 100) / 100;
+  return { mean: round(mean), p95: round(pick(0.95)), max: round(sorted.at(-1) ?? 0) };
+}
+async function intervals(count: number): Promise<Stats> {
+  const out: number[] = [];
+  let last = await new Promise<number>((r) => requestAnimationFrame(r));
+  for (let i = 0; i < count; i++) {
+    const now = await new Promise<number>((r) => requestAnimationFrame(r));
+    out.push(now - last);
+    last = now;
+  }
+  return stats(out.slice(5));
+}
+
+/** P1–P13: initialisation (create → first frame) and sustained frame intervals against a static baseline. */
+export async function benchMediaAmbient(config: {
+  frames: number;
+}): Promise<Record<string, unknown>> {
+  const ambient = await import("@neshel-ui/animations/ambient");
+  const media = await import("@neshel-ui/animations/media");
+  const feedback = await import("@neshel-ui/animations/feedback");
+  const host = document.createElement("div");
+  host.setAttribute("aria-hidden", "true");
+  host.style.cssText =
+    "position:fixed;left:0;top:0;width:1600px;height:900px;z-index:10;pointer-events:none";
+  document.body.appendChild(host);
+  window.scrollTo(0, 0);
+  const box = (w: number, h: number, bg = "#0b1020") => {
+    const el = document.createElement("div");
+    el.className = "neshel-ambient";
+    el.style.cssText = `position:absolute;left:0;top:0;width:${w}px;height:${h}px;background:${bg};color:#cbd5ff;overflow:hidden`;
+    host.appendChild(el);
+    return el;
+  };
+  const results: Record<string, unknown> = {};
+  const run = async (name: string, setup: () => Array<{ destroy(): void }>) => {
+    const t0 = performance.now();
+    const controls = setup();
+    const createMs = performance.now() - t0;
+    await frame();
+    const initMs = performance.now() - t0;
+    const before = getAmbientDebugInfo();
+    const sustained = await intervals(config.frames);
+    const after = getAmbientDebugInfo();
+    results[name] = {
+      createMs: Math.round(createMs * 100) / 100,
+      initMs: Math.round(initMs * 100) / 100,
+      sustained,
+      ticking: after.ticking,
+      draws: after.draws - before.draws,
+      surfaces: after.surfaces,
+      observers: after.observers,
+      visibilityListeners: after.visibilityListeners,
+    };
+    for (const c of controls) c.destroy();
+    host.replaceChildren();
+    await frames(3);
+  };
+  const long = { duration: 600000, lowPower: false as const };
+  results.P1_baseline = { sustained: await intervals(config.frames) };
+  for (const n of [60, 120, 400])
+    await run(`P5_particles_${n}`, () => [
+      ambient.createParticles(box(1600, 900), { ...long, max: n, density: 40 }),
+    ]);
+  for (const n of [360, 800])
+    await run(`P6_starfield_${n}`, () => [
+      ambient.createStarfield(box(1600, 900), { ...long, max: n, density: 80 }),
+    ]);
+  for (const [w, h] of [
+    [400, 300],
+    [1600, 900],
+  ] as const) {
+    await run(`P7_aurora_${w}x${h}`, () => [ambient.createAurora(box(w, h), { duration: 600000 })]);
+    await run(`P7_mesh_${w}x${h}`, () => [
+      ambient.createMeshGradient(box(w, h), { duration: 600000 }),
+    ]);
+  }
+  await run("P8_five_ambient", () => [
+    ambient.createParticles(box(800, 450), long),
+    ambient.createStarfield(box(800, 450), long),
+    ambient.createAurora(box(800, 450), { duration: 600000 }),
+    ambient.createGrain(box(800, 450), { jitter: true, duration: 600000 }),
+    ambient.createWaves(box(800, 450), { duration: 600000 }),
+  ]);
+  await run("P10_hidden_offscreen", () => {
+    const el = box(800, 450);
+    el.style.top = "5000px"; // outside the viewport (fixed host): the shared observer pauses it
+    return [ambient.createParticles(el, long)];
+  });
+  // P13: a dissolve of two generated 1600×900 pictures at 16 px cells (5 625 cells).
+  const pic = (labState().media?.pictures?.a as string) ?? "";
+  const stack = box(1600, 900, "#000");
+  stack.className = "neshel-crossfade";
+  for (let i = 0; i < 2; i++) {
+    const img = document.createElement("img");
+    img.src = pic;
+    img.alt = "";
+    stack.appendChild(img);
+  }
+  await until(
+    "pictures",
+    () => [...stack.querySelectorAll("img")].every((i) => i.complete),
+    () => "decode",
+  );
+  const dissolve = media.createPixelDissolve(stack, { duration: 1000, cell: 16 });
+  const cellsBefore = getMediaDebugInfo().cells;
+  const t0 = performance.now();
+  dissolve.show(1);
+  const showMs = performance.now() - t0; // synchronous start: shuffle + surface creation
+  const dissolveFrames = await intervals(50);
+  results.P13_dissolve_1600x900_16px = {
+    mode: dissolve.mode,
+    showMs: Math.round(showMs * 100) / 100,
+    cells: getMediaDebugInfo().cells - cellsBefore,
+    sustained: dissolveFrames,
+  };
+  dissolve.destroy();
+  host.replaceChildren();
+  // P9: six toasts (store only, motion is CSS) — store cost per show.
+  const toaster = feedback.createToaster({ max: 6 });
+  const s0 = performance.now();
+  for (let i = 0; i < 6; i++) toaster.show({ title: `Toast ${i}` });
+  results.P9_toaster_store_6_shows_ms = Math.round((performance.now() - s0) * 1000) / 1000;
+  toaster.destroy();
+  host.remove();
+  results.afterCleanup = { ...getAmbientDebugInfo(), media: getMediaDebugInfo() };
+  return results;
+}

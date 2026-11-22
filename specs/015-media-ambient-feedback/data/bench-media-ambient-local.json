@@ -1,0 +1,596 @@
+{
+  "chromium 158.0.8127.18": {
+    "P1_baseline": {
+      "sustained": {
+        "mean": 16.67,
+        "p95": 16.8,
+        "max": 16.8
+      }
+    },
+    "P5_particles_60": {
+      "createMs": 2.4,
+      "initMs": 16.7,
+      "sustained": {
+        "mean": 16.67,
+        "p95": 16.7,
+        "max": 16.8
+      },
+      "ticking": 1,
+      "draws": 121,
+      "surfaces": 3,
+      "observers": 1,
+      "visibilityListeners": 1
+    },
+    "P5_particles_120": {
+      "createMs": 5.5,
+      "initMs": 15.6,
+      "sustained": {
+        "mean": 16.67,
+        "p95": 16.7,
+        "max": 16.8
+      },
+      "ticking": 1,
+      "draws": 121,
+      "surfaces": 3,
+      "observers": 1,
+      "visibilityListeners": 1
+    },
+    "P5_particles_400": {
+      "createMs": 4.9,
+      "initMs": 16.7,
+      "sustained": {
+        "mean": 16.67,
+        "p95": 16.7,
+        "max": 16.8
+      },
+      "ticking": 1,
+      "draws": 121,
+      "surfaces": 3,
+      "observers": 1,
+      "visibilityListeners": 1
+    },
+    "P6_starfield_360": {
+      "createMs": 6.6,
+      "initMs": 17.4,
+      "sustained": {
+        "mean": 16.67,
+        "p95": 16.7,
+        "max": 16.8
+      },
+      "ticking": 1,
+      "draws": 121,
+      "surfaces": 3,
+      "observers": 1,
+      "visibilityListeners": 1
+    },
+    "P6_starfield_800": {
+      "createMs": 7.5,
+      "initMs": 16.5,
+      "sustained": {
+        "mean": 16.67,
+        "p95": 16.8,
+        "max": 16.8
+      },
+      "ticking": 1,
+      "draws": 121,
+      "surfaces": 3,
+      "observers": 1,
+      "visibilityListeners": 1
+    },
+    "P7_aurora_400x300": {
+      "createMs": 0.6,
+      "initMs": 16.2,
+      "sustained": {
+        "mean": 16.67,
+        "p95": 16.8,
+        "max": 16.8
+      },
+      "ticking": 0,
+      "draws": 0,
+      "surfaces": 2,
+      "observers": 1,
+      "visibilityListeners": 1
+    },
+    "P7_mesh_400x300": {
+      "createMs": 0.8,
+      "initMs": 16.4,
+      "sustained": {
+        "mean": 16.67,
+        "p95": 16.7,
+        "max": 16.8
+      },
+      "ticking": 0,
+      "draws": 0,
+      "surfaces": 2,
+      "observers": 1,
+      "visibilityListeners": 1
+    },
+    "P7_aurora_1600x900": {
+      "createMs": 0.5,
+      "initMs": 17.9,
+      "sustained": {
+        "mean": 16.67,
+        "p95": 16.7,
+        "max": 16.8
+      },
+      "ticking": 0,
+      "draws": 0,
+      "surfaces": 2,
+      "observers": 1,
+      "visibilityListeners": 1
+    },
+    "P7_mesh_1600x900": {
+      "createMs": 1,
+      "initMs": 16.3,
+      "sustained": {
+        "mean": 16.96,
+        "p95": 16.8,
+        "max": 33.4
+      },
+      "ticking": 0,
+      "draws": 0,
+      "surfaces": 2,
+      "observers": 1,
+      "visibilityListeners": 1
+    },
+    "P8_five_ambient": {
+      "createMs": 2.6,
+      "initMs": 16.6,
+      "sustained": {
+        "mean": 16.67,
+        "p95": 16.7,
+        "max": 16.8
+      },
+      "ticking": 2,
+      "draws": 242,
+      "surfaces": 4,
+      "observers": 1,
+      "visibilityListeners": 1
+    },
+    "P10_hidden_offscreen": {
+      "createMs": 2.7,
+      "initMs": 17.4,
+      "sustained": {
+        "mean": 16.67,
+        "p95": 16.7,
+        "max": 16.8
+      },
+      "ticking": 0,
+      "draws": 0,
+      "surfaces": 3,
+      "observers": 1,
+      "visibilityListeners": 1
+    },
+    "P13_dissolve_1600x900_16px": {
+      "mode": "dissolve",
+      "showMs": 6.4,
+      "cells": 4038,
+      "sustained": {
+        "mean": 16.66,
+        "p95": 16.7,
+        "max": 16.8
+      }
+    },
+    "P9_toaster_store_6_shows_ms": 0.3,
+    "afterCleanup": {
+      "effects": 10,
+      "ticking": 0,
+      "cssRunning": 0,
+      "observers": 1,
+      "visibilityListeners": 1,
+      "toggles": 1,
+      "draws": 857,
+      "surfaces": 2,
+      "contexts": 2,
+      "media": {
+        "effects": 12,
+        "hidden": 0,
+        "seeksRequested": 1,
+        "seeksIssued": 0,
+        "seeksCoalesced": 0,
+        "framesPresented": 0,
+        "filters": 0,
+        "cells": 4038,
+        "scrollLocks": 0,
+        "watchers": 4,
+        "surfaces": 2
+      }
+    }
+  },
+  "firefox 159.0": {
+    "P1_baseline": {
+      "sustained": {
+        "mean": 15.64,
+        "p95": 16.34,
+        "max": 16.72
+      }
+    },
+    "P5_particles_60": {
+      "createMs": 6,
+      "initMs": 17,
+      "sustained": {
+        "mean": 15.59,
+        "p95": 16.2,
+        "max": 16.78
+      },
+      "ticking": 1,
+      "draws": 63,
+      "surfaces": 3,
+      "observers": 1,
+      "visibilityListeners": 1
+    },
+    "P5_particles_120": {
+      "createMs": 8,
+      "initMs": 16,
+      "sustained": {
+        "mean": 15.6,
+        "p95": 16.18,
+        "max": 16.84
+      },
+      "ticking": 1,
+      "draws": 62,
+      "surfaces": 3,
+      "observers": 1,
+      "visibilityListeners": 1
+    },
+    "P5_particles_400": {
+      "createMs": 9,
+      "initMs": 18,
+      "sustained": {
+        "mean": 15.62,
+        "p95": 16.46,
+        "max": 16.62
+      },
+      "ticking": 1,
+      "draws": 63,
+      "surfaces": 3,
+      "observers": 1,
+      "visibilityListeners": 1
+    },
+    "P6_starfield_360": {
+      "createMs": 9,
+      "initMs": 21,
+      "sustained": {
+        "mean": 15.68,
+        "p95": 16.54,
+        "max": 16.74
+      },
+      "ticking": 1,
+      "draws": 63,
+      "surfaces": 3,
+      "observers": 1,
+      "visibilityListeners": 1
+    },
+    "P6_starfield_800": {
+      "createMs": 14,
+      "initMs": 20,
+      "sustained": {
+        "mean": 15.6,
+        "p95": 16.36,
+        "max": 17.14
+      },
+      "ticking": 1,
+      "draws": 63,
+      "surfaces": 3,
+      "observers": 1,
+      "visibilityListeners": 1
+    },
+    "P7_aurora_400x300": {
+      "createMs": 1,
+      "initMs": 15,
+      "sustained": {
+        "mean": 15.61,
+        "p95": 16.42,
+        "max": 17.1
+      },
+      "ticking": 0,
+      "draws": 0,
+      "surfaces": 2,
+      "observers": 1,
+      "visibilityListeners": 1
+    },
+    "P7_mesh_400x300": {
+      "createMs": 1,
+      "initMs": 16,
+      "sustained": {
+        "mean": 15.66,
+        "p95": 16.6,
+        "max": 16.9
+      },
+      "ticking": 0,
+      "draws": 0,
+      "surfaces": 2,
+      "observers": 1,
+      "visibilityListeners": 1
+    },
+    "P7_aurora_1600x900": {
+      "createMs": 2,
+      "initMs": 15,
+      "sustained": {
+        "mean": 15.68,
+        "p95": 16.3,
+        "max": 16.66
+      },
+      "ticking": 0,
+      "draws": 0,
+      "surfaces": 2,
+      "observers": 1,
+      "visibilityListeners": 1
+    },
+    "P7_mesh_1600x900": {
+      "createMs": 2,
+      "initMs": 17,
+      "sustained": {
+        "mean": 15.62,
+        "p95": 16.5,
+        "max": 16.74
+      },
+      "ticking": 0,
+      "draws": 0,
+      "surfaces": 2,
+      "observers": 1,
+      "visibilityListeners": 1
+    },
+    "P8_five_ambient": {
+      "createMs": 3,
+      "initMs": 17,
+      "sustained": {
+        "mean": 15.64,
+        "p95": 16.54,
+        "max": 17.62
+      },
+      "ticking": 2,
+      "draws": 128,
+      "surfaces": 4,
+      "observers": 1,
+      "visibilityListeners": 1
+    },
+    "P10_hidden_offscreen": {
+      "createMs": 6,
+      "initMs": 16,
+      "sustained": {
+        "mean": 15.53,
+        "p95": 16.14,
+        "max": 16.64
+      },
+      "ticking": 0,
+      "draws": 0,
+      "surfaces": 3,
+      "observers": 1,
+      "visibilityListeners": 1
+    },
+    "P13_dissolve_1600x900_16px": {
+      "mode": "dissolve",
+      "showMs": 3,
+      "cells": 4002,
+      "sustained": {
+        "mean": 15.54,
+        "p95": 16.12,
+        "max": 16.3
+      }
+    },
+    "P9_toaster_store_6_shows_ms": 0,
+    "afterCleanup": {
+      "effects": 10,
+      "ticking": 0,
+      "cssRunning": 0,
+      "observers": 1,
+      "visibilityListeners": 1,
+      "toggles": 1,
+      "draws": 452,
+      "surfaces": 2,
+      "contexts": 2,
+      "media": {
+        "effects": 12,
+        "hidden": 0,
+        "seeksRequested": 1,
+        "seeksIssued": 0,
+        "seeksCoalesced": 0,
+        "framesPresented": 0,
+        "filters": 0,
+        "cells": 4002,
+        "scrollLocks": 0,
+        "watchers": 4,
+        "surfaces": 2
+      }
+    }
+  },
+  "webkit 27.2": {
+    "P1_baseline": {
+      "sustained": {
+        "mean": 18.11,
+        "p95": 30,
+        "max": 33
+      }
+    },
+    "P5_particles_60": {
+      "createMs": 3,
+      "initMs": 16,
+      "sustained": {
+        "mean": 15.72,
+        "p95": 16,
+        "max": 29
+      },
+      "ticking": 1,
+      "draws": 61,
+      "surfaces": 3,
+      "observers": 1,
+      "visibilityListeners": 1
+    },
+    "P5_particles_120": {
+      "createMs": 1,
+      "initMs": 16,
+      "sustained": {
+        "mean": 15.9,
+        "p95": 17,
+        "max": 31
+      },
+      "ticking": 1,
+      "draws": 62,
+      "surfaces": 3,
+      "observers": 1,
+      "visibilityListeners": 1
+    },
+    "P5_particles_400": {
+      "createMs": 2,
+      "initMs": 16,
+      "sustained": {
+        "mean": 16.93,
+        "p95": 30,
+        "max": 31
+      },
+      "ticking": 1,
+      "draws": 67,
+      "surfaces": 3,
+      "observers": 1,
+      "visibilityListeners": 1
+    },
+    "P6_starfield_360": {
+      "createMs": 2,
+      "initMs": 17,
+      "sustained": {
+        "mean": 16.67,
+        "p95": 25,
+        "max": 32
+      },
+      "ticking": 1,
+      "draws": 67,
+      "surfaces": 3,
+      "observers": 1,
+      "visibilityListeners": 1
+    },
+    "P6_starfield_800": {
+      "createMs": 2,
+      "initMs": 21,
+      "sustained": {
+        "mean": 15.59,
+        "p95": 17,
+        "max": 20
+      },
+      "ticking": 1,
+      "draws": 64,
+      "surfaces": 3,
+      "observers": 1,
+      "visibilityListeners": 1
+    },
+    "P7_aurora_400x300": {
+      "createMs": 1,
+      "initMs": 16,
+      "sustained": {
+        "mean": 15.74,
+        "p95": 17,
+        "max": 30
+      },
+      "ticking": 0,
+      "draws": 0,
+      "surfaces": 2,
+      "observers": 1,
+      "visibilityListeners": 1
+    },
+    "P7_mesh_400x300": {
+      "createMs": 1,
+      "initMs": 16,
+      "sustained": {
+        "mean": 15.57,
+        "p95": 16,
+        "max": 17
+      },
+      "ticking": 0,
+      "draws": 0,
+      "surfaces": 2,
+      "observers": 1,
+      "visibilityListeners": 1
+    },
+    "P7_aurora_1600x900": {
+      "createMs": 0,
+      "initMs": 30,
+      "sustained": {
+        "mean": 24.38,
+        "p95": 31,
+        "max": 32
+      },
+      "ticking": 0,
+      "draws": 0,
+      "surfaces": 2,
+      "observers": 1,
+      "visibilityListeners": 1
+    },
+    "P7_mesh_1600x900": {
+      "createMs": 1,
+      "initMs": 33,
+      "sustained": {
+        "mean": 26.12,
+        "p95": 32,
+        "max": 43
+      },
+      "ticking": 0,
+      "draws": 0,
+      "surfaces": 2,
+      "observers": 1,
+      "visibilityListeners": 1
+    },
+    "P8_five_ambient": {
+      "createMs": 6,
+      "initMs": 39,
+      "sustained": {
+        "mean": 26.02,
+        "p95": 32,
+        "max": 33
+      },
+      "ticking": 2,
+      "draws": 242,
+      "surfaces": 4,
+      "observers": 1,
+      "visibilityListeners": 1
+    },
+    "P10_hidden_offscreen": {
+      "createMs": 2,
+      "initMs": 16,
+      "sustained": {
+        "mean": 15.59,
+        "p95": 16,
+        "max": 19
+      },
+      "ticking": 0,
+      "draws": 0,
+      "surfaces": 3,
+      "observers": 1,
+      "visibilityListeners": 1
+    },
+    "P13_dissolve_1600x900_16px": {
+      "mode": "dissolve",
+      "showMs": 3,
+      "cells": 4080,
+      "sustained": {
+        "mean": 32.04,
+        "p95": 44,
+        "max": 45
+      }
+    },
+    "P9_toaster_store_6_shows_ms": 1,
+    "afterCleanup": {
+      "effects": 10,
+      "ticking": 0,
+      "cssRunning": 0,
+      "observers": 1,
+      "visibilityListeners": 1,
+      "toggles": 1,
+      "draws": 573,
+      "surfaces": 2,
+      "contexts": 2,
+      "media": {
+        "effects": 12,
+        "hidden": 0,
+        "seeksRequested": 0,
+        "seeksIssued": 0,
+        "seeksCoalesced": 0,
+        "framesPresented": 0,
+        "filters": 0,
+        "cells": 4080,
+        "scrollLocks": 0,
+        "watchers": 4,
+        "surfaces": 2
+      }
+    }
+  }
+}

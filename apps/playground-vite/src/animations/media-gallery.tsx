@@ -56,7 +56,7 @@ import { Profiler, useEffect, useMemo, useRef, useState } from "react";
 import { labState } from "./lab-state";
 import scrubMp4 from "./media/scrub.mp4";
 import scrubWebm from "./media/scrub.webm";
-import { mediaReducedFacts, runMediaSuite } from "./media-suite";
+import { benchMediaAmbient, mediaReducedFacts, runMediaSuite } from "./media-suite";
 
 /** A deterministic generated picture (data URL): gradient, grid and a label — CORS-clean for canvas probes. */
 function picture(label: string, hueA: number, hueB: number, w = 640, h = 400): string {
@@ -533,6 +533,7 @@ export function MediaGallery() {
       ...(lab.media ?? ({} as never)),
       runMediaSuite,
       reducedFacts: mediaReducedFacts,
+      benchMediaAmbient,
       commits: () => commits.current,
       debug: () => ({
         media: getMediaDebugInfo(),
