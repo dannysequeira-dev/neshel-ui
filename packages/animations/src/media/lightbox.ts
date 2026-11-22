@@ -119,13 +119,15 @@ export function createLightboxZoom(options: LightboxZoomOptions): LightboxContro
     r.left < (doc.defaultView?.innerWidth ?? 0);
 
   function finishClose(): void {
+    if (state === "closed") return;
+    // State first: a synchronous `close` event (some engines, shims) must not re-enter.
+    setState("closed");
     watch?.();
     watch = undefined;
     animator.stop();
     if (dialog.open) dialog.close();
     unlock?.();
     unlock = undefined;
-    setState("closed");
     const back = opener && opener.isConnected ? opener : (o.getThumbnail() as HTMLElement | null);
     opener = null;
     back?.focus?.({ preventScroll: true });

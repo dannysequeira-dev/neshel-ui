@@ -171,11 +171,19 @@ function imageIn(scope: Element, given: Element | undefined, v: Validator): HTML
   return img as HTMLImageElement;
 }
 
-/** A CSS image/colour, or a URL turned into `url("…")`. */
-function placeholderValue(value: string): string {
-  if (/^(?:data:|https?:|blob:|\/|\.\.?\/)/.test(value))
-    return `url("${value.replace(/"/g, "%22")}")`;
-  return value;
+const URL_LIKE = /^(?:data:|https?:|blob:|\/|\.\.?\/)/;
+
+/** A URL (data URIs included, up to 8 KiB) becomes `url("…")`; anything else must be a plain CSS image/colour. */
+function placeholderOption(v: Validator, value: unknown): string {
+  if (value === undefined) return "color-mix(in srgb, currentColor 12%, transparent)";
+  if (
+    typeof value === "string" &&
+    URL_LIKE.test(value) &&
+    value.length <= 8192 &&
+    !/[\n\r]/.test(value)
+  )
+    return `url("${value.replace(/["\\]/g, (c) => encodeURIComponent(c))}")`;
+  return v.css("placeholder", value, "");
 }
 
 export interface BlurUpOptions extends MediaRevealOptions {
@@ -192,9 +200,7 @@ export function createBlurUp(frame: HTMLElement, options: BlurUpOptions = {}): M
   const v = validator("createBlurUp");
   if (!frame || frame.nodeType !== 1) v.fail('"frame" must be an element.');
   const img = imageIn(frame, options.image, v);
-  const placeholder = placeholderValue(
-    v.css("placeholder", options.placeholder, "color-mix(in srgb, currentColor 12%, transparent)"),
-  );
+  const placeholder = placeholderOption(v, options.placeholder);
   const blur = v.number("blur", options.blur, 16, 0, 40);
   const host = getMotionHost(img as Styled);
   const key = Symbol("media/blur-up");

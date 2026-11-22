@@ -63,7 +63,7 @@ export function createCanvasSurface(
     return Math.min(maxDpr, Math.max(1, Number.isFinite(ratio) && ratio ? ratio : 1));
   }
 
-  function apply(w: number, h: number): void {
+  function apply(w: number, h: number, notify = true): void {
     if (!canvas) return;
     const nextDpr = currentDpr();
     const bw = Math.max(0, Math.round(w * nextDpr));
@@ -74,6 +74,7 @@ export function createCanvasSurface(
     if (canvas.width !== bw) canvas.width = bw;
     if (canvas.height !== bh) canvas.height = bh;
     surfaceCounters.resizes++;
+    if (!notify) return;
     try {
       options.onResize?.(w, h, nextDpr);
     } catch (error) {
@@ -90,7 +91,7 @@ export function createCanvasSurface(
   const onRestored = () => {
     lost = false;
     surfaceCounters.restores++;
-    apply(width, height);
+    apply(width, height, false); // the bitmap is re-allocated; one redraw follows (onRestore)
     options.onRestore?.();
   };
 

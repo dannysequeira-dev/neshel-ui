@@ -155,6 +155,15 @@ export function createHoverPan(frame: HTMLElement, options: HoverPanOptions = {}
   const keyboard = v.flag("keyboard", options.keyboard, false);
   const policy = v.reducedMotion(options.reducedMotion);
   const types = new Set<string>(options.pointerTypes ?? ["mouse", "pen"]);
+  // Validate before any side effect (a failed construction must leave nothing behind).
+  if (
+    keyboard &&
+    !isProduction() &&
+    !frame.getAttribute("aria-label") &&
+    !frame.getAttribute("aria-labelledby")
+  ) {
+    v.fail('"keyboard: true" needs an accessible name on the frame (aria-label/labelledby).');
+  }
   const writer = createChannelWriter(media as Styled, ["scale", "translate"], {
     id: "media/hover-pan",
   });
@@ -186,13 +195,6 @@ export function createHoverPan(frame: HTMLElement, options: HoverPanOptions = {}
     if (!frame.hasAttribute("tabindex")) {
       frame.setAttribute("tabindex", "0");
       cleanups.push(() => frame.removeAttribute("tabindex"));
-    }
-    if (
-      !isProduction() &&
-      !frame.getAttribute("aria-label") &&
-      !frame.getAttribute("aria-labelledby")
-    ) {
-      v.fail('"keyboard: true" needs an accessible name on the frame (aria-label/labelledby).');
     }
     const onKey = (event: KeyboardEvent) => {
       const moves: Record<string, [number, number]> = {
