@@ -372,6 +372,34 @@ async function runEngine(playwright, engine, url, throttle) {
         performance: n.performance,
       };
     });
+    // Phase 015 media/ambient/feedback gallery: the same in-page suite as the Chrome check; reduced motion on a fresh
+    // page.
+    if (process.env.NESHEL_TRACE) console.info(`trace ${engine}: media suite`);
+    const mediaSuite = await page.evaluate(() => window.__neshelLab.media.runMediaSuite());
+    for (const item of mediaSuite) cases.push(item);
+    await run(
+      "phase 015: reduced motion live — ambient static, no canvas task, slow spinner pulse, no camera",
+      async () => {
+        const fresh = await context.newPage();
+        await fresh.goto(url);
+        await fresh.waitForFunction(() => window.__neshelLab?.media?.reducedFacts !== undefined);
+        await fresh.emulateMedia({ reducedMotion: "reduce" });
+        const facts = await fresh.evaluate(() => window.__neshelLab.media.reducedFacts());
+        await fresh.close();
+        check(
+          facts.reduced === true &&
+            facts.ambientAnimation === "none" &&
+            facts.canvasTasks === 0 &&
+            facts.spinnerAnimation === "neshel-fb-slow-pulse" &&
+            facts.kenBurnsScale === "",
+          JSON.stringify(facts),
+        );
+      },
+    );
+    notes.media = await page.evaluate(() => {
+      const n = window.__neshelLab.notes;
+      return { support: n.mediaSupport, m05: n.m05Filter, m06: n.m06, m09: n.m09, f10: n.f10Clip };
+    });
     notes.viewTransitionSupport = await page.evaluate(
       () => window.__neshelLab.notes.viewTransitions,
     );
@@ -588,6 +616,8 @@ const TYPES = {
   ".js": "text/javascript",
   ".css": "text/css",
   ".svg": "image/svg+xml",
+  ".webm": "video/webm",
+  ".mp4": "video/mp4",
 };
 
 /** Static server for the built lab: Chromium and WebKit refuse module scripts from file:// URLs. */
@@ -600,7 +630,27 @@ function serve(dir) {
       response.writeHead(404).end();
       return;
     }
-    response.writeHead(200, { "content-type": TYPES[extname(path)] ?? "application/octet-stream" });
+    const type = TYPES[extname(path)] ?? "application/octet-stream";
+    // Byte ranges (Phase 015 M06): media elements seek with Range requests.
+    const size = statSync(path).size;
+    const range = /^bytes=(\d*)-(\d*)$/.exec(request.headers.range ?? "");
+    if (range) {
+      const start = range[1] ? Number(range[1]) : 0;
+      const end = range[2] ? Math.min(Number(range[2]), size - 1) : size - 1;
+      response.writeHead(206, {
+        "content-type": type,
+        "accept-ranges": "bytes",
+        "content-range": `bytes ${start}-${end}/${size}`,
+        "content-length": end - start + 1,
+      });
+      createReadStream(path, { start, end }).pipe(response);
+      return;
+    }
+    response.writeHead(200, {
+      "content-type": type,
+      "accept-ranges": "bytes",
+      "content-length": size,
+    });
     createReadStream(path).pipe(response);
   });
   return new Promise((done) => server.listen(0, "127.0.0.1", () => done(server)));

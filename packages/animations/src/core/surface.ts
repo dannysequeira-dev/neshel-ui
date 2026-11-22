@@ -151,7 +151,14 @@ export function createCanvasSurface(
           // Never resize inside the observer callback (Phase 012 gotcha): apply in the write phase.
           cancelResize ??= scheduler.schedule(() => {
             cancelResize = undefined;
-            if (pending && (pending.w !== width || pending.h !== height || currentDpr() !== dpr))
+            // Sub-pixel differences (fractional content boxes vs integer client sizes, e.g. the observer's
+            // initial callback) are not resizes: a transition would otherwise be cut short (M09).
+            if (
+              pending &&
+              (Math.abs(pending.w - width) >= 1 ||
+                Math.abs(pending.h - height) >= 1 ||
+                currentDpr() !== dpr)
+            )
               apply(pending.w, pending.h);
             pending = undefined;
           }, "write");

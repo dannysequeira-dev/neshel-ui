@@ -75,6 +75,9 @@ export interface LabState {
     stopRotate(): void;
     svg?: Record<string, { current: any }>;
   };
+  /** Phase 015 media/ambient/feedback gallery (set after mount; loose test hook). */
+  // biome-ignore lint/suspicious/noExplicitAny: lab-only hook assembled by three components.
+  media?: Record<string, any>;
   /** Observations reported by in-page suites (not pass/fail). */
   notes: Record<string, unknown>;
 }

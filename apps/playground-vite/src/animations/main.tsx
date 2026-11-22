@@ -8,6 +8,7 @@ import { EffectsLab } from "./effects-lab";
 import { EngineLab } from "./engine-lab";
 import { GesturesGallery } from "./gestures-gallery";
 import "./lab.css";
+import { MediaGallery } from "./media-gallery";
 import { ScrollGallery } from "./scroll-gallery";
 import { ScrollSceneLab } from "./scroll-scene";
 import { TextSvgGallery } from "./text-svg-gallery";
@@ -19,7 +20,7 @@ createRoot(root).render(
   <StrictMode>
     <main className="lab">
       <header className="lab-header">
-        <p className="lab-eyebrow">Neshel-UI · features 008.0–014</p>
+        <p className="lab-eyebrow">Neshel-UI · features 008.0–015</p>
         <h1>Animations lab</h1>
         <p>
           Technical spikes for <code>@neshel-ui/animations</code> (private, unpublished). Tilt3D,
@@ -36,6 +37,7 @@ createRoot(root).render(
       <GesturesGallery />
       <CinematicGallery />
       <TextSvgGallery />
+      <MediaGallery />
     </main>
   </StrictMode>,
 );
