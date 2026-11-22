@@ -38,10 +38,11 @@ const HAVE_METADATA = 1;
 /** Clamp `time` into the nearest seekable range (whole [0, duration] when ranges are unavailable). */
 export function clampSeekable(video: HTMLVideoElement, time: number): number {
   const duration = video.duration;
-  let t = Math.max(0, Number.isFinite(duration) ? Math.min(time, duration) : time);
+  const t = Math.max(0, Number.isFinite(duration) ? Math.min(time, duration) : time);
   const ranges = video.seekable;
   if (!ranges || ranges.length === 0) return t;
-  let best = t;
+  // No assignment cycle between locals (tools such as react-docgen follow `a = b; b = a` forever).
+  let nearest = Number.NaN;
   let distance = Number.POSITIVE_INFINITY;
   for (let i = 0; i < ranges.length; i++) {
     const start = ranges.start(i);
@@ -51,11 +52,10 @@ export function clampSeekable(video: HTMLVideoElement, time: number): number {
     const d = Math.abs(candidate - t);
     if (d < distance) {
       distance = d;
-      best = candidate;
+      nearest = candidate;
     }
   }
-  t = best;
-  return t;
+  return Number.isNaN(nearest) ? t : nearest;
 }
 
 export function createSeekCoalescer(
