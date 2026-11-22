@@ -874,6 +874,92 @@ async function main() {
         check(state.value === "52" && state.divider === "52%", JSON.stringify(state));
       },
     );
+    // PR #16 review R2: destroy in the middle of a real drag must release the pointer capture.
+    const probeState = () => p.evaluate("window.__neshelLab.media.compareProbe.state()");
+    await run(
+      "M04 real mouse: destroy mid-drag releases the capture; the next control receives input",
+      async () => {
+        await scrollIntoView("#m04-probe");
+        await p.evaluate("window.__neshelLab.media.compareProbe.create()");
+        const r = await rectOf("#m04-probe");
+        const y = r.top + r.height / 2;
+        const press = (type, x) =>
+          p.send("Input.dispatchMouseEvent", { type, x, y, button: "left", clickCount: 1 });
+        await mouse(r.left + r.width * 0.7, y);
+        await press("mousePressed", r.left + r.width * 0.7);
+        await p.send("Input.dispatchMouseEvent", {
+          type: "mouseMoved",
+          x: r.left + r.width * 0.6,
+          y,
+          button: "left",
+          buttons: 1,
+        });
+        const during = await probeState();
+        check(during.captured === true, `capture during drag: ${JSON.stringify(during)}`);
+        await p.evaluate("window.__neshelLab.media.compareProbe.destroy()");
+        await p.evaluate("window.__neshelLab.media.compareProbe.clearLog()");
+        const after = await probeState();
+        check(after.captured === false, `capture after destroy: ${JSON.stringify(after)}`);
+        const next = await rectOf("#m04-probe-next");
+        await p.send("Input.dispatchMouseEvent", {
+          type: "mouseMoved",
+          x: next.left + next.width / 2,
+          y: next.top + next.height / 2,
+          button: "left",
+          buttons: 1,
+        });
+        const held = await probeState();
+        check(
+          held.log.includes("next:pointermove") && !held.log.includes("root:pointermove"),
+          `moves while held: ${JSON.stringify(held.log)}`,
+        );
+        await p.send("Input.dispatchMouseEvent", {
+          type: "mouseReleased",
+          x: next.left + next.width / 2,
+          y: next.top + next.height / 2,
+          button: "left",
+          clickCount: 1,
+        });
+        await p.evaluate("window.__neshelLab.media.compareProbe.clearLog()");
+        for (const type of ["mousePressed", "mouseReleased"])
+          await p.send("Input.dispatchMouseEvent", {
+            type,
+            x: next.left + next.width / 2,
+            y: next.top + next.height / 2,
+            button: "left",
+            clickCount: 1,
+          });
+        const clicked = await probeState();
+        check(clicked.log.includes("next:click"), `next control: ${JSON.stringify(clicked.log)}`);
+        await mouse(2, 2);
+      },
+    );
+    await run(
+      "M04 real touch: a cancelled drag releases the capture; destroy mid-touch-drag releases it too",
+      async () => {
+        await scrollIntoView("#m04-probe");
+        await p.evaluate("window.__neshelLab.media.compareProbe.create()");
+        const r = await rectOf("#m04-probe");
+        const y = r.top + r.height / 2;
+        await touch("touchStart", [[r.left + r.width * 0.3, y]]);
+        await touch("touchMove", [[r.left + r.width * 0.4, y]]);
+        const during = await probeState();
+        check(during.captured === true, `capture during touch drag: ${JSON.stringify(during)}`);
+        await touch("touchCancel", []);
+        await until(
+          "released on cancel",
+          `!window.__neshelLab.media.compareProbe.state().captured`,
+          `window.__neshelLab.media.compareProbe.state()`,
+        );
+        await touch("touchStart", [[r.left + r.width * 0.5, y]]);
+        await touch("touchMove", [[r.left + r.width * 0.55, y]]);
+        check((await probeState()).captured === true, "a new touch drag captures again");
+        await p.evaluate("window.__neshelLab.media.compareProbe.destroy()");
+        const after = await probeState();
+        check(after.captured === false, `capture after destroy: ${JSON.stringify(after)}`);
+        await touch("touchEnd", []);
+      },
+    );
     await run(
       "M07 real Escape: the lightbox closes and focus returns to the thumbnail button",
       async () => {

@@ -115,11 +115,20 @@ export function createCompareSlider(
     if (event.pointerId !== pointer) return;
     render(fromEvent(event), true);
   };
-  const onUp = (event: PointerEvent) => {
-    if (event.pointerId !== pointer) return;
+  /** End the active drag and release its capture; a capture the browser already dropped is not an error. */
+  const endDrag = () => {
+    const id = pointer;
     pointer = undefined;
     rect = undefined;
-    if (root.hasPointerCapture?.(event.pointerId)) root.releasePointerCapture(event.pointerId);
+    if (id === undefined) return;
+    try {
+      if (root.hasPointerCapture?.(id)) root.releasePointerCapture(id);
+    } catch {
+      // Already released or lost (pointer gone, element moved): nothing left to release.
+    }
+  };
+  const onUp = (event: PointerEvent) => {
+    if (event.pointerId === pointer) endDrag();
   };
   root.addEventListener("pointerdown", onDown);
   root.addEventListener("pointermove", onMove);
@@ -141,6 +150,7 @@ export function createCompareSlider(
     destroy() {
       if (destroyed) return;
       destroyed = true;
+      endDrag(); // destroyed mid-drag: never leave the pointer captured by the root (PR #16 review R2)
       range.removeEventListener("input", onInput);
       root.removeEventListener("pointerdown", onDown);
       root.removeEventListener("pointermove", onMove);

@@ -47,7 +47,10 @@ export interface Toaster {
   /** A toast that must not be evicted by overflow (the focused one), or `undefined`. */
   protect(id: string | undefined): void;
   subscribe(listener: () => void): () => void;
-  /** Clear every toast, timer and listener (idempotent). */
+  /**
+   * Clear every toast, timer and listener (idempotent). A destroyed store is inert: `show()` still validates its
+   * input but returns `""` and creates nothing, `subscribe()` registers nothing, and the other methods do nothing.
+   */
   destroy(): void;
 }
 
@@ -108,7 +111,7 @@ export function createToaster(options: ToasterOptions = {}): Toaster {
   }
 
   function dismiss(id: string): void {
-    if (!toasts.some((toast) => toast.id === id)) return;
+    if (destroyed || !toasts.some((toast) => toast.id === id)) return;
     dropTimer(id);
     toasts = toasts.filter((toast) => toast.id !== id);
     if (protectedId === id) protectedId = undefined;
@@ -135,6 +138,7 @@ export function createToaster(options: ToasterOptions = {}): Toaster {
       let duration = input.duration ?? autoDuration(input);
       if (duration !== Number.POSITIVE_INFINITY)
         duration = Math.min(60000, Math.max(1000, Number.isFinite(duration) ? duration : 6000));
+      if (destroyed) return "";
       const id = input.id ?? `neshel-toast-${++ids}`;
       const existing = toasts.find((toast) => toast.id === id);
       const toast: Toast = {
@@ -161,24 +165,27 @@ export function createToaster(options: ToasterOptions = {}): Toaster {
     },
     dismiss,
     dismissAll() {
+      if (destroyed) return;
       for (const toast of toasts) dropTimer(toast.id);
       toasts = [];
       protectedId = undefined;
       emit();
     },
     pause(reason = "manual") {
+      if (destroyed) return;
       const before = reasons.size;
       reasons.add(reason);
       if (before === 0) for (const id of timers.keys()) stopTimer(id);
     },
     resume(reason = "manual") {
-      if (!reasons.delete(reason) || reasons.size > 0) return;
+      if (destroyed || !reasons.delete(reason) || reasons.size > 0) return;
       for (const id of timers.keys()) startTimer(id);
     },
     protect(id) {
-      protectedId = id;
+      if (!destroyed) protectedId = id;
     },
     subscribe(listener) {
+      if (destroyed) return () => {};
       listeners.add(listener);
       return () => {
         listeners.delete(listener);
@@ -189,6 +196,7 @@ export function createToaster(options: ToasterOptions = {}): Toaster {
       destroyed = true;
       for (const toast of toasts) dropTimer(toast.id);
       toasts = [];
+      protectedId = undefined;
       listeners.clear();
       reasons.clear();
       feedbackCounters.toasters--;

@@ -39,8 +39,10 @@ import {
 import "@neshel-ui/animations/feedback.css";
 import {
   BlurUpImage,
+  type CompareControl,
   CompareSlider,
   Crossfade,
+  createCompareSlider,
   Duotone,
   getMediaDebugInfo,
   HoverPan,
@@ -93,6 +95,85 @@ const BROKEN = "data:image/png;base64,bm90LWFuLWltYWdl";
 /** Media never wider than their gallery cell (no horizontal page overflow at narrow viewports). */
 const FLUID = { maxWidth: "100%", height: "auto" } as const;
 
+/**
+ * PR #16 review R2: an imperative M04 instance whose root stays mounted, so a check can destroy it in the middle of
+ * a real mouse drag and observe pointer capture, event routing and the next control.
+ */
+function useCompareProbe() {
+  const root = useRef<HTMLDivElement | null>(null);
+  const next = useRef<HTMLButtonElement | null>(null);
+  const state = useRef<{ control?: CompareControl; pid?: number; log: string[] }>({ log: [] });
+  useEffect(() => {
+    const frame = root.current;
+    const button = next.current;
+    if (!frame || !button) return;
+    const s = state.current;
+    const log = (entry: string) => () => s.log.push(entry);
+    const onDown = (event: PointerEvent) => {
+      s.pid = event.pointerId;
+    };
+    const rootMove = log("root:pointermove");
+    const lost = log("root:lostpointercapture");
+    const nextMove = log("next:pointermove");
+    const nextClick = log("next:click");
+    frame.addEventListener("pointerdown", onDown, { capture: true });
+    frame.addEventListener("pointermove", rootMove);
+    frame.addEventListener("lostpointercapture", lost);
+    button.addEventListener("pointermove", nextMove);
+    button.addEventListener("click", nextClick);
+    return () => {
+      s.control?.destroy();
+      s.control = undefined;
+      frame.removeEventListener("pointerdown", onDown, { capture: true });
+      frame.removeEventListener("pointermove", rootMove);
+      frame.removeEventListener("lostpointercapture", lost);
+      button.removeEventListener("pointermove", nextMove);
+      button.removeEventListener("click", nextClick);
+    };
+  }, []);
+  const api = {
+    create() {
+      const s = state.current;
+      s.control?.destroy();
+      s.pid = undefined;
+      s.log.length = 0;
+      if (root.current) s.control = createCompareSlider(root.current);
+    },
+    destroy() {
+      state.current.control?.destroy();
+      state.current.control = undefined;
+    },
+    clearLog() {
+      state.current.log.length = 0;
+    },
+    state() {
+      const s = state.current;
+      const frame = root.current;
+      return {
+        pid: s.pid ?? null,
+        captured: s.pid !== undefined && frame ? frame.hasPointerCapture(s.pid) : false,
+        value: frame?.querySelector("input")?.value ?? null,
+        log: [...new Set(s.log)],
+      };
+    },
+  };
+  const markup = (
+    <div className="compare-probe">
+      <div
+        ref={root}
+        id="m04-probe"
+        style={{ height: 60, background: "linear-gradient(90deg, #1b1f3a, #f2c14e)" }}
+      >
+        <input type="range" aria-label="Lifecycle probe" style={{ width: "100%" }} />
+      </div>
+      <button ref={next} type="button" id="m04-probe-next" style={{ marginTop: 8, width: "100%" }}>
+        Next control
+      </button>
+    </div>
+  );
+  return { api, markup };
+}
+
 function MediaDemos() {
   const pics = useMemo(
     () => ({
@@ -112,10 +193,12 @@ function MediaDemos() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const scrub = useMemo(() => motionValue(0), []);
   useVideoScrub(videoRef, { progress: scrub });
+  const probe = useCompareProbe();
   useEffect(() => {
     const lab = labState();
     lab.media = {
       ...(lab.media ?? ({} as never)),
+      compareProbe: probe.api,
       kenBurns: () => kenBurns.current,
       duotone: () => duotone.current,
       loadDeferred: () => setDeferred(pics.b),
@@ -191,6 +274,7 @@ function MediaDemos() {
           jumps={{ before: "Show before", after: "Show after" }}
           style={{ height: 180 }}
         />
+        {probe.markup}
       </figure>
       <figure className="gallery-item" id="m05">
         <figcaption>M05 Duotone</figcaption>
