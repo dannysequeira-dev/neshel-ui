@@ -56,6 +56,8 @@ test("exports only implemented entry points, types first (FR-002)", () => {
     "./media",
     "./ambient",
     "./feedback",
+    "./advanced",
+    "./gpu",
     "./styles.css",
     "./hover.css",
     "./press.css",
@@ -70,6 +72,8 @@ test("exports only implemented entry points, types first (FR-002)", () => {
     "./media.css",
     "./ambient.css",
     "./feedback.css",
+    "./advanced.css",
+    "./gpu.css",
   ]);
   for (const subpath of [
     ".",
@@ -89,6 +93,8 @@ test("exports only implemented entry points, types first (FR-002)", () => {
     "./media",
     "./ambient",
     "./feedback",
+    "./advanced",
+    "./gpu",
   ]) {
     assert.deepEqual(Object.keys(manifest.exports[subpath]), ["types", "import"]);
   }
@@ -229,6 +235,9 @@ test("no CSS transition or animation targets a consumer element (010 FR-042, ADR
     "media.css",
     "ambient.css",
     "feedback.css",
+    // Phase 016.
+    "advanced.css",
+    "gpu.css",
   ]
     .map((file) => readFileSync(join(root, "dist", file), "utf8"))
     .join(String.fromCharCode(10))
@@ -278,6 +287,8 @@ test("module boundaries: core imports only core; root/react/families never impor
         "media",
         "ambient",
         "feedback",
+        "advanced",
+        "gpu",
       ]) {
         if (!where.startsWith(`${family}/`))
           assert.ok(!target.startsWith(`${family}/`), `${where} -> ${target}`);

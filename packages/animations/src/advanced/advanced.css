@@ -1,0 +1,98 @@
+/*
+ * @neshel-ui/animations/advanced.css — Advanced 3D & Distortion (Phase 016, D01, D02, D03, D05, D07, D09, D11). Opt-in.
+ * Lays out package-rendered structure (flip faces, cube panels, ring items stacked in one grid cell) and animates only
+ * package-owned layers (the D09 floor). The consumer's elements are moved by the engines through the Motion Host
+ * (rule R-1); no transition or animation is declared on them. No global selectors, no resets.
+ */
+
+/* D01 — card flip: faces stacked in one cell (the engine writes perspective, preserve-3d and backface-visibility) */
+.neshel-flip {
+  display: grid;
+}
+.neshel-flip-inner {
+  display: grid;
+}
+.neshel-flip-inner > * {
+  grid-area: 1 / 1;
+}
+
+/* D02 — cube rotation: panels stacked in one cell; nothing overflows the panel box during the rotation */
+.neshel-cube {
+  display: grid;
+}
+.neshel-cube > * {
+  grid-area: 1 / 1;
+}
+
+/* D03 — ring carousel: items stacked and centred; the root is the keyboard target */
+.neshel-ring {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  align-items: center;
+}
+.neshel-ring > :not(.neshel-ring-live) {
+  grid-area: 1 / 1;
+}
+.neshel-ring:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 4px;
+}
+
+/* D05 — CornerRecede root (the flap is positioned inline over the surface) */
+.neshel-corner {
+  position: relative;
+  display: block;
+}
+
+/* D07 — glitch: positioning context and channel blending of the decorative layers */
+.neshel-glitch {
+  position: relative;
+  display: inline-block;
+}
+.neshel-glitch-layer {
+  mix-blend-mode: screen;
+}
+@media (prefers-color-scheme: light) {
+  .neshel-glitch-layer {
+    mix-blend-mode: multiply;
+  }
+}
+
+/* D09 — perspective grid floor: the lines loop by one cell while the engine marks the layer running */
+.neshel-grid-host {
+  position: relative;
+  isolation: isolate;
+}
+.neshel-grid-lines {
+  animation: neshel-grid-run var(--neshel-grid-duration, 1s) linear infinite;
+  animation-play-state: paused;
+}
+.neshel-grid-floor[data-neshel-grid="running"] > .neshel-grid-plane > .neshel-grid-lines {
+  animation-play-state: running;
+}
+@keyframes neshel-grid-run {
+  to {
+    transform: translate3d(var(--neshel-grid-dx, 0px), var(--neshel-grid-cell, 0px), 0);
+  }
+}
+
+/* D11 — tilt-shift root */
+.neshel-tiltshift-host {
+  position: relative;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .neshel-grid-lines {
+    animation: none;
+  }
+}
+
+/* Forced colours: decorative layers step aside; content keeps system colours */
+@media (forced-colors: active) {
+  .neshel-glitch-layer,
+  .neshel-grid-floor,
+  .neshel-tiltshift {
+    display: none;
+  }
+}

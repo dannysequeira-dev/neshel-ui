@@ -160,9 +160,14 @@ function createHost(element: Styled, scheduler: FrameScheduler): MotionHost {
       if (composed !== "none") tokens.push("transform");
       if (opacities.size > 0) tokens.push("opacity");
       for (const channel of owners.keys()) {
-        // Custom properties, `touch-action` (Phase 012 gesture areas) and `view-transition-*` (Phase 013
-        // page transitions) are not animated.
-        if (values.has(channel) && !/^(--|touch-action|view-transition)/.test(channel)) {
+        // Custom properties, `touch-action` (Phase 012 gesture areas), `view-transition-*` (Phase 013
+        // page transitions) and the Phase 016 structural 3D channels are not animated.
+        if (
+          values.has(channel) &&
+          !/^(--|touch-action|view-transition|transform-style|backface-visibility|perspective|visibility|z-index)/.test(
+            channel,
+          )
+        ) {
           tokens.push(channel);
         }
       }
