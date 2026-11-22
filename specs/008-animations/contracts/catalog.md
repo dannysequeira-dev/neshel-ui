@@ -16,7 +16,12 @@ render through the motion host; page transitions animate only View Transition ps
 Phase 014 entries **T01–T11, S01–S10** (marked **✓ 014**; API, drivers and reduced behaviour in
 [specs/014 contracts](../../014-typography-svg-paths/contracts/text-api.md) and
 [svg-api.md](../../014-typography-svg-paths/contracts/svg-api.md) — split text keeps one accessible copy;
-effects write one value per frame through the motion host, ADR 0029). Phase 010
+effects write one value per frame through the motion host, ADR 0029) and the 30 Phase 015 entries **M01–M10,
+B01–B10, F01–F10** (marked **✓ 015**; API, support matrix and reduced behaviour in
+[specs/015 contracts](../../015-media-ambient-feedback/contracts/media-api.md),
+[ambient-api.md](../../015-media-ambient-feedback/contracts/ambient-api.md) and
+[feedback-api.md](../../015-media-ambient-feedback/contracts/feedback-api.md) — M09, B04 and B05 run on a Canvas 2D
+surface and B07 on CSS layers instead of the GPU driver, ADR 0030). Phase 010
 changed the driver of most CSS rows: the consumer's element is animated only by the motion host (rule
 R-1, ADR 0025) and CSS renders package-owned layers; the Driver column below keeps the original plan
 and the 010 contract records each change. `D05 CornerRecede` exists as a
@@ -239,48 +244,50 @@ and must respect Capsize trimming from `@neshel-ui/typography` (ADR 0011).
 
 | Id  | Effect                              | Driver | Structure | Reduced motion | Phase |
 | --- | ----------------------------------- | ------ | --------- | -------------- | ----- |
-| M01 | Ken Burns                           | CSS    | W         | static         | 015   |
-| M02 | Blur-up progressive load            | CSS    | L         | instant        | 015   |
-| M03 | Reveal mask on load                 | CSS    | —         | instant        | 015   |
-| M04 | Before / after comparison slider    | JS     | L         | n/a            | 015   |
-| M05 | Duotone transition                  | CSS    | —         | instant        | 015   |
-| M06 | Video scroll scrub (`currentTime`)  | JS     | W         | static         | 015   |
-| M07 | Lightbox zoom from thumbnail (FLIP) | WAAPI  | L         | fade           | 015   |
-| M08 | Gallery cross-fade                  | CSS    | L         | fade           | 015   |
-| M09 | Pixel / dissolve transition         | GPU    | C         | fade           | 015   |
-| M10 | Hover pan inside frame              | JS     | W         | static         | 015   |
+| M01 | Ken Burns                           | CSS    | W         | static         | ✓ 015 |
+| M02 | Blur-up progressive load            | CSS    | L         | instant        | ✓ 015 |
+| M03 | Reveal mask on load                 | CSS    | —         | instant        | ✓ 015 |
+| M04 | Before / after comparison slider    | JS     | L         | n/a            | ✓ 015 |
+| M05 | Duotone transition                  | CSS    | —         | instant        | ✓ 015 |
+| M06 | Video scroll scrub (`currentTime`)  | JS     | W         | static         | ✓ 015 |
+| M07 | Lightbox zoom from thumbnail (FLIP) | WAAPI  | L         | fade           | ✓ 015 |
+| M08 | Gallery cross-fade                  | CSS    | L         | fade           | ✓ 015 |
+| M09 | Pixel / dissolve transition         | GPU    | C         | fade           | ✓ 015 |
+| M10 | Hover pan inside frame              | JS     | W         | static         | ✓ 015 |
 
 ## 13 · Background & Ambient (B)
 
 | Id  | Effect                | Driver  | Structure | Reduced motion | Phase |
 | --- | --------------------- | ------- | --------- | -------------- | ----- |
-| B01 | Gradient shift        | CSS     | —         | static         | 015   |
-| B02 | Aurora blobs          | CSS     | W         | static         | 015   |
-| B03 | Grain / noise overlay | CSS     | W         | static         | 015   |
-| B04 | Particles             | GPU     | C         | static         | 015   |
-| B05 | Starfield             | GPU     | C         | static         | 015   |
-| B06 | Animated grid / dots  | CSS     | W         | static         | 015   |
-| B07 | Mesh gradient         | CSS/GPU | W/C       | static         | 015   |
-| B08 | Floating shapes       | CSS     | G         | static         | 015   |
-| B09 | Pointer-reactive glow | JS      | W         | static         | 015   |
-| B10 | Waves (SVG)           | CSS     | W         | static         | 015   |
+| B01 | Gradient shift        | CSS     | —         | static         | ✓ 015 |
+| B02 | Aurora blobs          | CSS     | W         | static         | ✓ 015 |
+| B03 | Grain / noise overlay | CSS     | W         | static         | ✓ 015 |
+| B04 | Particles             | GPU     | C         | static         | ✓ 015 |
+| B05 | Starfield             | GPU     | C         | static         | ✓ 015 |
+| B06 | Animated grid / dots  | CSS     | W         | static         | ✓ 015 |
+| B07 | Mesh gradient         | CSS/GPU | W/C       | static         | ✓ 015 |
+| B08 | Floating shapes       | CSS     | G         | static         | ✓ 015 |
+| B09 | Pointer-reactive glow | JS      | W         | static         | ✓ 015 |
+| B10 | Waves (SVG)           | CSS     | W         | static         | ✓ 015 |
 
-Ambient effects pause when off-screen or when the page is hidden (contracts/accessibility.md §4).
+Ambient effects pause when off-screen or when the page is hidden (contracts/accessibility.md §4). Phase 015:
+B04/B05 run on a bounded Canvas 2D surface and B07 on CSS radial-gradient layers (measured; ADR 0030); every
+ambient effect is finite by default (5 s) with a page-level pause switch.
 
 ## 14 · Loading & Feedback (F)
 
 | Id  | Effect                        | Driver | Structure | Reduced motion | Phase |
 | --- | ----------------------------- | ------ | --------- | -------------- | ----- |
-| F01 | Spinner                       | CSS    | —         | reduced⁸       | 015   |
-| F02 | Skeleton shimmer              | CSS    | —         | static         | 015   |
-| F03 | Indeterminate progress bar    | CSS    | —         | reduced⁸       | 015   |
-| F04 | Dots pulse                    | CSS    | G         | reduced⁸       | 015   |
-| F05 | Success check                 | CSS    | —         | instant        | 015   |
-| F06 | Toast enter / exit            | CSS    | —         | fade           | 015   |
-| F07 | Button loading morph          | CSS    | —         | instant        | 015   |
-| F08 | Optimistic pulse              | CSS    | —         | static         | 015   |
-| F09 | Progress ring                 | CSS    | —         | instant        | 015   |
-| F10 | Pending state shimmer on text | CSS    | —         | static         | 015   |
+| F01 | Spinner                       | CSS    | —         | reduced⁸       | ✓ 015 |
+| F02 | Skeleton shimmer              | CSS    | —         | static         | ✓ 015 |
+| F03 | Indeterminate progress bar    | CSS    | —         | reduced⁸       | ✓ 015 |
+| F04 | Dots pulse                    | CSS    | G         | reduced⁸       | ✓ 015 |
+| F05 | Success check                 | CSS    | —         | instant        | ✓ 015 |
+| F06 | Toast enter / exit            | CSS    | —         | fade           | ✓ 015 |
+| F07 | Button loading morph          | CSS    | —         | instant        | ✓ 015 |
+| F08 | Optimistic pulse              | CSS    | —         | static         | ✓ 015 |
+| F09 | Progress ring                 | CSS    | —         | instant        | ✓ 015 |
+| F10 | Pending state shimmer on text | CSS    | —         | static         | ✓ 015 |
 
 ⁸ Loading indicators keep a slow, non-vestibular signal so users still perceive progress; the
 `components` Skeleton and Button spinner already follow this rule (feature 005).
@@ -306,22 +313,24 @@ real deformation and only for raster content (research R7).
 
 ## Shared primitives by family
 
-| Primitive (core unless noted)        | Families          | Status               |
-| ------------------------------------ | ----------------- | -------------------- |
-| Frame scheduler (read/update/write)  | all JS effects    | implemented (008.0)  |
-| Spring integrator                    | H, P, G, SP, L, C | implemented (008.0)  |
-| Transform composer                   | H, P, G, SP, D    | implemented (008.0)  |
-| Reduced-motion policy                | all               | implemented (008.0)  |
-| Spring → CSS `linear()` easing       | E, H, P, L, F     | implemented (009)    |
-| Interpolation / easing / clamp       | all               | implemented (009)    |
-| Effect registry + channel metadata   | all               | implemented (009)    |
-| Pointer tracker (box-based hit area) | H, B, G           | implemented (010)    |
-| Intersection / visibility observer   | ST, SP, B, M      | implemented (011)    |
-| Scroll progress (cached geometry)    | ST, SP, C, M, T   | spike in ScrollScene |
-| Timeline (labels, overlaps, scrub)   | C, PT, T, S       | planned (013)        |
-| Presence / exit orchestration        | L, PT, F          | implemented (012)    |
-| FLIP measurer                        | L, M              | implemented (012)    |
-| Gesture recogniser (drag, pinch)     | G, M              | implemented (012)    |
-| Text splitter (accessible)           | T, C              | implemented (014)    |
-| Path utilities (length, morph)       | S                 | implemented (014)    |
-| GPU surface manager (optional entry) | D, M, B           | planned (016)        |
+| Primitive (core unless noted)        | Families          | Status                            |
+| ------------------------------------ | ----------------- | --------------------------------- |
+| Frame scheduler (read/update/write)  | all JS effects    | implemented (008.0)               |
+| Spring integrator                    | H, P, G, SP, L, C | implemented (008.0)               |
+| Transform composer                   | H, P, G, SP, D    | implemented (008.0)               |
+| Reduced-motion policy                | all               | implemented (008.0)               |
+| Spring → CSS `linear()` easing       | E, H, P, L, F     | implemented (009)                 |
+| Interpolation / easing / clamp       | all               | implemented (009)                 |
+| Effect registry + channel metadata   | all               | implemented (009)                 |
+| Pointer tracker (box-based hit area) | H, B, G           | implemented (010)                 |
+| Intersection / visibility observer   | ST, SP, B, M      | implemented (011)                 |
+| Scroll progress (cached geometry)    | ST, SP, C, M, T   | spike in ScrollScene              |
+| Timeline (labels, overlaps, scrub)   | C, PT, T, S       | planned (013)                     |
+| Presence / exit orchestration        | L, PT, F          | implemented (012); core since 015 |
+| FLIP measurer                        | L, M              | implemented (012)                 |
+| Gesture recogniser (drag, pinch)     | G, M              | implemented (012)                 |
+| Text splitter (accessible)           | T, C              | implemented (014)                 |
+| Path utilities (length, morph)       | S                 | implemented (014)                 |
+| Canvas 2D surface (internal)         | M09, B04, B05     | implemented (015)                 |
+| Image load watcher                   | M                 | implemented (015)                 |
+| GPU surface manager (optional entry) | D (M, B per need) | planned (016)                     |

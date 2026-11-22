@@ -1,0 +1,200 @@
+{
+  "chromium 158.0.8127.18 (4x CPU)": {
+    "P1_baseline": {
+      "sustained": {
+        "mean": 16.67,
+        "p95": 16.7,
+        "max": 16.8
+      }
+    },
+    "P5_particles_60": {
+      "createMs": 7.6,
+      "initMs": 29.2,
+      "sustained": {
+        "mean": 17.1,
+        "p95": 16.8,
+        "max": 33.4
+      },
+      "ticking": 1,
+      "draws": 121,
+      "surfaces": 3,
+      "observers": 1,
+      "visibilityListeners": 1
+    },
+    "P5_particles_120": {
+      "createMs": 16.2,
+      "initMs": 46.2,
+      "sustained": {
+        "mean": 17.25,
+        "p95": 16.8,
+        "max": 33.4
+      },
+      "ticking": 1,
+      "draws": 121,
+      "surfaces": 3,
+      "observers": 1,
+      "visibilityListeners": 1
+    },
+    "P5_particles_400": {
+      "createMs": 9.3,
+      "initMs": 31.8,
+      "sustained": {
+        "mean": 20.43,
+        "p95": 33.4,
+        "max": 50
+      },
+      "ticking": 1,
+      "draws": 121,
+      "surfaces": 3,
+      "observers": 1,
+      "visibilityListeners": 1
+    },
+    "P6_starfield_360": {
+      "createMs": 21.4,
+      "initMs": 52.1,
+      "sustained": {
+        "mean": 17.83,
+        "p95": 33.3,
+        "max": 33.4
+      },
+      "ticking": 1,
+      "draws": 121,
+      "surfaces": 3,
+      "observers": 1,
+      "visibilityListeners": 1
+    },
+    "P6_starfield_800": {
+      "createMs": 17,
+      "initMs": 49.2,
+      "sustained": {
+        "mean": 20.58,
+        "p95": 33.4,
+        "max": 33.4
+      },
+      "ticking": 1,
+      "draws": 121,
+      "surfaces": 3,
+      "observers": 1,
+      "visibilityListeners": 1
+    },
+    "P7_aurora_400x300": {
+      "createMs": 2.2,
+      "initMs": 14.2,
+      "sustained": {
+        "mean": 16.67,
+        "p95": 16.8,
+        "max": 16.8
+      },
+      "ticking": 0,
+      "draws": 0,
+      "surfaces": 2,
+      "observers": 1,
+      "visibilityListeners": 1
+    },
+    "P7_mesh_400x300": {
+      "createMs": 1.7,
+      "initMs": 14.1,
+      "sustained": {
+        "mean": 16.67,
+        "p95": 16.8,
+        "max": 16.8
+      },
+      "ticking": 0,
+      "draws": 0,
+      "surfaces": 2,
+      "observers": 1,
+      "visibilityListeners": 1
+    },
+    "P7_aurora_1600x900": {
+      "createMs": 2.1,
+      "initMs": 16.7,
+      "sustained": {
+        "mean": 17.25,
+        "p95": 16.8,
+        "max": 50
+      },
+      "ticking": 0,
+      "draws": 0,
+      "surfaces": 2,
+      "observers": 1,
+      "visibilityListeners": 1
+    },
+    "P7_mesh_1600x900": {
+      "createMs": 1.8,
+      "initMs": 15.6,
+      "sustained": {
+        "mean": 16.67,
+        "p95": 16.8,
+        "max": 16.8
+      },
+      "ticking": 0,
+      "draws": 0,
+      "surfaces": 2,
+      "observers": 1,
+      "visibilityListeners": 1
+    },
+    "P8_five_ambient": {
+      "createMs": 18.6,
+      "initMs": 45,
+      "sustained": {
+        "mean": 16.67,
+        "p95": 16.8,
+        "max": 16.8
+      },
+      "ticking": 2,
+      "draws": 242,
+      "surfaces": 4,
+      "observers": 1,
+      "visibilityListeners": 1
+    },
+    "P10_hidden_offscreen": {
+      "createMs": 7.2,
+      "initMs": 16.3,
+      "sustained": {
+        "mean": 16.67,
+        "p95": 16.8,
+        "max": 16.8
+      },
+      "ticking": 0,
+      "draws": 0,
+      "surfaces": 3,
+      "observers": 1,
+      "visibilityListeners": 1
+    },
+    "P13_dissolve_1600x900_16px": {
+      "mode": "dissolve",
+      "showMs": 11.8,
+      "cells": 4066,
+      "sustained": {
+        "mean": 17.78,
+        "p95": 33.3,
+        "max": 33.4
+      }
+    },
+    "P9_toaster_store_6_shows_ms": 1.1,
+    "afterCleanup": {
+      "effects": 10,
+      "ticking": 0,
+      "cssRunning": 0,
+      "observers": 1,
+      "visibilityListeners": 1,
+      "toggles": 1,
+      "draws": 857,
+      "surfaces": 2,
+      "contexts": 2,
+      "media": {
+        "effects": 12,
+        "hidden": 0,
+        "seeksRequested": 1,
+        "seeksIssued": 0,
+        "seeksCoalesced": 0,
+        "framesPresented": 0,
+        "filters": 0,
+        "cells": 4066,
+        "scrollLocks": 0,
+        "watchers": 4,
+        "surfaces": 2
+      }
+    }
+  }
+}

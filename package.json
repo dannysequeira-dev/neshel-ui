@@ -55,7 +55,9 @@
     "check:docs-site": "node scripts/check-docs-site.mjs",
     "check:bundles": "node scripts/check-bundles.mjs",
     "release:simulate": "node scripts/release-simulate.mjs",
-    "bench:animations:text": "node scripts/bench-animations-text.mjs"
+    "bench:animations:text": "node scripts/bench-animations-text.mjs",
+    "bench:animations:media-ambient": "node scripts/bench-animations-media-ambient.mjs",
+    "bench:animations:spike-015": "node scripts/bench-animations-ambient.mjs"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "catalog:",

@@ -15,6 +15,9 @@
       "@neshel-ui/animations/cinematic": ["../../packages/animations/src/cinematic/index.ts"],
       "@neshel-ui/animations/text": ["../../packages/animations/src/text/index.ts"],
       "@neshel-ui/animations/svg": ["../../packages/animations/src/svg/index.ts"],
+      "@neshel-ui/animations/media": ["../../packages/animations/src/media/index.ts"],
+      "@neshel-ui/animations/ambient": ["../../packages/animations/src/ambient/index.ts"],
+      "@neshel-ui/animations/feedback": ["../../packages/animations/src/feedback/index.ts"],
       "@neshel-ui/animations/page-transitions": [
         "../../packages/animations/src/page-transitions/index.ts"
       ],

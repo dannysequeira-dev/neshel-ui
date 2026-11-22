@@ -1,0 +1,443 @@
+/*
+ * @neshel-ui/animations/feedback.css — Loading & Feedback (Phase 015, F01–F10). Opt-in. Animates only package
+ * elements and `::before`/`::after` token layers (rule R-1). Reduced motion keeps a slow, non-vestibular signal
+ * for loading indicators (opacity pulse instead of rotation/sweep) and removes decorative motion elsewhere.
+ * Forced colours: system colours, no decorative gradients.
+ */
+
+/* F01 spinner */
+.neshel-spinner {
+  display: inline-block;
+  width: var(--neshel-indicator-size, 1.25em);
+  height: var(--neshel-indicator-size, 1.25em);
+  vertical-align: middle;
+}
+.neshel-spinner-ring {
+  display: block;
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
+  border: 0.15em solid currentColor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: neshel-fb-spin 0.8s linear infinite;
+}
+
+/* F04 dots */
+.neshel-dots {
+  display: inline-flex;
+  gap: calc(var(--neshel-indicator-size, 1.25em) * 0.18);
+  align-items: center;
+  height: var(--neshel-indicator-size, 1.25em);
+  vertical-align: middle;
+}
+.neshel-dot {
+  width: calc(var(--neshel-indicator-size, 1.25em) * 0.24);
+  height: calc(var(--neshel-indicator-size, 1.25em) * 0.24);
+  border-radius: 50%;
+  background: currentColor;
+  animation: neshel-fb-bounce 1s ease-in-out infinite;
+  animation-delay: calc(var(--neshel-i, 0) * 160ms);
+}
+
+/* F03 progress bar */
+.neshel-progress {
+  position: relative;
+  display: block;
+  height: 0.375rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: color-mix(in srgb, currentColor 15%, transparent);
+}
+.neshel-progress-bar {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: currentColor;
+  transform-origin: left center;
+  transform: scaleX(var(--neshel-progress, 0));
+  transition: transform 0.3s ease;
+}
+.neshel-progress[data-indeterminate] > .neshel-progress-bar {
+  width: 40%;
+  transform: none;
+  animation: neshel-fb-indeterminate 1.4s ease-in-out infinite;
+}
+
+/* F09 progress ring */
+.neshel-ring {
+  display: inline-block;
+  width: var(--neshel-indicator-size, 2.5em);
+  height: var(--neshel-indicator-size, 2.5em);
+  vertical-align: middle;
+}
+.neshel-ring-svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  rotate: -90deg;
+}
+.neshel-ring-track,
+.neshel-ring-arc {
+  fill: none;
+  stroke-width: 3.2;
+}
+.neshel-ring-track {
+  stroke: color-mix(in srgb, currentColor 15%, transparent);
+}
+.neshel-ring-arc {
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-dasharray: 100;
+  stroke-dashoffset: var(--neshel-ring-offset, 100);
+  transition: stroke-dashoffset 0.3s ease;
+}
+.neshel-ring[data-indeterminate] > .neshel-ring-svg {
+  --neshel-ring-offset: 72;
+  animation: neshel-fb-spin 1.1s linear infinite;
+}
+
+/* F02 skeleton shimmer (package placeholder and the `shimmer` token layer) */
+.neshel-skeleton-shimmer {
+  position: relative;
+  display: block;
+  height: 1em;
+  overflow: hidden;
+  border-radius: 0.25rem;
+  background: color-mix(in srgb, currentColor 12%, transparent);
+}
+.neshel-skeleton-shimmer[data-shape="circle"] {
+  width: 2.5rem;
+  height: auto;
+  aspect-ratio: 1;
+  border-radius: 50%;
+}
+.neshel-skeleton-shimmer[data-shape="rect"] {
+  height: 6rem;
+}
+[data-neshel-fx~="shimmer"] {
+  position: relative;
+  overflow: hidden;
+}
+.neshel-skeleton-shimmer::after,
+[data-neshel-fx~="shimmer"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    color-mix(in srgb, Canvas 55%, transparent),
+    transparent
+  );
+  transform: translateX(-100%);
+  animation: neshel-fb-shimmer 1.6s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* F10 pending text — one text; the band only lightens it (≥ 70% of the colour keeps contrast) */
+.neshel-pending-text[data-pending] {
+  background-image: linear-gradient(
+    90deg,
+    currentColor 0 40%,
+    color-mix(in srgb, currentColor 70%, transparent) 50%,
+    currentColor 60% 100%
+  );
+  background-size: 250% 100%;
+  background-position: 100% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: neshel-fb-pending 1.8s linear infinite;
+}
+@supports not ((background-clip: text) or (-webkit-background-clip: text)) {
+  .neshel-pending-text[data-pending] {
+    background: none;
+    -webkit-text-fill-color: currentColor;
+    animation: none;
+  }
+}
+
+/* F05 success mark */
+.neshel-success-mark {
+  display: inline-block;
+  vertical-align: middle;
+}
+.neshel-success-circle,
+.neshel-success-path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 0.45s cubic-bezier(0.3, 0, 0, 1);
+}
+.neshel-success-path {
+  transition-delay: 0.2s;
+}
+.neshel-success-mark[data-state="shown"] .neshel-success-circle,
+.neshel-success-mark[data-state="shown"] .neshel-success-path {
+  stroke-dashoffset: 0;
+}
+
+/* F07 loading token: label kept in the DOM (name unchanged), hidden visually; spinner on ::after */
+[data-neshel-fx~="loading"] {
+  color: transparent !important;
+  cursor: progress;
+}
+[data-neshel-fx~="loading"] > * {
+  opacity: 0;
+}
+[data-neshel-fx~="loading"]::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  box-sizing: border-box;
+  width: 1.1em;
+  height: 1.1em;
+  margin: auto;
+  border: 0.15em solid var(--neshel-loading-color, CanvasText);
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: neshel-fb-spin 0.8s linear infinite;
+  pointer-events: none;
+}
+
+/* F08 optimistic token */
+[data-neshel-fx~="optimistic"]::before {
+  content: "";
+  position: absolute;
+  inset: -3px;
+  border-radius: inherit;
+  box-shadow: 0 0 0 2px color-mix(in srgb, currentColor 40%, transparent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+[data-neshel-fx~="optimistic"][data-neshel-optimistic="pending"]::before {
+  opacity: 1;
+  animation: neshel-fb-optimistic 1.4s ease-in-out infinite;
+}
+[data-neshel-fx~="optimistic"][data-neshel-optimistic="failed"]::before {
+  opacity: 1;
+  box-shadow: 0 0 0 2px #d93025;
+  animation: none;
+}
+[data-neshel-fx~="optimistic"][data-neshel-optimistic="failed"] {
+  outline: 2px dashed #d93025;
+  outline-offset: 3px;
+}
+
+/* F06 toasts */
+.neshel-toaster {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 2147483000;
+  width: min(24rem, calc(100vw - 2rem));
+  pointer-events: none;
+}
+.neshel-toaster-announcer {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.neshel-toast-list {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.neshel-toast {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  padding: 0.75rem 0.875rem;
+  border: 1px solid color-mix(in srgb, CanvasText 14%, transparent);
+  border-radius: 0.625rem;
+  background: Canvas;
+  color: CanvasText;
+  box-shadow: 0 6px 24px rgb(0 0 0 / 0.16);
+  pointer-events: auto;
+  opacity: 0;
+  transform: translateY(0.5rem);
+  transition:
+    opacity 0.22s ease,
+    transform 0.22s ease;
+}
+.neshel-toast[data-tone="success"] {
+  border-left: 4px solid #188038;
+}
+.neshel-toast[data-tone="error"] {
+  border-left: 4px solid #d93025;
+}
+.neshel-toast[data-state="open"] {
+  opacity: 1;
+  transform: none;
+}
+.neshel-toast[data-state="closing"] {
+  opacity: 0;
+  transform: translateX(1rem);
+}
+.neshel-toast:focus-visible {
+  outline: 2px solid Highlight;
+  outline-offset: 2px;
+}
+.neshel-toast-text {
+  flex: 1;
+  min-width: 0;
+}
+.neshel-toast-title {
+  margin: 0;
+  font-weight: 600;
+}
+.neshel-toast-description {
+  margin: 0.125rem 0 0;
+  opacity: 0.85;
+}
+.neshel-toast-close,
+.neshel-toast-action {
+  flex: none;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+}
+.neshel-toast-close {
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 50%;
+  font-size: 1.25rem;
+  line-height: 1;
+}
+.neshel-toast-action {
+  text-decoration: underline;
+}
+
+@keyframes neshel-fb-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes neshel-fb-bounce {
+  0%,
+  80%,
+  100% {
+    transform: scale(0.6);
+    opacity: 0.5;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+@keyframes neshel-fb-indeterminate {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(250%);
+  }
+}
+@keyframes neshel-fb-shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+@keyframes neshel-fb-pending {
+  to {
+    background-position: 0 0;
+  }
+}
+@keyframes neshel-fb-optimistic {
+  50% {
+    opacity: 0.35;
+  }
+}
+@keyframes neshel-fb-slow-pulse {
+  50% {
+    opacity: 0.35;
+  }
+}
+
+/* Reduced motion: slow non-vestibular pulse for loading; decorative motion removed. */
+@media (prefers-reduced-motion: reduce) {
+  .neshel-spinner-ring {
+    border-top-color: currentColor;
+    animation: neshel-fb-slow-pulse 2s ease-in-out infinite;
+  }
+  .neshel-dot {
+    animation: neshel-fb-slow-pulse 2s ease-in-out infinite;
+    animation-delay: calc(var(--neshel-i, 0) * 300ms);
+  }
+  .neshel-progress[data-indeterminate] > .neshel-progress-bar {
+    width: 100%;
+    animation: neshel-fb-slow-pulse 2s ease-in-out infinite;
+  }
+  .neshel-progress-bar,
+  .neshel-ring-arc,
+  .neshel-success-circle,
+  .neshel-success-path,
+  .neshel-toast {
+    transition: none;
+  }
+  .neshel-toast {
+    transform: none;
+    transition: opacity 0.15s linear;
+  }
+  .neshel-ring[data-indeterminate] > .neshel-ring-svg {
+    animation: neshel-fb-slow-pulse 2s ease-in-out infinite;
+  }
+  .neshel-skeleton-shimmer::after,
+  [data-neshel-fx~="shimmer"]::after {
+    animation: none;
+    opacity: 0;
+  }
+  .neshel-pending-text[data-pending] {
+    animation: none;
+    background: none;
+    -webkit-text-fill-color: currentColor;
+  }
+  [data-neshel-fx~="loading"]::after {
+    border-top-color: var(--neshel-loading-color, CanvasText);
+    animation: neshel-fb-slow-pulse 2s ease-in-out infinite;
+  }
+  [data-neshel-fx~="optimistic"][data-neshel-optimistic="pending"]::before {
+    animation: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .neshel-pending-text[data-pending] {
+    background: none;
+    -webkit-text-fill-color: currentColor;
+    animation: none;
+  }
+  .neshel-progress,
+  .neshel-ring-track {
+    background: Canvas;
+    stroke: GrayText;
+    outline: 1px solid CanvasText;
+  }
+  .neshel-progress-bar,
+  .neshel-dot {
+    background: Highlight;
+  }
+  .neshel-ring-arc {
+    stroke: Highlight;
+  }
+  .neshel-skeleton-shimmer::after,
+  [data-neshel-fx~="shimmer"]::after {
+    display: none;
+  }
+  [data-neshel-fx~="loading"]::after {
+    border-color: ButtonText;
+    border-top-color: transparent;
+  }
+  [data-neshel-fx~="optimistic"][data-neshel-optimistic="failed"] {
+    outline-color: Mark;
+  }
+}

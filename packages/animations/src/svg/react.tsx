@@ -14,6 +14,7 @@ import {
   useRef,
 } from "react";
 import type { LoopEffectControl } from "../core/loop.js";
+import { CHECK_CIRCLE, CHECK_PATH, CHECK_VIEWBOX } from "../core/marks.js";
 import type { ProgressControl } from "../core/progress-driver.js";
 import { useEngine } from "../react/use-engine.js";
 import {
@@ -196,7 +197,7 @@ export function SuccessCheck(props: SuccessCheckProps) {
     // biome-ignore lint/a11y/noSvgWithoutTitle: decorative (aria-hidden) unless `title` is given, then role="img" + aria-label.
     <svg
       ref={ref}
-      viewBox="0 0 52 52"
+      viewBox={CHECK_VIEWBOX}
       width={size}
       height={size}
       fill="none"
@@ -209,8 +210,8 @@ export function SuccessCheck(props: SuccessCheckProps) {
       {...(title ? { role: "img", "aria-label": title } : { "aria-hidden": true })}
       {...rest}
     >
-      {circle ? <circle cx="26" cy="26" r="23" /> : null}
-      <path d="M15 27l7 7 15-16" />
+      {circle ? <circle {...CHECK_CIRCLE} /> : null}
+      <path d={CHECK_PATH} />
     </svg>
   );
 }

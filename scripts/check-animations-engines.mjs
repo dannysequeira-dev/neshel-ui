@@ -372,6 +372,71 @@ async function runEngine(playwright, engine, url, throttle) {
         performance: n.performance,
       };
     });
+    // Phase 015 media/ambient/feedback gallery: the same in-page suite as the Chrome check; reduced motion on a fresh
+    // page.
+    if (process.env.NESHEL_TRACE) console.info(`trace ${engine}: media suite`);
+    const mediaSuite = await page.evaluate(() => window.__neshelLab.media.runMediaSuite());
+    for (const item of mediaSuite) cases.push(item);
+    // PR #16 review R2: destroy in the middle of a real mouse drag must release the pointer capture.
+    await run(
+      "M04 real mouse: destroy mid-drag releases the capture; the next control receives input",
+      async () => {
+        const probe = () => page.evaluate(() => window.__neshelLab.media.compareProbe.state());
+        await page.evaluate(() => {
+          document.getElementById("m04-probe").scrollIntoView({ block: "center" });
+          window.__neshelLab.media.compareProbe.create();
+        });
+        const box = await page.locator("#m04-probe").boundingBox();
+        const y = box.y + box.height / 2;
+        await page.mouse.move(box.x + box.width * 0.7, y);
+        await page.mouse.down();
+        await page.mouse.move(box.x + box.width * 0.6, y);
+        const during = await probe();
+        check(during.captured === true, `capture during drag: ${JSON.stringify(during)}`);
+        await page.evaluate(() => {
+          window.__neshelLab.media.compareProbe.destroy();
+          window.__neshelLab.media.compareProbe.clearLog();
+        });
+        const after = await probe();
+        check(after.captured === false, `capture after destroy: ${JSON.stringify(after)}`);
+        const next = await page.locator("#m04-probe-next").boundingBox();
+        await page.mouse.move(next.x + next.width / 2, next.y + next.height / 2);
+        const held = await probe();
+        check(
+          held.log.includes("next:pointermove") && !held.log.includes("root:pointermove"),
+          `moves while held: ${JSON.stringify(held.log)}`,
+        );
+        await page.mouse.up();
+        await page.evaluate(() => window.__neshelLab.media.compareProbe.clearLog());
+        await page.mouse.click(next.x + next.width / 2, next.y + next.height / 2);
+        const clicked = await probe();
+        check(clicked.log.includes("next:click"), `next control: ${JSON.stringify(clicked.log)}`);
+        await page.mouse.move(2, 2);
+      },
+    );
+    await run(
+      "phase 015: reduced motion live — ambient static, no canvas task, slow spinner pulse, no camera",
+      async () => {
+        const fresh = await context.newPage();
+        await fresh.goto(url);
+        await fresh.waitForFunction(() => window.__neshelLab?.media?.reducedFacts !== undefined);
+        await fresh.emulateMedia({ reducedMotion: "reduce" });
+        const facts = await fresh.evaluate(() => window.__neshelLab.media.reducedFacts());
+        await fresh.close();
+        check(
+          facts.reduced === true &&
+            facts.ambientAnimation === "none" &&
+            facts.canvasTasks === 0 &&
+            facts.spinnerAnimation === "neshel-fb-slow-pulse" &&
+            facts.kenBurnsScale === "",
+          JSON.stringify(facts),
+        );
+      },
+    );
+    notes.media = await page.evaluate(() => {
+      const n = window.__neshelLab.notes;
+      return { support: n.mediaSupport, m05: n.m05Filter, m06: n.m06, m09: n.m09, f10: n.f10Clip };
+    });
     notes.viewTransitionSupport = await page.evaluate(
       () => window.__neshelLab.notes.viewTransitions,
     );
@@ -588,6 +653,8 @@ const TYPES = {
   ".js": "text/javascript",
   ".css": "text/css",
   ".svg": "image/svg+xml",
+  ".webm": "video/webm",
+  ".mp4": "video/mp4",
 };
 
 /** Static server for the built lab: Chromium and WebKit refuse module scripts from file:// URLs. */
@@ -600,7 +667,27 @@ function serve(dir) {
       response.writeHead(404).end();
       return;
     }
-    response.writeHead(200, { "content-type": TYPES[extname(path)] ?? "application/octet-stream" });
+    const type = TYPES[extname(path)] ?? "application/octet-stream";
+    // Byte ranges (Phase 015 M06): media elements seek with Range requests.
+    const size = statSync(path).size;
+    const range = /^bytes=(\d*)-(\d*)$/.exec(request.headers.range ?? "");
+    if (range) {
+      const start = range[1] ? Number(range[1]) : 0;
+      const end = range[2] ? Math.min(Number(range[2]), size - 1) : size - 1;
+      response.writeHead(206, {
+        "content-type": type,
+        "accept-ranges": "bytes",
+        "content-range": `bytes ${start}-${end}/${size}`,
+        "content-length": end - start + 1,
+      });
+      createReadStream(path, { start, end }).pipe(response);
+      return;
+    }
+    response.writeHead(200, {
+      "content-type": type,
+      "accept-ranges": "bytes",
+      "content-length": size,
+    });
     createReadStream(path).pipe(response);
   });
   return new Promise((done) => server.listen(0, "127.0.0.1", () => done(server)));

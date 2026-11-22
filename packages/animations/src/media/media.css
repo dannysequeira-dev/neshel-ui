@@ -1,0 +1,238 @@
+/*
+ * @neshel-ui/animations/media.css — Images & Media (Phase 015, M01–M10). Opt-in. Styles only package-rendered
+ * frames, layers, controls and the lightbox dialog; the consumer's media are moved by the engine through the
+ * Motion Host (rule R-1), never by CSS transitions. No global selectors, no resets.
+ */
+
+/* M01 / M10 — clipping frames */
+.neshel-kenburns,
+.neshel-hoverpan {
+  position: relative;
+  display: block;
+  overflow: hidden;
+}
+.neshel-kenburns > img,
+.neshel-kenburns > video,
+.neshel-kenburns > picture > img,
+.neshel-hoverpan > img,
+.neshel-hoverpan > video,
+.neshel-hoverpan > picture > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.neshel-hoverpan:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+
+/* M02 — blur-up frame (the placeholder layer carries inline styles so it works without this file) */
+.neshel-blurup {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  overflow: hidden;
+  vertical-align: middle;
+}
+.neshel-blurup > img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* M04 — comparison slider */
+.neshel-compare {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: ew-resize;
+}
+.neshel-compare[data-orientation="vertical"] {
+  touch-action: pan-x;
+  cursor: ns-resize;
+}
+.neshel-compare-before,
+.neshel-compare-after {
+  display: block;
+}
+.neshel-compare-after {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(0 0 0 var(--neshel-compare, 50%));
+}
+.neshel-compare[data-orientation="vertical"] .neshel-compare-after {
+  clip-path: inset(var(--neshel-compare, 50%) 0 0 0);
+}
+.neshel-compare-before img,
+.neshel-compare-after img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+.neshel-compare-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--neshel-compare, 50%);
+  width: 2px;
+  translate: -50% 0;
+  background: #fff;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.35);
+  pointer-events: none;
+}
+.neshel-compare-handle::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 2.25rem;
+  height: 2.25rem;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 4px rgb(0 0 0 / 0.4);
+}
+.neshel-compare[data-orientation="vertical"] .neshel-compare-handle {
+  top: var(--neshel-compare, 50%);
+  bottom: auto;
+  left: 0;
+  right: 0;
+  width: auto;
+  height: 2px;
+  translate: 0 -50%;
+}
+.neshel-compare-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+  opacity: 0;
+}
+.neshel-compare:has(.neshel-compare-input:focus-visible) .neshel-compare-handle::after {
+  outline: 3px solid #1a73e8;
+  outline-offset: 2px;
+}
+.neshel-compare-jumps {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+@media (forced-colors: active) {
+  .neshel-compare-handle,
+  .neshel-compare-handle::after {
+    background: CanvasText;
+    box-shadow: none;
+  }
+  .neshel-compare:has(.neshel-compare-input:focus-visible) .neshel-compare-handle::after {
+    outline-color: Highlight;
+  }
+}
+
+/* M07 — lightbox (native dialog) */
+.neshel-lightbox-trigger {
+  display: inline-block;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: zoom-in;
+  line-height: 0;
+}
+.neshel-lightbox-trigger:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+}
+.neshel-lightbox-trigger > img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+.neshel-lightbox {
+  max-width: min(92vw, 75rem);
+  max-height: 92vh;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  overflow: visible;
+  opacity: 0;
+  transition: opacity 0.22s ease;
+}
+.neshel-lightbox[data-state="open"] {
+  opacity: 1;
+}
+.neshel-lightbox::backdrop {
+  background: rgb(8 10 18 / 0.82);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.neshel-lightbox[data-state="open"]::backdrop {
+  opacity: 1;
+}
+.neshel-lightbox-body > img,
+.neshel-lightbox-body > picture > img {
+  display: block;
+  max-width: min(92vw, 75rem);
+  max-height: 88vh;
+  width: auto;
+  height: auto;
+  margin: 0 auto;
+}
+.neshel-lightbox-close {
+  position: absolute;
+  top: -0.75rem;
+  right: -0.75rem;
+  z-index: 1;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 0;
+  border-radius: 50%;
+  background: #fff;
+  color: #111;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.neshel-lightbox-close:focus-visible {
+  outline: 3px solid #1a73e8;
+  outline-offset: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .neshel-lightbox,
+  .neshel-lightbox::backdrop {
+    transition-duration: 0.12s;
+  }
+}
+@media (forced-colors: active) {
+  .neshel-lightbox-close {
+    border: 1px solid ButtonText;
+    background: ButtonFace;
+    color: ButtonText;
+  }
+}
+
+/* M08 / M09 — stacked slides */
+.neshel-crossfade {
+  position: relative;
+  display: grid;
+}
+.neshel-crossfade > * {
+  grid-area: 1 / 1;
+  min-width: 0;
+}
+.neshel-crossfade > img,
+.neshel-crossfade > picture > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}

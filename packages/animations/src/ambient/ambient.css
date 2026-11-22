@@ -1,0 +1,233 @@
+/*
+ * @neshel-ui/animations/ambient.css — Background & Ambient (Phase 015, B01–B10). Opt-in. Every rule targets
+ * package layers (`aria-hidden`, `pointer-events: none`). Animated parts are PAUSED by default: they move only
+ * while the engine marks their layer `data-neshel-ambient="running"` (on screen, page visible, not reduced, not
+ * paused by the page switch, motion time left). `static` removes the animation (rest frame). Without JavaScript the
+ * decoration is static. Transforms only; soft radial gradients instead of `filter: blur` (research R10).
+ */
+
+.neshel-ambient {
+  position: relative;
+  isolation: isolate;
+}
+
+.neshel-ambient-layer {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  contain: strict;
+}
+
+.neshel-ambient-part {
+  position: absolute;
+  animation-play-state: paused;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  animation-direction: alternate;
+  animation-duration: var(--neshel-ambient-period, 12000ms);
+  animation-delay: var(--neshel-ambient-delay, 0ms);
+  will-change: auto;
+}
+.neshel-ambient-layer[data-neshel-ambient="running"] > .neshel-ambient-part {
+  animation-play-state: running;
+}
+.neshel-ambient-layer[data-neshel-ambient="static"] > .neshel-ambient-part {
+  animation-name: none;
+}
+
+/* B01 gradient shift */
+.neshel-gradient-shift-plane {
+  inset: -50%;
+  background: var(--neshel-ambient-gradient);
+  animation-name: neshel-gradient-shift;
+}
+@keyframes neshel-gradient-shift {
+  from {
+    transform: translate(-18%, -12%);
+  }
+  to {
+    transform: translate(18%, 12%);
+  }
+}
+
+/* B02 aurora */
+.neshel-aurora {
+  opacity: var(--neshel-ambient-intensity, 0.6);
+}
+.neshel-aurora-blob {
+  left: var(--neshel-ambient-x, 20%);
+  top: var(--neshel-ambient-y, 10%);
+  width: 70%;
+  aspect-ratio: 1.6;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, var(--neshel-ambient-color, #6d5dfc), transparent);
+  translate: -25% -25%;
+  animation-name: neshel-aurora;
+}
+@keyframes neshel-aurora {
+  from {
+    transform: translate(-12%, -6%) rotate(-8deg) scale(1);
+  }
+  to {
+    transform: translate(16%, 10%) rotate(10deg) scale(1.22);
+  }
+}
+
+/* B03 grain — one static texture shared by every instance (decoded once by the browser) */
+.neshel-grain {
+  opacity: var(--neshel-grain-opacity, 0.08);
+  mix-blend-mode: var(--neshel-grain-blend, overlay);
+}
+.neshel-grain-plane {
+  inset: -64px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: var(--neshel-grain-size, 180px);
+  animation-name: none;
+}
+.neshel-grain-jitter {
+  animation-name: neshel-grain-jitter;
+  animation-duration: 1s;
+  animation-timing-function: steps(1, end);
+  animation-direction: normal;
+}
+/* 8 positions per second: a texture shift, never a flash (low opacity, same luminance). */
+@keyframes neshel-grain-jitter {
+  0% {
+    transform: translate(0, 0);
+  }
+  12.5% {
+    transform: translate(-24px, 12px);
+  }
+  25% {
+    transform: translate(18px, -30px);
+  }
+  37.5% {
+    transform: translate(-36px, -8px);
+  }
+  50% {
+    transform: translate(30px, 22px);
+  }
+  62.5% {
+    transform: translate(-10px, 34px);
+  }
+  75% {
+    transform: translate(40px, -16px);
+  }
+  87.5% {
+    transform: translate(-28px, -36px);
+  }
+}
+
+/* B06 grid / dots */
+.neshel-grid-pattern[data-fade] {
+  mask-image: radial-gradient(ellipse at center, #000 35%, transparent 80%);
+}
+.neshel-grid-pattern-plane {
+  inset: calc(var(--neshel-pattern-cell, 32px) * -1);
+  background-image: var(--neshel-pattern-image);
+  background-size: var(--neshel-pattern-cell, 32px) var(--neshel-pattern-cell, 32px);
+  animation-name: neshel-grid-pattern;
+  animation-timing-function: linear;
+  animation-direction: normal;
+}
+@keyframes neshel-grid-pattern {
+  from {
+    transform: translate(0, 0);
+  }
+  to {
+    transform: translate(var(--neshel-pattern-x, -32px), var(--neshel-pattern-y, -32px));
+  }
+}
+
+/* B07 mesh gradient */
+.neshel-mesh-gradient {
+  background: var(--neshel-mesh-base, #0f172a);
+}
+.neshel-mesh-point {
+  left: var(--neshel-ambient-x, 0%);
+  top: var(--neshel-ambient-y, 0%);
+  width: 110%;
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: radial-gradient(closest-side, var(--neshel-ambient-color, #6d5dfc), transparent);
+  animation-name: neshel-mesh-point;
+}
+@keyframes neshel-mesh-point {
+  from {
+    transform: translate(calc(var(--neshel-mesh-travel, 12%) * -1), var(--neshel-mesh-travel, 12%));
+  }
+  to {
+    transform: translate(var(--neshel-mesh-travel, 12%), calc(var(--neshel-mesh-travel, 12%) * -1));
+  }
+}
+
+/* B09 pointer glow */
+.neshel-pointer-glow::before {
+  content: "";
+  position: absolute;
+  left: var(--neshel-glow-x, 50%);
+  top: var(--neshel-glow-y, 50%);
+  width: var(--neshel-glow-size, 360px);
+  aspect-ratio: 1;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: radial-gradient(
+    closest-side,
+    var(--neshel-glow-color, rgb(255 255 255 / 0.4)),
+    transparent
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+.neshel-pointer-glow[data-active][data-neshel-ambient="running"]::before {
+  opacity: var(--neshel-glow-intensity, 0.35);
+}
+
+/* B10 waves */
+.neshel-wave {
+  left: 0;
+  bottom: var(--neshel-wave-offset, 0px);
+  width: calc(100% + var(--neshel-wave-length, 600px));
+  height: var(--neshel-wave-height, 76px);
+  background-image: var(--neshel-wave-image);
+  background-repeat: repeat-x;
+  background-size: var(--neshel-wave-length, 600px) 100%;
+  animation-name: neshel-wave;
+  animation-timing-function: linear;
+  animation-direction: normal;
+}
+.neshel-waves[data-position="top"] .neshel-wave {
+  top: var(--neshel-wave-offset, 0px);
+  bottom: auto;
+  scale: 1 -1;
+}
+@keyframes neshel-wave {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(var(--neshel-wave-length, 600px) * -1));
+  }
+}
+
+/* Canvas surfaces (B04, B05) carry inline positioning; nothing to animate in CSS. */
+
+@media (prefers-reduced-motion: reduce) {
+  .neshel-ambient-layer > .neshel-ambient-part {
+    animation-name: none;
+  }
+  .neshel-pointer-glow::before {
+    transition: none;
+  }
+}
+
+/* Forced colours: decorations are removed; content keeps system colours. */
+@media (forced-colors: active) {
+  .neshel-ambient-layer,
+  .neshel-ambient-canvas {
+    display: none;
+  }
+}

@@ -855,6 +855,197 @@ async function main() {
         notes.textSvgReduced = facts;
       },
     );
+    // Phase 015 media/ambient/feedback gallery: the in-page suite (shared with Playwright), real keyboard input for
+    // the comparison slider, the lightbox and toasts, Chrome's accessibility tree, forced colours and reduced motion.
+    const mediaCases = await p.evaluate("window.__neshelLab.media.runMediaSuite()");
+    for (const item of mediaCases) cases.push(item);
+    await run(
+      "M04 real keyboard: arrows change the native range value and the divider",
+      async () => {
+        await p.evaluate(
+          `(() => { const i = document.querySelector("#m04-frame input"); i.scrollIntoView({ block: "center" }); i.focus(); i.value = "50"; i.dispatchEvent(new Event("input")); })()`,
+        );
+        await key("ArrowRight", "ArrowRight", 39);
+        await key("ArrowRight", "ArrowRight", 39);
+        // The divider is written in the next frame's write phase.
+        const state = await p.evaluate(
+          `new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(() => { const r = document.querySelector("#m04-frame"); done({ value: r.querySelector("input").value, divider: r.style.getPropertyValue("--neshel-compare") }); })))`,
+        );
+        check(state.value === "52" && state.divider === "52%", JSON.stringify(state));
+      },
+    );
+    // PR #16 review R2: destroy in the middle of a real drag must release the pointer capture.
+    const probeState = () => p.evaluate("window.__neshelLab.media.compareProbe.state()");
+    await run(
+      "M04 real mouse: destroy mid-drag releases the capture; the next control receives input",
+      async () => {
+        await scrollIntoView("#m04-probe");
+        await p.evaluate("window.__neshelLab.media.compareProbe.create()");
+        const r = await rectOf("#m04-probe");
+        const y = r.top + r.height / 2;
+        const press = (type, x) =>
+          p.send("Input.dispatchMouseEvent", { type, x, y, button: "left", clickCount: 1 });
+        await mouse(r.left + r.width * 0.7, y);
+        await press("mousePressed", r.left + r.width * 0.7);
+        await p.send("Input.dispatchMouseEvent", {
+          type: "mouseMoved",
+          x: r.left + r.width * 0.6,
+          y,
+          button: "left",
+          buttons: 1,
+        });
+        const during = await probeState();
+        check(during.captured === true, `capture during drag: ${JSON.stringify(during)}`);
+        await p.evaluate("window.__neshelLab.media.compareProbe.destroy()");
+        await p.evaluate("window.__neshelLab.media.compareProbe.clearLog()");
+        const after = await probeState();
+        check(after.captured === false, `capture after destroy: ${JSON.stringify(after)}`);
+        const next = await rectOf("#m04-probe-next");
+        await p.send("Input.dispatchMouseEvent", {
+          type: "mouseMoved",
+          x: next.left + next.width / 2,
+          y: next.top + next.height / 2,
+          button: "left",
+          buttons: 1,
+        });
+        const held = await probeState();
+        check(
+          held.log.includes("next:pointermove") && !held.log.includes("root:pointermove"),
+          `moves while held: ${JSON.stringify(held.log)}`,
+        );
+        await p.send("Input.dispatchMouseEvent", {
+          type: "mouseReleased",
+          x: next.left + next.width / 2,
+          y: next.top + next.height / 2,
+          button: "left",
+          clickCount: 1,
+        });
+        await p.evaluate("window.__neshelLab.media.compareProbe.clearLog()");
+        for (const type of ["mousePressed", "mouseReleased"])
+          await p.send("Input.dispatchMouseEvent", {
+            type,
+            x: next.left + next.width / 2,
+            y: next.top + next.height / 2,
+            button: "left",
+            clickCount: 1,
+          });
+        const clicked = await probeState();
+        check(clicked.log.includes("next:click"), `next control: ${JSON.stringify(clicked.log)}`);
+        await mouse(2, 2);
+      },
+    );
+    await run(
+      "M04 real touch: a cancelled drag releases the capture; destroy mid-touch-drag releases it too",
+      async () => {
+        await scrollIntoView("#m04-probe");
+        await p.evaluate("window.__neshelLab.media.compareProbe.create()");
+        const r = await rectOf("#m04-probe");
+        const y = r.top + r.height / 2;
+        await touch("touchStart", [[r.left + r.width * 0.3, y]]);
+        await touch("touchMove", [[r.left + r.width * 0.4, y]]);
+        const during = await probeState();
+        check(during.captured === true, `capture during touch drag: ${JSON.stringify(during)}`);
+        await touch("touchCancel", []);
+        await until(
+          "released on cancel",
+          `!window.__neshelLab.media.compareProbe.state().captured`,
+          `window.__neshelLab.media.compareProbe.state()`,
+        );
+        await touch("touchStart", [[r.left + r.width * 0.5, y]]);
+        await touch("touchMove", [[r.left + r.width * 0.55, y]]);
+        check((await probeState()).captured === true, "a new touch drag captures again");
+        await p.evaluate("window.__neshelLab.media.compareProbe.destroy()");
+        const after = await probeState();
+        check(after.captured === false, `capture after destroy: ${JSON.stringify(after)}`);
+        await touch("touchEnd", []);
+      },
+    );
+    await run(
+      "M07 real Escape: the lightbox closes and focus returns to the thumbnail button",
+      async () => {
+        await p.evaluate(
+          `(() => { const b = document.querySelector("#m07-thumb").closest("button"); b.scrollIntoView({ block: "center" }); b.focus(); b.click(); })()`,
+        );
+        await until("open", `document.querySelector("#m07 dialog").open`, `"closed"`);
+        await key("Escape", "Escape", 27);
+        await until(
+          "closed",
+          `!document.querySelector("#m07 dialog").open && document.activeElement === document.querySelector("#m07-thumb").closest("button")`,
+          `document.activeElement?.outerHTML.slice(0, 80)`,
+        );
+      },
+    );
+    await run(
+      "F06 real keyboard: F8 reaches the toasts and Escape closes the focused one",
+      async () => {
+        await p.evaluate(`document.querySelector("#f06-show").click()`);
+        await until(
+          "toast",
+          `!!document.querySelector('#f06 .neshel-toast[data-state="open"]')`,
+          `"no toast"`,
+        );
+        await key("F8", "F8", 119);
+        check(
+          await p.evaluate(`document.activeElement?.classList.contains("neshel-toast")`),
+          "F8 focused a toast",
+        );
+        await key("Escape", "Escape", 27);
+        await until(
+          "closed",
+          `document.querySelectorAll("#f06 .neshel-toast").length === 0`,
+          `document.querySelectorAll("#f06 .neshel-toast").length`,
+        );
+      },
+    );
+    await run(
+      "phase 015 accessibility tree: indicators named progressbars; skeletons, canvases and ambient layers absent",
+      async () => {
+        await p.evaluate(`document.querySelector("#media-title").scrollIntoView()`);
+        const { nodes } = await p.send("Accessibility.getFullAXTree");
+        const live = nodes.filter((n) => !n.ignored);
+        const named = (role, name) =>
+          live.filter((n) => n.role?.value === role && n.name?.value === name);
+        check(named("progressbar", "Loading results").length === 1, "spinner progressbar");
+        check(named("progressbar", "Uploading files").length === 1, "progress bar");
+        check(named("slider", "Compare before and after").length === 1, "native range slider");
+        check(named("button", "Pause background motion").length === 1, "ambient toggle");
+        const canvases = live.filter((n) => n.role?.value === "canvas");
+        check(canvases.length === 0, `decorative canvases exposed: ${canvases.length}`);
+      },
+    );
+    await run(
+      "phase 015 forced colours: ambient decorations removed, pending text plain, indicators in system colours",
+      async () => {
+        await p.send("Emulation.setEmulatedMedia", {
+          features: [
+            { name: "prefers-reduced-motion", value: "no-preference" },
+            { name: "forced-colors", value: "active" },
+          ],
+        });
+        const facts = await p.evaluate(
+          `(() => { const layer = document.querySelector("#b02 .neshel-ambient-layer"); const text = document.querySelector("#f10-text"); return { forced: matchMedia("(forced-colors: active)").matches, layer: layer ? getComputedStyle(layer).display : "missing", text: getComputedStyle(text).backgroundImage, fill: getComputedStyle(text).webkitTextFillColor, color: getComputedStyle(text).color }; })()`,
+        );
+        await motionPreference("no-preference");
+        check(facts.forced === true, JSON.stringify(facts));
+        check(facts.layer === "none", `ambient layer shown: ${JSON.stringify(facts)}`);
+        check(facts.text === "none", `pending text gradient kept: ${JSON.stringify(facts)}`);
+        notes.mediaForced = facts;
+      },
+    );
+    await run(
+      "phase 015: reduced motion live — ambient static, no canvas task, slow spinner pulse, no camera",
+      async () => {
+        await motionPreference("reduce");
+        const facts = await p.evaluate("window.__neshelLab.media.reducedFacts()");
+        await motionPreference("no-preference");
+        check(facts.reduced === true, JSON.stringify(facts));
+        check(facts.ambientAnimation === "none", JSON.stringify(facts));
+        check(facts.canvasTasks === 0, JSON.stringify(facts));
+        check(facts.spinnerAnimation === "neshel-fb-slow-pulse", JSON.stringify(facts));
+        check(facts.kenBurnsScale === "", JSON.stringify(facts));
+        notes.mediaReduced = facts;
+      },
+    );
     notes.effects = await p.evaluate("window.__neshelLab.notes");
 
     await run("axe: no violations on the lab page", async () => {

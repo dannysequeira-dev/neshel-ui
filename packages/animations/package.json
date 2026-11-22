@@ -35,7 +35,17 @@
     "typewriter",
     "svg",
     "path-morph",
-    "motion-path"
+    "motion-path",
+    "media",
+    "image",
+    "video",
+    "lightbox",
+    "ambient",
+    "background",
+    "particles",
+    "loading",
+    "feedback",
+    "toast"
   ],
   "homepage": "https://github.com/dannysequeira-dev/neshel-ui/tree/main/packages/animations#readme",
   "bugs": {
@@ -119,6 +129,18 @@
       "types": "./dist/svg/index.d.ts",
       "import": "./dist/svg/index.js"
     },
+    "./media": {
+      "types": "./dist/media/index.d.ts",
+      "import": "./dist/media/index.js"
+    },
+    "./ambient": {
+      "types": "./dist/ambient/index.d.ts",
+      "import": "./dist/ambient/index.js"
+    },
+    "./feedback": {
+      "types": "./dist/feedback/index.d.ts",
+      "import": "./dist/feedback/index.js"
+    },
     "./styles.css": "./dist/styles.css",
     "./hover.css": "./dist/hover.css",
     "./press.css": "./dist/press.css",
@@ -129,10 +151,13 @@
     "./page-transitions.css": "./dist/page-transitions.css",
     "./page-transitions-mpa.css": "./dist/page-transitions-mpa.css",
     "./text.css": "./dist/text.css",
-    "./svg.css": "./dist/svg.css"
+    "./svg.css": "./dist/svg.css",
+    "./media.css": "./dist/media.css",
+    "./ambient.css": "./dist/ambient.css",
+    "./feedback.css": "./dist/feedback.css"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.build.json && node ../../scripts/copy-css.mjs src/hover/hover.css dist/hover.css src/press/press.css dist/press.css src/scroll/scroll.css dist/scroll.css src/gestures/gestures.css dist/gestures.css src/layout/layout.css dist/layout.css src/cinematic/cinematic.css dist/cinematic.css src/page-transitions/page-transitions.css dist/page-transitions.css src/text/text.css dist/text.css src/svg/svg.css dist/svg.css && node ../../scripts/copy-css.mjs --concat dist/styles.css src/styles.css src/hover/hover.css src/press/press.css src/scroll/scroll.css && node ../../scripts/copy-css.mjs --concat dist/page-transitions-mpa.css src/page-transitions/mpa.css src/page-transitions/page-transitions.css",
+    "build": "tsc -p tsconfig.build.json && node ../../scripts/copy-css.mjs src/hover/hover.css dist/hover.css src/press/press.css dist/press.css src/scroll/scroll.css dist/scroll.css src/gestures/gestures.css dist/gestures.css src/layout/layout.css dist/layout.css src/cinematic/cinematic.css dist/cinematic.css src/page-transitions/page-transitions.css dist/page-transitions.css src/text/text.css dist/text.css src/svg/svg.css dist/svg.css src/media/media.css dist/media.css src/ambient/ambient.css dist/ambient.css src/feedback/feedback.css dist/feedback.css && node ../../scripts/copy-css.mjs --concat dist/styles.css src/styles.css src/hover/hover.css src/press/press.css src/scroll/scroll.css && node ../../scripts/copy-css.mjs --concat dist/page-transitions-mpa.css src/page-transitions/mpa.css src/page-transitions/page-transitions.css",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "devDependencies": {
