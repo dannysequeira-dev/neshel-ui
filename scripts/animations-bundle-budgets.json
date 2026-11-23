@@ -85,6 +85,8 @@
   "ambient: Aurora + AmbientMotionToggle": 6272,
   "ambient: entire entry": 13504,
   "feedback: Spinner + ProgressBar": 768,
+  "feedback: createEnterExit (no React)": 7936,
+  "feedback: EnterExit": 9856,
   "feedback: entire entry": 12352,
   "css: advanced.css": 1216,
   "css: gpu.css": 512,

@@ -39,6 +39,11 @@ announces outcomes.
 
 ## §4 Toasts (F06)
 
+> **Superseded in feature 017** (owner decision): the toaster store and renderer moved to `@neshel-ui/components`
+> ([toast-api.md](../../017-components-completion/contracts/toast-api.md)); F06 in Animations is enter/exit motion
+> only ([f06-enter-exit.md](../../017-components-completion/contracts/f06-enter-exit.md)). The text below is the
+> Phase 015 record.
+
 ```ts
 createToaster({ max = 3, duration = "auto" }): Toaster
 toaster.show({ title, description?, tone?: "neutral" | "success" | "error", duration?, action?: { label, onAction } }): string

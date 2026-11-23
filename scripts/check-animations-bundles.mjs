@@ -367,8 +367,8 @@ export const ENTRIES = {
     source: `export { Spinner, ProgressBar } from "${A}/feedback";`,
     markers: { react: true, toaster: false, surface: false },
   },
-  // Feature 017: the toaster moved to @neshel-ui/components; F06 is enter/exit motion only (no budget yet:
-  // measured and proposed for owner approval in specs/017-components-completion/evidence.md).
+  // Feature 017: the toaster moved to @neshel-ui/components; F06 is enter/exit motion only (budgets approved by
+  // the owner, 2026-11-23; specs/017-components-completion/evidence.md).
   "feedback: createEnterExit (no React)": {
     source: `export { createEnterExit } from "${A}/feedback";`,
     markers: { react: false, toaster: false },

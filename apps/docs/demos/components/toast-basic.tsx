@@ -1,3 +1,4 @@
+"use client";
 import { Button, createToaster, Toaster } from "@neshel-ui/components";
 
 // One store for the application; no provider. Create it once (module scope or a memo).

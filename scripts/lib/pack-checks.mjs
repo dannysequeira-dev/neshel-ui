@@ -269,6 +269,10 @@ export const COMPONENTS_ALLOWED_IMPORTS = [
   "@radix-ui/react-tooltip",
   "@base-ui/react/select",
   "@base-ui/react/combobox",
+  // Feature 017: Accordion, Collapsible, Switch (same @base-ui/react dependency, research R3).
+  "@base-ui/react/accordion",
+  "@base-ui/react/collapsible",
+  "@base-ui/react/switch",
 ];
 const COMPONENTS_DEPENDENCIES = [
   "@base-ui/react",

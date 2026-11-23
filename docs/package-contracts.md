@@ -69,7 +69,8 @@ runtime dependencies `@radix-ui/react-slot` and `tailwind-variants` (lite).
 
 **Implemented in feature 005** (published as 0.1.0; [contracts](../specs/005-components-navigation-shell/contracts/),
 [components guide](components.md), ADR 0012/0013/0014). Peers `react ^19.0.0`, `react-dom ^19.0.0`
-and `@neshel-ui/config` (types only); runtime dependencies `@base-ui/react` (select/combobox subpaths),
+and `@neshel-ui/config` (types only); runtime dependencies `@base-ui/react` (select, combobox, accordion,
+collapsible and switch subpaths),
 six Radix primitives (dialog, alert-dialog, popover, dropdown-menu, navigation-menu, tooltip),
 `@radix-ui/react-slot` and `tailwind-variants` (lite).
 
@@ -77,6 +78,10 @@ six Radix primitives (dialog, alert-dialog, popover, dropdown-menu, navigation-m
   AlertDialog, Sheet, Popover, Tooltip families; Select, MultiSelect, Combobox; Navbar,
   NavigationMenu, DropdownMenu, MobileMenu families; AppShell, Sidebar families, SidebarTrigger,
   `useAppShell`; `NeshelComponentsError`; prop types. Flat names only (no dot notation).
+- **Feature 017 (unreleased; additions only, 0.1.0 APIs unchanged):** Accordion and Collapsible families,
+  Switch, `createToaster` + `Toaster` (moved from `@neshel-ui/animations/feedback`; no provider), and Escape
+  ownership across nested Neshel layers (K-15). Contracts:
+  [specs/017-components-completion/contracts/](../specs/017-components-completion/contracts/).
 - `./styles.css` (precompiled, `@layer components.neshel`, keyframes, reduced motion) and
   `./style-manifest.json` (schema 2, read by `neshel generate`).
 - Responsive: Button `size`, AppShell `breakpoint`, NavbarNav `hideBelow`, MobileMenu

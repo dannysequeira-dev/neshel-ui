@@ -1,3 +1,4 @@
+"use client";
 import { Button, Label, Switch } from "@neshel-ui/components";
 import { useState } from "react";
 
