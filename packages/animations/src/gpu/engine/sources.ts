@@ -9,6 +9,19 @@ import { GpuFailure } from "./surface.js";
 
 export type MapSource = string | HTMLImageElement | HTMLCanvasElement | ImageBitmap;
 
+/**
+ * Whether a map URL is acceptable: relative, `http(s):`, `blob:` or `data:image/…` (other schemes such as
+ * `javascript:` or `file:` are refused); at most 16 MiB of characters.
+ */
+export function isMapUrl(value: string): boolean {
+  if (value.length === 0 || value.length > 16 * 1024 * 1024) return false;
+  const scheme = /^\s*([a-z][a-z0-9+.-]*):/i.exec(value)?.[1]?.toLowerCase();
+  if (!scheme) return true;
+  return (
+    scheme === "http" || scheme === "https" || scheme === "blob" || /^\s*data:image\//i.test(value)
+  );
+}
+
 /** Resolve a map option into a decoded source (rejects with `GpuFailure` `texture`). */
 export function loadSource(
   source: MapSource,

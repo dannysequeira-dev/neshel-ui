@@ -147,7 +147,20 @@ export function createCubeRotate(root: HTMLElement, options: CubeRotateOptions =
         i === from
           ? (axis === "y" ? -1 : 1) * p * 90 * dir
           : (axis === "y" ? 1 : -1) * (1 - p) * 90 * dir;
-      host.setLayer(panel.key, Math.abs(deg) < 1e-3 ? undefined : orbitLayer(axis, deg, d));
+      if (Math.abs(deg) < 1e-3) {
+        host.setLayer(panel.key, undefined);
+        return;
+      }
+      // Mid-turn, a face's outer edge would project at d·sinθ + (w/2)·cosθ = (w/2)(sinθ + cosθ) — up to √2 × the
+      // half width, overflowing the panel box. Scaling the whole orbit by 1/(sinθ + cosθ) keeps the projection
+      // inside the box exactly (perspective only shrinks it further): the cube recedes slightly mid-turn.
+      const r = (p * Math.PI) / 2;
+      const s = 1 / (Math.abs(Math.sin(r)) + Math.abs(Math.cos(r)));
+      const layer = orbitLayer(axis, deg, d * s);
+      host.setLayer(
+        panel.key,
+        s < 0.9999 ? { ...layer, scale: Math.round(s * 10000) / 10000 } : layer,
+      );
     });
   }
 
@@ -192,6 +205,10 @@ export function createCubeRotate(root: HTMLElement, options: CubeRotateOptions =
     const incoming = panels[to]?.element;
     if (outgoing && incoming) {
       setHidden(ledger, incoming, false);
+      // A `visibility: hidden` element cannot take focus: show it now, not in the next write phase.
+      const panel = panels[to];
+      panel?.writer.set("visibility", undefined);
+      getMotionHost(incoming).flush();
       moveFocusIfInside(ledger, outgoing, incoming);
     }
     index = to; // the target is the logical active panel from the start

@@ -231,7 +231,11 @@ test("D02 · cube faces orbit a cached half-depth; one interactive panel; exact 
   // Outgoing at −45°, incoming at +45° about d = 200 px.
   assert.match(panels[0].style.transform, /rotateY\(-45deg\)/);
   assert.match(panels[1].style.transform, /rotateY\(45deg\)/);
-  assert.match(panels[0].style.transform, /translate3d\(-141\.421px, 0px, -58\.579px\)/);
+  // Scaled orbit: 1/(sin 45° + cos 45°) keeps the projection inside the panel box (no overflow).
+  assert.match(
+    panels[0].style.transform,
+    /translate3d\(-100px, 0px, -41\.421px\) rotateY\(-45deg\) scale\(0\.707\)/,
+  );
   assert.equal(panels[1].style.visibility, "");
   assert.equal(cube.index, 1, "the target is the logical active panel");
   assert.ok(panels[0].hasAttribute("inert"));
@@ -570,7 +574,43 @@ test("React · CardFlip controlled `flipped` flips the live engine without recre
   settle();
   assert.equal(ref.current, engine, "same engine");
   assert.equal(engine.side, "back");
-  assert.deepEqual(changes, [true]);
+  assert.deepEqual(changes, [], "a prop-driven flip reports nothing (the parent already knows)");
+  await view.unmount();
+  settle();
+});
+
+test("React · CardFlip controlled: toggles report the intent at once; a late render never undoes a newer toggle", async () => {
+  // Regression (WebKit lab run): the visible-side crossing used to be reported; when React committed it after a
+  // second toggle, the controlled prop flipped the card back against the user's latest action.
+  let flipped = false;
+  const changes = [];
+  const ref = { current: null };
+  const face = (label) =>
+    h("button", { type: "button", "data-neshel-flip-toggle": "", id: `t-${label}` }, label);
+  const tree = () =>
+    h(A.CardFlip, {
+      front: face("front"),
+      back: face("back"),
+      flipped,
+      controlRef: ref,
+      onFlippedChange: (value) => {
+        changes.push(value);
+        flipped = value;
+      },
+    });
+  const view = await mount(tree());
+  settle();
+  document.getElementById("t-front").click();
+  assert.deepEqual(changes, [true], "intent reported before any frame");
+  for (let i = 0; i < 60 && ref.current.side !== "back"; i++) frames.flush(1); // just past the 90° crossing
+  assert.equal(ref.current.side, "back");
+  assert.ok(ref.current.progress < 0.95, "still moving");
+  document.getElementById("t-back").click(); // the user changes their mind mid-flip
+  assert.deepEqual(changes, [true, false]);
+  await view.render(tree()); // the parent commits its (latest) state
+  settle();
+  assert.equal(ref.current.target, "front");
+  assert.equal(ref.current.side, "front", "the newer toggle wins");
   await view.unmount();
   settle();
 });

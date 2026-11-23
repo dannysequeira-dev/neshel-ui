@@ -53,13 +53,14 @@ const cx = (...names: Array<string | undefined | false>) => names.filter(Boolean
 // --- D01 ------------------------------------------------------------------------------------------------
 
 export type CardFlipProps = Omit<ComponentPropsWithoutRef<"div">, "children"> &
-  Omit<CardFlipOptions, "inner" | "front" | "back" | "flipped" | "onFlip"> &
+  Omit<CardFlipOptions, "inner" | "front" | "back" | "flipped" | "onToggle"> &
   WithControl<CardFlipControl> & {
     front: ReactNode;
     back: ReactNode;
     /** Controlled side (`true` = back). */
     flipped?: boolean;
     defaultFlipped?: boolean;
+    /** The user asked for the other side (in-face toggle): the intent, reported before any motion. */
     onFlippedChange?(flipped: boolean): void;
   };
 
@@ -71,6 +72,7 @@ export function CardFlip(props: CardFlipProps) {
     flipped,
     defaultFlipped,
     onFlippedChange,
+    onFlip,
     axis,
     direction,
     perspective,
@@ -83,6 +85,7 @@ export function CardFlip(props: CardFlipProps) {
     ...rest
   } = props;
   const latest = useLatest(onFlippedChange);
+  const latestFlip = useLatest(onFlip);
   const initial = useRef(flipped ?? defaultFlipped ?? false);
   const options = {
     axis,
@@ -100,7 +103,10 @@ export function CardFlip(props: CardFlipProps) {
       createCardFlip(el, {
         ...options,
         flipped: initial.current,
-        onFlip: (side: FlipSide) => {
+        onFlip: (side: FlipSide) => latestFlip.current?.(side),
+        // Controlled mode reports the intent, not the visual crossing: a crossing reported late would otherwise
+        // undo a toggle made in the meantime.
+        onToggle: (side: FlipSide) => {
           initial.current = side === "back";
           latest.current?.(side === "back");
         },
@@ -110,7 +116,8 @@ export function CardFlip(props: CardFlipProps) {
   useClientLayoutEffect(() => {
     if (flipped === undefined) return;
     initial.current = flipped;
-    handle.current?.flip(flipped ? "back" : "front");
+    const side = flipped ? "back" : "front";
+    if (handle.current && handle.current.target !== side) handle.current.flip(side);
   }, [flipped]);
   useExpose(controlRef, handle);
   return (

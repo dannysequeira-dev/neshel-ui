@@ -17,7 +17,7 @@ import { createSpringRig } from "../core/springs.js";
 import { validator } from "../core/validate.js";
 import { createImageEffect, type GpuMode } from "./engine/image-effect.js";
 import { activate, bindTexture, drawMesh, type Mesh, quadMesh, uniforms } from "./engine/mesh.js";
-import { depthRange, type MapSource } from "./engine/sources.js";
+import { depthRange, isMapUrl, type MapSource } from "./engine/sources.js";
 import { GpuFailure, type GpuReason } from "./engine/surface.js";
 import { DEPTH_FRAGMENT, QUAD_VERTEX } from "./shaders.js";
 
@@ -101,8 +101,8 @@ export function createDepthParallax(
   if (!source) v.fail("the frame has no <img> or <canvas>.");
   if (o.depth === undefined || o.depth === null)
     v.fail('"depth" is required: an explicit grayscale depth map (depth is never estimated).');
-  if (typeof o.depth === "string" && (o.depth.length > 2048 || /^\s*javascript:/i.test(o.depth)))
-    v.fail('"depth" must be an image URL (at most 2048 characters).');
+  if (typeof o.depth === "string" && !isMapUrl(o.depth))
+    v.fail('"depth" must be an image URL (relative, http(s):, blob: or data:image/).');
   const invert = v.flag("invert", o.invert, false);
   const intensity = v.number("intensity", o.intensity, 0.5, 0, 1);
   const focus = v.number("focus", o.focus, 0.5, 0, 1);

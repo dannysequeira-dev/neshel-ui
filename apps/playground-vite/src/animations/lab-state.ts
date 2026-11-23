@@ -78,6 +78,9 @@ export interface LabState {
   /** Phase 015 media/ambient/feedback gallery (set after mount; loose test hook). */
   // biome-ignore lint/suspicious/noExplicitAny: lab-only hook assembled by three components.
   media?: Record<string, any>;
+  /** Phase 016 advanced 3D/GPU gallery (set after mount; loose test hook). */
+  // biome-ignore lint/suspicious/noExplicitAny: lab-only hook.
+  advanced?: Record<string, any>;
   /** Observations reported by in-page suites (not pass/fail). */
   notes: Record<string, unknown>;
 }

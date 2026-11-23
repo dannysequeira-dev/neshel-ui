@@ -49,12 +49,17 @@ export interface CardFlipOptions {
   /** Elements inside the faces that toggle on click (native buttons); `false` disables. */
   toggleSelector?: string | false;
   reducedMotion?: ReducedMotion;
+  /** The visible face changed (the rotation crossed 90°). */
   onFlip?(side: FlipSide): void;
+  /** A toggle (in-face control or `toggle()`) changed the intended side — the user's intent, before any motion. */
+  onToggle?(side: FlipSide): void;
 }
 
 export interface CardFlipControl {
   /** The face currently facing the viewer. */
   readonly side: FlipSide;
+  /** The side the card is moving to (or resting on). */
+  readonly target: FlipSide;
   /** 0 front … 1 back. */
   readonly progress: number;
   /** `"3d"` or `"fade"` (reduced motion with `reducedEffect: "fade"`, or no `preserve-3d`). */
@@ -95,6 +100,7 @@ export function createCardFlip(root: HTMLElement, options: CardFlipOptions = {})
   const reducedEffect = v.oneOf("reducedEffect", o.reducedEffect, ["fade", "instant"], "fade");
   const policy = v.reducedMotion(o.reducedMotion);
   const onFlip = v.callback<(side: FlipSide) => void>("onFlip", o.onFlip);
+  const onToggle = v.callback<(side: FlipSide) => void>("onToggle", o.onToggle);
   const toggleSelector =
     o.toggleSelector === false
       ? undefined
@@ -212,6 +218,9 @@ export function createCardFlip(root: HTMLElement, options: CardFlipOptions = {})
     get side() {
       return side ?? "front";
     },
+    get target() {
+      return target >= 0.5 ? "back" : "front";
+    },
     get progress() {
       return rig.values.p;
     },
@@ -226,7 +235,10 @@ export function createCardFlip(root: HTMLElement, options: CardFlipOptions = {})
       go(want === "back" ? 1 : 0);
     },
     toggle() {
-      control.flip(target >= 0.5 ? "front" : "back");
+      if (destroyed) return;
+      const next: FlipSide = target >= 0.5 ? "front" : "back";
+      control.flip(next);
+      onToggle?.(next);
     },
     seek(progress) {
       if (destroyed) return;

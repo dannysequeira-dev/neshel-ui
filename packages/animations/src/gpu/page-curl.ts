@@ -234,6 +234,10 @@ export function createPageCurl(frame: HTMLElement, options: PageCurlOptions = {}
         drawMesh(gl, mesh);
         gl.disable(gl.DEPTH_TEST);
       },
+      onReduced() {
+        // Reduced motion released the surface (static swap); when it ends the GPU page is requested again.
+        render(current);
+      },
       onMode(next, why) {
         if (next === "static" && why && why !== "budget" && why !== "lost") {
           if (driverKind === "auto") switchToCss(why);

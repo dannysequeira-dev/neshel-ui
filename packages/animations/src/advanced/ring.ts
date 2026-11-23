@@ -137,7 +137,8 @@ export function createRingCarousel(
     itemWidth = first ? first.offsetWidth || first.getBoundingClientRect().width || 0 : 0;
     items.forEach((item, i) => {
       ledger.set(item.element, "aria-roledescription", "slide");
-      if (!ledger.original(item.element, "role")) ledger.set(item.element, "role", "group");
+      if (!ledger.original(item.element, "role") && /^(DIV|SPAN)$/.test(item.element.tagName))
+        ledger.set(item.element, "role", "group");
       if (
         !ledger.original(item.element, "aria-label") &&
         !item.element.getAttribute("aria-labelledby")

@@ -437,6 +437,131 @@ async function runEngine(playwright, engine, url, throttle) {
       const n = window.__neshelLab.notes;
       return { support: n.mediaSupport, m05: n.m05Filter, m06: n.m06, m09: n.m09, f10: n.f10Clip };
     });
+    // Phase 016 advanced 3D/GPU gallery: the same in-page suite as the Chrome check (WebGL2 pixel probes, forced
+    // context loss, separate fallback rows), real mouse input for CornerRecede, real keyboard for the flip and the
+    // ring, reduced motion on a fresh page.
+    if (process.env.NESHEL_TRACE) console.info(`trace ${engine}: advanced suite`);
+    const advancedSuite = await page.evaluate(() => window.__neshelLab.advanced.runAdvancedSuite());
+    for (const item of advancedSuite) cases.push(item);
+    await run(
+      "D05 real mouse: the corner under the pointer recedes, switches corners through flat, returns on leave",
+      async () => {
+        const corner = () =>
+          page.evaluate(() => {
+            const c = window.__neshelLab.advanced.controls.corner.current;
+            return {
+              corner: c.corner,
+              amount: c.amount,
+              flap: !!document.querySelector("#d05-root .neshel-corner-flap"),
+            };
+          });
+        await page.evaluate(() =>
+          document.getElementById("d05-root").scrollIntoView({ block: "center" }),
+        );
+        const box = await page.locator("#d05-root").boundingBox();
+        await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+        await page.mouse.move(box.x + box.width - 5, box.y + 5, { steps: 4 });
+        await page.waitForFunction(() => {
+          const c = window.__neshelLab.advanced.controls.corner.current;
+          return c.corner === "top-right" && c.amount > 0.8;
+        });
+        check((await corner()).flap, "flap rendered");
+        await page.mouse.move(box.x + 5, box.y + box.height - 5, { steps: 6 });
+        await page.waitForFunction(() => {
+          const c = window.__neshelLab.advanced.controls.corner.current;
+          return c.corner === "bottom-left" && c.amount > 0.8;
+        });
+        await page.mouse.move(2, 2);
+        await page.waitForFunction(
+          () =>
+            window.__neshelLab.advanced.controls.corner.current.amount < 0.001 &&
+            !document.querySelector("#d05-root .neshel-corner-flap"),
+        );
+      },
+    );
+    await run(
+      "D01 real keyboard: Enter on the in-face toggle flips; focus lands on the visible face",
+      async () => {
+        await page.evaluate(() => {
+          const b = document.getElementById("d01-front-toggle");
+          b.scrollIntoView({ block: "center" });
+          b.focus();
+        });
+        await page.keyboard.press("Enter");
+        const flipState = () =>
+          page.evaluate(() => ({
+            side: window.__neshelLab.advanced.controls.flip.current.side,
+            progress: window.__neshelLab.advanced.controls.flip.current.progress,
+            active: document.activeElement?.id || document.activeElement?.tagName,
+          }));
+        await page
+          .waitForFunction(
+            () =>
+              window.__neshelLab.advanced.controls.flip.current.side === "back" &&
+              document.activeElement?.id === "d01-back-link",
+            null,
+            { timeout: 8000 },
+          )
+          .catch(async () => {
+            throw new Error(`not flipped by Enter: ${JSON.stringify(await flipState())}`);
+          });
+        await page.evaluate(() => document.getElementById("d01-back-toggle").focus());
+        const focused = await flipState();
+        await page.keyboard.press("Enter");
+        await page
+          .waitForFunction(
+            () => window.__neshelLab.advanced.controls.flip.current.side === "front",
+            null,
+            { timeout: 8000 },
+          )
+          .catch(async () => {
+            throw new Error(
+              `not flipped back by Enter: before ${JSON.stringify(focused)}, after ${JSON.stringify(await flipState())}`,
+            );
+          });
+      },
+    );
+    await run("D03 real keyboard: arrows on the focused ring move the front item", async () => {
+      await page.evaluate(() => {
+        const r = document.getElementById("d03-ring");
+        r.scrollIntoView({ block: "center" });
+        r.focus();
+      });
+      await page.keyboard.press("ArrowLeft");
+      await page.waitForFunction(
+        () => window.__neshelLab.advanced.controls.ring.current.index === 5,
+      );
+      await page.keyboard.press("Home");
+      await page.waitForFunction(
+        () => window.__neshelLab.advanced.controls.ring.current.index === 0,
+      );
+    });
+    await run(
+      "phase 016: reduced motion live — fade flip, no glitch, static floor, no GPU distortion",
+      async () => {
+        const fresh = await context.newPage();
+        await fresh.goto(url);
+        await fresh.waitForFunction(() => window.__neshelLab?.advanced?.reducedFacts !== undefined);
+        await fresh.emulateMedia({ reducedMotion: "reduce" });
+        const facts = await fresh.evaluate(() => window.__neshelLab.advanced.reducedFacts());
+        await fresh.close();
+        check(
+          facts.flipMode === "fade" &&
+            facts.glitchActive === false &&
+            facts.gridState === "reduced" &&
+            facts.floorRunning === false &&
+            facts.rippleActive === false &&
+            facts.rippleMode === "static" &&
+            facts.depthMode === "static",
+          JSON.stringify(facts),
+        );
+      },
+    );
+    notes.advanced = await page.evaluate(() => ({
+      debug: window.__neshelLab.advanced.debug(),
+      d11: window.__neshelLab.notes.d11Mode,
+      d04: window.__neshelLab.notes.d04,
+    }));
     notes.viewTransitionSupport = await page.evaluate(
       () => window.__neshelLab.notes.viewTransitions,
     );

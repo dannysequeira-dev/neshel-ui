@@ -99,7 +99,7 @@ interface Record {
   lastDraw: number;
   evict(): void;
   grant(): void;
-  draw(): boolean;
+  draw(force?: boolean): boolean;
 }
 
 const live = new Set<Record>();
@@ -487,9 +487,9 @@ export function createGpuSurface(container: HTMLElement, options: GpuSurfaceOpti
       state = "idle";
       surface.request();
     },
-    draw() {
+    draw(force = false) {
       if (state !== "ready" || !gl || !canvas || gl.isContextLost()) return false;
-      if (!visible) {
+      if (!visible && !force) {
         dirtyWhileHidden = true;
         return false;
       }
@@ -564,7 +564,8 @@ export function createGpuSurface(container: HTMLElement, options: GpuSurfaceOpti
         surface.request();
         dirty.delete(record);
       }
-      return record.draw();
+      // An explicit synchronous request (probe) draws even before the visibility observer reported.
+      return record.draw(true);
     },
     release() {
       if (state === "released") return;

@@ -14,7 +14,7 @@ import { createSpringRig } from "../core/springs.js";
 import { validator } from "../core/validate.js";
 import { createImageEffect, type GpuMode } from "./engine/image-effect.js";
 import { activate, bindTexture, drawMesh, type Mesh, quadMesh, uniforms } from "./engine/mesh.js";
-import { type MapSource, noiseMap } from "./engine/sources.js";
+import { isMapUrl, type MapSource, noiseMap } from "./engine/sources.js";
 import type { GpuReason } from "./engine/surface.js";
 import { DISPLACEMENT_FRAGMENT, QUAD_VERTEX } from "./shaders.js";
 
@@ -90,12 +90,8 @@ export function createDisplacementHover(
   const maxDpr = o.maxDpr === undefined ? undefined : v.number("maxDpr", o.maxDpr, 2, 1, 3);
   const policy = v.reducedMotion(o.reducedMotion);
   const map = o.map ?? "noise";
-  if (
-    typeof map === "string" &&
-    map !== "noise" &&
-    (map.length > 2048 || /^\s*javascript:/i.test(map))
-  )
-    v.fail('"map" must be an image URL (at most 2048 characters).');
+  if (typeof map === "string" && map !== "noise" && !isMapUrl(map))
+    v.fail('"map" must be an image URL (relative, http(s):, blob: or data:image/).');
   const mapSource: MapSource =
     map === "noise" ? noiseMap(frame.ownerDocument, seed) : (map as MapSource);
   const types = new Set<string>(o.pointerTypes ?? ["mouse", "pen"]);

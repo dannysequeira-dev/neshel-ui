@@ -397,3 +397,20 @@ test("React · SSR renders native images only; StrictMode leaves no context or G
   assert.equal(info.effects, 0);
   assert.deepEqual(live(), zero);
 });
+
+test("map URLs: relative, http(s), blob and data:image are accepted; other schemes are refused", () => {
+  reset();
+  const { frame } = imageFrame();
+  assert.throws(() => G.createDepthParallax(frame, { depth: "javascript:alert(1)" }), /image URL/);
+  assert.throws(() => G.createDisplacementHover(frame, { map: "file:///etc/passwd" }), /image URL/);
+  assert.throws(
+    () => G.createDisplacementHover(frame, { map: "data:text/html,<b>x</b>" }),
+    /image URL/,
+  );
+  const big = `data:image/png;base64,${"A".repeat(5000)}`;
+  for (const ok of ["maps/noise.png", "https://cdn.example/map.png", "blob:abc", big]) {
+    const fx = G.createDisplacementHover(frame, { map: ok });
+    fx.destroy();
+  }
+  frame.remove();
+});
