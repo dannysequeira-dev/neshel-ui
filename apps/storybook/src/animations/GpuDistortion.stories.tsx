@@ -22,7 +22,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Phase 016, private package (`@neshel-ui/animations/gpu` + `gpu.css`; ADR 0031, Proposed). An optional WebGL2 layer without a graphics dependency: lazy contexts within a budget, exact release, context-loss recovery and package-only shaders. The native `<img>` keeps its attributes and stays in the accessibility tree; the decorative canvas covers it only after a successful draw, and the image comes back without WebGL2, on any failure, under reduced motion and on unmount. HTML is never turned into a texture: the page curl's CSS driver turns live HTML as a rigid page.",
+          "Phase 016, private package (`@neshel-ui/animations/gpu` + `gpu.css`; ADR 0031). An optional WebGL2 layer without a graphics dependency: lazy contexts within a budget, exact release, context-loss recovery and package-only shaders. The native `<img>` keeps its attributes and stays in the accessibility tree; the decorative canvas covers it only after a successful draw, and the image comes back without WebGL2, on any failure, under reduced motion and on unmount. HTML is never turned into a texture: the page curl's CSS driver turns live HTML as a rigid page.",
       },
     },
   },

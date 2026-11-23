@@ -1168,7 +1168,9 @@ async function main() {
     console.error(`check:browser:animations failed: ${failures.length} of ${cases.length} cases.`);
     process.exitCode = 1;
   } else {
-    console.info(`check:browser:animations passed: ${cases.length} cases.`);
+    console.info(
+      `check:browser:animations passed: ${cases.length} cases (${cases.length} passed, 0 skipped, 0 failed; no skip rule applies to this check).`,
+    );
   }
 }
 

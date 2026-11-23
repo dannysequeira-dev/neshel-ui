@@ -34,7 +34,7 @@ Fallback rows (separate, never counted as the main effect): no WebGL2 and a fail
 
 ## 3. GPU architecture and decision
 
-ADR [0031](../../docs/decisions/0031-advanced-3d-and-optional-webgl2-surfaces.md) (**Proposed**): WebGL2 through a
+ADR [0031](../../docs/decisions/0031-advanced-3d-and-optional-webgl2-surfaces.md) (**Accepted** after the PR #17 review, §21): WebGL2 through a
 minimal own layer in the optional `./gpu` entry; no graphics dependency; ADR 0030 unchanged. Research R2 (spike
 `pnpm bench:animations:spike-016`, `data/spike-016-local.json`) and R19 (post-implementation).
 
@@ -103,10 +103,9 @@ are the visual record; browser checks assert the visual facts through computed s
 Storybook: `Animations (experimental)/Advanced 3D (CSS)` (7 stories) and `Distortion (GPU, optional)` (5 stories);
 `pnpm build:storybook` passes. Playground: gallery + suite + bench; `pnpm build:playground` passes.
 
-## 14. Bundle budgets (measured and PROPOSED)
+## 14. Bundle budgets (measured; APPROVED by the owner as proposed, PR #17 review)
 
-From the packed tarball (`data/bundles-016.json`), budget = measured × 1.1 rounded up to 64 B, **proposed for owner
-review**; no earlier budget changed:
+From the packed tarball (`data/bundles-016.json`), budget = measured × 1.1 rounded up to 64 B, **approved as written**; no earlier budget changed:
 
 | Entry                                                             | gzip                    | proposed                |
 | ----------------------------------------------------------------- | ----------------------- | ----------------------- |
@@ -189,3 +188,30 @@ Chromium and WebKit on Ubuntu; Playwright Chromium, Firefox and WebKit on macOS 
 
 - **K-16** Playwright Firefox on GPU-less Linux runners exposes no WebGL2 (forced WebGL and Mesa did not help). Only
   there, GPU rows report `SKIPPED (no WebGL2 on this runner)` — never a pass; everywhere else a missing WebGL2 fails.
+
+## 21. Owner review of PR #17 (comment 7091352862) — R1 and R2
+
+Decisions recorded: ADR 0031 direction approved (now Accepted); the 17 budgets approved as proposed (earlier budgets
+frozen); K-16 accepted as a narrow CI exception (Firefox + Linux + genuine WebGL2 absence only); manual checks are
+mandatory before a first publication, not before merging — they remain **pending, with no result claimed**.
+
+**R1 — cancel pending map loading on destroy.** Tests first (`test/gpu-sources-review-016.test.mjs`, 5 cases). Before the
+fix: **4 failed** — a pending caller-owned map `<img>` kept its `load`/`error` listeners after destroy; the same
+leak repeated across StrictMode remounts; a map that had already failed (`complete`, `naturalWidth` 0) left a
+promise pending forever with attached handlers (the effect never reported a reason); a pending URL map kept its handlers
+and its request. **1 refuted**: a map that resolves after destroy never created a surface or wrote to the native image
+(the existing `destroyed` guard). Fix (`045bf79`): `loadSource` takes an internal `AbortSignal` (listeners removed,
+detached request's `src` dropped, `SourceAborted` ignored by the effect); an already-failed or source-less caller
+image rejects at once with `texture` and the native image stays. After: 5/5 pass. Public API unchanged.
+
+**R2 — split fallback rows; explicit skips.** The mixed row became two independent cases: _no WebGL2 → native image_
+(runs everywhere, including Firefox/Ubuntu) and _shader failure → native image_ (needs WebGL2; K-16-skippable). The
+engines check classifies every case as passed / skipped / failed through `scripts/lib/gpu-skips.mjs`; skips keep
+`ok: false`, carry `skip: { rule, reason, engine, os }` and print as `SKIP`; each engine prints
+`N cases — P passed, S skipped, F failed` and the JSON report has a `summary`. Unit tests (`tests/gpu-skips.test.mjs`)
+prove that NO_WEBGL2 on Chromium, WebKit or Firefox on macOS/Windows fails, that other errors on Firefox/Linux fail,
+that the no-WebGL2 fallback is not skippable, and the arithmetic.
+
+Case counts after R2: animations unit tests **602** (597 + 5 R1); CDP **197** defined (196 + 1 from the split; no skip rule
+applies there); Playwright **205** defined per engine (204 + 1). Local (Windows): CDP 197/197; Chromium, Firefox, WebKit
+205 passed / 0 skipped / 0 failed each. CI on the final head: §22.

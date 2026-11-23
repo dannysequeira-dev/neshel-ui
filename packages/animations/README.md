@@ -14,7 +14,7 @@ decisions: [`specs/008-animations/`](../../specs/008-animations/spec.md),
 [`specs/013-cinematic-page-transitions/`](../../specs/013-cinematic-page-transitions/spec.md),
 [`specs/014-typography-svg-paths/`](../../specs/014-typography-svg-paths/spec.md),
 [`specs/015-media-ambient-feedback/`](../../specs/015-media-ambient-feedback/spec.md),
-[`specs/016-advanced-3d-distortion/`](../../specs/016-advanced-3d-distortion/spec.md), ADRs 0018–0031 (0031 Proposed).
+[`specs/016-advanced-3d-distortion/`](../../specs/016-advanced-3d-distortion/spec.md), ADRs 0018–0031.
 
 ## What exists today
 
@@ -126,7 +126,7 @@ decisions: [`specs/008-animations/`](../../specs/008-animations/spec.md),
   copied), `Glitch` (text once; at most 3 slice changes per second; off under reduced motion), `PerspectiveGrid`
   (decorative, finite by default) and `TiltShift` (at most two `backdrop-filter` bands per side; tint fallback).
   Never loads WebGL.
-- `@neshel-ui/animations/gpu` (Phase 016, optional; ADR 0031 Proposed) — a minimal WebGL2 layer without a graphics
+- `@neshel-ui/animations/gpu` (Phase 016, optional; ADR 0031) — a minimal WebGL2 layer without a graphics
   dependency (`configureGpu`, `getGpuSupport`, `getGpuDebugInfo`: lazy contexts within a budget, exact release,
   context-loss recovery, package-only shaders) and D04 `PageCurl` (real mesh curl of a raster page; `driver="css"`
   turns live HTML as a rigid page), D06 `Ripple`, D08 `DisplacementHover` and D10 `DepthParallax` (an explicit depth

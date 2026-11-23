@@ -85,6 +85,19 @@ function polygon(value: string): Array<[number, number]> {
 const differs = (a: number[] | undefined, b: number[] | undefined, tolerance = 6) =>
   !!a && !!b && a.some((v, i) => Math.abs(v - (b[i] ?? 0)) > tolerance);
 
+/** A frame with a decoded native image for the fallback rows. */
+function fallbackFrame(): { frameEl: HTMLDivElement; img: HTMLImageElement } {
+  const frameEl = document.createElement("div");
+  frameEl.className = "neshel-gpu-frame";
+  frameEl.style.width = "120px";
+  const img = document.createElement("img");
+  img.alt = "Fallback probe";
+  img.src = labState().advanced?.images.displace;
+  frameEl.append(img);
+  byId("d08").append(frameEl);
+  return { frameEl, img };
+}
+
 /** GPU main-effect rows need WebGL2; without it they report NO_WEBGL2 (never a pass). */
 function requireWebgl2(): void {
   if (!getGpuSupport().webgl2)
@@ -624,66 +637,68 @@ export async function runAdvancedSuite(): Promise<Case[]> {
       },
     ],
     [
-      "GPU fallback rows (separate): no WebGL2 or a failed shader keeps the native image (never the main effect)",
+      "GPU fallback without WebGL2 (separate): the native image is kept, no canvas (never the main effect)",
       async () => {
-        const make = () => {
-          const frameEl = document.createElement("div");
-          frameEl.className = "neshel-gpu-frame";
-          frameEl.style.width = "120px";
-          const img = document.createElement("img");
-          img.alt = "Fallback probe";
-          img.src = labState().advanced?.images.displace;
-          frameEl.append(img);
-          byId("d08").append(frameEl);
-          return { frameEl, img };
-        };
         const contexts = getGpuDebugInfo().contexts;
-        const realWebgl2 = getGpuSupport().webgl2; // before any simulation
         try {
           configureGpu({ simulate: { unsupported: true } });
-          const a = make();
+          const probe = fallbackFrame();
           await until(
             "img",
-            () => a.img.complete && a.img.naturalWidth > 0,
-            () => a.img.complete,
+            () => probe.img.complete && probe.img.naturalWidth > 0,
+            () => probe.img.complete,
           );
-          const fa = createDisplacementHover(a.frameEl);
-          fa.set(1);
+          const fx = createDisplacementHover(probe.frameEl);
+          fx.set(1);
           await until(
             "unsupported",
-            () => fa.reason === "unsupported",
-            () => fa.reason,
+            () => fx.reason === "unsupported",
+            () => fx.reason,
           );
           check(
-            getComputedStyle(a.img).opacity === "1" && !a.frameEl.querySelector("canvas"),
-            "image kept",
+            getComputedStyle(probe.img).opacity === "1" && !probe.frameEl.querySelector("canvas"),
+            "native image kept, no canvas",
           );
-          fa.destroy();
-          a.frameEl.remove();
-          if (!realWebgl2)
-            throw new Error("NO_WEBGL2: the shader half needs WebGL2 (the unsupported half ran)");
-          configureGpu({ simulate: { unsupported: false, shaderFailure: true } });
-          const b = make();
-          await until(
-            "img",
-            () => b.img.complete && b.img.naturalWidth > 0,
-            () => b.img.complete,
-          );
-          const fb = createDisplacementHover(b.frameEl);
-          fb.set(1);
-          await until(
-            "shader",
-            () => fb.reason === "shader",
-            () => fb.reason,
-          );
-          check(getComputedStyle(b.img).opacity === "1", "image kept after a shader failure");
-          fb.destroy();
-          b.frameEl.remove();
+          fx.destroy();
+          probe.frameEl.remove();
         } finally {
-          configureGpu({ simulate: { unsupported: false, shaderFailure: false } });
+          configureGpu({ simulate: { unsupported: false } });
         }
         await frames(2);
-        check(getGpuDebugInfo().contexts === contexts, "no context leaked by the fallback rows");
+        check(getGpuDebugInfo().contexts === contexts, "no context leaked");
+      },
+    ],
+    [
+      "GPU fallback on a shader failure (separate): the native image is kept (needs WebGL2)",
+      async () => {
+        requireWebgl2();
+        const contexts = getGpuDebugInfo().contexts;
+        try {
+          configureGpu({ simulate: { shaderFailure: true } });
+          const probe = fallbackFrame();
+          await until(
+            "img",
+            () => probe.img.complete && probe.img.naturalWidth > 0,
+            () => probe.img.complete,
+          );
+          const fx = createDisplacementHover(probe.frameEl);
+          fx.set(1);
+          await until(
+            "shader",
+            () => fx.reason === "shader",
+            () => fx.reason,
+          );
+          check(
+            getComputedStyle(probe.img).opacity === "1",
+            "native image kept after a shader failure",
+          );
+          fx.destroy();
+          probe.frameEl.remove();
+        } finally {
+          configureGpu({ simulate: { shaderFailure: false } });
+        }
+        await frames(2);
+        check(getGpuDebugInfo().contexts === contexts, "no context leaked");
       },
     ],
     [

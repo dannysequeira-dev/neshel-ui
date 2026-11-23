@@ -26,6 +26,7 @@ import {
   tiltStateExpression,
   untilExpression,
 } from "./lib/animations-lab.mjs";
+import { classifyCases, countStatuses } from "./lib/gpu-skips.mjs";
 import { repoRoot } from "./lib/workspace.mjs";
 
 const ENGINES = ["chromium", "firefox", "webkit"];
@@ -445,21 +446,9 @@ async function runEngine(playwright, engine, url, throttle) {
     // ring, reduced motion on a fresh page.
     if (process.env.NESHEL_TRACE) console.info(`trace ${engine}: advanced suite`);
     const advancedSuite = await page.evaluate(() => window.__neshelLab.advanced.runAdvancedSuite());
-    // GPU rows need WebGL2. Playwright Firefox on GPU-less Linux runners has none (software GL is not picked up in
-    // headless mode); only there a NO_WEBGL2 row is reported as SKIPPED (never as a pass) and recorded. Everywhere
-    // else (Chromium, WebKit, Firefox on Windows/macOS) a missing WebGL2 fails the row.
-    const skippable = engine === "firefox" && process.platform === "linux";
-    notes.gpuSkipped = [];
-    for (const item of advancedSuite) {
-      if (!item.ok && skippable && String(item.error).startsWith("NO_WEBGL2")) {
-        notes.gpuSkipped.push(item.id);
-        cases.push({
-          id: `SKIPPED (no WebGL2 on this runner) — ${item.id}`,
-          ok: true,
-          skipped: true,
-        });
-      } else cases.push(item);
-    }
+    // GPU rows that need WebGL2 report NO_WEBGL2 when the environment has none; main() classifies them (K-16: a skip
+    // only for Firefox on Linux, never a pass; scripts/lib/gpu-skips.mjs).
+    for (const item of advancedSuite) cases.push(item);
     await run(
       "D05 real mouse: the corner under the pointer recedes, switches corners through flat, returns on leave",
       async () => {
@@ -864,18 +853,37 @@ async function main() {
       console.info(`SKIPPED ${message}`);
       continue;
     }
+    // K-16 (PR #17 review R2): explicit passed / skipped / failed; a skip is never a pass.
+    result.cases = classifyCases(result.cases, { engine, platform: process.platform });
+    result.summary = { engine, os: process.platform, ...countStatuses(result.cases) };
     report[engine] = result;
-    const failed = result.cases.filter((item) => !item.ok);
-    failures += failed.length;
+    failures += result.summary.failed;
     console.info(
       `\n${engine} ${result.notes.version}${engine === "webkit" ? " (Playwright WebKit, not Safari)" : ""}`,
     );
-    for (const item of result.cases)
-      console.info(
-        `${item.ok ? "ok  " : "FAIL"} ${item.id}${item.ok ? "" : `\n     ${item.error}`}`,
-      );
+    const label = { passed: "ok  ", skipped: "SKIP", failed: "FAIL" };
+    for (const item of result.cases) {
+      const detail =
+        item.status === "passed"
+          ? ""
+          : item.status === "skipped"
+            ? `\n     ${item.skip.rule} (${item.skip.engine}/${item.skip.os}): ${item.skip.reason}`
+            : `\n     ${item.error}`;
+      console.info(`${label[item.status]} ${item.id}${detail}`);
+    }
     console.info(`notes: ${JSON.stringify(result.notes)}`);
+    const s = result.summary;
+    console.info(
+      `${engine} (${s.os}): ${s.total} cases — ${s.passed} passed, ${s.skipped} skipped, ${s.failed} failed`,
+    );
   }
+  console.info(
+    `summary (passed/skipped/failed): ${Object.values(report)
+      .map(
+        (r) => `${r.summary.engine} ${r.summary.passed}/${r.summary.skipped}/${r.summary.failed}`,
+      )
+      .join(", ")}`,
+  );
   server.close();
   const reportPath = argValues("--report")[0];
   if (reportPath) {

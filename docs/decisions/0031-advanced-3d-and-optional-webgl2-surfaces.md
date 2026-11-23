@@ -1,6 +1,8 @@
 # ADR 0031 — Advanced 3D & Distortion; an optional WebGL2 surface layer (`./gpu`) without a graphics dependency
 
-- Status: **Proposed** (for owner review in the Phase 016 PR)
+- Status: **Accepted** (owner, 2026-11-23, PR #17 review comment 7091352862; architectural direction approved, accepted
+  after review checks R1 (cancellable map loading) and R2 (split fallback rows, explicit skip counts) were closed —
+  `specs/016-advanced-3d-distortion/evidence.md` §21)
 - Date: 2026-11-22
 - Feature: [016](../../specs/016-advanced-3d-distortion/spec.md); research R1–R18; contracts
   [advanced-api.md](../../specs/016-advanced-3d-distortion/contracts/advanced-api.md),
@@ -64,3 +66,12 @@ not invalidate ADR 0030 for convenience.
 - Duplicated `filter: blur()` layers and more than four `backdrop-filter` bands for D11 (R2: 31 ms intervals in
   WebKit; 21 ms in Chromium/Firefox at 8 bands).
 - Segmented tiles for D05 (008 R7: stepped surface, N² copies).
+
+## Review follow-up (PR #17)
+
+- **R1**: texture-source loads are cancellable (an internal `AbortSignal`): destroy removes every listener on
+  caller-owned map images, releases detached URL requests, and a map that already failed rejects at once (static
+  native image). Public API unchanged.
+- **R2 / K-16**: the only allowed skip is Playwright Firefox on Linux for the six WebGL2-requiring rows when the runner
+  has no WebGL2; a skip is never a pass and reports carry passed / skipped / failed separately
+  (`scripts/lib/gpu-skips.mjs`, `tests/gpu-skips.test.mjs`). The no-WebGL2 fallback runs and must pass everywhere.

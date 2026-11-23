@@ -31,13 +31,24 @@ Screen readers (NVDA + Firefox, VoiceOver + Safari macOS/iOS) for flip, cube, ri
 the Phase 015 list; real Safari rendering; physical touch devices; Windows High Contrast; real-GPU frame timings and
 real context loss on a low-end laptop and a phone ([manual-checks.md](manual-checks.md); Phase 015 manual checks).
 
-## 4. Decisions that need the owner
+## 4. Owner decisions taken (PR #17 review, 2026-11-23)
 
-1. Accept, amend or reject **ADR 0031** (WebGL2 own layer in `./gpu`, no graphics dependency).
-2. Approve the **17 proposed bundle budgets** (evidence §14).
-3. Whether the manual checks above must run before a first publication, and on which devices.
-4. The first version number and line for animations (D2: independent version line), the changelog entry, and whether
-   `./gpu` ships in the first release or later.
-5. Lifting the `private` guard, adding the package to the release scripts (outside or inside the fixed group),
-   trusted publishing for it, and the release run itself — each a separate, explicit authorisation.
-6. Whether the experimental status badge and README wording change for a first release.
+- ADR 0031 approved (Accepted after R1/R2); the 17 Phase 016 budgets approved as proposed; earlier budgets frozen.
+- K-16 accepted as a narrow CI exception only (Firefox + Linux + genuine WebGL2 absence; a skip is not a pass).
+- Manual checks are **mandatory before the first publication** (not before merge) and remain pending.
+
+## 5. First-publication gate (owner list; all pending)
+
+1. Screen readers: NVDA + Firefox (real Windows), VoiceOver + Safari (real macOS or iOS) — CardFlip, Cube, Ring,
+   CornerRecede, Glitch, GPU native-image semantics, Phase 015 toast/lightbox/loading and focus restore; record steps.
+2. Real Safari (macOS, iOS) and physical iPhone/Android touch: 3D transforms, D05, D11, WebGL fallback, M06 scrub,
+   navigation transitions (Playwright WebKit is not Safari).
+3. Physical GPU: an integrated-GPU laptop and a phone — D04/D06/D08/D10 timings vs baseline, resize/DPR, churn and
+   memory budget, real `WEBGL_lose_context` recovery and fallback; no universal 60 FPS promise.
+4. Windows High Contrast, reduced motion, photosensitivity (glitch ≤ 3/s, no full-screen flashing).
+5. Release process: repeatable fresh first-attempt clean CI on the candidate; disposition of the Components
+   nested-overlay macOS flake (K-15); independent packed installs; provenance, licence, docs, changelog, names,
+   version and OIDC trusted-publishing plan reviewed. Every npm/version/tag/release-workflow/guard change needs
+   separate, explicit permission.
+
+K-2, K-3 and K-5–K-16 are documented, not waived for a public release.
