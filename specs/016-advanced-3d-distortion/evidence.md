@@ -215,3 +215,19 @@ that the no-WebGL2 fallback is not skippable, and the arithmetic.
 Case counts after R2: animations unit tests **602** (597 + 5 R1); CDP **197** defined (196 + 1 from the split; no skip rule
 applies there); Playwright **205** defined per engine (204 + 1). Local (Windows): CDP 197/197; Chromium, Firefox, WebKit
 205 passed / 0 skipped / 0 failed each. CI on the final head: §22.
+
+## 22. CI after the review fixes
+
+| Run         | Head      | Attempt | Result          | Notes                                                                                                                                                                                                                                                                 |
+| ----------- | --------- | ------- | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 45112369472 | `7b73bf1` | 1       | failure (13/14) | the only failure: `browsers / macos-latest` stopped at the Components check — `components-plain nested-overlays-escape-order` (Chromium) timed out with both dialogs closed (K-15, 155/156; not touched by this phase), so that job never reached the animations step |
+
+Counts from run 45112369472 (first attempt):
+
+- CDP `check:browser:animations`: **197 passed, 0 skipped, 0 failed** on Windows (Node 26), macOS (Node 26) and Ubuntu (Node 22, 24, 26).
+- Playwright `check:animations:engines` on Ubuntu: Chromium **205/0/0**, Firefox **199 passed / 6 skipped / 0 failed** (K-16:
+  D04, D06, D08, D10, context loss, shader-failure fallback; the no-WebGL2 fallback ran and passed), WebKit **205/0/0**.
+- Playwright on macOS: not reached in this run (the job failed earlier on K-15); the macOS GPU rows ran and passed in
+  Chromium, Firefox and WebKit in runs 45097063452 and 45106572919.
+
+The final head's run is recorded in the PR (this commit only adds this section).
