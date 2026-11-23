@@ -238,6 +238,10 @@ jobs:
         run: pnpm install --frozen-lockfile
       - name: Install Playwright engines
         run: pnpm exec playwright install --with-deps chromium firefox webkit
+      # Phase 016 GPU rows: GPU-less Linux runners need Mesa's software GL (llvmpipe) for WebGL2 in headless Firefox.
+      - name: Software GL for WebGL2 (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get install -y --no-install-recommends libgl1-mesa-dri libegl1 libegl-mesa0 libgles2
       - name: Build packages
         run: pnpm build:packages
       - name: Build component consumers from tarballs
