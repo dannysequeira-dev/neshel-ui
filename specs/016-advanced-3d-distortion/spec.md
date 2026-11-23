@@ -6,7 +6,7 @@ merge; main CI run 45079243865: attempt 1 failed only in `browsers / macos-lates
 
 **Created**: 2026-11-22
 
-**Status**: **In development — see [evidence.md](evidence.md).** `@neshel-ui/animations` stays private (0.0.0).
+**Status**: **Implemented; verified locally — see [evidence.md](evidence.md) (11/11 entries; three engines; packed consumer); three-OS CI recorded in the PR; manual checks pending ([manual-checks.md](manual-checks.md)).** `@neshel-ui/animations` stays private (0.0.0).
 ADR [0031](../../docs/decisions/0031-advanced-3d-and-optional-webgl2-surfaces.md) is **Proposed**; the new bundle
 budgets are **proposed** until owner review.
 

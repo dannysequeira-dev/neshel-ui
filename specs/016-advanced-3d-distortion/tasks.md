@@ -18,43 +18,48 @@ Dependency-ordered. `[x]` done, `[ ]` open. Authorised by the owner brief of 202
 
 ## 016.1 — CSS 3D foundations
 
-- [ ] T010 `core/geometry-3d.ts`, `core/attributes.ts`, `core/visibility-gate.ts` + tests
-- [ ] T011 D01 card flip
-- [ ] T012 D02 cube rotation
-- [ ] T013 D03 ring carousel
-- [ ] T014 D05 CornerRecede (from the 008 R7 prototype) + clone helper
-- [ ] T015 D07 RGB split / glitch
-- [ ] T016 D09 perspective grid floor
-- [ ] T017 D11 tilt-shift blur
-- [ ] T018 React components, `advanced.css`, `./advanced` subpath, unit tests (StrictMode, SSR)
+- [x] T010 `core/geometry-3d.ts`, `core/attributes.ts`, `core/visibility-gate.ts` + tests
+- [x] T011 D01 card flip
+- [x] T012 D02 cube rotation
+- [x] T013 D03 ring carousel
+- [x] T014 D05 CornerRecede (from the 008 R7 prototype) + clone helper
+- [x] T015 D07 RGB split / glitch
+- [x] T016 D09 perspective grid floor
+- [x] T017 D11 tilt-shift blur
+- [x] T018 React components, `advanced.css`, `./advanced` subpath, unit tests (StrictMode, SSR)
 
 ## 016.2 — Optional graphics foundation
 
-- [ ] T020 GPU Surface Manager (manager, surface, programs, textures) + fake WebGL2 helper + tests (loss/restore,
+- [x] T020 GPU Surface Manager (manager, surface, programs, textures) + fake WebGL2 helper + tests (loss/restore,
   compile failure, CORS, budget, eviction, one draw task, counters)
 
 ## 016.3 — GPU effects
 
-- [ ] T030 D04 page curl (mesh + CSS driver)
-- [ ] T031 D06 ripple
-- [ ] T032 D08 displacement-map hover
-- [ ] T033 D10 depth-map parallax
-- [ ] T034 React components, `gpu.css`, `./gpu` subpath, unit tests
+- [x] T030 D04 page curl (mesh + CSS driver)
+- [x] T031 D06 ripple
+- [x] T032 D08 displacement-map hover
+- [x] T033 D10 depth-map parallax
+- [x] T034 React components, `gpu.css`, `./gpu` subpath, unit tests
 
 ## 016.4 — Composition & accessibility
 
-- [ ] T040 Composition tests (14 rows)
-- [ ] T041 Playground gallery + in-page suite (11 entries + CornerRecede vs Tilt3D)
-- [ ] T042 CDP and Playwright cases; earlier cases kept
+- [x] T040 Composition tests (14 rows)
+- [x] T041 Playground gallery + in-page suite (11 entries + CornerRecede vs Tilt3D)
+- [x] T042 CDP and Playwright cases; earlier cases kept
 
 ## 016.5 — Catalogue completion & quality gates
 
-- [ ] T050 Storybook stories (11 entries)
-- [ ] T051 Package contract/pack checks, packed consumer (SSR + hydration), routers, bundle budgets (proposed)
-- [ ] T052 Benchmarks (performance matrix)
-- [ ] T053 Catalogue, README, docs, CLAUDE.md commands; `pnpm check`; builds
+- [x] T050 Storybook stories (11 entries)
+- [x] T051 Package contract/pack checks, packed consumer (SSR + hydration), routers, bundle budgets (proposed)
+- [x] T052 Benchmarks (performance matrix)
+- [x] T053 Catalogue, README, docs, CLAUDE.md commands; `pnpm check`; builds
 
 ## 016.6 — Private release-candidate readiness
 
 - [ ] T060 `release-candidate.md` (verified, accepted limitations, pending manual checks, owner decisions)
 - [ ] T061 Push, PR, three-OS CI on the final head; evidence
+
+## Notes
+
+- T042 found nine defects (evidence §18), each fixed with a test where a unit test can express it.
+- Earlier cases kept: 175 CDP and 183 per Playwright engine still pass; new: 21 + 21.
