@@ -270,7 +270,10 @@ export function createPageCurl(frame: HTMLElement, options: PageCurlOptions = {}
       return driver.finished;
     },
     get mode() {
-      return driver.reduced() ? "static" : mode;
+      if (driver.reduced()) return "static";
+      // An evicted or lost GPU surface shows the native page until its next frame request.
+      if (mode === "gpu" && effect && effect.reason && effect.mode !== "gpu") return "static";
+      return mode;
     },
     get reason() {
       return reason ?? effect?.reason;

@@ -359,14 +359,19 @@ export function createGpuSurface(container: HTMLElement, options: GpuSurfaceOpti
     }
   }
 
+  let lostAt = 0;
+  const now = () => (typeof performance !== "undefined" ? performance.now() : Date.now());
   const onLost = (event: Event) => {
     event.preventDefault();
     gpuCounters.losses++;
+    gpuCounters.lost++;
+    lostAt = now();
     forget();
     drawn = false;
     fail("lost");
   };
   const onRestored = () => {
+    if (state === "lost") gpuCounters.lost--;
     gpuCounters.restores++;
     state = "ready";
     reason = undefined;
@@ -475,6 +480,7 @@ export function createGpuSurface(container: HTMLElement, options: GpuSurfaceOpti
     surface: undefined as unknown as GpuSurface,
     lastDraw: 0,
     evict() {
+      if (state === "lost") gpuCounters.lost--;
       live.delete(record);
       dirty.delete(record);
       dropContext();
@@ -538,6 +544,17 @@ export function createGpuSurface(container: HTMLElement, options: GpuSurfaceOpti
     },
     busy: false,
     request() {
+      // A context the browser dropped without restoring it (e.g. too many contexts): after 1 s, the next request
+      // replaces it with a fresh one instead of leaving the effect static forever.
+      if (state === "lost" && now() - lostAt > 1000) {
+        gpuCounters.lost--;
+        live.delete(record);
+        dirty.delete(record);
+        dropContext();
+        state = "idle";
+        reason = undefined;
+        freed();
+      }
       if (state === "released" || state === "failed" || state === "lost") return;
       if (state === "waiting") return;
       if (state === "idle") {
@@ -573,6 +590,7 @@ export function createGpuSurface(container: HTMLElement, options: GpuSurfaceOpti
       dirty.delete(record);
       if (waiting.delete(record)) gpuCounters.waiting--;
       unsubscribeGate();
+      if (state === "lost") gpuCounters.lost--;
       dropContext();
       state = "released";
       gpuCounters.surfaces--;

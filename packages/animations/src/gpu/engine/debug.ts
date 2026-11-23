@@ -21,6 +21,8 @@ export const gpuCounters = {
   draws: 0,
   compileErrors: 0,
   losses: 0,
+  /** Surfaces whose context is currently lost (waiting for a restore or a recreation). */
+  lost: 0,
   restores: 0,
   evictions: 0,
   fallbacks: 0,

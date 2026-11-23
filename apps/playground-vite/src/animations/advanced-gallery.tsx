@@ -35,6 +35,7 @@ import {
 import "@neshel-ui/animations/gpu.css";
 import { Tilt3D } from "@neshel-ui/animations/hover";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { benchAdvanced } from "./advanced-bench";
 import { advancedReducedFacts, runAdvancedSuite } from "./advanced-suite";
 import { labState } from "./lab-state";
 
@@ -134,6 +135,7 @@ export function AdvancedGallery() {
     labState().advanced = {
       runAdvancedSuite,
       reducedFacts: advancedReducedFacts,
+      benchAdvanced,
       controls: {
         flip,
         cube,

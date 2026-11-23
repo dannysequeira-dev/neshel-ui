@@ -38,6 +38,8 @@ import { SuccessCheck, MorphIcon, menuCloseShapes, usePathDraw } from "@neshel-u
 import { BlurUpImage, CompareSlider, Lightbox, KenBurns } from "@neshel-ui/animations/media";
 import { Aurora, Particles, AmbientMotionToggle } from "@neshel-ui/animations/ambient";
 import { Spinner, ProgressBar, SuccessMark, Toaster, createToaster, LoadingButton } from "@neshel-ui/animations/feedback";
+import { CardFlip, CubeRotate, RingCarousel, CornerRecede, Glitch, PerspectiveGrid, TiltShift } from "@neshel-ui/animations/advanced";
+import { PageCurl, Ripple, DisplacementHover, DepthParallax } from "@neshel-ui/animations/gpu";
 import { useRef, useState } from "react";
 
 export const glow = defineEffect({
@@ -155,6 +157,24 @@ function Phase015() {
   );
 }
 
+function Phase016() {
+  return (
+    <section id="p016">
+      <CardFlip id="d-flip" style={{ width: 160, height: 100 }} front={<button type="button" id="d-flip-toggle" data-neshel-flip-toggle>Flip</button>} back={<a href="#back" id="d-flip-back">Back side</a>} />
+      <CubeRotate id="d-cube" style={{ width: 160, height: 100 }}><section>One</section><section>Two</section></CubeRotate>
+      <RingCarousel id="d-ring" label="Packed ring" style={{ height: 120 }}><article style={{ width: 80 }}>A</article><article style={{ width: 80 }}>B</article><article style={{ width: 80 }}>C</article></RingCarousel>
+      <CornerRecede id="d-corner" style={{ width: 160, height: 100 }}><div style={{ width: 160, height: 100, background: "#334155" }}>Corner</div></CornerRecede>
+      <Glitch id="d-glitch">Packed glitch</Glitch>
+      <PerspectiveGrid id="d-grid" style={{ height: 80 }}><span>Floor</span></PerspectiveGrid>
+      <TiltShift id="d-tilt"><p>Tilt-shift content</p></TiltShift>
+      <PageCurl id="g-curl" style={{ width: 80 }} front={<img alt="Packed page" src={PIXEL} width={80} height={80} />} under={<p>Under page</p>} />
+      <Ripple id="g-ripple" style={{ width: 80 }}><img alt="Packed ripple" src={PIXEL} width={80} height={80} /></Ripple>
+      <DisplacementHover id="g-displace" style={{ width: 80 }}><img alt="Packed displace" src={PIXEL} width={80} height={80} /></DisplacementHover>
+      <DepthParallax id="g-depth" depth={PIXEL} style={{ width: 80 }}><img alt="Packed depth" src={PIXEL} width={80} height={80} /></DepthParallax>
+    </section>
+  );
+}
+
 export function App() {
   return (
     <main>
@@ -186,6 +206,7 @@ export function App() {
       <Phase013 />
       <Phase014 />
       <Phase015 />
+      <Phase016 />
     </main>
   );
 }
@@ -203,6 +224,8 @@ import "@neshel-ui/animations/svg.css";
 import "@neshel-ui/animations/media.css";
 import "@neshel-ui/animations/ambient.css";
 import "@neshel-ui/animations/feedback.css";
+import "@neshel-ui/animations/advanced.css";
+import "@neshel-ui/animations/gpu.css";
 window.__vt = [];
 if (document.startViewTransition) {
   const start = document.startViewTransition.bind(document);
@@ -406,6 +429,27 @@ async function main() {
         return false;
       }) && !/neshel-blurup-layer|neshel-ambient-layer|<canvas|<dialog[^>]*open/.test(html),
       "SSR (015): media, ambient and feedback render native, visible markup (decorations only after hydration)",
+    );
+    check(
+      [
+        'class="neshel-flip"',
+        'class="neshel-cube"',
+        'class="neshel-ring"',
+        'class="neshel-corner"',
+        'class="neshel-glitch"',
+        'class="neshel-grid-host"',
+        'class="neshel-tiltshift-host"',
+        'class="neshel-gpu-frame neshel-pagecurl"',
+        'alt="Packed depth"',
+      ].every((fragment) => {
+        if (html.includes(fragment)) return true;
+        console.info(`missing in SSR markup: ${fragment}`);
+        return false;
+      }) &&
+        !/neshel-corner-flap|neshel-grid-floor|neshel-tiltshift"|neshel-ring-live|data-neshel-flip="|inert=""/.test(
+          html,
+        ),
+      "SSR (016): advanced and GPU entries render static content only (engine output after hydration)",
     );
     const indexPath = join(app, "dist", "index.html");
     writeFileSync(indexPath, readFileSync(indexPath, "utf8").replace("<!--ssr-->", html));
@@ -698,6 +742,29 @@ async function main() {
             p015.toast === "Packed toast" &&
             p015.blur === "",
           `015 media/ambient/feedback hydrate and work from the packed tarball (${JSON.stringify(p015)})`,
+        );
+        const p016 = await page.evaluate(`(async () => {
+          document.getElementById("p016").scrollIntoView();
+          await new Promise((r) => setTimeout(r, 400));
+          document.getElementById("d-flip-toggle").click();
+          await new Promise((r) => setTimeout(r, 1200));
+          return {
+            flip: document.getElementById("d-flip").getAttribute("data-neshel-flip"),
+            ring: document.getElementById("d-ring").getAttribute("aria-roledescription"),
+            floor: document.querySelector("#d-grid .neshel-grid-floor")?.getAttribute("aria-hidden"),
+            tilt: document.querySelector("#d-tilt .neshel-tiltshift")?.getAttribute("aria-hidden"),
+            depth: document.querySelector("#g-depth canvas")?.getAttribute("aria-hidden") ?? "no-canvas",
+            alt: document.querySelector("#g-depth img").getAttribute("alt"),
+          };
+        })()`);
+        check(
+          p016.flip === "back" &&
+            p016.ring === "carousel" &&
+            p016.floor === "true" &&
+            p016.tilt === "true" &&
+            (p016.depth === "true" || p016.depth === "no-canvas") &&
+            p016.alt === "Packed depth",
+          `016 advanced and GPU entries hydrate and work from the packed tarball (${JSON.stringify(p016)})`,
         );
         check(
           page.errors.length === 0,

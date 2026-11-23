@@ -379,6 +379,74 @@ export const ENTRIES = {
     source: `export * from "${A}/feedback";`,
     markers: { mediaCode: false, ambientCode: false, svgCode: false, layoutCode: false },
   },
+  // Phase 016 (FR-001, FR-033; ADR 0031): ./advanced never bundles WebGL or GPU code; ./gpu never bundles the CSS
+  // family; neither bundles an earlier family. Budgets proposed from these measurements (owner review).
+  "advanced: createCardFlip (engine, no React)": {
+    source: `export { createCardFlip } from "${A}/advanced";`,
+    markers: { react: false, webgl: false, gpuCode: false, cinematicCode: false },
+  },
+  "advanced: createCubeRotate (engine, no React)": {
+    source: `export { createCubeRotate } from "${A}/advanced";`,
+    markers: { react: false, webgl: false, gpuCode: false },
+  },
+  "advanced: createRingCarousel (engine, no React)": {
+    source: `export { createRingCarousel } from "${A}/advanced";`,
+    markers: { react: false, webgl: false, gesturesCode: false },
+  },
+  "advanced: createCornerRecede (engine, no React)": {
+    source: `export { createCornerRecede } from "${A}/advanced";`,
+    markers: { react: false, webgl: false, hoverCode: false, tilt: false },
+  },
+  "advanced: createGlitch (engine, no React)": {
+    source: `export { createGlitch } from "${A}/advanced";`,
+    markers: { react: false, webgl: false },
+  },
+  "advanced: createPerspectiveGrid + createTiltShift (engine, no React)": {
+    source: `export { createPerspectiveGrid, createTiltShift } from "${A}/advanced";`,
+    markers: { react: false, webgl: false, ambientCode: false },
+  },
+  "advanced: CardFlip + CornerRecede": {
+    source: `export { CardFlip, CornerRecede } from "${A}/advanced";`,
+    markers: { react: true, webgl: false, gpuCode: false },
+  },
+  "advanced: entire entry": {
+    source: `export * from "${A}/advanced";`,
+    markers: {
+      webgl: false,
+      gpuCode: false,
+      mediaCode: false,
+      ambientCode: false,
+      hoverCode: false,
+    },
+  },
+  "gpu: configureGpu + getGpuSupport (no effect)": {
+    source: `export { configureGpu, getGpuSupport } from "${A}/gpu";`,
+    markers: { react: false, gpuCode: false, scheduler: false },
+  },
+  "gpu: createRipple (engine, no React)": {
+    source: `export { createRipple } from "${A}/gpu";`,
+    markers: { react: false, webgl: true, advancedCode: false, mediaCode: false },
+  },
+  "gpu: createDisplacementHover (engine, no React)": {
+    source: `export { createDisplacementHover } from "${A}/gpu";`,
+    markers: { react: false, webgl: true, advancedCode: false },
+  },
+  "gpu: createDepthParallax (engine, no React)": {
+    source: `export { createDepthParallax } from "${A}/gpu";`,
+    markers: { react: false, webgl: true, advancedCode: false },
+  },
+  "gpu: createPageCurl (engine, no React)": {
+    source: `export { createPageCurl } from "${A}/gpu";`,
+    markers: { react: false, webgl: true, advancedCode: false, cinematicCode: false },
+  },
+  "gpu: PageCurl + Ripple": {
+    source: `export { PageCurl, Ripple } from "${A}/gpu";`,
+    markers: { react: true, webgl: true, advancedCode: false },
+  },
+  "gpu: entire entry": {
+    source: `export * from "${A}/gpu";`,
+    markers: { advancedCode: false, mediaCode: false, ambientCode: false, hoverCode: false },
+  },
 };
 
 /** Stylesheets measured from the packed tarball (gzip of the file as shipped). */
@@ -397,6 +465,8 @@ export const STYLESHEETS = [
   "dist/media.css",
   "dist/ambient.css",
   "dist/feedback.css",
+  "dist/advanced.css",
+  "dist/gpu.css",
 ];
 
 const MARKERS = {
@@ -424,6 +494,10 @@ const MARKERS = {
   ambientCode: (code) => /neshel-ambient-layer|createAurora|ambient-infinite/.test(code),
   feedbackCode: (code) => /feedback\/loading-button|feedback\/optimistic|neshel-toast/.test(code),
   surface: (code) => /contextrestored/.test(code),
+  // Phase 016: WebGL code, the GPU entries and the CSS family.
+  webgl: (code) => /webgl2|createShader/.test(code),
+  gpuCode: (code) => /#version 300 es|gpu\/image|gpu\/page-curl/.test(code),
+  advancedCode: (code) => /advanced\/flip|advanced\/corner-recede|advanced\/cube/.test(code),
   toaster: (code) => /toaster\.show/.test(code),
 };
 

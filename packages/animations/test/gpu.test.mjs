@@ -414,3 +414,40 @@ test("map URLs: relative, http(s), blob and data:image are accepted; other schem
   }
   frame.remove();
 });
+
+test("manager · a context the browser drops without restoring is replaced on the next request (after 1 s)", async () => {
+  reset();
+  const { frame, img } = imageFrame();
+  const fx = G.createDisplacementHover(frame);
+  fx.set(1);
+  await settleAll();
+  assert.equal(fx.mode, "gpu");
+  const realNow = performance.now.bind(performance);
+  let offset = 0;
+  performance.now = () => realNow() + offset;
+  try {
+    frame
+      .querySelector("canvas")
+      .getContext("webgl2")
+      .getExtension("WEBGL_lose_context")
+      .loseContext();
+    assert.equal(fx.reason, "lost");
+    assert.equal(G.getGpuDebugInfo().lost, 1);
+    assert.equal(img.style.opacity, "", "image shown while lost");
+    fx.set(0.5); // within 1 s: still waiting for a restore
+    await settleAll();
+    assert.equal(fx.mode, "static");
+    offset = 1500;
+    fx.set(1);
+    await settleAll();
+    assert.equal(fx.mode, "gpu", "a fresh context replaced the dropped one");
+    assert.equal(G.getGpuDebugInfo().lost, 0);
+    assert.equal(G.getGpuDebugInfo().contexts, 1);
+  } finally {
+    performance.now = realNow;
+  }
+  fx.destroy();
+  await settleAll();
+  assert.equal(G.getGpuDebugInfo().contexts, 0);
+  frame.remove();
+});
