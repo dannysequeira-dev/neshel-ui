@@ -9,12 +9,15 @@ import { buttonClassName } from "./button.js";
 import { CloseIcon } from "./internal/icons.js";
 import {
   composeRefs,
-  guardEscape,
+  EscapeLayerProvider,
   LayerContainerContext,
+  LayerRootContext,
   PortalTheme,
   TriggerContext,
+  useEscapeLayer,
   useFocusReturn,
   useLayerContainer,
+  useLayerOpenState,
   useTriggerRef,
   useTriggerRegistry,
 } from "./internal/layer.js";
@@ -62,12 +65,18 @@ function checkAsChild(component: string, asChild: unknown, children: ReactNode):
   if (asChild) asChildElement(component, children);
 }
 
-/** Root shared by Dialog and Sheet: registers the trigger for portal theming. */
-function DialogRoot(props: RootProps) {
+/**
+ * Root shared by Dialog and Sheet: registers the trigger for portal theming and owns the open state
+ * (same controlled/uncontrolled contract as Radix) so the layer can take Escape routed to it (K-15).
+ */
+function DialogRoot({ open, defaultOpen, onOpenChange, ...props }: RootProps) {
   const registry = useTriggerRegistry();
+  const root = useLayerOpenState({ open, defaultOpen, onOpenChange });
   return (
     <TriggerContext.Provider value={registry}>
-      <RadixDialog.Root {...props} />
+      <LayerRootContext.Provider value={root}>
+        <RadixDialog.Root {...props} open={root.open} onOpenChange={root.setOpen} />
+      </LayerRootContext.Provider>
     </TriggerContext.Provider>
   );
 }
@@ -119,6 +128,7 @@ function PanelPart({
 }: ContentBase & PanelOptions) {
   const [node, setNode] = useLayerContainer();
   const focus = useFocusReturn(onOpenAutoFocus, onCloseAutoFocus);
+  const escapeLayer = useEscapeLayer(onEscapeKeyDown);
   return (
     <RadixDialog.Portal container={container ?? undefined}>
       <PortalTheme>
@@ -126,27 +136,29 @@ function PanelPart({
         <RadixDialog.Content
           {...rest}
           ref={composeRefs(ref, setNode)}
-          onEscapeKeyDown={guardEscape(onEscapeKeyDown)}
+          onEscapeKeyDown={escapeLayer.onEscapeKeyDown}
           onOpenAutoFocus={focus.onOpenAutoFocus}
           onCloseAutoFocus={focus.onCloseAutoFocus}
           className={cx(classes, className)}
         >
-          <LayerContainerContext.Provider value={node}>
-            {children}
-            {showClose ? (
-              <RadixDialog.Close
-                className={buttonClassName(component, {
-                  variant: "ghost",
-                  size: "sm",
-                  iconOnly: true,
-                  className: "neshel-dialog-close",
-                })}
-                aria-label={closeLabel}
-              >
-                <CloseIcon />
-              </RadixDialog.Close>
-            ) : null}
-          </LayerContainerContext.Provider>
+          <EscapeLayerProvider entry={escapeLayer.entry}>
+            <LayerContainerContext.Provider value={node}>
+              {children}
+              {showClose ? (
+                <RadixDialog.Close
+                  className={buttonClassName(component, {
+                    variant: "ghost",
+                    size: "sm",
+                    iconOnly: true,
+                    className: "neshel-dialog-close",
+                  })}
+                  aria-label={closeLabel}
+                >
+                  <CloseIcon />
+                </RadixDialog.Close>
+              ) : null}
+            </LayerContainerContext.Provider>
+          </EscapeLayerProvider>
         </RadixDialog.Content>
       </PortalTheme>
     </RadixDialog.Portal>

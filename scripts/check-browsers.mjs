@@ -11,6 +11,7 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { dirname, join, resolve } from "node:path";
 import { COMPONENT_VARIANTS } from "./lib/consumer-components.mjs";
+import { NESTED_OVERLAY_FLOWS } from "./lib/overlay-escape.mjs";
 import { startStaticServer } from "./lib/static-server.mjs";
 
 const require = createRequire(import.meta.url);
@@ -45,59 +46,7 @@ const FLOWS = {
       "focus not restored to the trigger",
     );
   },
-  async "nested-overlays-escape-order"({ page, base, check }) {
-    const dialogs = () => page.evaluate(() => document.querySelectorAll('[role="dialog"]').length);
-    const until = async (fn, label) => {
-      try {
-        await page.waitForFunction(fn, null, { timeout: 8000 });
-      } catch {
-        const state = await page.evaluate(() => ({
-          dialogs: document.querySelectorAll('[role="dialog"]').length,
-          active: document.activeElement?.id || document.activeElement?.tagName,
-        }));
-        throw new Error(`timed out: ${label} (${JSON.stringify(state)})`);
-      }
-    };
-    await page.goto(`${base}/index.html`);
-    await page.click("#dialog-trigger");
-    await until(
-      () => document.querySelector('[role="dialog"]')?.contains(document.activeElement),
-      "focus in the outer dialog",
-    );
-    await page.click("#nested-trigger");
-    await until(
-      () => document.querySelectorAll('[role="dialog"]').length === 2,
-      "nested dialog open",
-    );
-    // Escape is meaningful once the nested dialog has taken focus (its focus scope is active).
-    await until(
-      () =>
-        document
-          .querySelector("#nested-close")
-          ?.closest('[role="dialog"]')
-          ?.contains(document.activeElement),
-      "focus in the nested dialog",
-    );
-    // Known limitation (feature 006 evidence): an Escape within ~50 ms of opening a nested dialog
-    // closes both layers in Chromium and WebKit, before the new layer is registered. Users cannot
-    // react that fast; the test uses a realistic 100 ms interval.
-    await page.waitForTimeout(100);
-    await page.keyboard.press("Escape");
-    await until(
-      () => document.querySelectorAll('[role="dialog"]').length === 1,
-      "only the nested dialog closed",
-    );
-    await until(
-      () => document.activeElement?.id === "nested-trigger",
-      "focus back on the nested trigger",
-    );
-    await page.keyboard.press("Escape");
-    await until(
-      () => document.querySelectorAll('[role="dialog"]').length === 0,
-      "outer dialog closed",
-    );
-    check((await dialogs()) === 0, "dialogs remain");
-  },
+  ...NESTED_OVERLAY_FLOWS,
   async "select-in-dialog-escape-layering"({ page, base, check }) {
     await page.goto(`${base}/index.html`);
     await page.click("#dialog-trigger");

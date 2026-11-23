@@ -17,6 +17,7 @@ import {
   type RefObject,
   useContext,
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
 } from "react";
@@ -153,6 +154,169 @@ export function guardEscape(
     if (isSelectionEscape(event)) event.preventDefault();
     handler?.(event);
   };
+}
+
+// ---------------------------------------------------------------------------------------------
+// Open state and Escape ownership (feature 017, K-15; contracts/overlay-escape.md)
+//
+// Radix DismissableLayer attaches its Escape listener only to the layer that was the highest at its
+// last render, and refreshes that render asynchronously (a `dismissableLayer.update` event followed
+// by a state update). Between a nested layer opening (and taking focus) and that render, the outer
+// layer still owns Escape, so one Escape dismissed the outer layer and, with it, every nested one.
+// Right after a nested layer closes there is also a window in which no layer listens at all.
+//
+// Neshel keeps its own registry of open layers, updated synchronously in layout effects and ranked
+// by the React tree (a layer is never above its own descendants), and decides at event time which
+// layer owns an Escape: whichever Radix listener receives the event routes it to that layer, each
+// event is handled at most once, and a document listener covers the window with no Radix owner.
+// ---------------------------------------------------------------------------------------------
+
+type EscapeHandler = ((event: KeyboardEvent) => void) | undefined;
+
+/** Open state shared by a Neshel layer root and its content. */
+export interface LayerRoot {
+  open: boolean;
+  setOpen(open: boolean): void;
+}
+
+export const LayerRootContext = createContext<LayerRoot | null>(null);
+
+interface OpenStateProps {
+  open?: boolean;
+  defaultOpen?: boolean;
+  onOpenChange?: (open: boolean) => void;
+}
+
+/**
+ * Controllable open state with Radix semantics (`onOpenChange` only fires on a real change), so a
+ * root can close its layer itself. The Radix root is always rendered controlled by this value.
+ */
+export function useLayerOpenState({ open, defaultOpen, onOpenChange }: OpenStateProps): LayerRoot {
+  const [uncontrolled, setUncontrolled] = useState(defaultOpen ?? false);
+  const controlled = open !== undefined;
+  const value = controlled ? open : uncontrolled;
+  const latest = useRef({ value, controlled, onOpenChange });
+  latest.current = { value, controlled, onOpenChange };
+  const [setOpen] = useState(() => (next: boolean) => {
+    const current = latest.current;
+    if (next === current.value) return;
+    if (!current.controlled) {
+      current.value = next;
+      setUncontrolled(next);
+    }
+    current.onOpenChange?.(next);
+  });
+  return { open: value, setOpen };
+}
+
+interface EscapeEntry {
+  parent: EscapeEntry | null;
+  order: number;
+  handle(event: KeyboardEvent): void;
+}
+
+const openLayers = new Set<EscapeEntry>();
+const handledEscapes = new WeakSet<Event>();
+let registrations = 0;
+
+/** The layer that owns Escape: the most recently opened layer with no open descendant layer. */
+function topLayer(): EscapeEntry | undefined {
+  const ancestors = new Set<EscapeEntry>();
+  for (const entry of openLayers) {
+    for (let parent = entry.parent; parent; parent = parent.parent) ancestors.add(parent);
+  }
+  let top: EscapeEntry | undefined;
+  for (const entry of openLayers) {
+    if (ancestors.has(entry)) continue;
+    if (!top || entry.order > top.order) top = entry;
+  }
+  return top;
+}
+
+/** Escape that reached the document while a Neshel layer is open but no Radix layer listened. */
+function onUnownedEscape(event: KeyboardEvent): void {
+  if (event.key !== "Escape" || event.isComposing) return;
+  if (event.defaultPrevented || handledEscapes.has(event) || isSelectionEscape(event)) return;
+  const top = topLayer();
+  if (!top) return;
+  handledEscapes.add(event);
+  top.handle(event);
+}
+
+function registerLayer(entry: EscapeEntry): () => void {
+  entry.order = ++registrations;
+  openLayers.add(entry);
+  if (openLayers.size === 1) document.addEventListener("keydown", onUnownedEscape);
+  return () => {
+    openLayers.delete(entry);
+    if (openLayers.size === 0) document.removeEventListener("keydown", onUnownedEscape);
+  };
+}
+
+const EscapeLayerContext = createContext<EscapeEntry | null>(null);
+
+const useIsomorphicLayoutEffect = typeof document === "undefined" ? useEffect : useLayoutEffect;
+
+/**
+ * Escape ownership for a Radix layer content rendered inside a Neshel root (`LayerRootContext`).
+ * Returns the `onEscapeKeyDown` to give Radix and a provider that makes this layer the parent of the
+ * layers rendered inside it. Selection Escape is left to the selection control (as `guardEscape`).
+ */
+export function useEscapeLayer(onEscapeKeyDown: EscapeHandler) {
+  const root = useContext(LayerRootContext);
+  const parent = useContext(EscapeLayerContext);
+  const latest = useRef({ onEscapeKeyDown, root });
+  latest.current = { onEscapeKeyDown, root };
+  const [entry] = useState<EscapeEntry>(() => ({
+    parent: null,
+    order: 0,
+    handle(event) {
+      const current = latest.current;
+      current.onEscapeKeyDown?.(event);
+      if (event.defaultPrevented) return;
+      event.preventDefault();
+      current.root?.setOpen(false);
+    },
+  }));
+  const open = root?.open ?? false;
+  useIsomorphicLayoutEffect(() => {
+    if (!open) return;
+    entry.parent = parent;
+    return registerLayer(entry);
+  }, [open, parent, entry]);
+  const [handler] = useState(() => (event: KeyboardEvent) => {
+    if (handledEscapes.has(event)) {
+      // Already handled for this keydown by another Neshel layer: never dismiss twice.
+      event.preventDefault();
+      return;
+    }
+    handledEscapes.add(event);
+    if (isSelectionEscape(event)) {
+      event.preventDefault();
+      latest.current.onEscapeKeyDown?.(event);
+      return;
+    }
+    const top = topLayer();
+    if (top && top !== entry) {
+      // Radix delivered Escape to a layer that is no longer the topmost one: route it.
+      top.handle(event);
+      event.preventDefault();
+      return;
+    }
+    latest.current.onEscapeKeyDown?.(event);
+  });
+  return { onEscapeKeyDown: handler, entry };
+}
+
+/** Provider making `entry` the parent layer of the Neshel layers rendered inside it. */
+export function EscapeLayerProvider({
+  entry,
+  children,
+}: {
+  entry: EscapeEntry;
+  children: ReactNode;
+}) {
+  return <EscapeLayerContext.Provider value={entry}>{children}</EscapeLayerContext.Provider>;
 }
 
 type AutoFocusHandler = ((event: Event) => void) | undefined;

@@ -5,11 +5,14 @@ import * as RadixTooltip from "@radix-ui/react-tooltip";
 import type { Ref } from "react";
 import {
   composeRefs,
-  guardEscape,
+  EscapeLayerProvider,
   LayerContainerContext,
+  LayerRootContext,
   PortalTheme,
   TriggerContext,
+  useEscapeLayer,
   useLayerContainer,
+  useLayerOpenState,
   useTriggerRef,
   useTriggerRegistry,
 } from "./internal/layer.js";
@@ -32,11 +35,14 @@ export type PopoverContentProps = Omit<RadixPopover.PopoverContentProps, "ref"> 
   ref?: Ref<HTMLDivElement>;
 };
 
-export function Popover(props: PopoverProps) {
+export function Popover({ open, defaultOpen, onOpenChange, ...props }: PopoverProps) {
   const registry = useTriggerRegistry();
+  const root = useLayerOpenState({ open, defaultOpen, onOpenChange });
   return (
     <TriggerContext.Provider value={registry}>
-      <RadixPopover.Root {...props} />
+      <LayerRootContext.Provider value={root}>
+        <RadixPopover.Root {...props} open={root.open} onOpenChange={root.setOpen} />
+      </LayerRootContext.Provider>
     </TriggerContext.Provider>
   );
 }
@@ -67,6 +73,7 @@ export function PopoverContent({
   ...rest
 }: PopoverContentProps) {
   const [node, setNode] = useLayerContainer();
+  const escapeLayer = useEscapeLayer(onEscapeKeyDown);
   return (
     <RadixPopover.Portal container={container ?? undefined}>
       <PortalTheme>
@@ -75,10 +82,12 @@ export function PopoverContent({
           ref={composeRefs(ref, setNode)}
           sideOffset={sideOffset}
           collisionPadding={collisionPadding}
-          onEscapeKeyDown={guardEscape(onEscapeKeyDown)}
+          onEscapeKeyDown={escapeLayer.onEscapeKeyDown}
           className={cx("neshel-popover-content", className)}
         >
-          <LayerContainerContext.Provider value={node}>{children}</LayerContainerContext.Provider>
+          <EscapeLayerProvider entry={escapeLayer.entry}>
+            <LayerContainerContext.Provider value={node}>{children}</LayerContainerContext.Provider>
+          </EscapeLayerProvider>
         </RadixPopover.Content>
       </PortalTheme>
     </RadixPopover.Portal>

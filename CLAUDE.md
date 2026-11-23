@@ -19,8 +19,12 @@ Paths S01–S10; ADR 0029) is merged into `main` as the squash commit `3706a36` 
 Feedback F01–F10; ADR 0030) is merged into `main` as the squash commit `da79b4a` (PR #16; main CI 45079243865
 14/14 on attempt 2 — attempt 1 hit the known Components nested-overlay timing on macOS) and approved by the owner.
 Phase 016 (Advanced 3D & Distortion D01–D11, the last 11 catalogue entries; optional WebGL2 `./gpu` entry, ADR 0031
-Accepted) is the **current phase**, in development on `feature/016-advanced-3d-distortion`
-(`specs/016-advanced-3d-distortion/`); its PR needs the owner's review — never merge it automatically. Completing
+Accepted) is merged into `main` as the squash commit `365a24d` (PR #17); its main CI run 45117009871 finished 13/14
+(`browsers / macos-latest` failed on K-15). Phase 017 (Components completion: K-15 fix and CI audit, Toast/Toaster
+moved from `@neshel-ui/animations/feedback` to `@neshel-ui/components` with F06 kept as a generic enter/exit
+primitive, Accordion, Collapsible, Switch) is the **current phase**, in development on
+`feature/017-components-completion` (`specs/017-components-completion/`); its PR needs the owner's review — never
+merge it automatically. Completing
 the catalogue does not authorise the first animations publication.
 `@neshel-ui/animations` is **private** (0.0.0) and must stay private until the owner approves its
 first publication; it is outside the Changesets fixed group and the release scripts. The five public
