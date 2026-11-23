@@ -1,0 +1,29 @@
+/*
+ * @neshel-ui/animations/gpu.css — optional GPU entries (Phase 016, D04, D06, D08, D10). Opt-in. Positions package frames
+ * (the decorative canvas is positioned inline over the native image and isolated inside the frame) and stacks the D04
+ * pages. No transition or animation is declared on consumer elements (rule R-1). No global selectors, no resets.
+ */
+
+.neshel-gpu-frame {
+  position: relative;
+  display: block;
+  isolation: isolate;
+}
+.neshel-gpu-frame > img,
+.neshel-gpu-frame > canvas:not(.neshel-gpu-canvas) {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* D04 — the front page above the page underneath, both in one cell */
+.neshel-pagecurl {
+  display: grid;
+}
+.neshel-pagecurl > :not(.neshel-gpu-canvas) {
+  grid-area: 1 / 1;
+}
+.neshel-pagecurl > :first-child {
+  position: relative;
+  z-index: 1;
+}

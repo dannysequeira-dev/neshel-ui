@@ -55,7 +55,7 @@ async function main() {
   }
   const require = createRequire(import.meta.url);
   const axeSource = readFileSync(require.resolve("axe-core/axe.min.js"), "utf8");
-  const browser = await launchBrowser(executable);
+  const browser = await launchBrowser(executable, { webgl: true });
   console.info(`Browser: ${browser.version}`);
   const cases = [];
   const notes = {};
@@ -1046,6 +1046,93 @@ async function main() {
         notes.mediaReduced = facts;
       },
     );
+    // Phase 016 advanced 3D/GPU gallery: the in-page suite (shared with Playwright; WebGL2 pixel probes, forced
+    // context loss, separate fallback rows), real mouse input for CornerRecede, real keyboard input for the card flip
+    // and the ring carousel, and reduced motion live.
+    const advancedCases = await p.evaluate("window.__neshelLab.advanced.runAdvancedSuite()");
+    for (const item of advancedCases) cases.push(item);
+    const corner = "window.__neshelLab.advanced.controls.corner.current";
+    await run(
+      "D05 real mouse: the corner under the pointer recedes, switches corners through flat, returns on leave",
+      async () => {
+        await scrollIntoView("#d05-root");
+        const r = await rectOf("#d05-root");
+        await mouse(r.left + r.width / 2, r.top + r.height / 2);
+        await mouse(r.right - 8, r.top + 8);
+        await mouse(r.right - 5, r.top + 5);
+        await until(
+          "top-right folded",
+          `${corner}.corner === "top-right" && ${corner}.amount > 0.8 && !!document.querySelector("#d05-root .neshel-corner-flap")`,
+          `({ corner: ${corner}.corner, amount: ${corner}.amount })`,
+        );
+        await mouse(r.left + 8, r.bottom - 8);
+        await mouse(r.left + 5, r.bottom - 5);
+        await until(
+          "bottom-left folded",
+          `${corner}.corner === "bottom-left" && ${corner}.amount > 0.8`,
+          `({ corner: ${corner}.corner, amount: ${corner}.amount })`,
+        );
+        await mouse(2, 2);
+        await until(
+          "returned flat",
+          `${corner}.amount < 0.001 && !document.querySelector("#d05-root .neshel-corner-flap")`,
+          `${corner}.amount`,
+        );
+      },
+    );
+    await run(
+      "D01 real keyboard: Space on the in-face toggle flips; focus lands on the visible face",
+      async () => {
+        await p.evaluate(
+          `(() => { const b = document.getElementById("d01-front-toggle"); b.scrollIntoView({ block: "center" }); b.focus(); })()`,
+        );
+        await key(" ", "Space", 32);
+        await until(
+          "flipped by keyboard",
+          `window.__neshelLab.advanced.controls.flip.current.side === "back" && document.activeElement?.id === "d01-back-link"`,
+          `({ side: window.__neshelLab.advanced.controls.flip.current.side, active: document.activeElement?.id })`,
+        );
+        await p.evaluate(`document.getElementById("d01-back-toggle").focus()`);
+        await key(" ", "Space", 32);
+        await until(
+          "back to front",
+          `window.__neshelLab.advanced.controls.flip.current.side === "front"`,
+          `window.__neshelLab.advanced.controls.flip.current.side`,
+        );
+      },
+    );
+    await run("D03 real keyboard: arrows on the focused ring move the front item", async () => {
+      await p.evaluate(
+        `(() => { const r = document.getElementById("d03-ring"); r.scrollIntoView({ block: "center" }); r.focus(); })()`,
+      );
+      await key("ArrowLeft", "ArrowLeft", 37);
+      await until(
+        "ring rotated",
+        `window.__neshelLab.advanced.controls.ring.current.index === 5`,
+        `window.__neshelLab.advanced.controls.ring.current.index`,
+      );
+      await key("Home", "Home", 36);
+      await until(
+        "ring home",
+        `window.__neshelLab.advanced.controls.ring.current.index === 0`,
+        `window.__neshelLab.advanced.controls.ring.current.index`,
+      );
+    });
+    await run(
+      "phase 016: reduced motion live — fade flip, no glitch, static floor, no GPU distortion",
+      async () => {
+        await motionPreference("reduce");
+        const facts = await p.evaluate("window.__neshelLab.advanced.reducedFacts()");
+        await motionPreference("no-preference");
+        check(facts.flipMode === "fade", JSON.stringify(facts));
+        check(facts.glitchActive === false, JSON.stringify(facts));
+        check(facts.gridState === "reduced" && facts.floorRunning === false, JSON.stringify(facts));
+        check(facts.rippleActive === false && facts.rippleMode === "static", JSON.stringify(facts));
+        check(facts.depthMode === "static", JSON.stringify(facts));
+        notes.advancedReduced = facts;
+      },
+    );
+    notes.advanced = await p.evaluate("window.__neshelLab.advanced.debug()");
     notes.effects = await p.evaluate("window.__neshelLab.notes");
 
     await run("axe: no violations on the lab page", async () => {
@@ -1081,7 +1168,9 @@ async function main() {
     console.error(`check:browser:animations failed: ${failures.length} of ${cases.length} cases.`);
     process.exitCode = 1;
   } else {
-    console.info(`check:browser:animations passed: ${cases.length} cases.`);
+    console.info(
+      `check:browser:animations passed: ${cases.length} cases (${cases.length} passed, 0 skipped, 0 failed; no skip rule applies to this check).`,
+    );
   }
 }
 

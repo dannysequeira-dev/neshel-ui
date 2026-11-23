@@ -66,7 +66,14 @@ export function createSeekCoalescer(
   let target = Number.NaN;
   let inFlight = false;
   let frameHandle: number | undefined;
+  /** Fallback for a frame callback that never fires (hidden video); one per `seeked` cycle (Phase 016 §17). */
+  let fallback: ReturnType<typeof setTimeout> | undefined;
   let destroyed = false;
+
+  function clearFallback(): void {
+    if (fallback !== undefined) clearTimeout(fallback);
+    fallback = undefined;
+  }
 
   const ready = () => video.readyState >= HAVE_METADATA && Number.isFinite(video.duration);
 
@@ -91,14 +98,19 @@ export function createSeekCoalescer(
     // Wait for the sought frame to be presented when the engine can tell us; otherwise continue now.
     if (typeof v.requestVideoFrameCallback === "function") {
       if (frameHandle !== undefined) v.cancelVideoFrameCallback?.(frameHandle);
+      clearFallback();
       frameHandle = v.requestVideoFrameCallback(() => {
         frameHandle = undefined;
+        clearFallback();
         counters.framesPresented++;
         settle();
       });
       // A paused video presents the sought frame once; if the engine never calls back (hidden video), the
-      // next `seeking` cycle is still unblocked by the timeout below.
-      setTimeout(() => {
+      // next `seeking` cycle is still unblocked by the timeout below. The timer belongs to THIS cycle: it is
+      // cleared by the presented frame, by the next `seeked` and by destroy, so a stale timer can never settle
+      // a later cycle early and nothing is retained after destroy.
+      fallback = setTimeout(() => {
+        fallback = undefined;
         if (frameHandle !== undefined && !destroyed) {
           v.cancelVideoFrameCallback?.(frameHandle);
           frameHandle = undefined;
@@ -136,6 +148,7 @@ export function createSeekCoalescer(
       destroyed = true;
       if (frameHandle !== undefined) v.cancelVideoFrameCallback?.(frameHandle);
       frameHandle = undefined;
+      clearFallback();
       video.removeEventListener("seeked", onSeeked);
       video.removeEventListener("loadedmetadata", onMetadata);
     },

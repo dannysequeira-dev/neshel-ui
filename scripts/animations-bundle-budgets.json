@@ -87,5 +87,22 @@
   "feedback: Spinner + ProgressBar": 768,
   "feedback: createToaster (no React)": 1344,
   "feedback: Toaster": 3968,
-  "feedback: entire entry": 12352
+  "feedback: entire entry": 12352,
+  "css: advanced.css": 1216,
+  "css: gpu.css": 512,
+  "advanced: createCardFlip (engine, no React)": 8704,
+  "advanced: createCubeRotate (engine, no React)": 10880,
+  "advanced: createRingCarousel (engine, no React)": 10752,
+  "advanced: createCornerRecede (engine, no React)": 10560,
+  "advanced: createGlitch (engine, no React)": 5440,
+  "advanced: createPerspectiveGrid + createTiltShift (engine, no React)": 6528,
+  "advanced: CardFlip + CornerRecede": 13376,
+  "advanced: entire entry": 25088,
+  "gpu: configureGpu + getGpuSupport (no effect)": 2752,
+  "gpu: createRipple (engine, no React)": 14016,
+  "gpu: createDisplacementHover (engine, no React)": 14592,
+  "gpu: createDepthParallax (engine, no React)": 14464,
+  "gpu: createPageCurl (engine, no React)": 17984,
+  "gpu: PageCurl + Ripple": 21184,
+  "gpu: entire entry": 25280
 }

@@ -1,7 +1,9 @@
-// Animations lab: A (Tilt3D), C (ScrollScene, package API since Phase 011), the engine lab, the Phase
-// 010 effects gallery and the Phase 011 scroll gallery use the package; B (CornerRecede) is a prototype.
+// Animations lab: A (Tilt3D), C (ScrollScene, package API since Phase 011), the engine lab and the Phase
+// 010–016 galleries use the package; B keeps the 008.0 CornerRecede technique comparison (research R7), whose
+// hinged fold became the D05 package effect shown in the Phase 016 gallery.
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
+import { AdvancedGallery } from "./advanced-gallery";
 import { CinematicGallery } from "./cinematic-gallery";
 import { CornerRecedeLab } from "./corner-recede";
 import { EffectsLab } from "./effects-lab";
@@ -20,12 +22,12 @@ createRoot(root).render(
   <StrictMode>
     <main className="lab">
       <header className="lab-header">
-        <p className="lab-eyebrow">Neshel-UI · features 008.0–015</p>
+        <p className="lab-eyebrow">Neshel-UI · features 008.0–016</p>
         <h1>Animations lab</h1>
         <p>
           Technical spikes for <code>@neshel-ui/animations</code> (private, unpublished). Tilt3D,
-          ScrollScene, the engine lab and the Phase 010–012 galleries use the package; CornerRecede
-          is a prototype whose API is not approved.
+          ScrollScene, the engine lab and the Phase 010–016 galleries use the package; section B
+          keeps the 008.0 CornerRecede technique comparison behind the D05 effect.
         </p>
       </header>
       <TiltLab />
@@ -38,6 +40,7 @@ createRoot(root).render(
       <CinematicGallery />
       <TextSvgGallery />
       <MediaGallery />
+      <AdvancedGallery />
     </main>
   </StrictMode>,
 );

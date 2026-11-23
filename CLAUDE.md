@@ -16,8 +16,12 @@ Phase 013 (Cinematic & Scenes C01–C10, Page Transitions PT01–PT10; ADR 0028)
 the squash commit `7207638` (PR #13) and approved by the owner. Phase 014 (Typography & Text T01–T11, SVG &
 Paths S01–S10; ADR 0029) is merged into `main` as the squash commit `3706a36` (PR #15; main CI 44923680210
 14/14) and approved by the owner. Phase 015 (Images & Media M01–M10, Background & Ambient B01–B10, Loading &
-Feedback F01–F10) is the **current phase**, in development on `feature/015-media-ambient-feedback`
-(`specs/015-media-ambient-feedback/`); its PR needs the owner's review — never merge it automatically.
+Feedback F01–F10; ADR 0030) is merged into `main` as the squash commit `da79b4a` (PR #16; main CI 45079243865
+14/14 on attempt 2 — attempt 1 hit the known Components nested-overlay timing on macOS) and approved by the owner.
+Phase 016 (Advanced 3D & Distortion D01–D11, the last 11 catalogue entries; optional WebGL2 `./gpu` entry, ADR 0031
+Accepted) is the **current phase**, in development on `feature/016-advanced-3d-distortion`
+(`specs/016-advanced-3d-distortion/`); its PR needs the owner's review — never merge it automatically. Completing
+the catalogue does not authorise the first animations publication.
 `@neshel-ui/animations` is **private** (0.0.0) and must stay private until the owner approves its
 first publication; it is outside the Changesets fixed group and the release scripts. The five public
 packages are on npm with provenance; `@neshel-ui/core` stays private. `v0.1.0` is immutable: never
@@ -109,13 +113,14 @@ legitimate third-party licence notices. Check every commit message and PR body b
   `--with animations`, which validates the private animations tarball without lifting its guard).
 - `pnpm check:browser:animations` — animations lab (Tilt3D, CornerRecede, ScrollScene, engine, Phase 010
   effects gallery, Phase 011 scroll gallery, Phase 012 gestures/layout gallery, Phase 013 cinematic/page-transitions
-  gallery, Phase 014 text/SVG gallery, Phase 015 media/ambient/feedback gallery) in headless Chrome with real input
-  and axe; requires `pnpm build:playground`.
+  gallery, Phase 014 text/SVG gallery, Phase 015 media/ambient/feedback gallery, Phase 016 advanced 3D/GPU gallery) in
+  headless Chrome with real input and axe; requires `pnpm build:playground`.
 - `pnpm check:animations:engines` — the same lab in Playwright Chromium, Firefox and WebKit.
 - `pnpm check:animations:consumer` — external app from the packed animations tarball (SSR + hydration).
 - `pnpm check:animations:bundles` — packed-tarball bundle sizes against the approved budgets.
-- `pnpm bench:animations:text` / `pnpm bench:animations:media-ambient` / `pnpm bench:animations:spike-015` —
-  local performance observations (K-5; Phase 015 matrix; Canvas/WebGL/CSS spike), never gates.
+- `pnpm bench:animations:text` / `pnpm bench:animations:media-ambient` / `pnpm bench:animations:spike-015` /
+  `pnpm bench:animations:spike-016` / `pnpm bench:animations:advanced` — local performance observations (K-5; Phase
+  015 matrix; Canvas/WebGL/CSS spikes; Phase 016 matrix), never gates.
 - `pnpm check:animations:routers` — Phase 013 router consumers from the packed tarball (React Router 8.5.0
   Vite app offline; Next.js 16.4.5 App Router from the registry) in Playwright Chromium.
 - `pnpm test` — `node:test` suites (scripts, tarball reader, validators, portability).

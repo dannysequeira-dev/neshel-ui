@@ -1,0 +1,1445 @@
+{
+  "chromium 158.0.8127.18": {
+    "baseline": {
+      "interval": {
+        "mean": 16.67,
+        "p95": 16.8,
+        "max": 16.8
+      },
+      "longTasks": 0
+    },
+    "D01_flip_x1": {
+      "createMs": 0.3,
+      "firstFrameMs": 33,
+      "interval": {
+        "mean": 16.67,
+        "p95": 16.7,
+        "max": 16.8
+      },
+      "longTasks": 0,
+      "draws": 0,
+      "contexts": 4,
+      "textureKiB": 3064,
+      "drawingBufferKiB": 750,
+      "compileErrors": 0
+    },
+    "D01_flip_x12": {
+      "createMs": 1.8,
+      "firstFrameMs": 33.2,
+      "interval": {
+        "mean": 16.66,
+        "p95": 16.8,
+        "max": 16.8
+      },
+      "longTasks": 0,
+      "draws": 0,
+      "contexts": 4,
+      "textureKiB": 3064,
+      "drawingBufferKiB": 750,
+      "compileErrors": 0
+    },
+    "D03_ring_rapid": {
+      "createMs": 0.8,
+      "firstFrameMs": 33.3,
+      "interval": {
+        "mean": 16.67,
+        "p95": 16.7,
+        "max": 16.8
+      },
+      "longTasks": 0,
+      "draws": 0,
+      "contexts": 4,
+      "textureKiB": 3064,
+      "drawingBufferKiB": 750,
+      "compileErrors": 0
+    },
+    "D05_corner_x1_moving": {
+      "createMs": 0.2,
+      "firstFrameMs": 34.3,
+      "interval": {
+        "mean": 16.67,
+        "p95": 16.7,
+        "max": 16.8
+      },
+      "longTasks": 0,
+      "draws": 0,
+      "contexts": 4,
+      "textureKiB": 3064,
+      "drawingBufferKiB": 750,
+      "compileErrors": 0
+    },
+    "D05_corner_x1_idle": {
+      "createMs": 0.2,
+      "firstFrameMs": 32.3,
+      "interval": {
+        "mean": 16.67,
+        "p95": 16.7,
+        "max": 16.8
+      },
+      "longTasks": 0,
+      "draws": 0,
+      "contexts": 4,
+      "textureKiB": 3064,
+      "drawingBufferKiB": 750,
+      "compileErrors": 0
+    },
+    "D05_corner_x6_moving": {
+      "createMs": 0.3,
+      "firstFrameMs": 34.1,
+      "interval": {
+        "mean": 16.86,
+        "p95": 16.8,
+        "max": 33.4
+      },
+      "longTasks": 0,
+      "draws": 0,
+      "contexts": 4,
+      "textureKiB": 3064,
+      "drawingBufferKiB": 750,
+      "compileErrors": 0
+    },
+    "D05_corner_x6_idle": {
+      "createMs": 0.3,
+      "firstFrameMs": 32.1,
+      "interval": {
+        "mean": 16.67,
+        "p95": 16.8,
+        "max": 16.8
+      },
+      "longTasks": 0,
+      "draws": 0,
+      "contexts": 4,
+      "textureKiB": 3064,
+      "drawingBufferKiB": 750,
+      "compileErrors": 0
+    },
+    "D07_glitch_x6": {
+      "createMs": 1.7,
+      "firstFrameMs": 32.8,
+      "interval": {
+        "mean": 16.67,
+        "p95": 16.7,
+        "max": 16.8
+      },
+      "longTasks": 0,
+      "draws": 0,
+      "contexts": 4,
+      "textureKiB": 3064,
+      "drawingBufferKiB": 750,
+      "compileErrors": 0
+    },
+    "D09_floor_x1": {
+      "createMs": 0.6,
+      "firstFrameMs": 33.8,
+      "interval": {
+        "mean": 16.67,
+        "p95": 16.7,
+        "max": 16.8
+      },
+      "longTasks": 0,
+      "draws": 0,
+      "contexts": 4,
+      "textureKiB": 3064,
+      "drawingBufferKiB": 750,
+      "compileErrors": 0
+    },
+    "D09_floor_x2": {
+      "createMs": 0.5,
+      "firstFrameMs": 33.3,
+      "interval": {
+        "mean": 16.67,
+        "p95": 16.7,
+        "max": 16.8
+      },
+      "longTasks": 0,
+      "draws": 0,
+      "contexts": 4,
+      "textureKiB": 3064,
+      "drawingBufferKiB": 750,
+      "compileErrors": 0
+    },
+    "D11_tiltshift_2bands_static": {
+      "createMs": 0.6,
+      "firstFrameMs": 32.9,
+      "interval": {
+        "mean": 16.67,
+        "p95": 16.8,
+        "max": 16.8
+      },
+      "longTasks": 0,
+      "draws": 0,
+      "contexts": 4,
+      "textureKiB": 3064,
+      "drawingBufferKiB": 750,
+      "compileErrors": 0
+    },
+    "D11_tiltshift_2bands_moving": {
+      "createMs": 0.6,
+      "firstFrameMs": 33.5,
+      "interval": {
+        "mean": 16.66,
+        "p95": 16.7,
+        "max": 16.8
+      },
+      "longTasks": 0,
+      "draws": 0,
+      "contexts": 4,
+      "textureKiB": 3064,
+      "drawingBufferKiB": 750,
+      "compileErrors": 0
+    },
+    "D11_tiltshift_4bands_static": {
+      "createMs": 0.3,
+      "firstFrameMs": 32.1,
+      "interval": {
+        "mean": 16.67,
+        "p95": 16.7,
+        "max": 16.8
+      },
+      "longTasks": 0,
+      "draws": 0,
+      "contexts": 4,
+      "textureKiB": 3064,
+      "drawingBufferKiB": 750,
+      "compileErrors": 0
+    },
+    "D11_tiltshift_4bands_moving": {
+      "createMs": 0.9,
+      "firstFrameMs": 32.1,
+      "interval": {
+        "mean": 17.25,
+        "p95": 16.7,
+        "max": 33.4
+      },
+      "longTasks": 0,
+      "draws": 0,
+      "contexts": 4,
+      "textureKiB": 3064,
+      "drawingBufferKiB": 750,
+      "compileErrors": 0
+    },
+    "D04_curl_small_dpr1": {
+      "createMs": 5.5,
+      "firstFrameMs": 29.4,
+      "interval": {
+        "mean": 16.67,
+        "p95": 16.8,
+        "max": 16.8
+      },
+      "longTasks": 0,
+      "draws": 90,
+      "contexts": 5,
+      "textureKiB": 3364,
+      "drawingBufferKiB": 1350,
+      "compileErrors": 0
+    },
+    "D04_curl_medium_dpr1": {
+      "createMs": 13,
+      "firstFrameMs": 42.4,
+      "interval": {
+        "mean": 16.67,
+        "p95": 16.8,
+        "max": 16.8
+      },
+      "longTasks": 0,
+      "draws": 90,
+      "contexts": 5,
+      "textureKiB": 3364,
+      "drawingBufferKiB": 1350,
+      "compileErrors": 0
+    },
+    "D04_curl_large_dpr1": {
+      "createMs": 10,
+      "firstFrameMs": 35.5,
+      "interval": {
+        "mean": 16.67,
+        "p95": 16.7,
+        "max": 16.8
+      },
+      "longTasks": 0,
+      "draws": 90,
+      "contexts": 5,
+      "textureKiB": 3364,
+      "drawingBufferKiB": 1350,
+      "compileErrors": 0
+    },
+    "D06_ripple_dpr1": {
+      "createMs": 1.5,
+      "firstFrameMs": 31.5,
+      "interval": {
+        "mean": 16.67,
+        "p95": 16.8,
+        "max": 16.8
+      },
+      "longTasks": 0,
+      "draws": 90,
+      "contexts": 5,
+      "textureKiB": 3364,
+      "drawingBufferKiB": 1050,
+      "compileErrors": 0
+    },
+    "D08_displace_dpr1": {
+      "createMs": 3.2,
+      "firstFrameMs": 32.9,
+      "interval": {
+        "mean": 16.66,
+        "p95": 16.7,
+        "max": 16.8
+      },
+      "longTasks": 0,
+      "draws": 90,
+      "contexts": 5,
+      "textureKiB": 3428,
+      "drawingBufferKiB": 1050,
+      "compileErrors": 0
+    },
+    "D10_depth_dpr1": {
+      "createMs": 1.3,
+      "firstFrameMs": 33.5,
+      "interval": {
+        "mean": 16.67,
+        "p95": 16.8,
+        "max": 16.8
+      },
+      "longTasks": 0,
+      "draws": 90,
+      "contexts": 5,
+      "textureKiB": 3664,
+      "drawingBufferKiB": 1050,
+      "compileErrors": 0
+    },
+    "D04_curl_small_dpr2": {
+      "createMs": 11.8,
+      "firstFrameMs": 34.3,
+      "interval": {
+        "mean": 16.67,
+        "p95": 16.7,
+        "max": 16.8
+      },
+      "longTasks": 0,
+      "draws": 90,
+      "contexts": 5,
+      "textureKiB": 3364,
+      "drawingBufferKiB": 1350,
+      "compileErrors": 0
+    },
+    "D04_curl_medium_dpr2": {
+      "createMs": 14.1,
+      "firstFrameMs": 35.7,
+      "interval": {
+        "mean": 16.67,
+        "p95": 16.7,
+        "max": 16.8
+      },
+      "longTasks": 0,
+      "draws": 90,
+      "contexts": 5,
+      "textureKiB": 3364,
+      "drawingBufferKiB": 1350,
+      "compileErrors": 0
+    },
+    "D04_curl_large_dpr2": {
+      "createMs": 12,
+      "firstFrameMs": 40.8,
+      "interval": {
+        "mean": 16.67,
+        "p95": 16.7,
+        "max": 16.8
+      },
+      "longTasks": 0,
+      "draws": 90,
+      "contexts": 5,
+      "textureKiB": 3364,
+      "drawingBufferKiB": 1350,
+      "compileErrors": 0
+    },
+    "D06_ripple_dpr2": {
+      "createMs": 1.1,
+      "firstFrameMs": 33.3,
+      "interval": {
+        "mean": 16.67,
+        "p95": 16.7,
+        "max": 16.8
+      },
+      "longTasks": 0,
+      "draws": 90,
+      "contexts": 5,
+      "textureKiB": 3364,
+      "drawingBufferKiB": 1050,
+      "compileErrors": 0
+    },
+    "D08_displace_dpr2": {
+      "createMs": 8,
+      "firstFrameMs": 32.7,
+      "interval": {
+        "mean": 16.66,
+        "p95": 16.7,
+        "max": 16.8
+      },
+      "longTasks": 0,
+      "draws": 90,
+      "contexts": 5,
+      "textureKiB": 3428,
+      "drawingBufferKiB": 1050,
+      "compileErrors": 0
+    },
+    "D10_depth_dpr2": {
+      "createMs": 1,
+      "firstFrameMs": 38.4,
+      "interval": {
+        "mean": 16.67,
+        "p95": 16.8,
+        "max": 16.8
+      },
+      "longTasks": 0,
+      "draws": 90,
+      "contexts": 5,
+      "textureKiB": 3664,
+      "drawingBufferKiB": 1050,
+      "compileErrors": 0
+    },
+    "gpu_six_surfaces": {
+      "createMs": 22.6,
+      "firstFrameMs": 112.6,
+      "interval": {
+        "mean": 16.67,
+        "p95": 16.8,
+        "max": 16.8
+      },
+      "longTasks": 0,
+      "draws": 270,
+      "contexts": 6,
+      "textureKiB": 2631,
+      "drawingBufferKiB": 886,
+      "compileErrors": 0
+    },
+    "gpu_unavailable": {
+      "createMs": 3,
+      "firstFrameMs": 32.9,
+      "interval": {
+        "mean": 16.67,
+        "p95": 16.7,
+        "max": 16.8
+      },
+      "longTasks": 0,
+      "draws": 0,
+      "contexts": 2,
+      "textureKiB": 1864,
+      "drawingBufferKiB": 300,
+      "compileErrors": 0
+    },
+    "gpu_offscreen": {
+      "draws": 1,
+      "mode": "gpu"
+    },
+    "context_loss_restore": {
+      "restoredMs": 15.8,
+      "restores": 1
+    },
+    "mount_unmount_x20": {
+      "totalMs": 401.6,
+      "contexts": 2,
+      "textures": 4,
+      "programs": 2,
+      "buffers": 2,
+      "surfaces": 4
+    },
+    "final": {
+      "advanced": {
+        "effects": 8,
+        "flaps": 0,
+        "glitchLayers": 0,
+        "layers": 2,
+        "listeners": 0,
+        "observers": 4,
+        "glitchSteps": 30,
+        "attributeEntries": 50,
+        "gateObservers": 1,
+        "gateElements": 5
+      },
+      "gpu": {
+        "surfaces": 4,
+        "contexts": 2,
+        "waiting": 0,
+        "programs": 2,
+        "shaders": 4,
+        "buffers": 2,
+        "textures": 4,
+        "vertexArrays": 2,
+        "textureBytes": 1908736,
+        "drawingBufferBytes": 307200,
+        "frames": 1263,
+        "draws": 1388,
+        "compileErrors": 0,
+        "losses": 1,
+        "lost": 0,
+        "restores": 1,
+        "evictions": 2,
+        "fallbacks": 2,
+        "effects": 4
+      }
+    }
+  },
+  "firefox 159.0": {
+    "baseline": {
+      "interval": {
+        "mean": 7.26,
+        "p95": 6.94,
+        "max": 34.68
+      },
+      "longTasks": 0
+    },
+    "D01_flip_x1": {
+      "createMs": 2,
+      "firstFrameMs": 14,
+      "interval": {
+        "mean": 6.94,
+        "p95": 6.94,
+        "max": 6.94
+      },
+      "longTasks": 0,
+      "draws": 0,
+      "contexts": 4,
+      "textureKiB": 3064,
+      "drawingBufferKiB": 750,
+      "compileErrors": 0
+    },
+    "D01_flip_x12": {
+      "createMs": 2,
+      "firstFrameMs": 14,
+      "interval": {
+        "mean": 6.94,
+        "p95": 6.94,
+        "max": 6.94
+      },
+      "longTasks": 0,
+      "draws": 0,
+      "contexts": 4,
+      "textureKiB": 3064,
+      "drawingBufferKiB": 750,
+      "compileErrors": 0
+    },
+    "D03_ring_rapid": {
+      "createMs": 2,
+      "firstFrameMs": 13,
+      "interval": {
+        "mean": 6.94,
+        "p95": 6.94,
+        "max": 6.94
+      },
+      "longTasks": 0,
+      "draws": 0,
+      "contexts": 4,
+      "textureKiB": 3064,
+      "drawingBufferKiB": 750,
+      "compileErrors": 0
+    },
+    "D05_corner_x1_moving": {
+      "createMs": 0,
+      "firstFrameMs": 13,
+      "interval": {
+        "mean": 6.94,
+        "p95": 6.94,
+        "max": 6.94
+      },
+      "longTasks": 0,
+      "draws": 0,
+      "contexts": 4,
+      "textureKiB": 3064,
+      "drawingBufferKiB": 750,
+      "compileErrors": 0
+    },
+    "D05_corner_x1_idle": {
+      "createMs": 1,
+      "firstFrameMs": 14,
+      "interval": {
+        "mean": 6.94,
+        "p95": 6.94,
+        "max": 6.94
+      },
+      "longTasks": 0,
+      "draws": 0,
+      "contexts": 4,
+      "textureKiB": 3064,
+      "drawingBufferKiB": 750,
+      "compileErrors": 0
+    },
+    "D05_corner_x6_moving": {
+      "createMs": 1,
+      "firstFrameMs": 14,
+      "interval": {
+        "mean": 6.94,
+        "p95": 6.94,
+        "max": 6.94
+      },
+      "longTasks": 0,
+      "draws": 0,
+      "contexts": 4,
+      "textureKiB": 3064,
+      "drawingBufferKiB": 750,
+      "compileErrors": 0
+    },
+    "D05_corner_x6_idle": {
+      "createMs": 0,
+      "firstFrameMs": 14,
+      "interval": {
+        "mean": 6.94,
+        "p95": 6.94,
+        "max": 6.94
+      },
+      "longTasks": 0,
+      "draws": 0,
+      "contexts": 4,
+      "textureKiB": 3064,
+      "drawingBufferKiB": 750,
+      "compileErrors": 0
+    },
+    "D07_glitch_x6": {
+      "createMs": 3,
+      "firstFrameMs": 14,
+      "interval": {
+        "mean": 6.94,
+        "p95": 6.94,
+        "max": 6.94
+      },
+      "longTasks": 0,
+      "draws": 0,
+      "contexts": 4,
+      "textureKiB": 3064,
+      "drawingBufferKiB": 750,
+      "compileErrors": 0
+    },
+    "D09_floor_x1": {
+      "createMs": 0,
+      "firstFrameMs": 15,
+      "interval": {
+        "mean": 6.94,
+        "p95": 6.94,
+        "max": 6.94
+      },
+      "longTasks": 0,
+      "draws": 0,
+      "contexts": 4,
+      "textureKiB": 3064,
+      "drawingBufferKiB": 750,
+      "compileErrors": 0
+    },
+    "D09_floor_x2": {
+      "createMs": 1,
+      "firstFrameMs": 21,
+      "interval": {
+        "mean": 11.75,
+        "p95": 13.88,
+        "max": 13.88
+      },
+      "longTasks": 0,
+      "draws": 0,
+      "contexts": 4,
+      "textureKiB": 3064,
+      "drawingBufferKiB": 750,
+      "compileErrors": 0
+    },
+    "D11_tiltshift_2bands_static": {
+      "createMs": 1,
+      "firstFrameMs": 14,
+      "interval": {
+        "mean": 6.94,
+        "p95": 6.94,
+        "max": 6.94
+      },
+      "longTasks": 0,
+      "draws": 0,
+      "contexts": 4,
+      "textureKiB": 3064,
+      "drawingBufferKiB": 750,
+      "compileErrors": 0
+    },
+    "D11_tiltshift_2bands_moving": {
+      "createMs": 1,
+      "firstFrameMs": 14,
+      "interval": {
+        "mean": 10.04,
+        "p95": 13.88,
+        "max": 20.8
+      },
+      "longTasks": 0,
+      "draws": 0,
+      "contexts": 4,
+      "textureKiB": 3064,
+      "drawingBufferKiB": 750,
+      "compileErrors": 0
+    },
+    "D11_tiltshift_4bands_static": {
+      "createMs": 0,
+      "firstFrameMs": 14,
+      "interval": {
+        "mean": 6.94,
+        "p95": 6.94,
+        "max": 6.94
+      },
+      "longTasks": 0,
+      "draws": 0,
+      "contexts": 4,
+      "textureKiB": 3064,
+      "drawingBufferKiB": 750,
+      "compileErrors": 0
+    },
+    "D11_tiltshift_4bands_moving": {
+      "createMs": 0,
+      "firstFrameMs": 14,
+      "interval": {
+        "mean": 20.4,
+        "p95": 27.76,
+        "max": 34.68
+      },
+      "longTasks": 0,
+      "draws": 0,
+      "contexts": 4,
+      "textureKiB": 3064,
+      "drawingBufferKiB": 750,
+      "compileErrors": 0
+    },
+    "D04_curl_small_dpr1": {
+      "createMs": 17,
+      "firstFrameMs": 24,
+      "interval": {
+        "mean": 6.94,
+        "p95": 6.94,
+        "max": 6.94
+      },
+      "longTasks": 0,
+      "draws": 90,
+      "contexts": 5,
+      "textureKiB": 3364,
+      "drawingBufferKiB": 1350,
+      "compileErrors": 0
+    },
+    "D04_curl_medium_dpr1": {
+      "createMs": 18,
+      "firstFrameMs": 24,
+      "interval": {
+        "mean": 6.94,
+        "p95": 6.94,
+        "max": 6.94
+      },
+      "longTasks": 0,
+      "draws": 90,
+      "contexts": 5,
+      "textureKiB": 3364,
+      "drawingBufferKiB": 1350,
+      "compileErrors": 0
+    },
+    "D04_curl_large_dpr1": {
+      "createMs": 24,
+      "firstFrameMs": 31,
+      "interval": {
+        "mean": 6.94,
+        "p95": 6.94,
+        "max": 6.94
+      },
+      "longTasks": 0,
+      "draws": 90,
+      "contexts": 5,
+      "textureKiB": 3364,
+      "drawingBufferKiB": 1350,
+      "compileErrors": 0
+    },
+    "D06_ripple_dpr1": {
+      "createMs": 1,
+      "firstFrameMs": 13,
+      "interval": {
+        "mean": 6.94,
+        "p95": 6.94,
+        "max": 6.94
+      },
+      "longTasks": 0,
+      "draws": 90,
+      "contexts": 5,
+      "textureKiB": 3364,
+      "drawingBufferKiB": 1050,
+      "compileErrors": 0
+    },
+    "D08_displace_dpr1": {
+      "createMs": 2,
+      "firstFrameMs": 13,
+      "interval": {
+        "mean": 6.94,
+        "p95": 6.94,
+        "max": 6.94
+      },
+      "longTasks": 0,
+      "draws": 90,
+      "contexts": 5,
+      "textureKiB": 3428,
+      "drawingBufferKiB": 1050,
+      "compileErrors": 0
+    },
+    "D10_depth_dpr1": {
+      "createMs": 2,
+      "firstFrameMs": 37,
+      "interval": {
+        "mean": 6.94,
+        "p95": 6.94,
+        "max": 6.94
+      },
+      "longTasks": 0,
+      "draws": 90,
+      "contexts": 5,
+      "textureKiB": 3664,
+      "drawingBufferKiB": 1050,
+      "compileErrors": 0
+    },
+    "D04_curl_small_dpr2": {
+      "createMs": 19,
+      "firstFrameMs": 24,
+      "interval": {
+        "mean": 6.94,
+        "p95": 6.94,
+        "max": 6.94
+      },
+      "longTasks": 0,
+      "draws": 90,
+      "contexts": 5,
+      "textureKiB": 3364,
+      "drawingBufferKiB": 1350,
+      "compileErrors": 0
+    },
+    "D04_curl_medium_dpr2": {
+      "createMs": 16,
+      "firstFrameMs": 22,
+      "interval": {
+        "mean": 6.94,
+        "p95": 6.94,
+        "max": 6.94
+      },
+      "longTasks": 0,
+      "draws": 90,
+      "contexts": 5,
+      "textureKiB": 3364,
+      "drawingBufferKiB": 1350,
+      "compileErrors": 0
+    },
+    "D04_curl_large_dpr2": {
+      "createMs": 15,
+      "firstFrameMs": 21,
+      "interval": {
+        "mean": 6.94,
+        "p95": 6.94,
+        "max": 6.94
+      },
+      "longTasks": 0,
+      "draws": 90,
+      "contexts": 5,
+      "textureKiB": 3364,
+      "drawingBufferKiB": 1350,
+      "compileErrors": 0
+    },
+    "D06_ripple_dpr2": {
+      "createMs": 2,
+      "firstFrameMs": 14,
+      "interval": {
+        "mean": 6.94,
+        "p95": 6.94,
+        "max": 6.94
+      },
+      "longTasks": 0,
+      "draws": 90,
+      "contexts": 5,
+      "textureKiB": 3364,
+      "drawingBufferKiB": 1050,
+      "compileErrors": 0
+    },
+    "D08_displace_dpr2": {
+      "createMs": 5,
+      "firstFrameMs": 13,
+      "interval": {
+        "mean": 6.94,
+        "p95": 6.94,
+        "max": 6.94
+      },
+      "longTasks": 0,
+      "draws": 90,
+      "contexts": 5,
+      "textureKiB": 3428,
+      "drawingBufferKiB": 1050,
+      "compileErrors": 0
+    },
+    "D10_depth_dpr2": {
+      "createMs": 2,
+      "firstFrameMs": 29,
+      "interval": {
+        "mean": 6.94,
+        "p95": 6.94,
+        "max": 6.94
+      },
+      "longTasks": 0,
+      "draws": 90,
+      "contexts": 5,
+      "textureKiB": 3664,
+      "drawingBufferKiB": 1050,
+      "compileErrors": 0
+    },
+    "gpu_six_surfaces": {
+      "createMs": 27,
+      "firstFrameMs": 57,
+      "interval": {
+        "mean": 6.94,
+        "p95": 6.94,
+        "max": 6.94
+      },
+      "longTasks": 0,
+      "draws": 270,
+      "contexts": 6,
+      "textureKiB": 2567,
+      "drawingBufferKiB": 1036,
+      "compileErrors": 0
+    },
+    "gpu_unavailable": {
+      "createMs": 3,
+      "firstFrameMs": 15,
+      "interval": {
+        "mean": 6.94,
+        "p95": 6.94,
+        "max": 6.94
+      },
+      "longTasks": 0,
+      "draws": 0,
+      "contexts": 2,
+      "textureKiB": 1800,
+      "drawingBufferKiB": 450,
+      "compileErrors": 0
+    },
+    "gpu_offscreen": {
+      "draws": 1,
+      "mode": "gpu"
+    },
+    "context_loss_restore": {
+      "restoredMs": 14,
+      "restores": 1
+    },
+    "mount_unmount_x20": {
+      "totalMs": 499,
+      "contexts": 2,
+      "textures": 3,
+      "programs": 2,
+      "buffers": 3,
+      "surfaces": 4
+    },
+    "final": {
+      "advanced": {
+        "effects": 8,
+        "flaps": 0,
+        "glitchLayers": 0,
+        "layers": 2,
+        "listeners": 0,
+        "observers": 4,
+        "glitchSteps": 12,
+        "attributeEntries": 50,
+        "gateObservers": 1,
+        "gateElements": 5
+      },
+      "gpu": {
+        "surfaces": 4,
+        "contexts": 2,
+        "waiting": 0,
+        "programs": 2,
+        "shaders": 4,
+        "buffers": 3,
+        "textures": 3,
+        "vertexArrays": 2,
+        "textureBytes": 1843200,
+        "drawingBufferBytes": 460800,
+        "frames": 1262,
+        "draws": 1388,
+        "compileErrors": 0,
+        "losses": 1,
+        "lost": 0,
+        "restores": 1,
+        "evictions": 2,
+        "fallbacks": 2,
+        "effects": 4
+      }
+    }
+  },
+  "webkit 27.2": {
+    "baseline": {
+      "interval": {
+        "mean": 20.48,
+        "p95": 31,
+        "max": 41
+      },
+      "longTasks": 0
+    },
+    "D01_flip_x1": {
+      "createMs": 1,
+      "firstFrameMs": 31,
+      "interval": {
+        "mean": 16.05,
+        "p95": 17,
+        "max": 29
+      },
+      "longTasks": 0,
+      "draws": 0,
+      "contexts": 4,
+      "textureKiB": 3064,
+      "drawingBufferKiB": 750,
+      "compileErrors": 0
+    },
+    "D01_flip_x12": {
+      "createMs": 1,
+      "firstFrameMs": 31,
+      "interval": {
+        "mean": 17.82,
+        "p95": 30,
+        "max": 32
+      },
+      "longTasks": 0,
+      "draws": 0,
+      "contexts": 4,
+      "textureKiB": 3064,
+      "drawingBufferKiB": 750,
+      "compileErrors": 0
+    },
+    "D03_ring_rapid": {
+      "createMs": 2,
+      "firstFrameMs": 27,
+      "interval": {
+        "mean": 15.91,
+        "p95": 18,
+        "max": 28
+      },
+      "longTasks": 0,
+      "draws": 0,
+      "contexts": 4,
+      "textureKiB": 3064,
+      "drawingBufferKiB": 750,
+      "compileErrors": 0
+    },
+    "D05_corner_x1_moving": {
+      "createMs": 0,
+      "firstFrameMs": 30,
+      "interval": {
+        "mean": 15.8,
+        "p95": 17,
+        "max": 29
+      },
+      "longTasks": 0,
+      "draws": 0,
+      "contexts": 4,
+      "textureKiB": 3064,
+      "drawingBufferKiB": 750,
+      "compileErrors": 0
+    },
+    "D05_corner_x1_idle": {
+      "createMs": 0,
+      "firstFrameMs": 31,
+      "interval": {
+        "mean": 15.6,
+        "p95": 16,
+        "max": 17
+      },
+      "longTasks": 0,
+      "draws": 0,
+      "contexts": 4,
+      "textureKiB": 3064,
+      "drawingBufferKiB": 750,
+      "compileErrors": 0
+    },
+    "D05_corner_x6_moving": {
+      "createMs": 0,
+      "firstFrameMs": 33,
+      "interval": {
+        "mean": 16.53,
+        "p95": 26,
+        "max": 32
+      },
+      "longTasks": 0,
+      "draws": 0,
+      "contexts": 4,
+      "textureKiB": 3064,
+      "drawingBufferKiB": 750,
+      "compileErrors": 0
+    },
+    "D05_corner_x6_idle": {
+      "createMs": 0,
+      "firstFrameMs": 31,
+      "interval": {
+        "mean": 15.61,
+        "p95": 17,
+        "max": 17
+      },
+      "longTasks": 0,
+      "draws": 0,
+      "contexts": 4,
+      "textureKiB": 3064,
+      "drawingBufferKiB": 750,
+      "compileErrors": 0
+    },
+    "D07_glitch_x6": {
+      "createMs": 1,
+      "firstFrameMs": 32,
+      "interval": {
+        "mean": 16.52,
+        "p95": 25,
+        "max": 30
+      },
+      "longTasks": 0,
+      "draws": 0,
+      "contexts": 4,
+      "textureKiB": 3064,
+      "drawingBufferKiB": 750,
+      "compileErrors": 0
+    },
+    "D09_floor_x1": {
+      "createMs": 0,
+      "firstFrameMs": 46,
+      "interval": {
+        "mean": 19.67,
+        "p95": 31,
+        "max": 32
+      },
+      "longTasks": 0,
+      "draws": 0,
+      "contexts": 4,
+      "textureKiB": 3064,
+      "drawingBufferKiB": 750,
+      "compileErrors": 0
+    },
+    "D09_floor_x2": {
+      "createMs": 1,
+      "firstFrameMs": 47,
+      "interval": {
+        "mean": 24.12,
+        "p95": 31,
+        "max": 38
+      },
+      "longTasks": 0,
+      "draws": 0,
+      "contexts": 4,
+      "textureKiB": 3064,
+      "drawingBufferKiB": 750,
+      "compileErrors": 0
+    },
+    "D11_tiltshift_2bands_static": {
+      "createMs": 0,
+      "firstFrameMs": 45,
+      "interval": {
+        "mean": 16.51,
+        "p95": 29,
+        "max": 31
+      },
+      "longTasks": 0,
+      "draws": 0,
+      "contexts": 4,
+      "textureKiB": 3064,
+      "drawingBufferKiB": 750,
+      "compileErrors": 0
+    },
+    "D11_tiltshift_2bands_moving": {
+      "createMs": 0,
+      "firstFrameMs": 32,
+      "interval": {
+        "mean": 16.46,
+        "p95": 27,
+        "max": 31
+      },
+      "longTasks": 0,
+      "draws": 0,
+      "contexts": 4,
+      "textureKiB": 3064,
+      "drawingBufferKiB": 750,
+      "compileErrors": 0
+    },
+    "D11_tiltshift_4bands_static": {
+      "createMs": 1,
+      "firstFrameMs": 58,
+      "interval": {
+        "mean": 22.2,
+        "p95": 31,
+        "max": 32
+      },
+      "longTasks": 0,
+      "draws": 0,
+      "contexts": 4,
+      "textureKiB": 3064,
+      "drawingBufferKiB": 750,
+      "compileErrors": 0
+    },
+    "D11_tiltshift_4bands_moving": {
+      "createMs": 0,
+      "firstFrameMs": 60,
+      "interval": {
+        "mean": 22.99,
+        "p95": 31,
+        "max": 32
+      },
+      "longTasks": 0,
+      "draws": 0,
+      "contexts": 4,
+      "textureKiB": 3064,
+      "drawingBufferKiB": 750,
+      "compileErrors": 0
+    },
+    "D04_curl_small_dpr1": {
+      "createMs": 16,
+      "firstFrameMs": 47,
+      "interval": {
+        "mean": 15.6,
+        "p95": 17,
+        "max": 17
+      },
+      "longTasks": 0,
+      "draws": 90,
+      "contexts": 5,
+      "textureKiB": 3364,
+      "drawingBufferKiB": 1350,
+      "compileErrors": 0
+    },
+    "D04_curl_medium_dpr1": {
+      "createMs": 16,
+      "firstFrameMs": 46,
+      "interval": {
+        "mean": 15.78,
+        "p95": 17,
+        "max": 31
+      },
+      "longTasks": 0,
+      "draws": 90,
+      "contexts": 5,
+      "textureKiB": 3364,
+      "drawingBufferKiB": 1350,
+      "compileErrors": 0
+    },
+    "D04_curl_large_dpr1": {
+      "createMs": 16,
+      "firstFrameMs": 47,
+      "interval": {
+        "mean": 15.75,
+        "p95": 17,
+        "max": 28
+      },
+      "longTasks": 0,
+      "draws": 90,
+      "contexts": 5,
+      "textureKiB": 3364,
+      "drawingBufferKiB": 1350,
+      "compileErrors": 0
+    },
+    "D06_ripple_dpr1": {
+      "createMs": 1,
+      "firstFrameMs": 31,
+      "interval": {
+        "mean": 15.94,
+        "p95": 17,
+        "max": 31
+      },
+      "longTasks": 0,
+      "draws": 90,
+      "contexts": 5,
+      "textureKiB": 3364,
+      "drawingBufferKiB": 1050,
+      "compileErrors": 0
+    },
+    "D08_displace_dpr1": {
+      "createMs": 4,
+      "firstFrameMs": 32,
+      "interval": {
+        "mean": 15.59,
+        "p95": 16,
+        "max": 17
+      },
+      "longTasks": 0,
+      "draws": 90,
+      "contexts": 5,
+      "textureKiB": 3428,
+      "drawingBufferKiB": 1050,
+      "compileErrors": 0
+    },
+    "D10_depth_dpr1": {
+      "createMs": 0,
+      "firstFrameMs": 47,
+      "interval": {
+        "mean": 15.94,
+        "p95": 17,
+        "max": 31
+      },
+      "longTasks": 0,
+      "draws": 90,
+      "contexts": 5,
+      "textureKiB": 3664,
+      "drawingBufferKiB": 1050,
+      "compileErrors": 0
+    },
+    "D04_curl_small_dpr2": {
+      "createMs": 17,
+      "firstFrameMs": 46,
+      "interval": {
+        "mean": 16.14,
+        "p95": 18,
+        "max": 30
+      },
+      "longTasks": 0,
+      "draws": 90,
+      "contexts": 5,
+      "textureKiB": 3364,
+      "drawingBufferKiB": 1350,
+      "compileErrors": 0
+    },
+    "D04_curl_medium_dpr2": {
+      "createMs": 21,
+      "firstFrameMs": 47,
+      "interval": {
+        "mean": 15.82,
+        "p95": 17,
+        "max": 30
+      },
+      "longTasks": 0,
+      "draws": 90,
+      "contexts": 5,
+      "textureKiB": 3364,
+      "drawingBufferKiB": 1350,
+      "compileErrors": 0
+    },
+    "D04_curl_large_dpr2": {
+      "createMs": 16,
+      "firstFrameMs": 48,
+      "interval": {
+        "mean": 16.64,
+        "p95": 28,
+        "max": 30
+      },
+      "longTasks": 0,
+      "draws": 90,
+      "contexts": 5,
+      "textureKiB": 3364,
+      "drawingBufferKiB": 1350,
+      "compileErrors": 0
+    },
+    "D06_ripple_dpr2": {
+      "createMs": 0,
+      "firstFrameMs": 31,
+      "interval": {
+        "mean": 16.51,
+        "p95": 18,
+        "max": 47
+      },
+      "longTasks": 0,
+      "draws": 90,
+      "contexts": 5,
+      "textureKiB": 3364,
+      "drawingBufferKiB": 1050,
+      "compileErrors": 0
+    },
+    "D08_displace_dpr2": {
+      "createMs": 2,
+      "firstFrameMs": 31,
+      "interval": {
+        "mean": 15.8,
+        "p95": 17,
+        "max": 30
+      },
+      "longTasks": 0,
+      "draws": 90,
+      "contexts": 5,
+      "textureKiB": 3428,
+      "drawingBufferKiB": 1050,
+      "compileErrors": 0
+    },
+    "D10_depth_dpr2": {
+      "createMs": 0,
+      "firstFrameMs": 48,
+      "interval": {
+        "mean": 15.84,
+        "p95": 17,
+        "max": 30
+      },
+      "longTasks": 0,
+      "draws": 90,
+      "contexts": 5,
+      "textureKiB": 3664,
+      "drawingBufferKiB": 1050,
+      "compileErrors": 0
+    },
+    "gpu_six_surfaces": {
+      "createMs": 21,
+      "firstFrameMs": 92,
+      "interval": {
+        "mean": 17.67,
+        "p95": 31,
+        "max": 32
+      },
+      "longTasks": 0,
+      "draws": 270,
+      "contexts": 6,
+      "textureKiB": 2631,
+      "drawingBufferKiB": 886,
+      "compileErrors": 0
+    },
+    "gpu_unavailable": {
+      "createMs": 2,
+      "firstFrameMs": 32,
+      "interval": {
+        "mean": 15.59,
+        "p95": 16,
+        "max": 17
+      },
+      "longTasks": 0,
+      "draws": 0,
+      "contexts": 2,
+      "textureKiB": 1864,
+      "drawingBufferKiB": 300,
+      "compileErrors": 0
+    },
+    "gpu_offscreen": {
+      "draws": 1,
+      "mode": "gpu"
+    },
+    "context_loss_restore": {
+      "restoredMs": 29,
+      "restores": 1
+    },
+    "mount_unmount_x20": {
+      "totalMs": 763,
+      "contexts": 2,
+      "textures": 2,
+      "programs": 1,
+      "buffers": 1,
+      "surfaces": 4
+    },
+    "final": {
+      "advanced": {
+        "effects": 8,
+        "flaps": 0,
+        "glitchLayers": 0,
+        "layers": 2,
+        "listeners": 0,
+        "observers": 4,
+        "glitchSteps": 30,
+        "attributeEntries": 50,
+        "gateObservers": 1,
+        "gateElements": 5
+      },
+      "gpu": {
+        "surfaces": 4,
+        "contexts": 2,
+        "waiting": 0,
+        "programs": 1,
+        "shaders": 2,
+        "buffers": 1,
+        "textures": 2,
+        "vertexArrays": 1,
+        "textureBytes": 1228800,
+        "drawingBufferBytes": 307200,
+        "frames": 1262,
+        "draws": 1388,
+        "compileErrors": 0,
+        "losses": 2,
+        "lost": 1,
+        "restores": 1,
+        "evictions": 2,
+        "fallbacks": 3,
+        "effects": 4
+      }
+    }
+  }
+}

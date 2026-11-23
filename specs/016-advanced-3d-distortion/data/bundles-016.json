@@ -1,0 +1,40 @@
+{
+  "measured": {
+    "css: advanced.css": 1083,
+    "css: gpu.css": 445,
+    "advanced: createCardFlip (engine, no React)": 7873,
+    "advanced: createCubeRotate (engine, no React)": 9845,
+    "advanced: createRingCarousel (engine, no React)": 9753,
+    "advanced: createCornerRecede (engine, no React)": 9549,
+    "advanced: createGlitch (engine, no React)": 4928,
+    "advanced: createPerspectiveGrid + createTiltShift (engine, no React)": 5910,
+    "advanced: CardFlip + CornerRecede": 12126,
+    "advanced: entire entry": 22790,
+    "gpu: configureGpu + getGpuSupport (no effect)": 2455,
+    "gpu: createRipple (engine, no React)": 12708,
+    "gpu: createDisplacementHover (engine, no React)": 13231,
+    "gpu: createDepthParallax (engine, no React)": 13146,
+    "gpu: createPageCurl (engine, no React)": 16323,
+    "gpu: PageCurl + Ripple": 19257,
+    "gpu: entire entry": 22963
+  },
+  "proposed": {
+    "css: advanced.css": 1216,
+    "css: gpu.css": 512,
+    "advanced: createCardFlip (engine, no React)": 8704,
+    "advanced: createCubeRotate (engine, no React)": 10880,
+    "advanced: createRingCarousel (engine, no React)": 10752,
+    "advanced: createCornerRecede (engine, no React)": 10560,
+    "advanced: createGlitch (engine, no React)": 5440,
+    "advanced: createPerspectiveGrid + createTiltShift (engine, no React)": 6528,
+    "advanced: CardFlip + CornerRecede": 13376,
+    "advanced: entire entry": 25088,
+    "gpu: configureGpu + getGpuSupport (no effect)": 2752,
+    "gpu: createRipple (engine, no React)": 14016,
+    "gpu: createDisplacementHover (engine, no React)": 14592,
+    "gpu: createDepthParallax (engine, no React)": 14464,
+    "gpu: createPageCurl (engine, no React)": 17984,
+    "gpu: PageCurl + Ripple": 21184,
+    "gpu: entire entry": 25280
+  }
+}

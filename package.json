@@ -57,7 +57,9 @@
     "release:simulate": "node scripts/release-simulate.mjs",
     "bench:animations:text": "node scripts/bench-animations-text.mjs",
     "bench:animations:media-ambient": "node scripts/bench-animations-media-ambient.mjs",
-    "bench:animations:spike-015": "node scripts/bench-animations-ambient.mjs"
+    "bench:animations:spike-015": "node scripts/bench-animations-ambient.mjs",
+    "bench:animations:spike-016": "node scripts/bench-animations-spike-016.mjs",
+    "bench:animations:advanced": "node scripts/bench-animations-advanced.mjs"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "catalog:",
