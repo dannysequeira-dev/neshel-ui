@@ -88,6 +88,28 @@ Runs 44196197830 (`composeTransform` 641 B > 614 B) and 44425908497 (`Storyboard
 output was never explained; entries within ~1 % of their budget can fail only on macOS. Phase 017 records the
 margin of every measured entry on Windows and checks macOS in CI; no budget is raised without approval.
 
+## Failures found during Phase 017
+
+### B1 — `L08 presence` re-entry on macOS (test synchronisation)
+
+Run 45218099547 (`4a1baf7`, PR #18), `macos-latest / Node 26` (CDP) and `browsers / macos-latest` (Playwright
+Chromium): `FAIL L08 presence … same element on re-entry`. Never seen before; not on Windows/Ubuntu.
+Cause (confirmed): the case clicked "re-enter" after a fixed 1 + 3 frames, assuming the 220 ms exit outlasts four
+frames. The frame scheduler clamps each delta at 66 ms, so with frames slower than ~55 ms the exit completes first
+and the card unmounts. The lab page got heavier in 017 (the F06 demo now loads the Components toaster), enough for
+macOS runners. Reproduction: wrapping `requestAnimationFrame` to add 40 ms per frame → 0/8 same element (node
+unmounted after 346 ms); 0 ms → 10/10. Fix: wait until the exit is observably running (card connected,
+0 < opacity < 1) and re-enter in that same task — 10/10 at +0, +40 and +60 ms per frame. The behaviour asserted
+(re-entry during the exit keeps the node) is unchanged.
+
+### B2 — Toast tests on Node 22 (test isolation)
+
+Run 45218099547, `ubuntu-latest / Node 22`: `Toaster · hydration … no warnings` captured Node 22's
+`ExperimentalWarning: The MockTimers API is an experimental feature` (printed through `console.error`; MockTimers
+is stable on Node 24/26) and, failing before its unmount, left a mounted Toaster that made two later toast tests fail
+(cascade). Fix: runtime notices are not counted as React errors, the hydration test unmounts before asserting, and
+the two-Toasters test counts only its own regions.
+
 ## Runs in this phase
 
 Recorded in [evidence.md](evidence.md) (every run, including failures and their attempts).

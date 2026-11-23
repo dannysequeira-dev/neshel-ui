@@ -49,7 +49,11 @@ async function hydrate(element) {
   document.body.appendChild(container);
   const errors = [];
   const original = console.error;
-  console.error = (...args) => errors.push(String(args[0]));
+  console.error = (...args) => {
+    const message = String(args[0]);
+    // Node runtime notices (e.g. Node 22's MockTimers ExperimentalWarning) are not React output.
+    if (!/^(node:d+)|ExperimentalWarning/.test(message)) errors.push(message);
+  };
   const { hydrateRoot } = await import("react-dom/client");
   let root;
   await act(async () => {

@@ -146,17 +146,21 @@ test("Toaster · hydration of server markup produces no warnings", async () => {
   document.body.appendChild(container);
   const errors = [];
   const original = console.error;
-  console.error = (...args) => errors.push(String(args[0]));
+  console.error = (...args) => {
+    const message = String(args[0]);
+    // Node runtime notices (e.g. Node 22's MockTimers ExperimentalWarning) are not React output.
+    if (!/^(node:d+)|ExperimentalWarning/.test(message)) errors.push(message);
+  };
   const { hydrateRoot } = await import("react-dom/client");
   let root;
   await act(async () => {
     root = hydrateRoot(container, h(Toaster, { toaster, placement: "top-start" }));
   });
   console.error = original;
-  assert.deepEqual(errors, [], "hydration mismatch");
   await act(async () => root.unmount());
   container.remove();
   toaster.destroy();
+  assert.deepEqual(errors, [], "hydration mismatch");
 });
 
 test("Toaster · regions exist before content; one announcement per toast; Escape closes after the exit", async () => {
@@ -237,7 +241,11 @@ test("Toaster · two Toasters on one store announce each toast once; the next ta
   const toaster = createToaster();
   const first = await mount(h(Toaster, { toaster, label: "A" }));
   const second = await mount(h(Toaster, { toaster, label: "B" }));
-  const lines = () => document.querySelectorAll('.neshel-toaster [role="status"] p').length;
+  const lines = () =>
+    [first.container, second.container].reduce(
+      (n, c) => n + c.querySelectorAll('.neshel-toaster [role="status"] p').length,
+      0,
+    );
   await act(async () => {
     toaster.show({ title: "Once" });
   });
