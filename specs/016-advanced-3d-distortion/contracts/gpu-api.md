@@ -91,3 +91,15 @@ Control: `amount`, `set(amount)`, `mode`, `reason`, `destroy()`. Reduced motion:
 
 Control: `seek(p)`, `drive(source)`, `pose`, `mode`, `reason`, `destroy()`. Validation: aspect ratio within 2 % of the
 image, texture size limits, depth range sampled (flat maps warn). Reduced motion: static.
+
+## Implementation notes (016.2–016.5)
+
+- `PageCurlControl.mode` is `"gpu" | "css" | "static"` (`css` = the rigid CSS driver, chosen or as the `auto`
+  fallback with `reason`; `static` under reduced motion, without any driver, or while the GPU surface is evicted).
+- Map and depth URLs accept relative paths, `http(s):`, `blob:` and `data:image/…` only (other schemes are refused);
+  `data:` URLs are not length-limited below 16 MiB.
+- `getGpuDebugInfo().lost` counts surfaces whose context is currently lost. A context the browser drops without a
+  restore (observed in Playwright WebKit during mount/unmount churn) is replaced on the next frame request after 1 s.
+- A synchronous debug draw (`probe`) draws before the visibility observer has reported; regular draws never run
+  off-screen (one initial draw may happen before the first observation).
+- PageCurl requests its GPU page again when reduced motion ends.

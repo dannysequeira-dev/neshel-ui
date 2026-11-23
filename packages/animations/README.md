@@ -4,7 +4,7 @@
 
 Modular, accessible motion primitives and effects for Neshel-UI.
 
-**Status: experimental, private, unpublished (features 008.0–015).** This package is not on npm and its
+**Status: experimental, private, unpublished (features 008.0–016; the 157-entry catalogue is implemented — this does not authorise a publication).** This package is not on npm and its
 API may change before the owner approves a first publication. Specification, catalogue and
 decisions: [`specs/008-animations/`](../../specs/008-animations/spec.md),
 [`specs/009-motion-engine/`](../../specs/009-motion-engine/spec.md),
@@ -13,7 +13,8 @@ decisions: [`specs/008-animations/`](../../specs/008-animations/spec.md),
 [`specs/012-physics-gestures-layout/`](../../specs/012-physics-gestures-layout/spec.md),
 [`specs/013-cinematic-page-transitions/`](../../specs/013-cinematic-page-transitions/spec.md),
 [`specs/014-typography-svg-paths/`](../../specs/014-typography-svg-paths/spec.md),
-[`specs/015-media-ambient-feedback/`](../../specs/015-media-ambient-feedback/spec.md), ADRs 0018–0030.
+[`specs/015-media-ambient-feedback/`](../../specs/015-media-ambient-feedback/spec.md),
+[`specs/016-advanced-3d-distortion/`](../../specs/016-advanced-3d-distortion/spec.md), ADRs 0018–0031 (0031 Proposed).
 
 ## What exists today
 
@@ -117,6 +118,20 @@ decisions: [`specs/008-animations/`](../../specs/008-animations/spec.md),
   keyboard close), `createLoadingButton`/`<LoadingButton>` (same element, name and focus; no double activation;
   use it on a Components `Button` without its `loading` prop), `createOptimisticPulse`/`<OptimisticPulse>`
   (pending ≠ confirmed; failure rolls back) and `<PendingText>`.
+- `@neshel-ui/animations/advanced` (Phase 016) — D01, D02, D03, D05, D07, D09, D11 on CSS 3D and the Motion Host:
+  `CardFlip` (hidden face inert; focus follows the visible face; `seek`/`drive`/`track`), `CubeRotate` (one
+  interactive panel; faces never project outside the panel box), `RingCarousel` (only the front item focusable;
+  carousel/slide semantics; keyboard and drag), `CornerRecede` (the corner under the pointer folds away like paper;
+  `reverse` lifts it; an inert, ID-free flap exists only while folded; `flap="plain"` for content that cannot be
+  copied), `Glitch` (text once; at most 3 slice changes per second; off under reduced motion), `PerspectiveGrid`
+  (decorative, finite by default) and `TiltShift` (at most two `backdrop-filter` bands per side; tint fallback).
+  Never loads WebGL.
+- `@neshel-ui/animations/gpu` (Phase 016, optional; ADR 0031 Proposed) — a minimal WebGL2 layer without a graphics
+  dependency (`configureGpu`, `getGpuSupport`, `getGpuDebugInfo`: lazy contexts within a budget, exact release,
+  context-loss recovery, package-only shaders) and D04 `PageCurl` (real mesh curl of a raster page; `driver="css"`
+  turns live HTML as a rigid page), D06 `Ripple`, D08 `DisplacementHover` and D10 `DepthParallax` (an explicit depth
+  map is required — depth is never estimated). The native `<img>` stays in the DOM and the accessibility tree and
+  is shown again without WebGL2, on failure, under reduced motion and on unmount. Images and maps must be CORS-clean.
 - `definePreset` / `attachPreset` (`./core`) — presets are values: a definition plus frozen options.
 - Stylesheets (opt-in): `@neshel-ui/animations/hover.css` (Tilt3D depth + decor layers),
   `@neshel-ui/animations/press.css` (ripple, burst, toggle, checkbox, swap),
@@ -130,8 +145,9 @@ decisions: [`specs/008-animations/`](../../specs/008-animations/spec.md),
   `@neshel-ui/animations/text.css` (per-piece math of the text effects; without it text is visible and
   static), `@neshel-ui/animations/svg.css` (package-rendered icons and checkmark),
   `@neshel-ui/animations/media.css` (frames, compare slider, lightbox dialog, slide stack),
-  `@neshel-ui/animations/ambient.css` (decorative layers, paused unless the engine marks them running) and
-  `@neshel-ui/animations/feedback.css` (indicators, token layers, toasts).
+  `@neshel-ui/animations/ambient.css` (decorative layers, paused unless the engine marks them running),
+  `@neshel-ui/animations/feedback.css` (indicators, token layers, toasts), `@neshel-ui/animations/advanced.css`
+  (flip/cube/ring stacking, glitch blending, floor loop) and `@neshel-ui/animations/gpu.css` (GPU frames, page stack).
 
 ```tsx
 import { Tilt3D } from "@neshel-ui/animations/hover";

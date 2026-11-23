@@ -53,14 +53,16 @@ engines**. `backdrop-filter`, `preserve-3d` and `mask-image` are supported in al
 **Measured gzip size** (min + gzip level 9; esbuild, tree-shaken minimal imports where the package allows; packages
 fetched with `npm pack` into a scratch directory, not installed in the repository):
 
-| Option                                                                                             | min+gz                |
-| -------------------------------------------------------------------------------------------------- | --------------------- |
-| OGL 1.0.11 minimal (Renderer, Program, Mesh, Plane, Texture, Triangle)                             | 14.02 KiB             |
-| twgl.js 5.5.4 (`twgl.js` / full module)                                                            | 21.50 / 22.45 KiB     |
-| regl 2.1.1 (`regl.min.js`)                                                                         | 27.94 KiB             |
-| three 0.187.0 minimal (WebGLRenderer, Scene, camera, Mesh, PlaneGeometry, ShaderMaterial, Texture) | 129.63 KiB            |
-| pixi.js 8.23.0 minimal (Application, Sprite, Texture, Filter, MeshPlane, DisplacementFilter)       | 233.00 KiB            |
-| Own WebGL2 layer (manager + programs + textures + mesh), measured after 016.2                      | see evidence §bundles |
+| Option                                                                                                            | min+gz            |
+| ----------------------------------------------------------------------------------------------------------------- | ----------------- |
+| OGL 1.0.11 minimal (Renderer, Program, Mesh, Plane, Texture, Triangle)                                            | 14.02 KiB         |
+| twgl.js 5.5.4 (`twgl.js` / full module)                                                                           | 21.50 / 22.45 KiB |
+| regl 2.1.1 (`regl.min.js`)                                                                                        | 27.94 KiB         |
+| three 0.187.0 minimal (WebGLRenderer, Scene, camera, Mesh, PlaneGeometry, ShaderMaterial, Texture)                | 129.63 KiB        |
+| pixi.js 8.23.0 minimal (Application, Sprite, Texture, Filter, MeshPlane, DisplacementFilter)                      | 233.00 KiB        |
+| Own layer (packed tarball, 016.5): configureGpu + getGpuSupport                                                   | 2.40 KiB          |
+| Own layer + one complete effect (engine, validation, pointer, Motion Host, shader): createRipple / createPageCurl | 12.41 / 15.94 KiB |
+| Whole ./gpu entry (manager, four effects, React components)                                                       | 22.42 KiB         |
 
 | Criterion                | WebGL2 (own minimal layer)                                             | WebGPU                                                           | Canvas 2D                                    | CSS 3D / masks                                 | OGL / twgl / regl                       | Three / Pixi       |
 | ------------------------ | ---------------------------------------------------------------------- | ---------------------------------------------------------------- | -------------------------------------------- | ---------------------------------------------- | --------------------------------------- | ------------------ |
@@ -276,3 +278,17 @@ row never counts as a pass of the main effect.
 
 New bundle entries for `./advanced` and `./gpu` effects are measured from the packed tarball after implementation
 (`pnpm check:animations:bundles`) and proposed with ~10 % headroom; no existing budget changes.
+
+## R19 — Measured after implementation (016.5)
+
+- **Bundles** (packed tarball, min + gzip; `data/bundles-016.json`): `./advanced` entire entry 22.26 KiB, one CSS engine
+  4.81–9.61 KiB; `./gpu` entire entry 22.42 KiB, one GPU engine 12.41–15.94 KiB (complete effects; library figures in R2
+  exclude effect logic and the engine). Tree-shaking markers prove that no `./advanced` bundle contains WebGL or GPU
+  code and no `./gpu` bundle contains the CSS family.
+- **Frames** (`data/bench-advanced-local.json`, `data/bench-advanced-chromium-4x-local.json`; observations): GPU
+  entries keep the baseline interval in Chromium (also at 4× CPU), Firefox and WebKit, including six surfaces at once;
+  the visible costs are CSS — moving the D11 focus with four bands (20.4/27.8 ms Firefox, 23.0/31 ms WebKit, 21.6/33.4 ms
+  Chromium 4×) and two D09 floors in Firefox (11.8/13.9 ms vs a 7 ms baseline). Static tilt-shift and one floor stay
+  near the baseline (WebKit's own baseline is noisy: 20.5/31 ms). Context restore: 14–29 ms to the first restored
+  frame. Mount/unmount × 20: live resources return to the gallery's own; WebKit dropped one context during the churn
+  (now replaced on the next request).

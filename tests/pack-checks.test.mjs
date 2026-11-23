@@ -431,6 +431,8 @@ const animationsManifest = {
     "./media": { types: "./dist/media/index.d.ts", import: "./dist/media/index.js" },
     "./ambient": { types: "./dist/ambient/index.d.ts", import: "./dist/ambient/index.js" },
     "./feedback": { types: "./dist/feedback/index.d.ts", import: "./dist/feedback/index.js" },
+    "./advanced": { types: "./dist/advanced/index.d.ts", import: "./dist/advanced/index.js" },
+    "./gpu": { types: "./dist/gpu/index.d.ts", import: "./dist/gpu/index.js" },
     "./styles.css": "./dist/styles.css",
     "./hover.css": "./dist/hover.css",
     "./press.css": "./dist/press.css",
@@ -445,13 +447,15 @@ const animationsManifest = {
     "./media.css": "./dist/media.css",
     "./ambient.css": "./dist/ambient.css",
     "./feedback.css": "./dist/feedback.css",
+    "./advanced.css": "./dist/advanced.css",
+    "./gpu.css": "./dist/gpu.css",
   },
   peerDependencies: { react: "^19.0.0", next: ">=16.4.0", "react-router": ">=8.0.0" },
   peerDependenciesMeta: { next: { optional: true }, "react-router": { optional: true } },
   dependencies: { "@radix-ui/react-slot": "^1.5.0" },
 };
 
-test("animations package contract: private, exact exports, peers and framework-free core (features 008–015)", () => {
+test("animations package contract: private, exact exports, peers and framework-free core (features 008–016)", () => {
   const good = files({
     "dist/index.js": 'export { Tilt3D } from "./tilt/tilt-3d.js";',
     "dist/tilt/tilt-3d.js":
@@ -532,7 +536,7 @@ test("negative: animations contract detects lifted guard, extra exports/deps and
     {
       ...animationsManifest,
       private: undefined,
-      exports: { ...animationsManifest.exports, "./gpu": "./dist/gpu.js" },
+      exports: { ...animationsManifest.exports, "./boot": "./dist/boot.js" },
       peerDependencies: { react: "^19.0.0", "react-dom": "^19.0.0" },
       dependencies: { "@radix-ui/react-slot": "^1.5.0", motion: "^12.0.0" },
     },

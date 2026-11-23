@@ -150,3 +150,17 @@ Control `TiltShiftControl`: `mode` (`"backdrop" | "tint" | "none"`), `focus`, `s
 
 `getAdvancedDebugInfo()`: live effects, flaps, glitch layers, grid layers, overlays, attribute ledger entries,
 listeners and observers (tests and lab).
+
+## Implementation notes (016.1–016.5)
+
+- **D01**: `CardFlipControl.target` (the side the card is moving to) and the option `onToggle(side)` (an in-face toggle
+  or `toggle()` changed the intent) were added. `<CardFlip onFlippedChange>` reports the **intent** at the toggle,
+  before any motion; the controlled `flipped` prop only flips when it differs from `target`. Reporting the visual
+  crossing instead let a late React commit undo a newer toggle (found by the WebKit run; regression test).
+- **D02**: mid-turn, a face's outer edge would project at `(w/2)(sin θ + cos θ)` — up to √2 × the half width. The
+  orbit is scaled by `1 / (sin θ + cos θ)` (translation and size), so faces never leave the panel box (no overflow);
+  the cube recedes slightly mid-turn. The incoming panel is made visible before it takes focus.
+- **D03**: `role="group"` is added only to generic elements (`div`, `span`); semantic items such as `<article>` keep
+  their role (axe `aria-allowed-role`).
+- Structural channels (`perspective`, `transform-style`, `backface-visibility`, `visibility`, `z-index`) go through
+  the Motion Host like every other write; the host no longer lists them in `will-change`.

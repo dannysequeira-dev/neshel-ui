@@ -1,6 +1,6 @@
 # Contract — effect catalogue (planned)
 
-**Status: partially implemented.** Implemented (private package): `H03 Tilt3D` (008.0, on the
+**Status: implemented (157/157; private package).** Implemented (private package): `H03 Tilt3D` (008.0, on the
 engine since 009), the 30 Phase 010 entries **E01–E11, H01, H02, H04–H10, P01–P10** (marked
 **✓ 010** below; ids, options, drivers and reduced behaviour in
 [specs/010 contracts/effects-010.md](../../010-animation-effects/contracts/effects-010.md)) and the 21
@@ -21,12 +21,16 @@ B01–B10, F01–F10** (marked **✓ 015**; API, support matrix and reduced beha
 [specs/015 contracts](../../015-media-ambient-feedback/contracts/media-api.md),
 [ambient-api.md](../../015-media-ambient-feedback/contracts/ambient-api.md) and
 [feedback-api.md](../../015-media-ambient-feedback/contracts/feedback-api.md) — M09, B04 and B05 run on a Canvas 2D
-surface and B07 on CSS layers instead of the GPU driver, ADR 0030). Phase 010
+surface and B07 on CSS layers instead of the GPU driver, ADR 0030) and the 11 Phase 016 entries **D01–D11** (marked
+**✓ 016**; API, support/fallback matrix and reduced behaviour in
+[specs/016 contracts](../../016-advanced-3d-distortion/contracts/advanced-api.md) and
+[gpu-api.md](../../016-advanced-3d-distortion/contracts/gpu-api.md) — CSS entries in `./advanced`, the GPU entries on an
+optional WebGL2 layer in `./gpu`, ADR 0031 Proposed). **All 157 entries are implemented** (private package; no
+publication implied). Phase 010
 changed the driver of most CSS rows: the consumer's element is animated only by the motion host (rule
 R-1, ADR 0025) and CSS renders package-owned layers; the Driver column below keeps the original plan
-and the 010 contract records each change. `D05 CornerRecede` exists as a
-playground prototype; the 008.0 ScrollScene prototype became SP05/SP01/SP10 in Phase 011. Every other row is a plan: names, drivers and phases may change through the spec
-of the phase that implements them. Ids are stable references for specs and tests, not public API.
+and the 010 contract records each change. The 008.0 CornerRecede prototype became D05 in Phase 016 (hinged fold) and
+the 008.0 ScrollScene prototype became SP05/SP01/SP10 in Phase 011. Ids are stable references for specs and tests, not public API.
 
 157 entries in 15 families. Variants (direction, distance, duration, easing, stagger) are options of
 an entry, not separate entries; presets are named option sets registered for an entry.
@@ -296,41 +300,41 @@ ambient effect is finite by default (5 s) with a page-level pause switch.
 
 | Id  | Effect                          | Driver | Structure | Reduced motion | Phase |
 | --- | ------------------------------- | ------ | --------- | -------------- | ----- |
-| D01 | Card flip                       | CSS    | W + L     | fade           | 016   |
-| D02 | Cube rotation                   | CSS    | W + L     | fade           | 016   |
-| D03 | 3D ring carousel                | CSS/JS | W         | static         | 016   |
-| D04 | Page curl                       | GPU    | C         | instant        | 016   |
-| D05 | CornerRecede (prototype, 008.0) | CSS⁹   | L         | instant        | 016   |
-| D06 | Liquid / ripple distortion      | GPU    | C         | off            | 016   |
-| D07 | RGB split / glitch              | CSS    | L         | off            | 016   |
-| D08 | Displacement-map hover (media)  | GPU    | C         | static         | 016   |
-| D09 | Perspective grid floor          | CSS    | W         | static         | 016   |
-| D10 | Depth-map parallax (2.5D image) | GPU    | C         | static         | 016   |
-| D11 | Tilt-shift blur                 | CSS    | L         | static         | 016   |
+| D01 | Card flip                       | CSS    | W + L     | fade           | ✓ 016 |
+| D02 | Cube rotation                   | CSS    | W + L     | fade           | ✓ 016 |
+| D03 | 3D ring carousel                | CSS/JS | W         | static         | ✓ 016 |
+| D04 | Page curl                       | GPU    | C         | instant        | ✓ 016 |
+| D05 | CornerRecede (hinged fold)      | CSS⁹   | L         | instant        | ✓ 016 |
+| D06 | Liquid / ripple distortion      | GPU    | C         | off            | ✓ 016 |
+| D07 | RGB split / glitch              | CSS    | L         | off            | ✓ 016 |
+| D08 | Displacement-map hover (media)  | GPU    | C         | static         | ✓ 016 |
+| D09 | Perspective grid floor          | CSS    | W         | static         | ✓ 016 |
+| D10 | Depth-map parallax (2.5D image) | GPU    | C         | static         | ✓ 016 |
+| D11 | Tilt-shift blur                 | CSS    | L         | static         | ✓ 016 |
 
-⁹ Hinged fold (two layers) is the recommended technique for live content; a WebGL mesh is the only
-real deformation and only for raster content (research R7).
+⁹ Hinged fold (two layers) for live content (research R7) — implemented as D05; the WebGL mesh technique is
+used for raster content by D04 (Phase 016).
 
 ## Shared primitives by family
 
-| Primitive (core unless noted)        | Families          | Status                            |
-| ------------------------------------ | ----------------- | --------------------------------- |
-| Frame scheduler (read/update/write)  | all JS effects    | implemented (008.0)               |
-| Spring integrator                    | H, P, G, SP, L, C | implemented (008.0)               |
-| Transform composer                   | H, P, G, SP, D    | implemented (008.0)               |
-| Reduced-motion policy                | all               | implemented (008.0)               |
-| Spring → CSS `linear()` easing       | E, H, P, L, F     | implemented (009)                 |
-| Interpolation / easing / clamp       | all               | implemented (009)                 |
-| Effect registry + channel metadata   | all               | implemented (009)                 |
-| Pointer tracker (box-based hit area) | H, B, G           | implemented (010)                 |
-| Intersection / visibility observer   | ST, SP, B, M      | implemented (011)                 |
-| Scroll progress (cached geometry)    | ST, SP, C, M, T   | spike in ScrollScene              |
-| Timeline (labels, overlaps, scrub)   | C, PT, T, S       | planned (013)                     |
-| Presence / exit orchestration        | L, PT, F          | implemented (012); core since 015 |
-| FLIP measurer                        | L, M              | implemented (012)                 |
-| Gesture recogniser (drag, pinch)     | G, M              | implemented (012)                 |
-| Text splitter (accessible)           | T, C              | implemented (014)                 |
-| Path utilities (length, morph)       | S                 | implemented (014)                 |
-| Canvas 2D surface (internal)         | M09, B04, B05     | implemented (015)                 |
-| Image load watcher                   | M                 | implemented (015)                 |
-| GPU surface manager (optional entry) | D (M, B per need) | planned (016)                     |
+| Primitive (core unless noted)        | Families           | Status                            |
+| ------------------------------------ | ------------------ | --------------------------------- |
+| Frame scheduler (read/update/write)  | all JS effects     | implemented (008.0)               |
+| Spring integrator                    | H, P, G, SP, L, C  | implemented (008.0)               |
+| Transform composer                   | H, P, G, SP, D     | implemented (008.0)               |
+| Reduced-motion policy                | all                | implemented (008.0)               |
+| Spring → CSS `linear()` easing       | E, H, P, L, F      | implemented (009)                 |
+| Interpolation / easing / clamp       | all                | implemented (009)                 |
+| Effect registry + channel metadata   | all                | implemented (009)                 |
+| Pointer tracker (box-based hit area) | H, B, G            | implemented (010)                 |
+| Intersection / visibility observer   | ST, SP, B, M       | implemented (011)                 |
+| Scroll progress (cached geometry)    | ST, SP, C, M, T    | spike in ScrollScene              |
+| Timeline (labels, overlaps, scrub)   | C, PT, T, S        | planned (013)                     |
+| Presence / exit orchestration        | L, PT, F           | implemented (012); core since 015 |
+| FLIP measurer                        | L, M               | implemented (012)                 |
+| Gesture recogniser (drag, pinch)     | G, M               | implemented (012)                 |
+| Text splitter (accessible)           | T, C               | implemented (014)                 |
+| Path utilities (length, morph)       | S                  | implemented (014)                 |
+| Canvas 2D surface (internal)         | M09, B04, B05      | implemented (015)                 |
+| Image load watcher                   | M                  | implemented (015)                 |
+| GPU surface manager (optional entry) | D04, D06, D08, D10 | implemented (016, `./gpu`)        |

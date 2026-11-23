@@ -478,6 +478,8 @@ export function checkAnimationsContract(manifest, files) {
     "./media",
     "./ambient",
     "./feedback",
+    "./advanced",
+    "./gpu",
     "./styles.css",
     "./hover.css",
     "./press.css",
@@ -492,6 +494,8 @@ export function checkAnimationsContract(manifest, files) {
     "./media.css",
     "./ambient.css",
     "./feedback.css",
+    "./advanced.css",
+    "./gpu.css",
   ];
   const FAMILY_DIRS = [
     "entrance",
@@ -507,6 +511,8 @@ export function checkAnimationsContract(manifest, files) {
     "media",
     "ambient",
     "feedback",
+    "advanced",
+    "gpu",
   ];
   // Optional peers, each importable only by its adapter module (ADR 0028 §1).
   const ADAPTERS = {
