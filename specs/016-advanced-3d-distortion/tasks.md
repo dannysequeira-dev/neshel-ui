@@ -56,7 +56,7 @@ Dependency-ordered. `[x]` done, `[ ]` open. Authorised by the owner brief of 202
 
 ## 016.6 — Private release-candidate readiness
 
-- [ ] T060 `release-candidate.md` (verified, accepted limitations, pending manual checks, owner decisions)
+- [x] T060 `release-candidate.md` (verified, accepted limitations, pending manual checks, owner decisions)
 - [ ] T061 Push, PR, three-OS CI on the final head; evidence
 
 ## Notes
