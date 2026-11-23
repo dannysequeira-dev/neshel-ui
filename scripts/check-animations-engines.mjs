@@ -445,7 +445,21 @@ async function runEngine(playwright, engine, url, throttle) {
     // ring, reduced motion on a fresh page.
     if (process.env.NESHEL_TRACE) console.info(`trace ${engine}: advanced suite`);
     const advancedSuite = await page.evaluate(() => window.__neshelLab.advanced.runAdvancedSuite());
-    for (const item of advancedSuite) cases.push(item);
+    // GPU rows need WebGL2. Playwright Firefox on GPU-less Linux runners has none (software GL is not picked up in
+    // headless mode); only there a NO_WEBGL2 row is reported as SKIPPED (never as a pass) and recorded. Everywhere
+    // else (Chromium, WebKit, Firefox on Windows/macOS) a missing WebGL2 fails the row.
+    const skippable = engine === "firefox" && process.platform === "linux";
+    notes.gpuSkipped = [];
+    for (const item of advancedSuite) {
+      if (!item.ok && skippable && String(item.error).startsWith("NO_WEBGL2")) {
+        notes.gpuSkipped.push(item.id);
+        cases.push({
+          id: `SKIPPED (no WebGL2 on this runner) — ${item.id}`,
+          ok: true,
+          skipped: true,
+        });
+      } else cases.push(item);
+    }
     await run(
       "D05 real mouse: the corner under the pointer recedes, switches corners through flat, returns on leave",
       async () => {

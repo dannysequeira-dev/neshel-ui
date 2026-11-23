@@ -85,6 +85,12 @@ function polygon(value: string): Array<[number, number]> {
 const differs = (a: number[] | undefined, b: number[] | undefined, tolerance = 6) =>
   !!a && !!b && a.some((v, i) => Math.abs(v - (b[i] ?? 0)) > tolerance);
 
+/** GPU main-effect rows need WebGL2; without it they report NO_WEBGL2 (never a pass). */
+function requireWebgl2(): void {
+  if (!getGpuSupport().webgl2)
+    throw new Error("NO_WEBGL2: WebGL2 is unavailable in this environment");
+}
+
 async function runCases(list: Array<[string, () => Promise<void>]>): Promise<Case[]> {
   const cases: Case[] = [];
   for (const [id, fn] of list) {
@@ -425,6 +431,7 @@ export async function runAdvancedSuite(): Promise<Case[]> {
     [
       "D04 page curl (GPU): real mesh deformation — the start corner lifts away and the page underneath shows",
       async () => {
+        requireWebgl2();
         const host = byId("d04-frame");
         reveal(host);
         const curl = c.curl.current;
@@ -474,6 +481,7 @@ export async function runAdvancedSuite(): Promise<Case[]> {
     [
       "D06 ripple (GPU): impacts displace real texture coordinates; the clock stops after dissipation",
       async () => {
+        requireWebgl2();
         const host = byId("d06-frame");
         reveal(host);
         const ripple = c.ripple.current;
@@ -511,6 +519,7 @@ export async function runAdvancedSuite(): Promise<Case[]> {
     [
       "D08 displacement map (GPU): the map distorts the image proportionally to the amount",
       async () => {
+        requireWebgl2();
         const host = byId("d08-frame");
         reveal(host);
         const fx = c.displace.current;
@@ -554,6 +563,7 @@ export async function runAdvancedSuite(): Promise<Case[]> {
     [
       "D10 depth parallax (GPU): the pose shifts near pixels against far ones from the explicit depth map",
       async () => {
+        requireWebgl2();
         const host = byId("d10-frame");
         reveal(host);
         const fx = c.depth.current;
@@ -585,6 +595,7 @@ export async function runAdvancedSuite(): Promise<Case[]> {
     [
       "GPU context loss: the native image returns while lost; restore rebuilds and draws again",
       async () => {
+        requireWebgl2();
         const host = byId("d10-frame");
         const fx = c.depth.current;
         const canvas = host.querySelector("canvas") as HTMLCanvasElement;
@@ -627,6 +638,7 @@ export async function runAdvancedSuite(): Promise<Case[]> {
           return { frameEl, img };
         };
         const contexts = getGpuDebugInfo().contexts;
+        const realWebgl2 = getGpuSupport().webgl2; // before any simulation
         try {
           configureGpu({ simulate: { unsupported: true } });
           const a = make();
@@ -648,6 +660,8 @@ export async function runAdvancedSuite(): Promise<Case[]> {
           );
           fa.destroy();
           a.frameEl.remove();
+          if (!realWebgl2)
+            throw new Error("NO_WEBGL2: the shader half needs WebGL2 (the unsupported half ran)");
           configureGpu({ simulate: { unsupported: false, shaderFailure: true } });
           const b = make();
           await until(
