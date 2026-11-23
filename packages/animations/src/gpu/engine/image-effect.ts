@@ -14,7 +14,7 @@ import {
   subscribeReducedMotion,
 } from "../../core/reduced-motion.js";
 import { gpuCounters } from "./debug.js";
-import { fitFor, loadSource, type MapSource } from "./sources.js";
+import { fitFor, loadSource, type MapSource, SourceAborted } from "./sources.js";
 import {
   createGpuSurface,
   GpuFailure,
@@ -168,7 +168,14 @@ export function createImageEffect(config: ImageEffectConfig): ImageEffect {
   }
   if (config.extras?.length) {
     const doc = frame.ownerDocument;
-    Promise.all(config.extras.map((extra) => loadSource(extra.source, extra.crossOrigin, doc)))
+    // Destroy aborts pending map loads (listeners removed, detached requests released; PR #17 review R1).
+    const loading = typeof AbortController === "function" ? new AbortController() : undefined;
+    cleanups.push(() => loading?.abort());
+    Promise.all(
+      config.extras.map((extra) =>
+        loadSource(extra.source, extra.crossOrigin, doc, loading?.signal),
+      ),
+    )
       .then((loaded) => {
         if (destroyed) return;
         extraSources = loaded;
@@ -184,7 +191,7 @@ export function createImageEffect(config: ImageEffectConfig): ImageEffect {
         flushWanted();
       })
       .catch((error) => {
-        if (destroyed) return;
+        if (destroyed || error instanceof SourceAborted) return;
         setMode("static", error instanceof GpuFailure ? error.reason : "texture");
       });
   }

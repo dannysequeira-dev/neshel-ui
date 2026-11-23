@@ -22,44 +22,79 @@ export function isMapUrl(value: string): boolean {
   );
 }
 
-/** Resolve a map option into a decoded source (rejects with `GpuFailure` `texture`). */
+/** Rejection of an aborted load (ignored by callers: the effect was destroyed). */
+export class SourceAborted extends Error {
+  constructor() {
+    super("map loading aborted");
+    this.name = "AbortError";
+  }
+}
+
+/**
+ * Resolve a map option into a decoded source (rejects with `GpuFailure` `texture`). Cancellable (PR #17 review R1):
+ * when `signal` aborts, every listener is removed, a detached URL request drops its `src` (the browser stops the
+ * fetch) and the promise rejects with `SourceAborted`. A caller-owned `<img>` that already failed (`complete` with
+ * no pixels) or has no source rejects at once — it would never fire another event.
+ */
 export function loadSource(
   source: MapSource,
   crossOrigin: "anonymous" | "use-credentials",
   doc: Document,
+  signal?: AbortSignal,
 ): Promise<TexImageSource> {
+  if (signal?.aborted) return Promise.reject(new SourceAborted());
   if (typeof source !== "string") {
     const img = source as HTMLImageElement;
-    if (img.tagName === "IMG" && !(img.complete && img.naturalWidth > 0)) {
-      return new Promise((resolve, reject) => {
-        const done = () => {
-          img.removeEventListener("load", done);
-          img.removeEventListener("error", failed);
-          resolve(img);
-        };
-        const failed = () => {
-          img.removeEventListener("load", done);
-          img.removeEventListener("error", failed);
-          reject(new GpuFailure("texture", "the map image failed to load"));
-        };
-        img.addEventListener("load", done);
-        img.addEventListener("error", failed);
-      });
-    }
-    return Promise.resolve(source as TexImageSource);
+    if (img.tagName !== "IMG" || (img.complete && img.naturalWidth > 0))
+      return Promise.resolve(source as TexImageSource);
+    if (img.complete || !(img.currentSrc || img.getAttribute("src") || img.getAttribute("srcset")))
+      return Promise.reject(
+        new GpuFailure("texture", "the map image failed to load or has no source"),
+      );
+    return new Promise((resolve, reject) => {
+      const cleanup = () => {
+        img.removeEventListener("load", done);
+        img.removeEventListener("error", failed);
+        signal?.removeEventListener("abort", aborted);
+      };
+      const done = () => {
+        cleanup();
+        resolve(img);
+      };
+      const failed = () => {
+        cleanup();
+        reject(new GpuFailure("texture", "the map image failed to load"));
+      };
+      const aborted = () => {
+        cleanup();
+        reject(new SourceAborted());
+      };
+      img.addEventListener("load", done);
+      img.addEventListener("error", failed);
+      signal?.addEventListener("abort", aborted);
+    });
   }
   return new Promise((resolve, reject) => {
     const img = doc.createElement("img");
+    const cleanup = () => {
+      img.onload = img.onerror = null;
+      signal?.removeEventListener("abort", aborted);
+    };
+    const aborted = () => {
+      cleanup();
+      img.removeAttribute("src"); // stop the pending request
+      reject(new SourceAborted());
+    };
     img.crossOrigin = crossOrigin;
     img.decoding = "async";
     img.onload = () => {
-      img.onload = img.onerror = null;
+      cleanup();
       const decoded =
         typeof img.decode === "function" ? img.decode().catch(() => {}) : Promise.resolve();
-      decoded.then(() => resolve(img));
+      decoded.then(() => (signal?.aborted ? reject(new SourceAborted()) : resolve(img)));
     };
     img.onerror = () => {
-      img.onload = img.onerror = null;
+      cleanup();
       reject(
         new GpuFailure(
           "texture",
@@ -67,6 +102,7 @@ export function loadSource(
         ),
       );
     };
+    signal?.addEventListener("abort", aborted);
     img.src = source;
   });
 }
