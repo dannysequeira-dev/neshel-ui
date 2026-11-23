@@ -36,7 +36,10 @@ function argValues(name) {
 }
 
 async function runEngine(playwright, engine, url, throttle) {
-  const browser = await playwright[engine].launch();
+  // Phase 016 GPU rows: Firefox on GPU-less Linux runners disables WebGL unless forced (software rendering).
+  const browser = await playwright[engine].launch(
+    engine === "firefox" ? { firefoxUserPrefs: { "webgl.force-enabled": true } } : {},
+  );
   const cases = [];
   const notes = { version: browser.version() };
   try {

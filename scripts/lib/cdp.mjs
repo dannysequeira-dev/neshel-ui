@@ -94,7 +94,7 @@ class Connection {
  * Launch a headless browser and return { executable, version, newPage, close }.
  * Each page exposes goto(url), emulateColorScheme("light" | "dark"), evaluate(expression).
  */
-export async function launchBrowser(executable = findBrowser()) {
+export async function launchBrowser(executable = findBrowser(), { webgl = false } = {}) {
   if (!executable) throw new Error("no Chrome, Chromium or Edge executable found");
   const profile = mkdtempSync(join(tmpdir(), "neshel cdp ñ-"));
   const args = [
@@ -108,6 +108,14 @@ export async function launchBrowser(executable = findBrowser()) {
     `--user-data-dir=${profile}`,
     "about:blank",
   ];
+  // Phase 016 GPU rows: CI runners have no GPU and current Chrome no longer falls back to software WebGL on its own;
+  // opt in to SwiftShader explicitly (test harness only; never used for the other checks).
+  if (webgl)
+    args.unshift(
+      "--enable-unsafe-swiftshader",
+      "--use-angle=swiftshader",
+      "--ignore-gpu-blocklist",
+    );
   // GitHub's Ubuntu images restrict unprivileged user namespaces, which Chrome's sandbox needs.
   if (process.platform === "linux") args.unshift("--no-sandbox");
   const child = spawn(executable, args, { stdio: ["ignore", "ignore", "pipe"] });

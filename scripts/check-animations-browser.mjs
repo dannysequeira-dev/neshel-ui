@@ -55,7 +55,7 @@ async function main() {
   }
   const require = createRequire(import.meta.url);
   const axeSource = readFileSync(require.resolve("axe-core/axe.min.js"), "utf8");
-  const browser = await launchBrowser(executable);
+  const browser = await launchBrowser(executable, { webgl: true });
   console.info(`Browser: ${browser.version}`);
   const cases = [];
   const notes = {};
