@@ -175,4 +175,17 @@ over a kept image) without page errors.
 
 ## 20. Three-OS CI and PR
 
-Recorded after the push (PR and run identifiers are added here once they exist).
+PR [#17](https://github.com/dannysequeira-dev/neshel-ui/pull/17) (not merged; owner review).
+
+| Run             | Head      | Result            | Notes                                                                                                                                                                                     |
+| --------------- | --------- | ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 45094936303     | `df80046` | failure (12/14)   | only the GPU rows, where WebGL2 was unavailable: headless Chrome on macOS (CDP) and Playwright Firefox on Ubuntu                                                                          |
+| 45097063452     | `5b83d1b` | failure (13/14)   | CDP opts in to SwiftShader (`launchBrowser({ webgl: true })`): macOS green; Firefox on Ubuntu still without WebGL2                                                                        |
+| 45101418861     | `72797db` | failure (12/14)   | Mesa software GL on Linux had no effect on headless Firefox (reverted); macOS failed only on the known Components nested-overlay flake (K-15)                                             |
+| **45104021295** | `76edc2f` | **success 14/14** | CDP 196/196 on Windows, macOS, Ubuntu (Node 22, 24, 26 jobs); Playwright Chromium/Firefox/WebKit on macOS and Ubuntu; the 6 GPU rows of Firefox on Ubuntu are reported **SKIPPED** (K-16) |
+
+Where the GPU main rows actually ran and passed: CDP Chrome (SwiftShader) on Windows, macOS and Ubuntu; Playwright
+Chromium and WebKit on Ubuntu; Playwright Chromium, Firefox and WebKit on macOS (CI) and on Windows (local).
+
+- **K-16** Playwright Firefox on GPU-less Linux runners exposes no WebGL2 (forced WebGL and Mesa did not help). Only
+  there, GPU rows report `SKIPPED (no WebGL2 on this runner)` — never a pass; everywhere else a missing WebGL2 fails.

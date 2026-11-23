@@ -17,11 +17,11 @@ public packages. Completing the 157-entry catalogue does **not** authorise the f
 | SSR safety                 | no `window`/`document`/WebGL access at import (all subpaths)                                                 | contract tests                           |
 | Accessibility (automated)  | axe on the full lab; inert/aria-hidden contracts; keyboard paths; reduced motion live                        | evidence §8–9                            |
 | Dependencies               | runtime: `@radix-ui/react-slot` only; React peer; optional Next/React Router peers                           | contract test                            |
-| Three-OS CI                | Windows, Linux, macOS — recorded in evidence §20 once run                                                    | CI                                       |
+| Three-OS CI                | run 45104021295 success 14/14 (Firefox-on-Linux GPU rows skipped, K-16)                                      | CI                                       |
 
 ## 2. Accepted limitations (documented, not blockers in the owner's earlier reviews)
 
-K-2, K-3, K-5–K-15 ([evidence.md](evidence.md) §19 and earlier phases): headless-only GPU figures, WebKit headless
+K-2, K-3, K-5–K-16 ([evidence.md](evidence.md) §19 and earlier phases): headless-only GPU figures, WebKit headless
 costs of large layers, View Transition differences, M06 unverified in WebKit, D05 clone fidelity limits, expensive
 animated tilt-shift with four bands, a WebKit context drop under churn (recovered).
 
