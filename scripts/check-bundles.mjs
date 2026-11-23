@@ -34,6 +34,11 @@ export const ENTRIES = {
   "components: DropdownMenu": `export { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuCheckboxItem, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuSubContent } from "${C}";`,
   "components: MobileMenu": `export { MobileMenu, MobileMenuTrigger, MobileMenuContent, MobileMenuNav, MobileMenuLink } from "${C}";`,
   "components: AppShell + Sidebar": `export { AppShell, AppShellMain, AppShellContent, Sidebar, SidebarHeader, SidebarContent, SidebarFooter, SidebarGroup, SidebarItem, SidebarSub, SidebarSeparator, SidebarTrigger, useAppShell } from "${C}";`,
+  // Feature 017.
+  "components: Accordion": `export { Accordion, AccordionItem, AccordionTrigger, AccordionContent } from "${C}";`,
+  "components: Collapsible": `export { Collapsible, CollapsibleTrigger, CollapsibleContent } from "${C}";`,
+  "components: Switch": `export { Switch } from "${C}";`,
+  "components: Toaster + createToaster": `export { Toaster, createToaster } from "${C}";`,
   "components (entire library)": `export * from "${C}";`,
 };
 

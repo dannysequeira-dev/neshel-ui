@@ -85,8 +85,6 @@
   "ambient: Aurora + AmbientMotionToggle": 6272,
   "ambient: entire entry": 13504,
   "feedback: Spinner + ProgressBar": 768,
-  "feedback: createToaster (no React)": 1344,
-  "feedback: Toaster": 3968,
   "feedback: entire entry": 12352,
   "css: advanced.css": 1216,
   "css: gpu.css": 512,

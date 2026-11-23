@@ -1,8 +1,8 @@
 import "@neshel-ui/animations/feedback.css";
 import { motionValue } from "@neshel-ui/animations/core";
 import {
-  createToaster,
   DotsPulse,
+  EnterExit,
   LoadingButton,
   OptimisticPulse,
   type OptimisticStatus,
@@ -13,9 +13,8 @@ import {
   SkeletonShimmer,
   Spinner,
   SuccessMark,
-  Toaster,
 } from "@neshel-ui/animations/feedback";
-import { Button, Skeleton } from "@neshel-ui/components";
+import { Button, createToaster, Skeleton, Toaster } from "@neshel-ui/components";
 import type { Meta, StoryObj } from "@storybook/react-vite";
 import { useEffect, useMemo, useState } from "react";
 
@@ -26,7 +25,7 @@ const meta = {
     docs: {
       description: {
         component:
-          "Phase 015, private package (`@neshel-ui/animations/feedback` + `feedback.css`). Semantics before motion: indicators are ARIA progressbars with a name and a value only when it is known; skeletons are hidden from assistive technology (mark the region `aria-busy`); the success mark never announces; toasts announce once through regions that exist before content. Works with `@neshel-ui/components` (`Button`, `Skeleton`) through DOM contracts — no dependency in either direction. Under reduced motion loading indicators keep a slow opacity pulse.",
+          "Phase 015, private package (`@neshel-ui/animations/feedback` + `feedback.css`). Semantics before motion: indicators are ARIA progressbars with a name and a value only when it is known; skeletons are hidden from assistive technology (mark the region `aria-busy`); the success mark never announces. F06 is enter/exit motion only: the notifications themselves are the `@neshel-ui/components` Toaster (feature 017), which F06 can move (`<EnterExit>` around a Toaster with motion set to none). Works with `@neshel-ui/components` (`Button`, `Skeleton`, `Toaster`) through DOM contracts — no dependency in either direction. Under reduced motion loading indicators keep a slow opacity pulse.",
       },
     },
   },
@@ -98,7 +97,8 @@ export const F05SuccessMark: Story = {
   },
 };
 
-export const F06Toasts: Story = {
+/** F06 moving a Components Toaster (the toaster owns messages, roles, timers and focus). */
+export const F06EnterExit: Story = {
   render: () => {
     const toaster = useMemo(() => createToaster({ max: 3 }), []);
     useEffect(() => () => toaster.destroy(), [toaster]);
@@ -127,7 +127,9 @@ export const F06Toasts: Story = {
         >
           Error
         </button>
-        <Toaster toaster={toaster} />
+        <EnterExit from="bottom" exitTo="end">
+          <Toaster toaster={toaster} motion="none" />
+        </EnterExit>
       </div>
     );
   },

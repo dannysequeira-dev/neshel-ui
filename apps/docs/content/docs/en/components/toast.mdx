@@ -1,0 +1,63 @@
+---
+title: Toast
+description: Short, non-blocking notifications from a store you create once; announced to screen readers once.
+package: components
+exports: [createToaster, Toaster, Toast, ToastAction, ToastInput, ToastTone, ToasterOptions, ToasterStore, ToasterPlacement, ToasterProps]
+---
+
+<ComponentKind package="components" name="Toaster" />
+
+## Purpose
+
+A toast confirms the result of an action ("Draft saved") or reports a problem without
+interrupting the user. `createToaster()` returns a store that holds the toasts, their timers and
+the queue; `<Toaster>` renders it. No provider is needed.
+
+## Import
+
+```tsx title="import.tsx"
+import { createToaster, Toaster } from "@neshel-ui/components";
+```
+
+## Usage
+
+<Preview demo="components/toast-basic" />
+
+## API
+
+<ApiTable package="components" name="ToasterOptions" />
+<ApiTable package="components" name="ToastInput" />
+<ApiTable package="components" name="ToasterProps" />
+<ApiTable package="components" name="ToasterStore" />
+
+`Toast` is the stored record (with `version`), `ToastAction` the optional action, `ToastTone` is
+`"neutral" | "success" | "warning" | "error"` and `ToasterPlacement` the four logical corners.
+
+## Behaviour
+
+- Automatic duration: 6 s plus 60 ms per character (at most 20 s); toasts with an action stay
+  until closed unless `duration` is given; `Infinity` makes any toast persistent.
+- Timers pause while a toast is hovered or focused and while the page is hidden.
+- More than `max` toasts: the oldest unfocused one is dismissed, or with `overflow: "queue"` new
+  toasts wait for a free slot.
+- `destroy()` clears everything and is idempotent; a destroyed store ignores later calls.
+- Several `<Toaster>`s may render one store; each toast is announced once.
+- `motion="none"` turns off the built-in transitions, e.g. to let `@neshel-ui/animations` F06
+  animate the toasts.
+
+## Accessibility
+
+- Two live regions exist before any toast: polite (`role="status"`) and, for `tone: "error"`,
+  assertive (`role="alert"`). Each toast is announced once.
+- A toast appearing never moves focus. The hotkey (`F8` by default) moves focus to the toasts;
+  Escape closes the focused toast and focus moves to the next toast or back to where it came
+  from.
+- Every toast has a labelled close button (`closeLabel`).
+
+## Keyboard
+
+| Key    | Action                                |
+| ------ | ------------------------------------- |
+| F8     | Move focus to the toasts (`hotkey`)   |
+| Escape | Close the focused toast               |
+| Tab    | Move between toast buttons            |

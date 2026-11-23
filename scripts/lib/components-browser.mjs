@@ -330,6 +330,99 @@ export async function runComponentSuite(page, { name, labUrl, shellUrl, params, 
     labUrl,
   );
 
+  // --- Feature 017: Accordion, Collapsible, Switch, Toast (trusted CDP input) ----------------------
+  await run(
+    "accordion-collapsible-keyboard",
+    async () => {
+      const expanded = (id) =>
+        d.evaluate(`document.querySelector("${id}").getAttribute("aria-expanded")`);
+      check((await expanded("#faq-t1")) === "true", "defaultValue item closed after hydration");
+      await d.evaluate(`document.querySelector("#faq-t1").focus()`);
+      await d.press("ArrowDown");
+      check((await d.active()) === "faq-t3", `ArrowDown reached ${await d.active()}`);
+      await d.press("Enter");
+      await d.waitFor(
+        `document.querySelector("#faq-t3").getAttribute("aria-expanded") === "true"`,
+        "faq-3 open",
+      );
+      check((await expanded("#faq-t1")) === "false", "two items open in a single accordion");
+      await d.press("Home");
+      check((await d.active()) === "faq-t1", "Home");
+      await d.click("#more-trigger");
+      await d.waitFor(`!!document.querySelector("#more-content")`, "collapsible open");
+      await d.press(" ");
+      await d.waitFor(
+        `document.querySelector("#more-trigger").getAttribute("aria-expanded") === "false"`,
+        "Space closes",
+      );
+    },
+    labUrl,
+  );
+
+  await run(
+    "switch-space-label-form",
+    async () => {
+      await d.evaluate(`document.querySelector("#emails").focus()`);
+      await d.press(" ");
+      check(
+        (await d.evaluate(`document.querySelector("#emails").getAttribute("aria-checked")`)) ===
+          "true",
+        "Space",
+      );
+      await d.click('label[for="terms"]');
+      check(
+        (await d.evaluate(`document.querySelector("#terms").getAttribute("aria-checked")`)) ===
+          "true",
+        "label",
+      );
+      await d.click("#settings-submit");
+      await d.waitFor(`!!document.querySelector("#settings-result").textContent`, "submitted");
+      const entries = await d.text("#settings-result");
+      check(
+        entries ===
+          json([
+            ["emails", "on"],
+            ["terms", "on"],
+          ]),
+        `form data ${entries}`,
+      );
+    },
+    labUrl,
+  );
+
+  await run(
+    "toast-hotkey-escape-focus",
+    async () => {
+      await d.click("#toast-trigger");
+      await d.waitFor(`!!document.querySelector('.neshel-toast[data-state="open"]')`, "toast open");
+      check(
+        (await d.text('section.neshel-toaster [role="status"]'))?.includes("Profile saved"),
+        "not announced",
+      );
+      await d.evaluate(`document.querySelector("#toast-error").focus()`);
+      await page.send("Input.dispatchKeyEvent", {
+        type: "keyDown",
+        key: "F8",
+        code: "F8",
+        windowsVirtualKeyCode: 119,
+      });
+      await page.send("Input.dispatchKeyEvent", {
+        type: "keyUp",
+        key: "F8",
+        code: "F8",
+        windowsVirtualKeyCode: 119,
+      });
+      await d.waitFor(
+        `document.activeElement?.classList.contains("neshel-toast")`,
+        "F8 focuses the toast",
+      );
+      await d.press("Escape");
+      await d.waitFor(`!document.querySelector(".neshel-toast")`, "Escape closes the toast");
+      check((await d.active()) === "toast-error", `focus returned to ${await d.active()}`);
+    },
+    labUrl,
+  );
+
   await run(
     "alert-dialog",
     async () => {

@@ -2,6 +2,18 @@
 // Flat named exports only (research R3); internal helpers are not exported.
 
 export {
+  Accordion,
+  AccordionContent,
+  type AccordionContentProps,
+  AccordionItem,
+  type AccordionItemProps,
+  type AccordionMultipleProps,
+  type AccordionProps,
+  type AccordionSingleProps,
+  AccordionTrigger,
+  type AccordionTriggerProps,
+} from "./accordion.js";
+export {
   AlertDialog,
   AlertDialogAction,
   type AlertDialogActionProps,
@@ -63,6 +75,14 @@ export {
   type CardTitleProps,
   type CardVariant,
 } from "./card.js";
+export {
+  Collapsible,
+  CollapsibleContent,
+  type CollapsibleContentProps,
+  type CollapsibleProps,
+  CollapsibleTrigger,
+  type CollapsibleTriggerProps,
+} from "./collapsible.js";
 export {
   Combobox,
   type ComboboxItem,
@@ -217,4 +237,15 @@ export {
   type SelectOptions,
   type SelectProps,
 } from "./select.js";
+export { Switch, type SwitchProps } from "./switch.js";
+export { Toaster, type ToasterPlacement, type ToasterProps } from "./toast.js";
+export {
+  createToaster,
+  type Toast,
+  type ToastAction,
+  type ToasterOptions,
+  type ToasterStore,
+  type ToastInput,
+  type ToastTone,
+} from "./toast-store.js";
 export type { Breakpoint, FieldSize, Responsive } from "./types.js";

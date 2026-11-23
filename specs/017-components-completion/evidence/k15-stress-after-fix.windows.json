@@ -1,0 +1,115 @@
+{
+  "platform": "win32",
+  "runs": 30,
+  "throttle": 1,
+  "results": [
+    {
+      "engine": "chromium",
+      "version": "158.0.8127.18",
+      "variant": "components-plain",
+      "id": "nested-overlays-escape-order",
+      "runs": 30,
+      "passed": 30,
+      "errors": []
+    },
+    {
+      "engine": "chromium",
+      "version": "158.0.8127.18",
+      "variant": "components-plain",
+      "id": "nested-overlays-rapid-escape",
+      "runs": 30,
+      "passed": 30,
+      "errors": []
+    },
+    {
+      "engine": "chromium",
+      "version": "158.0.8127.18",
+      "variant": "components-replace",
+      "id": "nested-overlays-escape-order",
+      "runs": 30,
+      "passed": 30,
+      "errors": []
+    },
+    {
+      "engine": "chromium",
+      "version": "158.0.8127.18",
+      "variant": "components-replace",
+      "id": "nested-overlays-rapid-escape",
+      "runs": 30,
+      "passed": 30,
+      "errors": []
+    },
+    {
+      "engine": "firefox",
+      "version": "159.0",
+      "variant": "components-plain",
+      "id": "nested-overlays-escape-order",
+      "runs": 30,
+      "passed": 30,
+      "errors": []
+    },
+    {
+      "engine": "firefox",
+      "version": "159.0",
+      "variant": "components-plain",
+      "id": "nested-overlays-rapid-escape",
+      "runs": 30,
+      "passed": 30,
+      "errors": []
+    },
+    {
+      "engine": "firefox",
+      "version": "159.0",
+      "variant": "components-replace",
+      "id": "nested-overlays-escape-order",
+      "runs": 30,
+      "passed": 30,
+      "errors": []
+    },
+    {
+      "engine": "firefox",
+      "version": "159.0",
+      "variant": "components-replace",
+      "id": "nested-overlays-rapid-escape",
+      "runs": 30,
+      "passed": 30,
+      "errors": []
+    },
+    {
+      "engine": "webkit",
+      "version": "27.2",
+      "variant": "components-plain",
+      "id": "nested-overlays-escape-order",
+      "runs": 30,
+      "passed": 30,
+      "errors": []
+    },
+    {
+      "engine": "webkit",
+      "version": "27.2",
+      "variant": "components-plain",
+      "id": "nested-overlays-rapid-escape",
+      "runs": 30,
+      "passed": 30,
+      "errors": []
+    },
+    {
+      "engine": "webkit",
+      "version": "27.2",
+      "variant": "components-replace",
+      "id": "nested-overlays-escape-order",
+      "runs": 30,
+      "passed": 30,
+      "errors": []
+    },
+    {
+      "engine": "webkit",
+      "version": "27.2",
+      "variant": "components-replace",
+      "id": "nested-overlays-rapid-escape",
+      "runs": 30,
+      "passed": 30,
+      "errors": []
+    }
+  ]
+}

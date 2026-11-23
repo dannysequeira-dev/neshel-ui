@@ -1,0 +1,48 @@
+---
+title: Switch
+description: An on/off control that takes effect immediately and works in native forms.
+package: components
+exports: [Switch, SwitchProps]
+---
+
+<ComponentKind package="components" name="Switch" />
+
+## Purpose
+
+`Switch` turns a setting on or off. Use it for immediate, binary settings; use a checkbox for
+choices confirmed with a submit button in long forms.
+
+## Import
+
+```tsx title="import.tsx"
+import { Label, Switch } from "@neshel-ui/components";
+```
+
+## Usage
+
+<Preview demo="components/switch-form" />
+
+## API
+
+<ApiTable package="components" name="SwitchProps" />
+
+## Controlled and uncontrolled
+
+`checked` with `onCheckedChange`, or `defaultChecked`. In a form the switch submits `name=value`
+(`value` defaults to `"on"`) only while it is on; `required` blocks submission while it is off;
+a form reset restores `defaultChecked`.
+
+## Accessibility
+
+- A native `<button role="switch">` with `aria-checked`; associate a `<Label htmlFor>` with its
+  `id` (clicking the label toggles it).
+- `invalid` sets `aria-invalid`; describe the error with `aria-describedby`.
+- Visible focus ring on keyboard focus, system colours in forced-colours mode, no thumb transition
+  under reduced motion.
+
+## Keyboard
+
+| Key           | Action          |
+| ------------- | --------------- |
+| Space / Enter | Toggle          |
+| Tab           | Move focus      |

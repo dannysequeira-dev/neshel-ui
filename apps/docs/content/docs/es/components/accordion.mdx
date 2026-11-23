@@ -1,0 +1,71 @@
+---
+title: Accordion
+description: Secciones apiladas cuyos encabezados muestran y ocultan su contenido, de una en una o varias a la vez.
+package: components
+exports: [Accordion, AccordionItem, AccordionTrigger, AccordionContent, AccordionProps, AccordionSingleProps, AccordionMultipleProps, AccordionItemProps, AccordionTriggerProps, AccordionContentProps]
+---
+
+<ComponentKind package="components" name="Accordion" />
+
+## Propósito
+
+`Accordion` agrupa secciones relacionadas (preguntas frecuentes, grupos de ajustes) tras
+encabezados. Cada encabezado es un heading real que contiene un botón; al activarlo se muestra u
+oculta su sección.
+
+## Importación
+
+```tsx title="import.tsx"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@neshel-ui/components";
+```
+
+## Uso
+
+<Preview demo="components/accordion-basic" />
+
+## API
+
+<ApiTable package="components" name="AccordionSingleProps" />
+<ApiTable package="components" name="AccordionMultipleProps" />
+<ApiTable package="components" name="AccordionItemProps" />
+<ApiTable package="components" name="AccordionTriggerProps" />
+<ApiTable package="components" name="AccordionContentProps" />
+
+`AccordionProps` es la unión de las props single y multiple.
+
+## Controlado y no controlado
+
+- `type="single"` (predeterminado): `value` / `defaultValue` son un string o `null`;
+  `onValueChange` recibe el valor abierto o `null`. Sin `collapsible`, activar el encabezado
+  abierto lo mantiene abierto.
+- `type="multiple"`: `value` / `defaultValue` son arrays de strings; `onValueChange` recibe la
+  lista.
+
+## Accesibilidad
+
+- Los encabezados son headings (`headingLevel`, 3 por defecto) con un botón nativo con
+  `aria-expanded` y `aria-controls`; los paneles se etiquetan con su encabezado.
+- Los elementos deshabilitados no se pueden alternar y las flechas los saltan.
+- `keepMounted` mantiene los paneles cerrados en el DOM (ocultos); `hiddenUntilFound` permite que la
+  búsqueda del navegador los abra.
+- La transición de altura opcional se detiene con `prefers-reduced-motion`.
+
+## Teclado
+
+| Tecla                 | Acción                                             |
+| --------------------- | -------------------------------------------------- |
+| Enter / Espacio       | Alterna la sección enfocada                        |
+| Flecha abajo / arriba | Pasa al encabezado siguiente / anterior (circular) |
+| Inicio / Fin          | Pasa al primer / último encabezado                 |
+| Tab                   | Pasa al siguiente elemento enfocable               |
+
+## Errores comunes
+
+- Dejar la única copia de contenido esencial en una sección cerrada: mantén visible la información
+  crítica.
+- Elegir un nivel de encabezado que rompe la estructura de la página: ajusta `headingLevel`.

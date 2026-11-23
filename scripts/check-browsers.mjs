@@ -47,6 +47,127 @@ const FLOWS = {
     );
   },
   ...NESTED_OVERLAY_FLOWS,
+  // Feature 017: Accordion keyboard (arrows skip the disabled header, Home/End, Enter/Space toggle).
+  async "accordion-keyboard"({ page, base, check }) {
+    await page.goto(`${base}/index.html`);
+    const expanded = (id) => page.getAttribute(id, "aria-expanded");
+    check((await expanded("#faq-t1")) === "true", "defaultValue item not open after hydration");
+    await page.focus("#faq-t1");
+    await page.keyboard.press("ArrowDown");
+    check(
+      (await page.evaluate(() => document.activeElement?.id)) === "faq-t3",
+      "ArrowDown did not skip the disabled header",
+    );
+    await page.keyboard.press("Enter");
+    await page.waitForFunction(
+      () => document.querySelector("#faq-t3")?.getAttribute("aria-expanded") === "true",
+    );
+    check((await expanded("#faq-t1")) === "false", "single accordion kept two items open");
+    await page.keyboard.press(" ");
+    await page.waitForFunction(
+      () => document.querySelector("#faq-t3")?.getAttribute("aria-expanded") === "false",
+    );
+    await page.keyboard.press("Home");
+    check((await page.evaluate(() => document.activeElement?.id)) === "faq-t1", "Home");
+    await page.keyboard.press("End");
+    check((await page.evaluate(() => document.activeElement?.id)) === "faq-t3", "End");
+    await page.click("#faq-t2", { force: true }).catch(() => {});
+    check((await expanded("#faq-t2")) === "false", "the disabled item toggled");
+  },
+  async "collapsible-toggle"({ page, base, check }) {
+    await page.goto(`${base}/index.html`);
+    check(!(await page.isVisible("#more-content")), "collapsible open before interaction");
+    await page.click("#more-trigger");
+    await page.waitForSelector("#more-content", { state: "visible" });
+    check(
+      (await page.getAttribute("#more-trigger", "aria-controls")) ===
+        (await page.getAttribute("#more-content", "id")),
+      "aria-controls does not point at the panel",
+    );
+    await page.keyboard.press("Enter");
+    await page.waitForFunction(
+      () => document.querySelector("#more-trigger")?.getAttribute("aria-expanded") === "false",
+    );
+  },
+  // Space (real keyboard) and the Label toggle the switch; the form submits name=value only while on;
+  // a required switch blocks submission while off.
+  async "switch-keyboard-and-form"({ page, base, check }) {
+    await page.goto(`${base}/index.html`);
+    await page.focus("#emails");
+    check(
+      await page.evaluate(() => document.querySelector("#emails")?.matches(":focus-visible")),
+      "no focus-visible on keyboard focus",
+    );
+    await page.keyboard.press(" ");
+    check((await page.getAttribute("#emails", "aria-checked")) === "true", "Space did not toggle");
+    await page.click('label[for="emails"]');
+    check((await page.getAttribute("#emails", "aria-checked")) === "false", "label did not toggle");
+    await page.keyboard.press(" ");
+    await page.click("#settings-submit");
+    check(
+      (await page.textContent("#settings-result")) === "",
+      "required switch did not block submit",
+    );
+    await page.click("#terms");
+    await page.click("#settings-submit");
+    await page.waitForFunction(() => document.querySelector("#settings-result")?.textContent);
+    const entries = JSON.parse((await page.textContent("#settings-result")) || "[]");
+    check(
+      JSON.stringify(entries) ===
+        JSON.stringify([
+          ["emails", "on"],
+          ["terms", "on"],
+        ]),
+      `form data ${JSON.stringify(entries)}`,
+    );
+  },
+  // Toast: announced once in the polite region, F8 moves focus to it, the action runs, Escape closes the
+  // focused toast and focus returns to where it came from; errors go to the alert region.
+  async "toast-announce-hotkey-escape"({ page, base, check }) {
+    await page.goto(`${base}/index.html`);
+    const region = "section.neshel-toaster";
+    check(
+      (await page.locator(`${region} [role="status"]`).count()) === 1 &&
+        (await page.locator(`${region} [role="alert"]`).count()) === 1,
+      "live regions missing before the first toast",
+    );
+    await page.click("#toast-trigger");
+    await page.waitForSelector(`${region} .neshel-toast[data-state="open"]`);
+    check(
+      (await page.textContent(`${region} [role="status"]`))?.includes(
+        "Profile saved. Changes stored",
+      ),
+      "toast not announced",
+    );
+    await page.waitForTimeout(300);
+    check(
+      (await page.locator(`${region} [role="status"] p`).count()) === 1,
+      "toast announced more than once",
+    );
+    await page.focus("#toast-error");
+    await page.keyboard.press("F8");
+    check(
+      await page.evaluate(() => document.activeElement?.classList.contains("neshel-toast")),
+      "F8 did not focus the toast",
+    );
+    await page.keyboard.press("Escape");
+    await page.waitForSelector(`${region} .neshel-toast`, { state: "detached" });
+    check(
+      (await page.evaluate(() => document.activeElement?.id)) === "toast-error",
+      "focus did not return after Escape",
+    );
+    await page.click("#toast-trigger");
+    await page.click(`${region} .neshel-toast-action`);
+    await page.waitForFunction(
+      () => document.querySelector("#toast-undo")?.textContent === "undone",
+    );
+    await page.click("#toast-error");
+    await page.waitForFunction(() =>
+      document
+        .querySelector('section.neshel-toaster [role="alert"]')
+        ?.textContent?.includes("Upload failed"),
+    );
+  },
   async "select-in-dialog-escape-layering"({ page, base, check }) {
     await page.goto(`${base}/index.html`);
     await page.click("#dialog-trigger");

@@ -331,39 +331,6 @@ test("#12/#15 Progress ring + timeline / external progress: visual follows; inte
   clean("#12");
 });
 
-test("#13 Toast + Presence: dismiss during enter, re-show during exit, overflow — one announcement each", async () => {
-  const toaster = F.createToaster({ max: 2 });
-  const view = await mount(h(F.Toaster, { toaster }));
-  const region = view.container.querySelector("section");
-  const polite = region.querySelector('[role="status"]');
-  let id;
-  await act(async () => {
-    id = toaster.show({ id: "t1", title: "First" });
-    toaster.dismiss(id); // during enter
-  });
-  await act(async () => {
-    toaster.show({ id: "t1", title: "First again" }); // re-show during exit
-  });
-  frames.flush(2);
-  await act(async () => {});
-  const item = region.querySelector('[data-id="t1"]');
-  assert.equal(item.getAttribute("data-state"), "open", "re-entered during exit");
-  await act(async () => {
-    toaster.show({ title: "Second" });
-    toaster.show({ title: "Third" });
-  });
-  assert.equal(toaster.toasts.length, 2);
-  // "First" was dismissed before it ever rendered: never shown, never announced.
-  assert.equal(polite.querySelectorAll("p").length, 3, "First again, Second, Third — once each");
-  assert.deepEqual(
-    [...polite.querySelectorAll("p")].map((p) => p.textContent),
-    ["First again", "Second", "Third"],
-  );
-  await view.unmount();
-  toaster.destroy();
-  clean("#13");
-});
-
 test("#14 Button loading + Press: press visuals allowed, activation blocked while loading", () => {
   const button = attach(document.createElement("button"));
   Object.defineProperty(button, "offsetWidth", { value: 80, configurable: true });

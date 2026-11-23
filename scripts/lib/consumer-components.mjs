@@ -81,7 +81,12 @@ import {
   PopoverContent, PopoverTrigger, Select, Separator, Sheet, SheetContent, SheetDescription,
   SheetHeader, SheetTitle, SheetTrigger, Sidebar, SidebarContent, SidebarFooter, SidebarGroup,
   SidebarHeader, SidebarItem, SidebarSub, SidebarTrigger, Skeleton,
+  Accordion, AccordionContent, AccordionItem, AccordionTrigger, Collapsible, CollapsibleContent,
+  CollapsibleTrigger, Switch, Toaster, createToaster,
 } from "${COMPONENTS}";
+
+// Feature 017: one toaster store for the lab (no provider).
+const toaster = createToaster({ max: 3 });
 
 const countries = [
   { value: "cr", label: "Costa Rica" },
@@ -106,6 +111,8 @@ function Lab() {
   const [alert, setAlert] = useState("none");
   const [menu, setMenu] = useState("none");
   const [assignee, setAssignee] = useState<string | null>(null);
+  const [settings, setSettings] = useState("");
+  const [undo, setUndo] = useState("none");
   const onSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setResult(JSON.stringify([...new FormData(event.currentTarget).entries()]));
@@ -254,6 +261,38 @@ function Lab() {
             <Button type="submit" id="submit">Submit</Button>
           </form>
           <output id="form-result">{result}</output>
+        </section>
+        <section data-case="disclosure" aria-label="Disclosure and settings">
+          <Accordion id="faq" collapsible defaultValue="faq-1">
+            <AccordionItem value="faq-1">
+              <AccordionTrigger id="faq-t1">What is Neshel-UI?</AccordionTrigger>
+              <AccordionContent id="faq-c1">A modular, accessible React design system.</AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="faq-2" disabled>
+              <AccordionTrigger id="faq-t2">Is there a paid plan?</AccordionTrigger>
+              <AccordionContent>Not yet.</AccordionContent>
+            </AccordionItem>
+            <AccordionItem value="faq-3">
+              <AccordionTrigger id="faq-t3">Does it need Tailwind?</AccordionTrigger>
+              <AccordionContent id="faq-c3">No, the stylesheet is precompiled.</AccordionContent>
+            </AccordionItem>
+          </Accordion>
+          <Collapsible>
+            <CollapsibleTrigger id="more-trigger">Show details</CollapsibleTrigger>
+            <CollapsibleContent id="more-content"><p>Extra details about the plan.</p></CollapsibleContent>
+          </Collapsible>
+          <form id="settings-form" onSubmit={(event) => { event.preventDefault(); setSettings(JSON.stringify([...new FormData(event.currentTarget).entries()])); }}>
+            <Label htmlFor="emails">Email updates</Label>
+            <Switch id="emails" name="emails" />
+            <Label htmlFor="terms" required>Accept terms</Label>
+            <Switch id="terms" name="terms" required />
+            <Button type="submit" id="settings-submit" size="sm">Save settings</Button>
+          </form>
+          <output id="settings-result">{settings}</output>
+          <Button id="toast-trigger" variant="outline" onClick={() => toaster.show({ title: "Profile saved", description: "Changes stored", action: { label: "Undo", onAction: () => setUndo("undone") } })}>Save profile</Button>
+          <Button id="toast-error" variant="outline" onClick={() => toaster.show({ title: "Upload failed", tone: "error" })}>Fail upload</Button>
+          <output id="toast-undo">{undo}</output>
+          <Toaster toaster={toaster} />
         </section>
         <section id="theme-boundary" data-neshel-theme="${params.theme}" aria-label="Themed region" className="theme-boundary">
           <Dialog>

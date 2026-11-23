@@ -114,8 +114,8 @@ decisions: [`specs/008-animations/`](../../specs/008-animations/spec.md),
 - `@neshel-ui/animations/feedback` (Phase 015) — F01–F10, semantics first: `Spinner`, `DotsPulse`,
   `ProgressBar`, `ProgressRing` (ARIA progressbars; a value only when known), `SkeletonShimmer` and `<Shimmer>`
   (hidden from assistive technology; works on the Components `Skeleton`), `SuccessMark` (never announces),
-  `createToaster` + `<Toaster>` (regions before content, one announcement per toast, pause on hover/focus,
-  keyboard close), `createLoadingButton`/`<LoadingButton>` (same element, name and focus; no double activation;
+  F06 `createEnterExit`/`<EnterExit>` (enter/exit motion for a list another component owns — e.g. a Components
+  `<Toaster motion="none">`; the notification store moved to `@neshel-ui/components` in feature 017), `createLoadingButton`/`<LoadingButton>` (same element, name and focus; no double activation;
   use it on a Components `Button` without its `loading` prop), `createOptimisticPulse`/`<OptimisticPulse>`
   (pending ≠ confirmed; failure rolls back) and `<PendingText>`.
 - `@neshel-ui/animations/advanced` (Phase 016) — D01, D02, D03, D05, D07, D09, D11 on CSS 3D and the Motion Host:
@@ -146,7 +146,7 @@ decisions: [`specs/008-animations/`](../../specs/008-animations/spec.md),
   static), `@neshel-ui/animations/svg.css` (package-rendered icons and checkmark),
   `@neshel-ui/animations/media.css` (frames, compare slider, lightbox dialog, slide stack),
   `@neshel-ui/animations/ambient.css` (decorative layers, paused unless the engine marks them running),
-  `@neshel-ui/animations/feedback.css` (indicators, token layers, toasts), `@neshel-ui/animations/advanced.css`
+  `@neshel-ui/animations/feedback.css` (indicators, token layers), `@neshel-ui/animations/advanced.css`
   (flip/cube/ring stacking, glitch blending, floor loop) and `@neshel-ui/animations/gpu.css` (GPU frames, page stack).
 
 ```tsx

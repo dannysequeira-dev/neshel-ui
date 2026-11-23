@@ -377,6 +377,9 @@ importers:
       '@neshel-ui/animations':
         specifier: workspace:*
         version: link:../../packages/animations
+      '@neshel-ui/components':
+        specifier: workspace:*
+        version: link:../../packages/components
       '@neshel-ui/config':
         specifier: workspace:*
         version: link:../../packages/config

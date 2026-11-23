@@ -1,0 +1,48 @@
+---
+title: Collapsible
+description: One trigger that shows and hides one region of content.
+package: components
+exports: [Collapsible, CollapsibleTrigger, CollapsibleContent, CollapsibleProps, CollapsibleTriggerProps, CollapsibleContentProps]
+---
+
+<ComponentKind package="components" name="Collapsible" />
+
+## Purpose
+
+`Collapsible` reveals optional detail ("Show more", advanced filters). It is a single disclosure,
+not a one-item Accordion: there is no heading, group or value.
+
+## Import
+
+```tsx title="import.tsx"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@neshel-ui/components";
+```
+
+## Usage
+
+<Preview demo="components/collapsible-basic" />
+
+## API
+
+<ApiTable package="components" name="CollapsibleProps" />
+<ApiTable package="components" name="CollapsibleTriggerProps" />
+<ApiTable package="components" name="CollapsibleContentProps" />
+
+## Controlled and uncontrolled
+
+`open`, `defaultOpen` and `onOpenChange`, like Dialog. Closed content is unmounted unless
+`keepMounted` (hidden) or `hiddenUntilFound` is set.
+
+## Accessibility
+
+- The trigger is a native button with `aria-expanded` and `aria-controls`; `asChild` must render a
+  button.
+- `disabled` disables the trigger.
+- The optional height transition stops under `prefers-reduced-motion`.
+
+## Keyboard
+
+| Key           | Action                 |
+| ------------- | ---------------------- |
+| Enter / Space | Toggle the content     |
+| Tab           | Move focus as usual    |

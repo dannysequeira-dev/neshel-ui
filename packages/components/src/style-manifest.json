@@ -4951,6 +4951,824 @@
       "media": "(prefers-reduced-motion: reduce)"
     },
     {
+      "selector": ".neshel-accordion",
+      "declarations": [
+        [
+          "font-family",
+          "var(--neshel-font-body)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-accordion-item",
+      "declarations": [
+        [
+          "border-block-end",
+          "1px solid var(--neshel-border)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-accordion-header",
+      "declarations": [
+        [
+          "margin",
+          "0"
+        ],
+        [
+          "font",
+          "inherit"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-accordion-trigger",
+      "declarations": [
+        [
+          "display",
+          "flex"
+        ],
+        [
+          "align-items",
+          "center"
+        ],
+        [
+          "justify-content",
+          "space-between"
+        ],
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 3)"
+        ],
+        [
+          "inline-size",
+          "100%"
+        ],
+        [
+          "box-sizing",
+          "border-box"
+        ],
+        [
+          "margin",
+          "0"
+        ],
+        [
+          "padding",
+          "calc(var(--neshel-spacing) * 4) calc(var(--neshel-spacing) * 1)"
+        ],
+        [
+          "border",
+          "0"
+        ],
+        [
+          "background-color",
+          "transparent"
+        ],
+        [
+          "color",
+          "var(--neshel-foreground)"
+        ],
+        [
+          "font",
+          "inherit"
+        ],
+        [
+          "font-weight",
+          "500"
+        ],
+        [
+          "text-align",
+          "start"
+        ],
+        [
+          "cursor",
+          "pointer"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-accordion-trigger:focus-visible, .neshel-collapsible-trigger:focus-visible",
+      "declarations": [
+        [
+          "outline",
+          "var(--neshel-focus-width) solid var(--neshel-focus)"
+        ],
+        [
+          "outline-offset",
+          "var(--neshel-focus-offset)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-accordion-trigger[data-disabled], .neshel-collapsible-trigger[data-disabled]",
+      "declarations": [
+        [
+          "color",
+          "var(--neshel-disabled-foreground)"
+        ],
+        [
+          "cursor",
+          "not-allowed"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-accordion-trigger[data-panel-open] .neshel-accordion-chevron",
+      "declarations": [
+        [
+          "transform",
+          "rotate(180deg)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-accordion-content, .neshel-collapsible-content",
+      "declarations": [
+        [
+          "overflow",
+          "hidden"
+        ],
+        [
+          "transition",
+          "block-size 200ms ease"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-accordion-content",
+      "declarations": [
+        [
+          "block-size",
+          "var(--accordion-panel-height, auto)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-collapsible-content",
+      "declarations": [
+        [
+          "block-size",
+          "var(--collapsible-panel-height, auto)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-accordion-content[data-starting-style], .neshel-accordion-content[data-ending-style], .neshel-collapsible-content[data-starting-style], .neshel-collapsible-content[data-ending-style]",
+      "declarations": [
+        [
+          "block-size",
+          "0"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-accordion-content-inner",
+      "declarations": [
+        [
+          "padding",
+          "0 calc(var(--neshel-spacing) * 1) calc(var(--neshel-spacing) * 4)"
+        ],
+        [
+          "color",
+          "var(--neshel-foreground)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-collapsible-trigger",
+      "declarations": [
+        [
+          "display",
+          "inline-flex"
+        ],
+        [
+          "align-items",
+          "center"
+        ],
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 2)"
+        ],
+        [
+          "margin",
+          "0"
+        ],
+        [
+          "padding",
+          "calc(var(--neshel-spacing) * 1) calc(var(--neshel-spacing) * 2)"
+        ],
+        [
+          "border",
+          "0"
+        ],
+        [
+          "border-radius",
+          "var(--neshel-radius-md)"
+        ],
+        [
+          "background-color",
+          "transparent"
+        ],
+        [
+          "color",
+          "var(--neshel-primary)"
+        ],
+        [
+          "font",
+          "inherit"
+        ],
+        [
+          "font-weight",
+          "500"
+        ],
+        [
+          "cursor",
+          "pointer"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-accordion-content, .neshel-collapsible-content",
+      "declarations": [
+        [
+          "transition",
+          "none"
+        ]
+      ],
+      "media": "(prefers-reduced-motion: reduce)"
+    },
+    {
+      "selector": ".neshel-switch",
+      "declarations": [
+        [
+          "--neshel-switch-h",
+          "1.5rem"
+        ],
+        [
+          "position",
+          "relative"
+        ],
+        [
+          "display",
+          "inline-flex"
+        ],
+        [
+          "align-items",
+          "center"
+        ],
+        [
+          "flex-shrink",
+          "0"
+        ],
+        [
+          "box-sizing",
+          "border-box"
+        ],
+        [
+          "inline-size",
+          "calc(var(--neshel-switch-h) * 1.75)"
+        ],
+        [
+          "block-size",
+          "var(--neshel-switch-h)"
+        ],
+        [
+          "margin",
+          "0"
+        ],
+        [
+          "padding",
+          "2px"
+        ],
+        [
+          "border",
+          "1px solid var(--neshel-input)"
+        ],
+        [
+          "border-radius",
+          "9999px"
+        ],
+        [
+          "background-color",
+          "var(--neshel-muted)"
+        ],
+        [
+          "cursor",
+          "pointer"
+        ],
+        [
+          "transition",
+          "background-color 150ms ease, border-color 150ms ease"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-switch-size-sm",
+      "declarations": [
+        [
+          "--neshel-switch-h",
+          "1.25rem"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-switch-size-lg",
+      "declarations": [
+        [
+          "--neshel-switch-h",
+          "1.75rem"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-switch[data-checked]",
+      "declarations": [
+        [
+          "background-color",
+          "var(--neshel-primary)"
+        ],
+        [
+          "border-color",
+          "var(--neshel-primary)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-switch:focus-visible",
+      "declarations": [
+        [
+          "outline",
+          "var(--neshel-focus-width) solid var(--neshel-focus)"
+        ],
+        [
+          "outline-offset",
+          "var(--neshel-focus-offset)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-switch[aria-invalid=\"true\"]",
+      "declarations": [
+        [
+          "border-color",
+          "var(--neshel-destructive)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-switch[data-disabled]",
+      "declarations": [
+        [
+          "background-color",
+          "var(--neshel-disabled)"
+        ],
+        [
+          "border-color",
+          "var(--neshel-border)"
+        ],
+        [
+          "cursor",
+          "not-allowed"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-switch-thumb",
+      "declarations": [
+        [
+          "display",
+          "block"
+        ],
+        [
+          "inline-size",
+          "calc(var(--neshel-switch-h) - 6px)"
+        ],
+        [
+          "block-size",
+          "calc(var(--neshel-switch-h) - 6px)"
+        ],
+        [
+          "border-radius",
+          "9999px"
+        ],
+        [
+          "background-color",
+          "var(--neshel-background)"
+        ],
+        [
+          "box-shadow",
+          "0 1px 2px color-mix(in srgb, var(--neshel-foreground) 20%, transparent)"
+        ],
+        [
+          "transition",
+          "transform 150ms ease"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-switch[data-checked] .neshel-switch-thumb",
+      "declarations": [
+        [
+          "transform",
+          "translateX(calc(var(--neshel-switch-h) * 0.75))"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-switch[data-checked]:dir(rtl) .neshel-switch-thumb",
+      "declarations": [
+        [
+          "transform",
+          "translateX(calc(var(--neshel-switch-h) * -0.75))"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-switch, .neshel-switch-thumb",
+      "declarations": [
+        [
+          "transition",
+          "none"
+        ]
+      ],
+      "media": "(prefers-reduced-motion: reduce)"
+    },
+    {
+      "selector": ".neshel-switch",
+      "declarations": [
+        [
+          "border",
+          "1px solid ButtonText"
+        ]
+      ],
+      "media": "(forced-colors: active)"
+    },
+    {
+      "selector": ".neshel-switch-thumb",
+      "declarations": [
+        [
+          "background-color",
+          "ButtonText"
+        ]
+      ],
+      "media": "(forced-colors: active)"
+    },
+    {
+      "selector": ".neshel-switch[data-checked]",
+      "declarations": [
+        [
+          "background-color",
+          "Highlight"
+        ]
+      ],
+      "media": "(forced-colors: active)"
+    },
+    {
+      "selector": ".neshel-toaster",
+      "declarations": [
+        [
+          "position",
+          "fixed"
+        ],
+        [
+          "z-index",
+          "var(--neshel-z-toast, 70)"
+        ],
+        [
+          "inline-size",
+          "min(24rem, calc(100vw - calc(var(--neshel-spacing) * 8)))"
+        ],
+        [
+          "pointer-events",
+          "none"
+        ],
+        [
+          "font-family",
+          "var(--neshel-font-body)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-toaster[data-placement$=\"-end\"]",
+      "declarations": [
+        [
+          "inset-inline-end",
+          "calc(var(--neshel-spacing) * 4)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-toaster[data-placement$=\"-start\"]",
+      "declarations": [
+        [
+          "inset-inline-start",
+          "calc(var(--neshel-spacing) * 4)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-toaster[data-placement^=\"bottom-\"]",
+      "declarations": [
+        [
+          "inset-block-end",
+          "calc(var(--neshel-spacing) * 4)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-toaster[data-placement^=\"top-\"]",
+      "declarations": [
+        [
+          "inset-block-start",
+          "calc(var(--neshel-spacing) * 4)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-toaster-announcer",
+      "declarations": [
+        [
+          "position",
+          "absolute"
+        ],
+        [
+          "inline-size",
+          "1px"
+        ],
+        [
+          "block-size",
+          "1px"
+        ],
+        [
+          "padding",
+          "0"
+        ],
+        [
+          "margin",
+          "-1px"
+        ],
+        [
+          "overflow",
+          "hidden"
+        ],
+        [
+          "clip",
+          "rect(0, 0, 0, 0)"
+        ],
+        [
+          "clip-path",
+          "inset(50%)"
+        ],
+        [
+          "white-space",
+          "nowrap"
+        ],
+        [
+          "border",
+          "0"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-toast-list",
+      "declarations": [
+        [
+          "display",
+          "grid"
+        ],
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 2)"
+        ],
+        [
+          "margin",
+          "0"
+        ],
+        [
+          "padding",
+          "0"
+        ],
+        [
+          "list-style",
+          "none"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-toast",
+      "declarations": [
+        [
+          "display",
+          "flex"
+        ],
+        [
+          "gap",
+          "calc(var(--neshel-spacing) * 3)"
+        ],
+        [
+          "align-items",
+          "flex-start"
+        ],
+        [
+          "box-sizing",
+          "border-box"
+        ],
+        [
+          "padding",
+          "calc(var(--neshel-spacing) * 3) calc(var(--neshel-spacing) * 3) calc(var(--neshel-spacing) * 3) calc(var(--neshel-spacing) * 4)"
+        ],
+        [
+          "border",
+          "1px solid var(--neshel-border)"
+        ],
+        [
+          "border-inline-start-width",
+          "calc(var(--neshel-spacing) * 1)"
+        ],
+        [
+          "border-radius",
+          "var(--neshel-radius-md)"
+        ],
+        [
+          "background-color",
+          "var(--neshel-surface)"
+        ],
+        [
+          "color",
+          "var(--neshel-surface-foreground)"
+        ],
+        [
+          "box-shadow",
+          "0 8px 24px color-mix(in srgb, var(--neshel-foreground) 14%, transparent)"
+        ],
+        [
+          "font-size",
+          "0.875rem"
+        ],
+        [
+          "line-height",
+          "1.4"
+        ],
+        [
+          "pointer-events",
+          "auto"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-toast[data-tone=\"success\"]",
+      "declarations": [
+        [
+          "border-inline-start-color",
+          "var(--neshel-success)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-toast[data-tone=\"warning\"]",
+      "declarations": [
+        [
+          "border-inline-start-color",
+          "var(--neshel-warning)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-toast[data-tone=\"error\"]",
+      "declarations": [
+        [
+          "border-inline-start-color",
+          "var(--neshel-destructive)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-toast:focus-visible",
+      "declarations": [
+        [
+          "outline",
+          "var(--neshel-focus-width) solid var(--neshel-focus)"
+        ],
+        [
+          "outline-offset",
+          "var(--neshel-focus-offset)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-toast-text",
+      "declarations": [
+        [
+          "flex",
+          "1"
+        ],
+        [
+          "min-inline-size",
+          "0"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-toast-title",
+      "declarations": [
+        [
+          "margin",
+          "0"
+        ],
+        [
+          "font-weight",
+          "600"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-toast-description",
+      "declarations": [
+        [
+          "margin",
+          "calc(var(--neshel-spacing) * 0.5) 0 0"
+        ],
+        [
+          "color",
+          "var(--neshel-muted-foreground)"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-toast-action, .neshel-toast-close",
+      "declarations": [
+        [
+          "flex",
+          "none"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-toaster[data-motion=\"css\"] .neshel-toast",
+      "declarations": [
+        [
+          "transition",
+          "opacity 200ms ease, transform 200ms ease"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-toaster[data-motion=\"css\"] .neshel-toast[data-state=\"entering\"]",
+      "declarations": [
+        [
+          "opacity",
+          "0"
+        ],
+        [
+          "transform",
+          "translateY(calc(var(--neshel-spacing) * 2))"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-toaster[data-motion=\"css\"] .neshel-toast[data-state=\"closing\"]",
+      "declarations": [
+        [
+          "opacity",
+          "0"
+        ],
+        [
+          "transform",
+          "translateX(calc(var(--neshel-spacing) * 4))"
+        ]
+      ]
+    },
+    {
+      "selector": ".neshel-toaster[data-motion=\"css\"] .neshel-toast",
+      "declarations": [
+        [
+          "transition",
+          "opacity 120ms ease"
+        ]
+      ],
+      "media": "(prefers-reduced-motion: reduce)"
+    },
+    {
+      "selector": ".neshel-toaster[data-motion=\"css\"] .neshel-toast[data-state=\"entering\"], .neshel-toaster[data-motion=\"css\"] .neshel-toast[data-state=\"closing\"]",
+      "declarations": [
+        [
+          "transform",
+          "none"
+        ]
+      ],
+      "media": "(prefers-reduced-motion: reduce)"
+    },
+    {
+      "selector": ".neshel-toast",
+      "declarations": [
+        [
+          "border-inline-start-color",
+          "CanvasText"
+        ]
+      ],
+      "media": "(forced-colors: active)"
+    },
+    {
       "selector": ".neshel-overlay[data-state], .neshel-dialog-content[data-state], .neshel-sheet-content[data-state], .neshel-popover-content[data-state], .neshel-menu-content[data-state], .neshel-tooltip, .neshel-navigation-menu-content, .neshel-sidebar-sheet",
       "declarations": [
         [

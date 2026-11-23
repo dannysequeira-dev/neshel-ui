@@ -8,7 +8,7 @@
 import { createChannelWriter } from "../core/channel.js";
 import { addToken, FX_ATTRIBUTE } from "../core/tokens.js";
 import { validator } from "../core/validate.js";
-import { feedbackCounters } from "./toaster.js";
+import { feedbackCounters } from "./counters.js";
 
 type Styled = HTMLElement;
 

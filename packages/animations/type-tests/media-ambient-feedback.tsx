@@ -11,14 +11,14 @@ import {
 } from "../src/ambient/index.js";
 import { motionValue } from "../src/core/index.js";
 import {
+  createEnterExit,
   createLoadingButton,
   createOptimisticPulse,
-  createToaster,
+  EnterExit,
   ProgressBar,
   ProgressRing,
   Spinner,
   SuccessMark,
-  Toaster,
 } from "../src/feedback/index.js";
 import {
   BlurUpImage,
@@ -94,10 +94,12 @@ export const ambient = (
   </>
 );
 
-const toaster = createToaster({ max: 4 });
-const id: string = toaster.show({ title: "Saved", tone: "success" });
-// @ts-expect-error — tone is a closed set
-toaster.show({ title: "x", tone: "warning" });
+// F06 is enter/exit motion only (feature 017): the toaster store lives in @neshel-ui/components.
+const enterExit = createEnterExit(div, { from: "bottom", exitTo: "end", distance: 16 });
+enterExit.update({ duration: "fast" });
+// @ts-expect-error — side is a closed set
+createEnterExit(div, { from: "left" });
+enterExit.destroy();
 createLoadingButton(div, { loading: true }).set(false);
 createOptimisticPulse(div).set("failed");
 // @ts-expect-error — unknown optimistic status
@@ -111,8 +113,10 @@ export const feedback = (
     <ProgressBar value={30} />
     <ProgressRing label="Export" progress={motionValue(0)} />
     <SuccessMark show />
-    <Toaster toaster={toaster} hotkey={null} />
+    <EnterExit from="top" duration={180}>
+      <ol />
+    </EnterExit>
   </>
 );
 
-void [stop, particles, paused, id];
+void [stop, particles, paused];
