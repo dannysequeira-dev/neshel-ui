@@ -1,0 +1,74 @@
+---
+title: Pulsación y microinteracciones
+description: "Los 11 efectos P01–P11: propósito, API, opciones, ejemplos, movimiento reducido y coste."
+---
+
+<AnimationsStatus />
+
+Los efectos de pulsación responden a la activación real, con puntero o teclado, y nunca cambian lo que hace el control. `<Press>` acepta un preset o una lista. Los efectos con disparador (estallido, sacudida, llamada de atención) se ejecutan cuando su valor `trigger` cambia después del montaje; el valor inicial nunca los ejecuta. `ToggleMorph` y `CheckboxDraw` son dibujos decorativos para tu propio control etiquetado. Los elementos deshabilitados nunca reaccionan.
+
+## P01 · Escala al pulsar [#p01]
+
+`pressScale` reduce el control mientras se mantiene pulsado: `scale` (0.96, entre 0.5 y 1) y `spring`. Con movimiento reducido queda la mitad de la amplitud, sin resorte, porque confirma la pulsación.
+
+<Effect id="P01" />
+
+## P02 · Onda al pulsar [#p02]
+
+`ripple` expande un círculo desde el punto de contacto, o desde el centro con el teclado: `color`, `opacity` (0.22) y `duration` (550 ms). Se dibuja en una capa hija propia del paquete.
+
+<Effect id="P02" />
+
+## P03 · Rebote al tocar [#p03]
+
+`tapBounce` responde a un toque completado con un rebote de resorte: `strength` (0.3) y `spring`. Se ejecuta después de la activación, así que nunca retrasa la acción.
+
+<Effect id="P03" />
+
+## P04 · Transformación de interruptor [#p04]
+
+`<ToggleMorph>` dibuja la pista y el botón de un interruptor y estira el botón cuando cambia `checked` (`stretch` 0.3). No tiene semántica: ponlo dentro de un botón `role="switch"` con nombre. Para un control completo usa Switch de Components.
+
+<Effect id="P04" />
+
+## P05 · Trazo de casilla [#p05]
+
+`<CheckboxDraw>` traza la marca de una casilla con `checked` e `indeterminate` (`duration` 240 ms). El input nativo conserva la semántica y el teclado; ocúltalo visualmente, no a la tecnología de asistencia.
+
+<Effect id="P05" />
+
+## P06 · Estallido [#p06]
+
+`burst` lanza partículas desde el elemento cuando cambia `trigger`: `count` (10), `distance` (34 px), `size` y `colors`. Celebra pocas veces y anuncia el resultado con texto.
+
+<Effect id="P06" />
+
+## P07 · Sacudida [#p07]
+
+`shake` mueve el elemento de lado a lado cuando cambia `trigger`: `distance` (8 px), `cycles` (4) y `duration` (420 ms). El error también debe ser texto con `role="alert"` o `aria-describedby`; la sacudida nunca es la única señal.
+
+<Effect id="P07" />
+
+## P08 · Llamada de atención [#p08]
+
+`nudge` gira brevemente el elemento para llamar la atención: `angle` (6°), `cycles` (3) y como máximo tres repeticiones (`repeat`) separadas por `interval`. Se ejecuta al cambiar `trigger`, nunca en bucle sin fin.
+
+<Effect id="P08" />
+
+## P09 · Contador numérico [#p09]
+
+`<NumberTick>` cuenta desde el `value` anterior hasta el nuevo. `locale`, `formatOptions` o tu propio `format` producen el texto; el valor accesible no cambia en cada fotograma y `live` activa un anuncio.
+
+<Effect id="P09" />
+
+## P10 · Intercambio de contenido [#p10]
+
+`<ContentSwap>` cambia sus hijos por `confirm` mientras `active` es verdadero («Copiar enlace» y «Copiado») en una sola celda apilada, así que el ancho no salta. `live` anuncia la confirmación.
+
+<Effect id="P10" />
+
+## P11 · Pulsación prolongada [#p11]
+
+`<LongPress>` llama a `onLongPress` una vez tras mantener pulsado durante `duration` (600 ms), con un relleno de progreso; soltar antes lo cancela. También funciona manteniendo Espacio o Enter, o con una sola pulsación con `keyboard: "press"`. Ofrece otra vía para acciones destructivas.
+
+<Effect id="P11" />

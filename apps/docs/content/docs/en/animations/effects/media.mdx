@@ -1,0 +1,68 @@
+---
+title: Images & Media
+description: "The 10 effects M01–M10: purpose, API, options, examples, reduced motion and cost."
+---
+
+<AnimationsStatus />
+
+Media effects never write native media attributes (`alt`, `srcset`, `sizes`, `loading`, dimensions). An image is hidden only while it is still loading and is always shown on load, error, timeout, reduced motion or unmount, so a failure never leaves a hole. Slides that are not current are inert and stay mounted. Images that are not CORS-clean cannot be painted on a canvas; the effects that need one fall back to a fade.
+
+## M01 · Ken Burns [#m01]
+
+`<KenBurns>` moves a bounded camera over one image, from a `from` pose to a `to` pose (`scale`, `x`, `y`). It runs once by default and goes back and forth with `repeat` and `yoyo`; edges never show.
+
+<Effect id="M01" />
+
+## M02 · Blur-up loading [#m02]
+
+`<BlurUpImage>` shows a `placeholder` (a tiny image, gradient or colour) with `blur` until the native image loads. An already loaded image appears at once unless you pass `replay`, as the example does.
+
+<Effect id="M02" />
+
+## M03 · Reveal on load [#m03]
+
+`<LoadReveal>` uncovers an image when it loads with a `shape`: `inset`, `circle` or `wipe`. `revealTimeout` (8 s) shows it anyway if loading never finishes.
+
+<Effect id="M03" />
+
+## M04 · Compare slider [#m04]
+
+`<CompareSlider>` compares two elements with a native range input: keyboard, tap and drag work, and `jumps` adds buttons. `label` is required, and both images need their own alternative text.
+
+<Effect id="M04" />
+
+## M05 · Duotone [#m05]
+
+`<Duotone>` maps the colours of an element to `shadow` and `highlight` through an SVG filter; `amount` blends with the original and the control plays it forwards or backwards.
+
+<Effect id="M05" />
+
+## M06 · Video scrub [#m06]
+
+`useVideoScrub` maps a 0–1 `progress` source to the time of a video. It never calls `play()`, keeps at most one seek in flight and waits for the metadata. Encode with frequent keyframes for smooth scrubbing.
+
+<Effect id="M06" />
+
+## M07 · Lightbox zoom [#m07]
+
+`<Lightbox>` opens a native modal `<dialog>` that grows from the thumbnail. Escape, the backdrop and the close button close it, focus returns to the opener, and `label` names it.
+
+<Effect id="M07" />
+
+## M08 · Gallery cross-fade [#m08]
+
+`<Crossfade>` shows the child at `index` and fades between them. `interval` rotates automatically (at least 2 s) and pauses on hover, focus and hidden pages; add your own pause control if you use it.
+
+<Effect id="M08" />
+
+## M09 · Pixel dissolve [#m09]
+
+`<PixelDissolve>` replaces one image with another in `cell`-sized blocks in a `seed`ed order, painted on a canvas that is released afterwards. Large areas are limited by `maxCells`; without a clean canvas it fades.
+
+<Effect id="M09" />
+
+## M10 · Hover pan [#m10]
+
+`<HoverPan>` enlarges an image inside its frame (`scale` 1.4) and pans with the pointer. `keyboard` makes the frame focusable for the arrow keys and then requires a `label`.
+
+<Effect id="M10" />

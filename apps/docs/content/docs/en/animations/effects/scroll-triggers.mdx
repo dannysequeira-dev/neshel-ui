@@ -1,0 +1,68 @@
+---
+title: Scroll Triggers
+description: "The 10 effects ST01–ST10: purpose, API, options, examples, reduced motion and cost."
+---
+
+<AnimationsStatus />
+
+Scroll triggers react to an element entering or leaving an area. They use IntersectionObserver and passive listeners: nothing intercepts the wheel, touch or keys. Content is only held hidden below the fold after hydration and never under reduced motion, so it is visible without JavaScript. Pass a preset name of `inViewPresets` or `{ rootMargin, threshold, root }` as the trigger.
+
+## ST01 · Reveal on enter [#st01]
+
+`<RevealOnScroll>` plays any entrance preset when the element enters the area (`trigger`, default `"default"`). Content already visible when the page hydrates is not hidden.
+
+<Effect id="ST01" />
+
+## ST02 · Stagger on enter [#st02]
+
+`<StaggerOnScroll>` plays the `stagger` effect on the children when their container enters. The per-child entrance, interval and order are options of the stagger.
+
+<Effect id="ST02" />
+
+## ST03 · Once, repeat, reverse [#st03]
+
+The `mode` of `<RevealOnScroll>` and of `createScrollTrigger`: `"once"` plays a single time, `"repeat"` arms it again on every leave, and `"reverse"` plays it backwards when scrolling back out.
+
+<Effect id="ST03" />
+
+## ST04 · Enter and leave callbacks [#st04]
+
+`useInView` returns a boolean, and `useScrollTrigger` the trigger state with `onEnter`, `onLeave`, `onEnterBack` and `onLeaveBack`. React re-renders only on those transitions; `createScrollTrigger` is the framework-free version.
+
+<Effect id="ST04" />
+
+## ST05 · In-view progress [#st05]
+
+`inViewProgress` writes `--neshel-view-progress` (0–1) on the element as it crosses the viewport, so your CSS can use it. `range` selects the part of the crossing; under reduced motion the value is 1.
+
+<Effect id="ST05" />
+
+## ST06 · Direction-aware header [#st06]
+
+`directionHeader` hides a sticky header while scrolling forwards past `offset` and shows it when scrolling back, at the top, and whenever focus is inside it. `data-neshel-header="hidden"` exposes the state.
+
+<Effect id="ST06" />
+
+## ST07 · Stuck state [#st07]
+
+`stuckState` sets `data-neshel-stuck` while a `position: sticky` element is stuck and calls `onChange`. Style the stuck state in your own CSS; nothing is animated.
+
+<Effect id="ST07" />
+
+## ST08 · Section spy [#st08]
+
+`useSectionSpy` returns the id of the section above the activation line, and the last one at the end of the page. Use it for `aria-current="location"` in a table of contents.
+
+<Effect id="ST08" />
+
+## ST09 · Lazy activation [#st09]
+
+`lazyEffect` attaches another effect only while the element is near the viewport (`trigger: "lazy"`, two viewports) and destroys it when it is far. Use it for long pages with many expensive effects.
+
+<Effect id="ST09" />
+
+## ST10 · Trigger presets [#st10]
+
+`inViewPresets` names common trigger areas: `default`, `eager`, `lazy`, `center`, `half`, `full` and `top`. `resolveInView` turns a name or your own options into complete observer options.
+
+<Effect id="ST10" />

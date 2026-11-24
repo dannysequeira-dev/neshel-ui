@@ -6,9 +6,12 @@ import defaultMdxComponents from "fumadocs-ui/mdx";
 import type { MDXComponents } from "mdx/types";
 import type { ComponentProps } from "react";
 import type { Locale } from "@/lib/i18n";
+import { Catalogue } from "./animations/catalogue";
+import { Effect } from "./animations/effect";
+import { EntryReference } from "./animations/entry-reference";
 import { ApiTable, ComponentKind } from "./api-table";
 import { ExportList } from "./export-list";
-import { PackageInstall, ReleaseNotice } from "./package-install";
+import { AnimationsStatus, PackageInstall, ReleaseNotice, Unreleased } from "./package-install";
 import { Preview } from "./preview";
 import { StarterDownloads } from "./starter-downloads";
 
@@ -29,6 +32,13 @@ export function getMDXComponents(components?: MDXComponents, locale: Locale = "e
     ComponentKind: (props: WithoutLocale<typeof ComponentKind>) => (
       <ComponentKind {...props} locale={locale} />
     ),
+    AnimationsStatus: () => <AnimationsStatus locale={locale} />,
+    Catalogue: () => <Catalogue locale={locale} />,
+    Effect: (props: WithoutLocale<typeof Effect>) => <Effect {...props} locale={locale} />,
+    EntryReference: (props: WithoutLocale<typeof EntryReference>) => (
+      <EntryReference {...props} locale={locale} />
+    ),
+    Unreleased: () => <Unreleased locale={locale} />,
     ExportList: (props: WithoutLocale<typeof ExportList>) => (
       <ExportList {...props} locale={locale} />
     ),

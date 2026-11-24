@@ -1,0 +1,64 @@
+---
+title: Animations
+description: What the experimental animations package contains, its status, and how its documentation is organised.
+---
+
+<AnimationsStatus />
+
+`@neshel-ui/animations` is a set of motion effects for React built on a framework-free engine. Its
+catalogue has **157 effects in 15 families**. Every effect follows the same rules:
+
+- **It restores what it touches.** Effects write styles through one motion host per element, and the
+  original inline values come back when they end.
+- **Effects compose.** Several effects can share one element; real conflicts are resolved and reported.
+- **Reduced motion is live.** Each effect has a defined behaviour under `prefers-reduced-motion`, also
+  when the preference changes while it runs.
+- **Content comes first.** Server markup is the visible content; nothing stays hidden without JavaScript.
+
+## First example
+
+```tsx title="plan-button.tsx"
+"use client";
+import "@neshel-ui/animations/styles.css";
+import { fadeUp, Reveal } from "@neshel-ui/animations/entrance";
+import { Hover, lift } from "@neshel-ui/animations/hover";
+import { Press, pressScale } from "@neshel-ui/animations/press";
+import { Button } from "@neshel-ui/components";
+
+export function PlanButton() {
+  return (
+    <Reveal preset={fadeUp} asChild>
+      <Hover preset={lift} asChild>
+        <Press preset={pressScale} asChild>
+          <Button>Choose plan</Button>
+        </Press>
+      </Hover>
+    </Reveal>
+  );
+}
+```
+
+Three families act on the same button: `asChild` applies each one to its child instead of adding an
+element.
+
+## Where things are
+
+| You want to…                                             | Read                                                                      |
+| -------------------------------------------------------- | ------------------------------------------------------------------------- |
+| Find an effect by name, id, API or family                | [Catalogue](/en/docs/animations/catalogue/)                               |
+| See effects running, with code and options               | The effects pages, one per family, in the sidebar                         |
+| Combine effects on one element                           | [Composition](/en/docs/animations/composition/)                           |
+| Use or write effects without React                       | [Motion engine](/en/docs/animations/engine/)                              |
+| Use the hooks and components                             | [React bindings](/en/docs/animations/react/)                              |
+| Play, pause, reverse, seek, sequence or scrub            | [Controllers and timelines](/en/docs/animations/controllers/)             |
+| Know what happens with reduced motion and the keyboard   | [Accessibility](/en/docs/animations/accessibility/)                       |
+| Keep pages fast                                          | [Performance](/en/docs/animations/performance/)                           |
+| Render on the server, import styles, check browsers      | [SSR, styles and support](/en/docs/animations/ssr-styles-support/)        |
+| Look up every export                                     | The reference pages, one per import path                                  |
+
+## Not included
+
+- Notifications. `createToaster` and `Toaster` are in [Components](/en/docs/components/toast/);
+  [F06](/en/docs/animations/effects/feedback/#f06) only animates lists that another component owns.
+- Complete widgets. Use the Components Accordion, Collapsible and Switch; animations add motion, not
+  semantics.

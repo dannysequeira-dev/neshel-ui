@@ -1,0 +1,68 @@
+---
+title: Cine y escenas
+description: "Los 10 efectos C01–C10: propósito, API, opciones, ejemplos, movimiento reducido y coste."
+---
+
+<AnimationsStatus />
+
+Los efectos cinematográficos comparten una idea: una línea de tiempo es una función pura del tiempo que se dibuja a través del motion host de cada elemento, así que se puede posicionar, arrastrar e invertir, y se compone con los demás efectos. El HTML del servidor es el contenido visible; cubiertas, lentes y bandas son capas del paquete (`aria-hidden`, inertes) que solo aparecen con JavaScript. Cada efecto ofrece `track()` para secuenciarlo en una línea de tiempo.
+
+## C01 · Línea de tiempo [#c01]
+
+`useTimeline` crea una línea de tiempo para un componente y la destruye con él; `createTimeline` es el motor. `add` coloca pistas una tras otra, en una etiqueta o con desfases como `"-=300"`; `play`, `pause`, `reverse` y `seek(0–1)` la controlan.
+
+<Effect id="C01" />
+
+## C02 · Capítulos de escena [#c02]
+
+`<SceneChapters>` divide un progreso en `<Chapter>` según su `weight`; cada `<SceneSegment>` anima una parte de su capítulo (`span`). Dale el `source` de un `<ScrollScene>` o un `progress` controlado; `onChapterChange` informa el activo.
+
+<Effect id="C02" />
+
+## C03 · Cámara [#c03]
+
+`<CameraStage>` se desplaza y amplía sobre un lienzo grande. `useCamera()` la mueve: `camera.to({ focus: elemento })` o `{ x, y, zoom }`. El foco de teclado dentro del lienzo arrastra la cámara, y sin JavaScript es una región con scroll.
+
+<Effect id="C03" />
+
+## C04 · Revelado dividido [#c04]
+
+`<SplitReveal>` cubre su contenido con dos mitades que se separan en `direction` (`"x"` o `"y"`). `open` lo controla; sin `open` se revela una vez al montarse en el cliente.
+
+<Effect id="C04" />
+
+## C05 · Telón y persiana [#c05]
+
+`<CurtainReveal>` se abre desde el centro con `pattern="curtain"` o en lamas (`slats`) con `pattern="shutter"`. El contenido de debajo no recibe escrituras y sigue en el árbol de accesibilidad.
+
+<Effect id="C05" />
+
+## C06 · Secuencia de títulos [#c06]
+
+`<TitleSequence>` ejecuta sus hijos uno tras otro con una entrada (`effect`) cada `interval` ms, sobre un `background` opcional. No divide el texto: cada hijo es una línea.
+
+<Effect id="C06" />
+
+## C07 · Foco y viñeta [#c07]
+
+`<Spotlight>` oscurece el escenario salvo un círculo alrededor de `target` (`radius`, `padding`). El contenido oscurecido sigue siendo interactivo; la lente es decorativa, así que describe el paso con texto.
+
+<Effect id="C07" />
+
+## C08 · Profundidad de campo [#c08]
+
+`<DepthOfField>` desenfoca sus hijos según su distancia al índice `focus`: `falloff` (4 px por paso) hasta `maxBlur` (8). Seis capas como máximo; −1 mantiene todo nítido.
+
+<Effect id="C08" />
+
+## C09 · Guion gráfico [#c09]
+
+`<Storyboard>` es un carrusel de `<StoryboardFrame>` con controles de rotación, anterior, siguiente y parada, y un `label`. `autoplay` es opcional, se pausa con hover, foco, fuera de pantalla y página oculta, y nunca corre con movimiento reducido. Los controles son botones sin estilo; si tu CSS elimina su relleno, dales al menos 24 × 24 px.
+
+<Effect id="C09" />
+
+## C10 · Bandas de cine [#c10]
+
+`<Letterbox>` desliza dos bandas mientras `active` es verdadero, con `ratio` 2.39 por defecto. Crea un marco posicionado; el contenido no cambia de tamaño.
+
+<Effect id="C10" />

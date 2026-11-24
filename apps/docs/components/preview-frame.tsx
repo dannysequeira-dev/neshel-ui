@@ -8,8 +8,11 @@ export function PreviewFrame({
   children,
   labels,
   title,
+  clip = false,
 }: {
   children: ReactNode;
+  /** Clip instead of scroll, so that `position: sticky` follows the page (animation examples). */
+  clip?: boolean;
   labels: { page: string; light: string; dark: string; preview: string; theme: string };
   title?: string;
 }) {
@@ -37,7 +40,7 @@ export function PreviewFrame({
         </fieldset>
       </div>
       <div
-        className="docs-preview-canvas overflow-x-auto p-6"
+        className={`docs-preview-canvas p-6 ${clip ? "overflow-clip" : "overflow-x-auto"}`}
         data-neshel-theme={mode === "page" ? undefined : mode}
       >
         {children}

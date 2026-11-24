@@ -1,0 +1,74 @@
+---
+title: Hover & Pointer
+description: "The 11 effects H01–H11: purpose, API, options, examples, reduced motion and cost."
+---
+
+<AnimationsStatus />
+
+Hover effects react to a mouse or pen inside the box and to keyboard `:focus-visible`, except magnetic pull, pointer parallax and the cursor follower, which are decorative and follow the pointer only. Touch is opt-in through `pointerTypes`. `<Hover>` accepts one preset or a list. Effects marked with `hover.css` draw on a package-owned `::before` or `::after` layer; an element with its own `::before` cannot use them. Never put information in a hover effect only.
+
+## H01 · Lift [#h01]
+
+`lift` raises the element: `distance` (4 px), optional `scale` and a `shadow` drawn on the package layer. Under reduced motion only the shadow remains.
+
+<Effect id="H01" />
+
+## H02 · Glow [#h02]
+
+`glow` draws a ring with a soft halo: `color`, `size` (3 px) and `blur` (16 px). It complements, and does not replace, the visible focus ring of your control.
+
+<Effect id="H02" />
+
+## H03 · Tilt 3D [#h03]
+
+`<Tilt3D>` turns the element towards the pointer: by default the corner under the pointer goes inwards; `reverse` lifts it. Options: `maxTilt`, `perspective`, `scale`, `axis`, `spring` and `focusTilt` for keyboard focus. `useTilt3D` and `createTilt3D` offer the same without the component.
+
+<Effect id="H03" />
+
+## H04 · Magnetic pull [#h04]
+
+`magnetic` moves the element towards the pointer: `strength` (0.35) is the fraction of the distance and `max` (12 px) the limit. Decorative and pointer only; the hit area keeps the original box.
+
+<Effect id="H04" />
+
+## H05 · Spotlight [#h05]
+
+`spotlight` paints a radial light that follows the pointer: `color`, `size` (240 px) and `intensity` (0.22). Under reduced motion the light is centred and does not follow.
+
+<Effect id="H05" />
+
+## H06 · Border sweep [#h06]
+
+`borderSweep` runs a gradient along the border while active: `width` (2 px), two `colors` and `duration` (3000 ms). It uses the `::after` layer, so it coexists with effects that use `::before`.
+
+<Effect id="H06" />
+
+## H07 · Underline grow [#h07]
+
+`underline` draws a line under the element: `thickness` (2 px), `color` and `origin` (`left`, `center` or `right`). In running text keep the native link underline; colour alone does not identify a link.
+
+<Effect id="H07" />
+
+## H08 · Media zoom [#h08]
+
+`mediaZoom` scales the media inside a frame: `scale` (1.08, up to 2). The target is the child with `data-neshel-media`, or the first child, and the frame clips it.
+
+<Effect id="H08" />
+
+## H09 · Pointer parallax [#h09]
+
+`parallax` moves layers by different amounts with the pointer. Mark them with `data-neshel-depth` between −2 and 2; `strength` (16 px) is the amplitude. Decorative and pointer only.
+
+<Effect id="H09" />
+
+## H10 · Shine sweep [#h10]
+
+`shine` crosses the element once with a band of light each time it becomes active: `color`, `angle` (110°) and `duration` (700 ms). Nothing is drawn under reduced motion.
+
+<Effect id="H10" />
+
+## H11 · Cursor follower [#h11]
+
+`<CursorFollower>` renders a decorative, `aria-hidden` circle that follows a fine pointer inside its area with a spring (`size`, `spring`, `blend`). The real cursor stays visible.
+
+<Effect id="H11" />

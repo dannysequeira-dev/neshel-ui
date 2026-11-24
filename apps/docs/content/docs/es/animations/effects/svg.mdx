@@ -1,0 +1,68 @@
+---
+title: SVG y rutas
+description: "Los 10 efectos S01–S10: propósito, API, opciones, ejemplos, movimiento reducido y coste."
+---
+
+<AnimationsStatus />
+
+Los efectos SVG trabajan sobre tus propios elementos y los restauran exactamente: los estilos de guiones, los atributos `d` y las paradas de degradado vuelven al destruirse. La mayoría son hooks que reciben una ref y devuelven otra a un control con `play`, `pause`, `seek`, `track` y `drive`. La geometría se exporta como funciones puras (`parsePathData`, `measurePath`, `interpolatePath`). Cada atributo tiene un solo escritor a la vez; el segundo espera.
+
+## S01 · Trazo de ruta [#s01]
+
+`usePathDraw` traza una ruta desde su inicio, o desde el final con `reverse`. Con `release` (por defecto) tu patrón de guiones vuelve al terminar. `<PathDraw>` envuelve una forma, y varias rutas pueden usar `stagger`.
+
+<Effect id="S01" />
+
+## S02 · Transformación de ruta [#s02]
+
+`usePathMorph` pasa entre `shapes` con comandos compatibles; `to(index)` continúa desde la forma dibujada si se interrumpe. `incompatible` decide entre un error y un cambio directo; las rutas nunca se remuestrean.
+
+<Effect id="S02" />
+
+## S03 · Movimiento por una ruta [#s03]
+
+`useMotionPath` mueve un elemento a lo largo de `path`, en píxeles CSS relativos al elemento, con `rotate`, `repeat` y `yoyo`. Usa `offset-path` nativo y, si no existe, geometría en JavaScript.
+
+<Effect id="S03" />
+
+## S04 · Transformación de icono [#s04]
+
+`<MorphIcon>` cambia un icono decorativo entre `shapes` con nombre; `menuCloseShapes` viene incluido. El botón que lo rodea es quien tiene el nombre accesible y `aria-expanded`.
+
+<Effect id="S04" />
+
+## S05 · Paradas de degradado [#s05]
+
+`useGradientStops` anima `color`, `opacity` y `offset` de las paradas que indiques, por índice. Es finito por defecto (`repeat: 0`) y va y vuelve con `yoyo`.
+
+<Effect id="S05" />
+
+## S06 · Trazo de gráfica [#s06]
+
+`useChartDraw` traza las líneas (`lines`) de una gráfica y muestra cada punto (`points`) cuando la línea llega. La animación no son los datos: da al SVG una alternativa textual.
+
+<Effect id="S06" />
+
+## S07 · Turbulencia [#s07]
+
+`useTurbulence` hace temblar un elemento con un filtro SVG: `amplitude` (6 px, hasta 24), `frequency`, `octaves` y una cadencia `rate` de 30 por segundo como máximo. Se desactiva con movimiento reducido y se pausa fuera de pantalla.
+
+<Effect id="S07" />
+
+## S08 · Revelado de logotipo [#s08]
+
+`useLogoReveal` descubre un logotipo con un `pattern` de máscara (cuatro barridos o un círculo), opcionalmente tras trazar las rutas `outline`. Sin soporte de máscaras se ve entero; su nombre accesible no se toca.
+
+<Effect id="S08" />
+
+## S09 · Flujo de guiones [#s09]
+
+`useDashFlow` hace avanzar los guiones de una ruta: `dash`, `gap` y `speed` (negativa invierte). Es finito por defecto y tiene `play()` y `pause()`; un `repeat` infinito necesita un control de pausa.
+
+<Effect id="S09" />
+
+## S10 · Marca de éxito [#s10]
+
+`<SuccessCheck>` traza un círculo y después una marca. Es decorativo salvo que le des un `title`; anuncia el éxito con tu propio mensaje de estado, solo cuando haya ocurrido.
+
+<Effect id="S10" />

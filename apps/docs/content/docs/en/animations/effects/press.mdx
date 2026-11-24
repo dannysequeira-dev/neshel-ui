@@ -1,0 +1,74 @@
+---
+title: Press & Microinteractions
+description: "The 11 effects P01–P11: purpose, API, options, examples, reduced motion and cost."
+---
+
+<AnimationsStatus />
+
+Press effects respond to real activation, pointer or keyboard, and never change what the control does. `<Press>` accepts one preset or a list. Triggered effects (burst, shake, nudge) play when their `trigger` value changes after mounting; the initial value never plays. `ToggleMorph` and `CheckboxDraw` are decorative visuals for inside your own labelled control. Disabled elements never react.
+
+## P01 · Press scale [#p01]
+
+`pressScale` shrinks the control while it is held: `scale` (0.96, between 0.5 and 1) and `spring`. Under reduced motion half of the amplitude remains, without the spring, because it confirms the press.
+
+<Effect id="P01" />
+
+## P02 · Ripple [#p02]
+
+`ripple` expands a circle from the point of contact, or from the centre with the keyboard: `color`, `opacity` (0.22) and `duration` (550 ms). It draws on a child layer owned by the package.
+
+<Effect id="P02" />
+
+## P03 · Tap bounce [#p03]
+
+`tapBounce` answers a completed tap with a spring bounce: `strength` (0.3) and `spring`. It plays after the activation, so it never delays the action.
+
+<Effect id="P03" />
+
+## P04 · Toggle morph [#p04]
+
+`<ToggleMorph>` draws the track and thumb of a switch and stretches the thumb as `checked` changes (`stretch` 0.3). It has no semantics: put it inside a `role="switch"` button with a name. For a complete control use the Components Switch.
+
+<Effect id="P04" />
+
+## P05 · Checkbox draw [#p05]
+
+`<CheckboxDraw>` draws the mark of a checkbox with `checked` and `indeterminate` (`duration` 240 ms). The native input keeps the semantics and the keyboard; hide it visually, not from assistive technology.
+
+<Effect id="P05" />
+
+## P06 · Burst [#p06]
+
+`burst` throws particles from the element when `trigger` changes: `count` (10), `distance` (34 px), `size` and `colors`. Celebrate rarely; announce the result with text.
+
+<Effect id="P06" />
+
+## P07 · Shake [#p07]
+
+`shake` moves the element sideways when `trigger` changes: `distance` (8 px), `cycles` (4) and `duration` (420 ms). The error must also be text with `role="alert"` or `aria-describedby`; the shake is never the only signal.
+
+<Effect id="P07" />
+
+## P08 · Nudge [#p08]
+
+`nudge` rotates the element briefly to attract attention: `angle` (6°), `cycles` (3) and at most three `repeat`s separated by `interval`. It plays on `trigger` changes, never in an endless loop.
+
+<Effect id="P08" />
+
+## P09 · Number tick [#p09]
+
+`<NumberTick>` counts from the previous `value` to the new one. `locale`, `formatOptions` or your own `format` produce the text; the accessible value does not change on every frame, and `live` opts into an announcement.
+
+<Effect id="P09" />
+
+## P10 · Content swap [#p10]
+
+`<ContentSwap>` swaps its children for `confirm` while `active` is true — "Copy link" and "Copied" — in one stacked cell, so the width does not jump. `live` announces the confirmation.
+
+<Effect id="P10" />
+
+## P11 · Long press [#p11]
+
+`<LongPress>` calls `onLongPress` once after holding for `duration` (600 ms), with a progress fill; releasing early cancels it. Holding Space or Enter works too, or a single press with `keyboard: "press"`. Offer another path for destructive actions.
+
+<Effect id="P11" />

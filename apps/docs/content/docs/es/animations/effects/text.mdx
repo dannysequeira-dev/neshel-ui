@@ -1,0 +1,74 @@
+---
+title: Tipografía y texto
+description: "Los 11 efectos T01–T11: propósito, API, opciones, ejemplos, movimiento reducido y coste."
+---
+
+<AnimationsStatus />
+
+Los efectos de texto dividen el texto sin ocultárselo a nadie: una copia accesible conserva los nodos originales y las piezas visuales llevan `aria-hidden`. Se respetan los grafemas, el texto bidireccional y las escrituras con unión de letras; los enlaces y controles nunca se dividen. Cada efecto escribe un valor por fotograma y `text.css` calcula cada pieza; sin ella el texto se ve estático. `maxPieces` limita los textos largos. Todos devuelven un control con `play`, `pause`, `seek`, `track` y `drive`.
+
+## T01 · Revelado por partes [#t01]
+
+`<TextReveal>` revela las piezas de `split` (`chars`, `words` o `lines`) con una `variant` como `fade-up` o `blur`; `stagger` y `order` definen la secuencia. Las líneas se reagrupan al cambiar el tamaño sin repetirse.
+
+<Effect id="T01" />
+
+## T02 · Máquina de escribir [#t02]
+
+`<Typewriter>` muestra `speed` grafemas por segundo con un `caret` opcional. La frase completa es accesible desde el principio, el layout no se mueve y `finish()` lo muestra todo.
+
+<Effect id="T02" />
+
+## T03 · Texto descifrado [#t03]
+
+`<ScrambleText>` descifra desde glifos de `charset`; la misma `seed` da siempre la misma secuencia, con un máximo de `rate` cambios por segundo. El ancho y los saltos de línea no cambian.
+
+<Effect id="T03" />
+
+## T04 · Barrido de degradado [#t04]
+
+`<GradientText>` cruza con una banda de `color` un texto que por lo demás conserva su color; `repeat` es 0 por defecto. Con colores forzados es texto normal. Comprueba el contraste del color de la banda.
+
+<Effect id="T04" />
+
+## T05 · Números rodantes [#t05]
+
+`<NumberRoll>` hace rodar columnas de dígitos hasta un nuevo `value` con formato `locale` y `format` (Intl). La tecnología de asistencia lee el número formateado una vez por cambio; no hay región en vivo.
+
+<Effect id="T05" />
+
+## T06 · Palabras rotatorias [#t06]
+
+`<RotatingWords>` muestra `words` de una en una cada `interval` ms en una caja tan ancha como la más larga, así nada se desplaza. Se pausa con hover, foco y fuera de pantalla; `accessibleText` es el único texto leído.
+
+<Effect id="T06" />
+
+## T07 · Onda cinética [#t07]
+
+`<WaveText>` mueve los grafemas en una onda de `amplitude` durante `repeat` ciclos extra y vuelve al reposo. Es decorativo y se desactiva con movimiento reducido; resérvalo para palabras cortas.
+
+<Effect id="T07" />
+
+## T08 · Resaltador [#t08]
+
+`<Highlight>` traza una banda de marcador o un subrayado (`variant`) detrás del texto, a través de los saltos de línea y en el sentido de lectura. Con colores forzados usa un subrayado del sistema. Añade tú la semántica `<mark>` si el significado importa.
+
+<Effect id="T08" />
+
+## T09 · Máscara de texto [#t09]
+
+`<TextMask>` revela líneas con `variant` `"rise"` (dentro de cajas recortadas) o `"wipe"`; `scope: "element"` enmascara el elemento entero. Sin soporte de máscaras el texto simplemente se ve.
+
+<Effect id="T09" />
+
+## T10 · Ejes de fuente variable [#t10]
+
+`<FontAxes>` anima ejes de una fuente variable entre `from` y `to`, alternando con `active`. Los ejes registrados usan las propiedades CSS de alto nivel y los propios se combinan con tus ajustes; una fuente estática salta entre sus pesos.
+
+<Effect id="T10" />
+
+## T11 · Revelado de líneas con scroll [#t11]
+
+`<LineReveal>` revela líneas a partir de un `source` (un `ScrollProgress`, un valor de movimiento) con `mode` `"scrub"`, o una vez superado `threshold` con `"enter"`. Con movimiento reducido se muestran todas.
+
+<Effect id="T11" />

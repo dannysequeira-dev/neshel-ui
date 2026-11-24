@@ -1,0 +1,46 @@
+---
+title: Rendimiento
+description: Qué cuesta cada tipo de efecto, activación diferida, límites, presupuestos y medición.
+---
+
+<AnimationsStatus />
+
+La página de cada efecto dice qué escribe. Del menos al más costoso:
+
+| Tipo                                  | Coste mientras se ejecuta                                                       | Ejemplos                              |
+| ------------------------------------- | ------------------------------------------------------------------------------- | ------------------------------------- |
+| Observadores                          | Nada por fotograma                                                              | En pantalla, secciones, estado fijado |
+| Capas dibujadas con CSS               | Composición o pintados pequeños; nada en JavaScript                             | Spinner, aurora, barrido de borde     |
+| Transform y opacity                   | Una escritura por elemento y fotograma                                          | Entrada, hover, arrastre, parallax    |
+| Propiedad personalizada o pintado     | Repinta el elemento                                                             | Recorte, resaltador, trazo de ruta    |
+| Texto dividido                        | Una escritura, más CSS por pieza                                                | Revelado de texto, onda               |
+| Altura                                | Recoloca lo que hay debajo                                                      | Altura automática, acordeón           |
+| Filter y `backdrop-filter`            | Toda el área, cada fotograma                                                    | Turbulencia, tilt-shift               |
+| Canvas 2D, WebGL2                     | Dibuja una superficie; memoria para ella y sus texturas                         | Partículas, pliegue de página         |
+
+## Reglas prácticas
+
+- Anima pocas cosas y pequeñas. Diez superficies grandes desenfocadas cuestan más que cien transform.
+- Adjunta los efectos costosos solo cerca de la pantalla con
+  [`lazyEffect`](/es/docs/animations/effects/scroll-triggers/#st09).
+- Divide los textos largos por palabras o líneas. El revelado y la onda limitan las piezas a 200 por
+  defecto y recurren a una división más gruesa.
+- Nada se ejecuta si nada se mueve: el bucle se detiene sin tareas, los efectos de ambiente se pausan fuera
+  de pantalla y con la página oculta, y los de GPU dibujan al cambiar.
+- No combines `setState` con callbacks por fotograma.
+
+## Presupuesto de GPU
+
+`configureGpu` limita una página: contextos (6 por defecto), densidad de píxeles (2), tamaño de textura y
+memoria. Un efecto que no obtiene contexto muestra el contenido original e informa `mode` y `reason`.
+
+## Tamaño del bundle
+
+Importa desde la ruta de la familia. Cada familia, y sus importaciones habituales, tienen un presupuesto de
+tamaño comprobado en CI desde el tarball empaquetado; las familias no se importan entre sí y la capa de GPU
+no se carga si no la importas.
+
+## Medir
+
+Usa el panel de rendimiento de tu navegador con tu contenido y un dispositivo lento. El repositorio incluye
+pruebas locales (`pnpm bench:animations:*`); son observaciones de una máquina, no garantías.

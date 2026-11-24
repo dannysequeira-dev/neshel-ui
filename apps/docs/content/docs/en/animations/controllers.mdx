@@ -1,0 +1,124 @@
+---
+title: Controllers and timelines
+description: Play, pause, reverse, seek, finish and cancel; motion values; WAAPI; timelines; driving effects from scroll.
+---
+
+<AnimationsStatus />
+
+Everything that runs returns a control with the same rules.
+
+## The control
+
+| Method        | Effect                                                                                       |
+| ------------- | -------------------------------------------------------------------------------------------- |
+| `play()`      | Runs in the current direction; from a settled state it starts a new run                      |
+| `pause()`     | Keeps the current value and removes the frame task                                           |
+| `reverse()`   | Flips the direction; from a settled state it starts a new run                                |
+| `seek(p)`     | Renders progress 0–1 exactly (tweens, WAAPI, timelines and progress effects; not springs)    |
+| `finish()`    | Jumps to the end of the current direction                                                    |
+| `cancel()`    | Stops where it is                                                                            |
+
+`state` is `idle`, `running`, `paused`, `completed`, `cancelled`, `interrupted` or `failed`.
+`finished` is the promise of the current run:
+
+- it **resolves** with `status` `"completed"`, `"cancelled"` or `"interrupted"` — normal outcomes never
+  reject, so you can ignore the promise safely;
+- it **rejects** only for a real error.
+
+## Animate a value
+
+```ts title="open-drawer.ts"
+import { animateValue, bindChannel, motionValue } from "@neshel-ui/animations/core";
+
+export async function openDrawer(panel: HTMLElement) {
+  const x = motionValue(-320);
+  const release = bindChannel(
+    x,
+    panel,
+    { channel: "transform", layer: (value) => ({ translateX: value }) },
+    { effectId: "app/drawer" },
+  );
+  const result = await animateValue(x, 0, { type: "spring", spring: "snappy" }).finished;
+  if (result.status === "completed") release();
+}
+```
+
+Animating a value again interrupts the previous run from where it is; springs keep their velocity.
+`animateElement` runs a WAAPI animation on an **exclusive** channel such as `filter` or `clip-path`;
+`transform` and `opacity` go through motion values so that they keep composing.
+
+## Timelines
+
+```ts title="intro.ts"
+import { createTimeline } from "@neshel-ui/animations/cinematic";
+import { fadeUp } from "@neshel-ui/animations/entrance";
+
+export function intro(title: HTMLElement, card: HTMLElement) {
+  const timeline = createTimeline();
+  timeline.add({ target: title, effect: fadeUp });
+  timeline.label("cards", "-=200");
+  timeline.add({ target: card, from: { x: -80, opacity: 0 }, to: { x: 0, opacity: 1 } }, "cards");
+  timeline.call(() => console.log("cards in view"), "cards");
+  timeline.play();
+  return () => timeline.destroy();
+}
+```
+
+**Positions:** a number of milliseconds, `"label"` or `"label+=100"`, `"<"` (the start of the previous
+track), `">"` (its end, the default), and `"+=100"` or `"-=100"` from the current end.
+
+**Tracks:** a pose (`from`/`to` with `x`, `y`, `scale`, `rotate`, `opacity`, `blur`), a motion value, an
+entrance effect, or a nested timeline. An entrance track is **scrubbed** by default — it follows the
+timeline exactly — or **triggered** with its own clock (`mode: "trigger"`).
+
+`repeat` is 0 by default and `Infinity` only explicitly. When the page is hidden the clock pauses, or
+finishes with `whenHidden: "finish"`. Under reduced motion a timeline finishes at once.
+
+In React, `useTimeline` builds and destroys it with the component:
+[C01](/en/docs/animations/effects/cinematic/#c01).
+
+## Drive an effect from progress
+
+Text, SVG, media, 3D and GPU effects accept any 0–1 source instead of their clock:
+
+```tsx title="scroll-title.tsx"
+"use client";
+import "@neshel-ui/animations/text.css";
+import { useScrollProgress } from "@neshel-ui/animations/scroll";
+import { LineReveal } from "@neshel-ui/animations/text";
+import { useRef } from "react";
+
+export function ScrollTitle({ children }: { children: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+  const progress = useScrollProgress(ref);
+  return (
+    <div ref={ref}>
+      <LineReveal source={progress} mode="scrub">
+        {children}
+      </LineReveal>
+    </div>
+  );
+}
+```
+
+Or sequence one inside a timeline with its `track()`:
+
+```ts title="sequence.ts"
+import { createTimeline } from "@neshel-ui/animations/cinematic";
+import { createPathDraw } from "@neshel-ui/animations/svg";
+import { createTypewriter } from "@neshel-ui/animations/text";
+
+export function sequence(path: SVGPathElement, line: HTMLElement) {
+  const draw = createPathDraw(path, { trigger: "manual" });
+  const type = createTypewriter(line, { trigger: "manual" });
+  const timeline = createTimeline();
+  timeline.add(draw.track({ duration: 900 }));
+  timeline.add(type.track({ duration: 1200 }));
+  timeline.play();
+  return () => {
+    timeline.destroy();
+    draw.destroy();
+    type.destroy();
+  };
+}
+```

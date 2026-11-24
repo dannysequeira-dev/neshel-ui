@@ -1,0 +1,74 @@
+---
+title: Scroll & Parallax
+description: "The 11 effects SP01–SP11: purpose, API, options, examples, reduced motion and cost."
+---
+
+<AnimationsStatus />
+
+These effects map the native scroll position to a property. Geometry is cached and re-read only when it changes, pinning is CSS `position: sticky`, and nothing hijacks scrolling. Effects inside a `<ScrollScene>` share its timeline; others create their own, for the page or for a `source` container. An ancestor with `overflow: hidden`, `auto` or `scroll` becomes the sticky container: use `overflow: clip` instead.
+
+## SP01 · Depth parallax [#sp01]
+
+`<ScrollLayer>` moves a layer of a scene by `distance` multiplied by `depth`, on either `axis`. Keep text in layers with a depth close to 1 so that it stays readable.
+
+<Effect id="SP01" />
+
+## SP02 · Scrubbed transform [#sp02]
+
+`scrubTransform` interpolates between two poses (`translateX`, `translateY`, `rotateZ`, `scale`, `opacity`) as the element crosses the viewport, with an `easing`. Scrolling back reverses it exactly.
+
+<Effect id="SP02" />
+
+## SP03 · Scroll progress bar [#sp03]
+
+`<ScrollProgressBar>` is a decorative, `aria-hidden` bar for the page or a `source`; `position` places it at the top, the bottom or in the flow. `scrollProgress` writes the same value as `--neshel-scroll-progress`.
+
+<Effect id="SP03" />
+
+## SP04 · Horizontal section [#sp04]
+
+`<HorizontalScroll>` turns vertical scrolling into horizontal travel of a pinned track. `layout` can be `"pinned"`, `"stacked"` or `"scroll"` (a native scroller, used in the example). Focus keeps items in view; under reduced motion it is stacked. Put something focusable in the items: the native scroller is not a tab stop by itself.
+
+<Effect id="SP04" />
+
+## SP05 · Pinned scene [#sp05]
+
+`<ScrollScene>` pins a stage for `length` viewport heights and exposes `--neshel-scene-progress` to everything inside. `useScrollScene()` gives the timeline to other effects, such as scene chapters.
+
+<Effect id="SP05" />
+
+## SP06 · Image parallax [#sp06]
+
+`<ParallaxImage>` moves the first child inside a clipping frame by ±`amount` pixels and scales it just enough to cover the frame. The native image keeps its attributes.
+
+<Effect id="SP06" />
+
+## SP07 · Zoom on scroll [#sp07]
+
+`zoomOnScroll` scales the element between `from` (1) and `to` (1.2) over the chosen range. It composes with other transforms on the same element.
+
+<Effect id="SP07" />
+
+## SP08 · Scroll colour shift [#sp08]
+
+`scrollColorShift` mixes 2–8 `stops` into `--neshel-scroll-color`, or sets `data-neshel-theme` on a target with `themes`. Check the contrast of your text at every stop; under reduced motion the change is stepped.
+
+<Effect id="SP08" />
+
+## SP09 · Sticky stack [#sp09]
+
+`<StickyStack>` makes its children sticky cards that pile up; `top` and `offset` are CSS lengths and `scale` shrinks covered cards. Cards taller than the viewport cannot be read completely.
+
+<Effect id="SP09" />
+
+## SP10 · Smooth scrub [#sp10]
+
+The `smooth` option of `<ScrollScene>`, `useScrollProgress` and `createScrollProgress` passes progress through a spring. The page scroll itself is never smoothed; only what follows it is.
+
+<Effect id="SP10" />
+
+## SP11 · Velocity skew [#sp11]
+
+`velocitySkew` leans the element with the scroll velocity, limited by `max` degrees, and springs back to zero. Keep it small: it is decorative and turns off under reduced motion.
+
+<Effect id="SP11" />

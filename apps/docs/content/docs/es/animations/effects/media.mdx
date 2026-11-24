@@ -1,0 +1,68 @@
+---
+title: Imágenes y medios
+description: "Los 10 efectos M01–M10: propósito, API, opciones, ejemplos, movimiento reducido y coste."
+---
+
+<AnimationsStatus />
+
+Los efectos de medios nunca escriben atributos nativos (`alt`, `srcset`, `sizes`, `loading`, dimensiones). Una imagen se oculta solo mientras carga y siempre se muestra al cargar, fallar, agotar el tiempo, con movimiento reducido o al desmontar, así que un fallo nunca deja un hueco. Las diapositivas no actuales quedan inertes y montadas. Las imágenes sin CORS no se pueden pintar en un canvas; los efectos que lo necesitan usan un fundido.
+
+## M01 · Ken Burns [#m01]
+
+`<KenBurns>` mueve una cámara acotada sobre una imagen, de una pose `from` a otra `to` (`scale`, `x`, `y`). Se ejecuta una vez por defecto y va y vuelve con `repeat` y `yoyo`; los bordes nunca se ven.
+
+<Effect id="M01" />
+
+## M02 · Carga con desenfoque [#m02]
+
+`<BlurUpImage>` muestra un `placeholder` (una imagen mínima, degradado o color) con `blur` hasta que carga la imagen nativa. Una imagen ya cargada aparece de inmediato salvo que pases `replay`, como en el ejemplo.
+
+<Effect id="M02" />
+
+## M03 · Revelado al cargar [#m03]
+
+`<LoadReveal>` descubre una imagen al cargar con una `shape`: `inset`, `circle` o `wipe`. `revealTimeout` (8 s) la muestra igualmente si la carga nunca termina.
+
+<Effect id="M03" />
+
+## M04 · Comparador [#m04]
+
+`<CompareSlider>` compara dos elementos con un input de rango nativo: funcionan teclado, toque y arrastre, y `jumps` añade botones. `label` es obligatorio y ambas imágenes necesitan su texto alternativo.
+
+<Effect id="M04" />
+
+## M05 · Duotono [#m05]
+
+`<Duotone>` convierte los colores de un elemento en `shadow` y `highlight` con un filtro SVG; `amount` mezcla con el original y el control lo reproduce hacia delante o hacia atrás.
+
+<Effect id="M05" />
+
+## M06 · Vídeo por progreso [#m06]
+
+`useVideoScrub` convierte una fuente `progress` de 0 a 1 en el tiempo de un vídeo. Nunca llama a `play()`, mantiene como máximo una búsqueda en curso y espera a los metadatos. Codifica con fotogramas clave frecuentes.
+
+<Effect id="M06" />
+
+## M07 · Ampliación en lightbox [#m07]
+
+`<Lightbox>` abre un `<dialog>` modal nativo que crece desde la miniatura. Escape, el fondo y el botón lo cierran, el foco vuelve a quien lo abrió y `label` le da nombre.
+
+<Effect id="M07" />
+
+## M08 · Fundido de galería [#m08]
+
+`<Crossfade>` muestra el hijo en `index` y funde entre ellos. `interval` los rota automáticamente (al menos 2 s) y se pausa con hover, foco y página oculta; añade tu propio control de pausa si lo usas.
+
+<Effect id="M08" />
+
+## M09 · Disolución en píxeles [#m09]
+
+`<PixelDissolve>` sustituye una imagen por otra en bloques de `cell` píxeles con un orden según `seed`, pintados en un canvas que se libera después. `maxCells` limita las áreas grandes; sin un canvas utilizable hace un fundido.
+
+<Effect id="M09" />
+
+## M10 · Paneo al pasar el puntero [#m10]
+
+`<HoverPan>` amplía una imagen dentro de su marco (`scale` 1.4) y la desplaza con el puntero. `keyboard` hace enfocable el marco para las flechas y entonces exige un `label`.
+
+<Effect id="M10" />

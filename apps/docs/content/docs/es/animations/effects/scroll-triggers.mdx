@@ -1,0 +1,68 @@
+---
+title: Activadores de scroll
+description: "Los 10 efectos ST01–ST10: propósito, API, opciones, ejemplos, movimiento reducido y coste."
+---
+
+<AnimationsStatus />
+
+Los activadores de scroll reaccionan cuando un elemento entra o sale de un área. Usan IntersectionObserver y listeners pasivos: nada intercepta la rueda, el tacto ni las teclas. El contenido solo se mantiene oculto por debajo de la pantalla tras la hidratación y nunca con movimiento reducido, así que sin JavaScript se ve. Usa como activador un nombre de `inViewPresets` o `{ rootMargin, threshold, root }`.
+
+## ST01 · Revelar al entrar [#st01]
+
+`<RevealOnScroll>` ejecuta cualquier preset de entrada cuando el elemento entra en el área (`trigger`, `"default"` por defecto). El contenido ya visible al hidratar no se oculta.
+
+<Effect id="ST01" />
+
+## ST02 · Escalonado al entrar [#st02]
+
+`<StaggerOnScroll>` ejecuta el efecto `stagger` sobre los hijos cuando entra su contenedor. La entrada de cada hijo, el intervalo y el orden son opciones del escalonado.
+
+<Effect id="ST02" />
+
+## ST03 · Una vez, repetir, revertir [#st03]
+
+El `mode` de `<RevealOnScroll>` y de `createScrollTrigger`: `"once"` se ejecuta una vez, `"repeat"` lo rearma en cada salida y `"reverse"` lo reproduce al revés al salir hacia atrás.
+
+<Effect id="ST03" />
+
+## ST04 · Callbacks de entrada y salida [#st04]
+
+`useInView` devuelve un booleano y `useScrollTrigger` el estado con `onEnter`, `onLeave`, `onEnterBack` y `onLeaveBack`. React solo vuelve a renderizar en esas transiciones; `createScrollTrigger` es la versión sin framework.
+
+<Effect id="ST04" />
+
+## ST05 · Progreso en pantalla [#st05]
+
+`inViewProgress` escribe `--neshel-view-progress` (0–1) en el elemento mientras cruza la pantalla, para usarlo en tu CSS. `range` elige el tramo; con movimiento reducido el valor es 1.
+
+<Effect id="ST05" />
+
+## ST06 · Cabecera según la dirección [#st06]
+
+`directionHeader` oculta una cabecera fija al avanzar más allá de `offset` y la muestra al retroceder, al inicio y siempre que el foco esté dentro. `data-neshel-header="hidden"` expone el estado.
+
+<Effect id="ST06" />
+
+## ST07 · Estado fijado [#st07]
+
+`stuckState` pone `data-neshel-stuck` mientras un elemento `position: sticky` está fijado y llama a `onChange`. Dale estilo en tu CSS; no se anima nada.
+
+<Effect id="ST07" />
+
+## ST08 · Seguimiento de secciones [#st08]
+
+`useSectionSpy` devuelve el id de la sección por encima de la línea de activación, y la última al final de la página. Úsalo para `aria-current="location"` en un índice.
+
+<Effect id="ST08" />
+
+## ST09 · Activación diferida [#st09]
+
+`lazyEffect` adjunta otro efecto solo mientras el elemento está cerca de la pantalla (`trigger: "lazy"`, dos pantallas) y lo destruye cuando está lejos. Úsalo en páginas largas con muchos efectos costosos.
+
+<Effect id="ST09" />
+
+## ST10 · Ajustes de activación [#st10]
+
+`inViewPresets` nombra áreas de activación habituales: `default`, `eager`, `lazy`, `center`, `half`, `full` y `top`. `resolveInView` convierte un nombre o tus opciones en opciones completas del observador.
+
+<Effect id="ST10" />

@@ -1,0 +1,74 @@
+---
+title: Entrada y revelado
+description: "Los 11 efectos E01–E11: propósito, API, opciones, ejemplos, movimiento reducido y coste."
+---
+
+<AnimationsStatus />
+
+Las entradas se ejecutan una vez cuando un elemento aparece en el cliente y después lo dejan exactamente como estaba. `<Reveal>` recibe un preset; `<Stagger>` aplica uno a cada hijo. El contenido renderizado en el servidor sigue visible y no se oculta durante la hidratación (`appear="client"`); al cambiar `replayKey` se repite. Todas aceptan `duration`, `delay`, `easing`, `onFinish` y `reducedMotion`, y una línea de tiempo puede controlarlas con `progress`. No necesitan hoja de estilos.
+
+## E01 · Aparición gradual [#e01]
+
+La entrada más sencilla: opacidad de 0 a 1 con `fadeIn`. Úsala cuando la posición no aporta significado o como opción discreta para contenido que sustituye a un estado de carga.
+
+<Effect id="E01" />
+
+## E02 · Aparición con desplazamiento [#e02]
+
+`fadeSlide` añade un desplazamiento corto: `direction` (`"up"` por defecto) y `distance` (16 px, hasta 200). `fadeUp`, `fadeDown`, `fadeLeft` y `fadeRight` son el mismo efecto con la dirección fijada.
+
+<Effect id="E02" />
+
+## E03 · Entrada con escala [#e03]
+
+`scaleIn` amplía el elemento desde `from` (0.92, entre 0.3 y 1) mientras aparece. Conviene a superficies pequeñas como tarjetas, ventanas emergentes e insignias.
+
+<Effect id="E03" />
+
+## E04 · Entrada con zoom [#e04]
+
+`zoomIn` es lo contrario de la entrada con escala: empieza más grande que el tamaño final (`from` 1.12, hasta 2) y se asienta. Puede salirse de su caja mientras dura; deja espacio o recorta el contenedor.
+
+<Effect id="E04" />
+
+## E05 · Entrada con desenfoque [#e05]
+
+`blurIn` enfoca el contenido desde `amount` píxeles de desenfoque (12, hasta 40). Ocupa el canal `filter` mientras se ejecuta, así que otro efecto de filtro sobre el mismo elemento espera su turno.
+
+<Effect id="E05" />
+
+## E06 · Revelado por recorte [#e06]
+
+`clipReveal` descubre el elemento con `clip-path`: un recorte que avanza en `direction` o un círculo desde el centro con `shape: "circle"` (el preset `clipCircle`). Las sombras exteriores quedan recortadas hasta que termina.
+
+<Effect id="E06" />
+
+## E07 · Barrido con máscara degradada [#e07]
+
+`maskWipe` revela el elemento con un borde suave que avanza en `direction` (`"right"` por defecto); `softness` es el ancho de ese borde en porcentaje (25). Ocupa el canal `mask` mientras se ejecuta.
+
+<Effect id="E07" />
+
+## E08 · Entrada con rotación [#e08]
+
+`rotateIn` endereza el elemento desde `angle` grados (−6, entre −180 y 180) mientras aparece. Los ángulos pequeños parecen un gesto; los grandes distraen sobre texto.
+
+<Effect id="E08" />
+
+## E09 · Entrada con giro 3D [#e09]
+
+`flipIn` gira el elemento sobre un eje: `axis`, `angle` (70) y `perspective` (800 px). `flipX` y `flipY` fijan el eje. La perspectiva forma parte del transform compuesto, así que no hace falta un contenedor.
+
+<Effect id="E09" />
+
+## E10 · Hijos escalonados [#e10]
+
+`<Stagger>` da a cada hijo la misma entrada con un retardo de `interval` ms (60). `order` empieza por `"start"`, `"end"` o `"center"`, y `maxStagger` (900 ms) limita el total para que las listas largas no hagan esperar.
+
+<Effect id="E10" />
+
+## E11 · Entrada con resorte [#e11]
+
+`springIn` entra con un resorte en lugar de una duración fija: `spring` (rigidez y amortiguación o un preset), `distance` (24) y `from` (0.9). Puede sobrepasar el destino e interrumpirse sin saltos.
+
+<Effect id="E11" />

@@ -1,0 +1,68 @@
+---
+title: Animaciones de layout
+description: "Los 10 efectos L01–L10: propósito, API, opciones, ejemplos, movimiento reducido y coste."
+---
+
+<AnimationsStatus />
+
+Las animaciones de layout miden las cajas una vez antes del cambio y otra en la siguiente fase de lectura, y luego animan un transform hacia la posición real (FLIP). Nada se mide en cada fotograma y el texto no se deforma salvo que pidas `layout: "size"`. `<Presence>` mantiene montado un hijo eliminado, inerte y oculto a la tecnología de asistencia, solo hasta que termina su salida; un vigilante lo quita si una animación nunca acaba.
+
+## L01 · Movimiento FLIP [#l01]
+
+Envuelve la lista en `<LayoutGroup>` y cada elemento en `<LayoutItem>`; cuando una actualización cambia sus cajas, se mueven desde la posición anterior. Sin React, `createLayoutGroup()` con `snapshot()` y `play()` hace lo mismo con `flipMove`.
+
+<Effect id="L01" />
+
+## L02 · Altura automática [#l02]
+
+`<AutoHeight>` sigue la altura observada de su contenido, también si el texto crece o llega de forma asíncrona. Espera ajustarse a su contenido: no lo estires con un contenedor grid o flex.
+
+<Effect id="L02" />
+
+## L03 · Entrada y salida de listas [#l03]
+
+`<AnimatedList>` combina presencia y FLIP: los elementos entran y salen con `listItem` (o tus presets `enter` y `exit`) mientras sus hermanos se recolocan. Da a cada elemento una `key` estable.
+
+<Effect id="L03" />
+
+## L04 · Layout compartido [#l04]
+
+Un `<LayoutItem>` con `layoutId` que se monta donde había otro con el mismo id se anima desde aquella caja: resaltes que se mueven, tarjetas entre contenedores. Mantén ambos en un mismo `<LayoutGroup>`.
+
+<Effect id="L04" />
+
+## L05 · Reflujo de cuadrícula [#l05]
+
+`<Reflow>` anima los hijos de un contenedor grid o flex cada vez que se recoloca (cambio de tamaño, de columnas o un hijo que crece) sin renders de React.
+
+<Effect id="L05" />
+
+## L06 · Altura de acordeón [#l06]
+
+`<Collapse>` abre y cierra un panel con `open`; `driver` elige CSS, JavaScript medido o `"auto"`. Conecta `aria-expanded` y `aria-controls` en tu botón. Para un control completo usa Accordion o Collapsible de Components.
+
+<Effect id="L06" />
+
+## L07 · Indicador de pestaña [#l07]
+
+`<TabIndicator>` desliza un indicador del paquete hasta la pestaña `active`, dada como elemento o índice. Es decoración: tus pestañas conservan sus roles, su selección y su comportamiento de teclado.
+
+<Effect id="L07" />
+
+## L08 · Presencia [#l08]
+
+`<Presence>` ejecuta una salida (`exit`) antes de desmontar un hijo con `key`, y `enter` cuando llega; si se interrumpe, continúa desde la pose actual. `usePresence` y `useIsPresent` leen el estado desde dentro.
+
+<Effect id="L08" />
+
+## L09 · Fundido de contenido [#l09]
+
+`<CrossFade>` funde el contenido anterior con el nuevo cuando cambia `swapKey`, apilados en una celda mientras la altura los sigue. El contenido anterior queda inerte durante el cambio.
+
+<Effect id="L09" />
+
+## L10 · Reflujo de mampostería [#l10]
+
+`<Masonry>` distribuye los hijos en columnas de al menos `minColumnWidth` con `gap`, con filas según las alturas observadas, y anima los reflujos. El orden visual puede diferir del orden del DOM entre columnas.
+
+<Effect id="L10" />

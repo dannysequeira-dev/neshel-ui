@@ -1,0 +1,89 @@
+---
+title: Integración con React
+description: Primitivas, componentes y hooks — asChild, refs, opciones, StrictMode y cuándo renderiza React.
+---
+
+<AnimationsStatus />
+
+El motor no depende de React; esta es la capa que los conecta. Todo son módulos de cliente
+(`"use client"`) que renderizan elementos normales en el servidor y se adjuntan tras la hidratación.
+
+## Tres formas
+
+| Forma           | Ejemplos                                                        | Cuándo                                                        |
+| --------------- | --------------------------------------------------------------- | ------------------------------------------------------------- |
+| **Primitivas**  | `<Reveal>`, `<Hover>`, `<Press>`, `<Gesture>`, `<ScrollEffect>` | Un elemento y un preset o una lista de una familia            |
+| **Componentes** | `<CompareSlider>`, `<Storyboard>`, `<Typewriter>`, `<CardFlip>` | El efecto necesita estructura o semántica propia              |
+| **Hooks**       | `usePathDraw`, `useTimeline`, `useInView`, `useMotionEffect`    | Tú renderizas el elemento y necesitas una ref o un control    |
+
+## `asChild`, refs y opciones
+
+- `asChild` aplica el efecto al único hijo. El hijo debe aceptar una ref, una clase, estilos y
+  manejadores; cualquier otra cosa lanza `NeshelAnimationsError`.
+- En `<Reveal>`, `<Hover>`, `<Press>` y `<Gesture>` el preset determina el tipo de `options`: una clave
+  desconocida o un tipo incorrecto es un error de compilación. `<ScrollEffect>`, `<RevealOnScroll>` y
+  `<StaggerOnScroll>` aceptan opciones sin tipo; escribe `{ … } satisfies ScrubTransformOptions` (o la interfaz
+  de tu efecto) para comprobarlas.
+- Cambiar `options` actualiza el efecto en marcha; no se vuelve a adjuntar.
+- `controlRef` (en los componentes que lo tienen) recibe el control tras montarse. Léelo en manejadores,
+  no durante el render.
+- Pon una `key` al elemento para empezar con una instancia nueva, o usa `replayKey` en las entradas.
+
+## Cualquier efecto en tu elemento
+
+```tsx title="tilted-figure.tsx"
+"use client";
+import { useMotionEffect } from "@neshel-ui/animations";
+import { tilt3D } from "@neshel-ui/animations/hover";
+import { useRef } from "react";
+
+export function TiltedFigure() {
+  const ref = useRef<HTMLElement>(null);
+  useMotionEffect(ref, tilt3D, { maxTilt: 8 });
+  return <figure ref={ref}>Hover this figure</figure>;
+}
+```
+
+## Valores de movimiento
+
+Un valor de movimiento es un número que cambia sin renderizar:
+
+```tsx title="volume.tsx"
+"use client";
+import { useMotionValue, useMotionValueEvent } from "@neshel-ui/animations";
+import { useRef } from "react";
+
+export function Volume() {
+  const output = useRef<HTMLOutputElement>(null);
+  const volume = useMotionValue(50);
+  useMotionValueEvent(volume, (value) => {
+    if (output.current) output.current.textContent = String(Math.round(value));
+  });
+  return (
+    <label>
+      Volume
+      <input
+        type="range"
+        defaultValue={50}
+        onChange={(event) => volume.set(Number(event.currentTarget.value))}
+      />
+      <output ref={output}>50</output>
+    </label>
+  );
+}
+```
+
+## Cuándo renderiza React
+
+Los efectos nunca renderizan por fotograma. Los hooks que devuelven estado (`useInView`,
+`useScrollTrigger`, `useSectionSpy`, `useNavigationDirection`) renderizan solo cuando ese estado cambia.
+No llames a `setState` dentro de `onUpdate`, `onMove` ni de un listener de un valor de movimiento.
+
+## StrictMode, desmontaje y presencia
+
+Los efectos se destruyen al desmontar y se recrean sin problema cuando StrictMode monta dos veces. Para
+animar la **salida** de un elemento, envuélvelo en [`<Presence>`](/es/docs/animations/effects/layout/#l08):
+React lo quita solo después de la salida.
+
+Evita fijar una propiedad animada en la prop `style` del mismo elemento: React la escribe de nuevo en cada
+render y el host la adopta como nuevo valor base. Anima un contenedor.

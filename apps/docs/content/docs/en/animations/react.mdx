@@ -1,0 +1,88 @@
+---
+title: React bindings
+description: Primitives, components and hooks — asChild, refs, options, StrictMode and when React renders.
+---
+
+<AnimationsStatus />
+
+The engine is independent of React; this is the layer that connects it. All bindings are client
+modules (`"use client"`) that render plain elements on the server and attach after hydration.
+
+## Three shapes
+
+| Shape          | Examples                                                        | When                                                      |
+| -------------- | --------------------------------------------------------------- | --------------------------------------------------------- |
+| **Primitives** | `<Reveal>`, `<Hover>`, `<Press>`, `<Gesture>`, `<ScrollEffect>` | One element and one preset or a list of one family        |
+| **Components** | `<CompareSlider>`, `<Storyboard>`, `<Typewriter>`, `<CardFlip>` | The effect needs structure or semantics of its own        |
+| **Hooks**      | `usePathDraw`, `useTimeline`, `useInView`, `useMotionEffect`    | You render the element and need a ref or a control        |
+
+## `asChild`, refs and options
+
+- `asChild` applies the effect to the single child. The child must accept a ref, a class name, styles
+  and event handlers; anything else throws `NeshelAnimationsError`.
+- `options` of `<Reveal>`, `<Hover>`, `<Press>` and `<Gesture>` is typed by the preset: an unknown key or a
+  wrong type is a compile error. `<ScrollEffect>`, `<RevealOnScroll>` and `<StaggerOnScroll>` accept untyped
+  options; write `{ … } satisfies ScrubTransformOptions` (or the interface of your effect) to check them.
+- Changing `options` updates the running effect; it is not attached again.
+- `controlRef` (on the components that have one) receives the control object after mounting. Read it
+  in event handlers, not while rendering.
+- Put `key` on an element to start over with a new instance, or use `replayKey` on entrances.
+
+## Any effect on your own element
+
+```tsx title="tilted-figure.tsx"
+"use client";
+import { useMotionEffect } from "@neshel-ui/animations";
+import { tilt3D } from "@neshel-ui/animations/hover";
+import { useRef } from "react";
+
+export function TiltedFigure() {
+  const ref = useRef<HTMLElement>(null);
+  useMotionEffect(ref, tilt3D, { maxTilt: 8 });
+  return <figure ref={ref}>Hover this figure</figure>;
+}
+```
+
+## Motion values
+
+A motion value is a number that changes without rendering:
+
+```tsx title="volume.tsx"
+"use client";
+import { useMotionValue, useMotionValueEvent } from "@neshel-ui/animations";
+import { useRef } from "react";
+
+export function Volume() {
+  const output = useRef<HTMLOutputElement>(null);
+  const volume = useMotionValue(50);
+  useMotionValueEvent(volume, (value) => {
+    if (output.current) output.current.textContent = String(Math.round(value));
+  });
+  return (
+    <label>
+      Volume
+      <input
+        type="range"
+        defaultValue={50}
+        onChange={(event) => volume.set(Number(event.currentTarget.value))}
+      />
+      <output ref={output}>50</output>
+    </label>
+  );
+}
+```
+
+## When React renders
+
+Effects never render per frame. Hooks that return state (`useInView`, `useScrollTrigger`,
+`useSectionSpy`, `useNavigationDirection`) render only when that state changes. Do not call `setState`
+inside `onUpdate`, `onMove` or a motion-value listener.
+
+## StrictMode, unmounting and presence
+
+Attachments are destroyed on unmount and recreated safely when StrictMode mounts twice. To animate an
+element **out**, wrap it in [`<Presence>`](/en/docs/animations/effects/layout/#l08): React removes it
+only after the exit.
+
+Avoid setting an animated property in the `style` prop of the same element: React writes it again on
+each render and the host adopts it as the new base value. Animate a wrapper instead.

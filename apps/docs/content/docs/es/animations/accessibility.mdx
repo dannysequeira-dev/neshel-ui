@@ -1,0 +1,70 @@
+---
+title: Accesibilidad del movimiento
+description: Políticas de movimiento reducido, alternativas de teclado, movimiento continuo, destellos y lo que tu aplicación debe hacer.
+---
+
+<AnimationsStatus />
+
+## Movimiento reducido
+
+Todos los efectos aceptan `reducedMotion`:
+
+| Política   | Significado                                                                   |
+| ---------- | ----------------------------------------------------------------------------- |
+| `"user"`   | Sigue `prefers-reduced-motion` en vivo (por defecto)                          |
+| `"always"` | Siempre la variante reducida, por ejemplo desde un ajuste de tu aplicación    |
+| `"never"`  | Siempre el movimiento completo; justifícalo, porque ignora a la persona       |
+
+Qué significa «reducido» depende del efecto. Cada uno declara uno de estos comportamientos:
+
+| Comportamiento | Qué ven las personas                                                           |
+| -------------- | ------------------------------------------------------------------------------ |
+| `off`          | Nada de movimiento (efectos decorativos)                                       |
+| `fade`         | Solo opacidad, sin desplazamiento                                              |
+| `instant`      | El estado final de inmediato                                                   |
+| `static`       | La decoración o el contenido queda quieto                                      |
+| `reduced`      | Queda una señal menor porque comunica un estado (pulsación, progreso, errores) |
+| `n/a`          | Nada se mueve por sí solo, así que nada cambia                                 |
+
+Arrastrar, pellizcar y girar siguen acompañando a la mano: ese movimiento es de la persona. Solo se
+elimina lo que ocurre después por sí mismo. Los valores de los que depende otro código (un progreso de
+scroll, un capítulo) siguen cambiando.
+
+## Alternativas de teclado y puntero
+
+- Los gestos funcionales tienen teclas y una alternativa sin arrastre: consulta
+  [Física y gestos](/es/docs/animations/effects/gestures/). Las teclas se instalan cuando el elemento es
+  enfocable, así que dale `tabIndex={0}`, un rol y un nombre.
+- Los efectos de hover responden también a `:focus-visible` salvo que sean puramente decorativos.
+- Las caras, diapositivas y elementos que salen quedan `inert` y con `aria-hidden`.
+
+## Movimiento que continúa
+
+WCAG 2.2.2 pide un modo de pausar el movimiento que empieza solo y dura más de cinco segundos. Los efectos
+de ambiente terminan a los cinco segundos por defecto y los bucles son finitos. Si eliges
+`duration: Infinity` o un `repeat` infinito, añade un control: `<AmbientMotionToggle>`, los botones de
+`<Storyboard>` o tu propio `pause()`.
+
+## Destellos y desencadenantes vestibulares
+
+`<Glitch>` está limitado a tres cambios por segundo. El parallax amplio, el zoom y los desplazamientos a
+pantalla completa son los desencadenantes habituales: prefiere amplitudes pequeñas también sin movimiento
+reducido.
+
+## Texto y regiones en vivo
+
+El texto dividido conserva una copia accesible. Los indicadores nunca anuncian: lo hace tu mensaje de
+estado, una vez y solo cuando el resultado es real.
+
+## Lo que te corresponde
+
+- Dar nombre a los elementos interactivos y texto alternativo a las imágenes.
+- Decir errores y éxitos con texto; el movimiento nunca es la única señal.
+- Comprobar el contraste sobre fondos en movimiento en su momento menos favorable.
+- Probar con tu contenido, un teclado y tecnología de asistencia real.
+
+<Callout type="warn" title="Qué se ha verificado">
+  Las comprobaciones automáticas se ejecutan en Chromium, Firefox y WebKit (Playwright) con axe-core.
+  Safari, los dispositivos táctiles físicos, las GPU físicas y los lectores de pantalla no se han verificado
+  para este paquete; esas comprobaciones manuales están pendientes antes de cualquier publicación.
+</Callout>

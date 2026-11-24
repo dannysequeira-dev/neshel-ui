@@ -1,0 +1,46 @@
+---
+title: Performance
+description: What each kind of effect costs, lazy activation, limits, budgets and measuring.
+---
+
+<AnimationsStatus />
+
+Each effect page says what the effect writes. From the least to the most expensive:
+
+| Kind                                  | Cost while it runs                                                              | Examples                            |
+| ------------------------------------- | ------------------------------------------------------------------------------- | ----------------------------------- |
+| Observers                             | Nothing per frame                                                               | In view, section spy, stuck state   |
+| Layers rendered by CSS                | Compositor or small paints; nothing in JavaScript                               | Spinner, aurora, border sweep       |
+| Transform and opacity                 | One write per element and frame                                                 | Entrance, hover, drag, parallax     |
+| Custom property or paint              | Repaints the element                                                            | Clip reveal, highlighter, path draw |
+| Split text                            | One write, plus CSS per piece                                                   | Text reveal, wave                   |
+| Height                                | Reflows what is below                                                           | Auto height, collapse               |
+| Filter and `backdrop-filter`          | Full area, every frame                                                          | Turbulence, tilt shift              |
+| Canvas 2D, WebGL2                     | Draws a surface; memory for the surface and its textures                        | Particles, page curl                |
+
+## Rules of thumb
+
+- Animate few, small things. Ten large blurred surfaces cost more than a hundred transforms.
+- Attach expensive effects only near the viewport with
+  [`lazyEffect`](/en/docs/animations/effects/scroll-triggers/#st09).
+- Split long texts by word or line. Text reveal and wave limit pieces to 200 by default and fall back to
+  a coarser split.
+- Nothing runs when nothing moves: the frame loop stops without tasks, ambient effects pause off
+  screen and on hidden pages, GPU effects draw on change.
+- Do not combine `setState` with per-frame callbacks.
+
+## GPU budget
+
+`configureGpu` limits a page: contexts (6 by default), pixel ratio (2), texture size and memory. An
+effect that gets no context shows the original content and reports `mode` and `reason`.
+
+## Bundle size
+
+Import from the family path. Each family, and the common imports of each, has a size budget checked in
+CI from the packed tarball; families do not import each other, and the GPU layer is never loaded unless
+you import it.
+
+## Measure
+
+Use your browser's performance panel with your own content and a slow device. The repository contains
+local benchmarks (`pnpm bench:animations:*`); they are observations of one machine, not guarantees.

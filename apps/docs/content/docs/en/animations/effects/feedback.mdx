@@ -1,0 +1,68 @@
+---
+title: Loading & Feedback
+description: "The 10 effects F01–F10: purpose, API, options, examples, reduced motion and cost."
+---
+
+<AnimationsStatus />
+
+Feedback components state what they mean to assistive technology first; motion decorates that state. Progress has a value only when you know one, skeletons stay out of the accessibility tree, and a success mark never announces by itself: your status message does, when it really succeeded. Notifications (`createToaster`, `<Toaster>`) belong to `@neshel-ui/components`; F06 is only generic enter and exit motion for a list another component owns.
+
+## F01 · Spinner [#f01]
+
+`<Spinner>` is an indeterminate `role="progressbar"` named by `label` ("Loading"). Pass `decorative` when text next to it already says so, as here. Under reduced motion the rotation becomes a slow pulse.
+
+<Effect id="F01" />
+
+## F02 · Skeleton shimmer [#f02]
+
+`<SkeletonShimmer>` is a hidden placeholder (`width`, `height`, `shape`), and `<Shimmer>` adds the sweep to an element of yours, such as the Components Skeleton. Put `aria-busy="true"` on the loading region.
+
+<Effect id="F02" />
+
+## F03 · Progress bar [#f03]
+
+`<ProgressBar>` has `aria-valuenow` only with a real `value` of `max`; without it, it is indeterminate. `label` is required and `valueText` explains the number.
+
+<Effect id="F03" />
+
+## F04 · Dots pulse [#f04]
+
+`<DotsPulse>` is an inline indeterminate indicator with the same `label` and `decorative` rules as the spinner. Under reduced motion the dots change opacity slowly instead of bouncing.
+
+<Effect id="F04" />
+
+## F05 · Success mark [#f05]
+
+`<SuccessMark>` draws a check when `show` becomes true. It is decorative by default; with `label` it is an image with a name. It never announces anything.
+
+<Effect id="F05" />
+
+## F06 · Enter and exit [#f06]
+
+`<EnterExit>` moves the items of a list that reports `data-state`: they enter from `from` and leave towards `exitTo`. Here it animates a Components `<Toaster motion="none">`, which owns the messages, timers, focus and announcements; any list that follows the same DOM contract works.
+
+<Effect id="F06" />
+
+## F07 · Loading button [#f07]
+
+`<LoadingButton>` keeps the same button, its name, its width and its focus while `loading`, sets `aria-disabled` and blocks a second activation. Use it on a Components Button without that button's own `loading` prop.
+
+<Effect id="F07" />
+
+## F08 · Optimistic pulse [#f08]
+
+`<OptimisticPulse>` shows the `status` of a change made before the server answers: `pending` pulses, `confirmed` settles, `failed` is visibly different and calls `onRollback`. Pending is never presented as confirmed.
+
+<Effect id="F08" />
+
+## F09 · Progress ring [#f09]
+
+`<ProgressRing>` accepts a `value`, or a `progress` source that updates the arc every frame while `aria-valuenow` changes only at whole percentages. Without either it is indeterminate.
+
+<Effect id="F09" />
+
+## F10 · Pending text [#f10]
+
+`<PendingText>` passes a light band over its text while `pending`. There is one accessible text, forced colours show it plain, and under reduced motion it is still.
+
+<Effect id="F10" />

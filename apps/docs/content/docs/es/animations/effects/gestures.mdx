@@ -1,0 +1,74 @@
+---
+title: Física y gestos
+description: "Los 11 efectos G01–G11: propósito, API, opciones, ejemplos, movimiento reducido y coste."
+---
+
+<AnimationsStatus />
+
+Los gestos siguen directamente al dedo, ratón o lápiz; con movimiento reducido solo se elimina lo que ocurre después por sí mismo (inercia, resortes). Cada gesto funcional tiene una vía de teclado, instalada cuando el elemento es enfocable, y una alternativa sin arrastre: botones incluidos u órdenes de `useGestureControls()`. `touch-action` se fija solo en el área del gesto, así que el resto de la página se desplaza con normalidad. Los callbacks se llaman al empezar, al terminar y al confirmar; no actualices el estado de React en cada fotograma.
+
+## G01 · Arrastre con inercia [#g01]
+
+`drag` mueve el elemento con inercia. `constraints` lo limita al contenedor, a un elemento o a un rectángulo, `elastic` (0.35) es la goma en los bordes y las flechas mueven `keyboardStep` (10 px, cinco veces más con Mayús).
+
+<Effect id="G01" />
+
+## G02 · Arrastre con anclajes [#g02]
+
+`dragSnap` se suelta en el más cercano de `snap`: puntos o `{ grid }`. Las flechas recorren los puntos, `controls.snapTo(index)` salta a uno y `onSnap` informa dónde quedó.
+
+<Effect id="G02" />
+
+## G03 · Deslizar para descartar [#g03]
+
+`<SwipeDismiss>` lanza su contenido al superar `distance` (la mitad del ancho) o `velocity` (800 px/s) y después llama a `onDismiss`; tú quitas el elemento. Incluye un botón de descarte, y Supr o Retroceso funcionan con el foco.
+
+<Effect id="G03" />
+
+## G04 · Tirar para actualizar [#g04]
+
+`<PullToRefresh>` crea un contenedor con scroll. Al tirar desde arriba más de `threshold` (72 px), o con su botón de actualizar, llama a `onRefresh` una vez y marca la región con `aria-busy` hasta que la promesa termina.
+
+<Effect id="G04" />
+
+## G05 · Seguimiento con resorte [#g05]
+
+`springFollow` persigue valores de movimiento (`x`, `y`, `scale`, `rotate`) con un resorte, sin renders de React. `useSpringFollow` devuelve el valor seguidor si prefieres enlazarlo tú.
+
+<Effect id="G05" />
+
+## G06 · Borde elástico [#g06]
+
+`<ElasticScroll>` añade una goma decorativa al principio y al final de un contenedor con scroll, con rueda y tacto. Los listeners son pasivos y el scroll nunca se bloquea; da un `label` a la región.
+
+<Effect id="G06" />
+
+## G07 · Lanzamiento [#g07]
+
+`fling` es un lanzamiento libre: la velocidad al soltar decae y rebota en `constraints` (el contenedor por defecto) con `bounce` (0.5). `onRest` informa la posición final y `controls.reset()` lo devuelve.
+
+<Effect id="G07" />
+
+## G08 · Zoom con pellizco [#g08]
+
+`<PinchZoom>` amplía una imagen entre `minScale` y `maxScale` (1–4) con dos dedos, la desplaza al estar ampliada y alterna con doble toque. Los botones de zoom y las teclas `+`, `-` y `0` hacen lo mismo; con escala 1 la página se desplaza con un dedo.
+
+<Effect id="G08" />
+
+## G09 · Gesto de rotación [#g09]
+
+`rotateGesture` gira con dos dedos, opcionalmente en pasos de `step` grados, e informa con `onRotateEnd`. Las teclas `[` y `]` y `controls.rotateBy` son la alternativa con un solo puntero.
+
+<Effect id="G09" />
+
+## G10 · Arrastrar para reordenar [#g10]
+
+`<Reorder>` pide un nuevo orden con `onReorder(from, to)`; tú actualizas el estado y los elementos se asientan. El paquete nunca reordena el DOM. En `<ReorderHandle>`, Espacio agarra, las flechas mueven, Escape cancela y cada movimiento se anuncia una vez.
+
+<Effect id="G10" />
+
+## G11 · Aplastar y estirar [#g11]
+
+`squashStretch` deforma el elemento según su velocidad mientras otro gesto lo mueve: `intensity` (0.25). Combínalo como `[drag, squashStretch]` en un `<Gesture>`; es decorativo y se desactiva con movimiento reducido.
+
+<Effect id="G11" />

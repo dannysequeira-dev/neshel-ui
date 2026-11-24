@@ -1,0 +1,74 @@
+---
+title: Hover y puntero
+description: "Los 11 efectos H01–H11: propósito, API, opciones, ejemplos, movimiento reducido y coste."
+---
+
+<AnimationsStatus />
+
+Los efectos de hover responden a un ratón o lápiz dentro de la caja y al foco de teclado `:focus-visible`, salvo la atracción magnética, el parallax del puntero y el seguidor del cursor, que son decorativos y solo siguen al puntero. El tacto es opcional mediante `pointerTypes`. `<Hover>` acepta un preset o una lista. Los efectos con `hover.css` dibujan en una capa `::before` o `::after` del paquete; un elemento con su propio `::before` no puede usarlos. No pongas información únicamente en un efecto de hover.
+
+## H01 · Elevación [#h01]
+
+`lift` eleva el elemento: `distance` (4 px), `scale` opcional y una `shadow` dibujada en la capa del paquete. Con movimiento reducido solo queda la sombra.
+
+<Effect id="H01" />
+
+## H02 · Resplandor [#h02]
+
+`glow` dibuja un anillo con un halo suave: `color`, `size` (3 px) y `blur` (16 px). Complementa el anillo de foco de tu control; no lo sustituye.
+
+<Effect id="H02" />
+
+## H03 · Inclinación 3D [#h03]
+
+`<Tilt3D>` inclina el elemento hacia el puntero: por defecto la esquina bajo el puntero se hunde; `reverse` la levanta. Opciones: `maxTilt`, `perspective`, `scale`, `axis`, `spring` y `focusTilt` para el foco de teclado. `useTilt3D` y `createTilt3D` ofrecen lo mismo sin el componente.
+
+<Effect id="H03" />
+
+## H04 · Atracción magnética [#h04]
+
+`magnetic` mueve el elemento hacia el puntero: `strength` (0.35) es la fracción de la distancia y `max` (12 px) el límite. Decorativo y solo con puntero; el área activa conserva la caja original.
+
+<Effect id="H04" />
+
+## H05 · Foco de luz [#h05]
+
+`spotlight` pinta una luz radial que sigue al puntero: `color`, `size` (240 px) e `intensity` (0.22). Con movimiento reducido la luz queda centrada y no sigue al puntero.
+
+<Effect id="H05" />
+
+## H06 · Barrido de borde [#h06]
+
+`borderSweep` recorre el borde con un degradado mientras está activo: `width` (2 px), dos `colors` y `duration` (3000 ms). Usa la capa `::after`, así que convive con los efectos de `::before`.
+
+<Effect id="H06" />
+
+## H07 · Subrayado creciente [#h07]
+
+`underline` traza una línea bajo el elemento: `thickness` (2 px), `color` y `origin` (`left`, `center` o `right`). Dentro de un párrafo conserva el subrayado nativo del enlace; el color por sí solo no lo identifica.
+
+<Effect id="H07" />
+
+## H08 · Zoom de imagen [#h08]
+
+`mediaZoom` amplía la imagen dentro de un marco: `scale` (1.08, hasta 2). El objetivo es el hijo con `data-neshel-media` o el primero, y el marco lo recorta.
+
+<Effect id="H08" />
+
+## H09 · Parallax del puntero [#h09]
+
+`parallax` mueve capas distintas cantidades según el puntero. Márcalas con `data-neshel-depth` entre −2 y 2; `strength` (16 px) es la amplitud. Decorativo y solo con puntero.
+
+<Effect id="H09" />
+
+## H10 · Barrido de brillo [#h10]
+
+`shine` cruza el elemento una vez con una banda de luz cada vez que se activa: `color`, `angle` (110°) y `duration` (700 ms). Con movimiento reducido no se dibuja nada.
+
+<Effect id="H10" />
+
+## H11 · Seguidor del cursor [#h11]
+
+`<CursorFollower>` dibuja un círculo decorativo con `aria-hidden` que sigue a un puntero preciso dentro de su área con un resorte (`size`, `spring`, `blend`). El cursor real sigue visible.
+
+<Effect id="H11" />

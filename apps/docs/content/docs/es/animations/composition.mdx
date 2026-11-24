@@ -1,0 +1,101 @@
+---
+title: Composición
+description: Cómo comparten los efectos un elemento — anidamiento, canales, conflictos, prioridades y límites.
+---
+
+<AnimationsStatus />
+
+Cada elemento animado tiene un **motion host**. Los efectos no escriben `element.style`; aportan a
+canales, y el host escribe cada propiedad como máximo una vez por fotograma.
+
+## Canales
+
+| Canal                                              | Regla      | Varios efectos a la vez                                              |
+| -------------------------------------------------- | ---------- | -------------------------------------------------------------------- |
+| `transform`                                        | Componer   | Los desplazamientos y giros se suman; las escalas se multiplican     |
+| `opacity`                                          | Multiplicar | El producto de todas las aportaciones                               |
+| `filter`, `clip-path`, `mask`, `translate`, `rotate`, `scale` | Exclusivo | Un dueño; los demás esperan y se reanudan cuando lo suelta |
+| Propiedades `--neshel-*`                           | Exclusivo  | Un dueño; el mismo efecto dos veces en un elemento es un conflicto   |
+
+Tu `transform` en línea queda como primera parte del valor compuesto, tu `opacity` en línea se
+multiplica, y ambos vuelven exactamente cuando termina el último efecto.
+
+## Anidamiento y listas
+
+Usa `asChild` para aplicar varias primitivas a un elemento, y una lista para varios presets de una familia:
+
+```tsx title="feature-link.tsx"
+"use client";
+import "@neshel-ui/animations/styles.css";
+import { fadeUp, Reveal } from "@neshel-ui/animations/entrance";
+import { glow, Hover, lift, Tilt3D } from "@neshel-ui/animations/hover";
+
+export function FeatureLink() {
+  return (
+    <Reveal preset={fadeUp} asChild>
+      <Hover preset={[lift, glow]} asChild>
+        <Tilt3D maxTilt={6} asChild>
+          <a href="/features">Features</a>
+        </Tilt3D>
+      </Hover>
+    </Reveal>
+  );
+}
+```
+
+Una lista no acepta `options`; da a cada efecto las suyas con un preset:
+
+```tsx title="soft-lift.ts"
+import { definePreset } from "@neshel-ui/animations/core";
+import { lift } from "@neshel-ui/animations/hover";
+
+export const softLift = definePreset("soft-lift", lift, { distance: 2, scale: 1.01 });
+```
+
+Un preset es un valor: no hay registro, sus opciones se validan al definirlo y los que no uses desaparecen
+de tu bundle.
+
+## Qué se combina
+
+| Combinación                                   | Resultado                                                               |
+| --------------------------------------------- | ----------------------------------------------------------------------- |
+| Entrada + hover + pulsación                   | Todos los transform se componen; las capas decorativas son independientes |
+| Inclinación 3D + elevación + escala al pulsar | Giro, desplazamiento y escala en un solo transform                      |
+| Transformación con scroll + hover             | Ambos transform se componen                                             |
+| Arrastre + aplastar y estirar                 | Desplazamiento y deformación se componen                                |
+| Layout FLIP + hover                           | La corrección de layout se compone con la pose de hover                 |
+| Desenfoque de entrada + otro efecto `filter`  | El segundo espera a que el primero suelte el canal                      |
+| Barrido de borde + otro efecto en `::after`   | El segundo espera                                                       |
+| Dos copias del mismo efecto exclusivo         | La segunda espera; un aviso de desarrollo nombra a ambas                |
+
+## Conflictos
+
+Cuando dos efectos quieren el mismo canal exclusivo, gana la mayor `priority` y, a igual prioridad, el
+que ya lo tiene. El otro queda suspendido — todos sus canales o ninguno — y se reanuda solo. Una entrada
+suspendida nunca oculta contenido, porque no ha escrito su pose inicial.
+
+`conflicts` decide cómo se avisa, no cómo se resuelve: `"warn"` (por defecto, solo en desarrollo),
+`"error"` (lanza un error, útil en pruebas) o `"silent"`.
+
+## Entre familias
+
+Las familias nunca se importan entre sí. Se encuentran mediante valores:
+
+- **Fuentes de progreso.** Cualquier cosa con `get()` y `subscribe()` que vaya de 0 a 1: un valor de
+  movimiento, un progreso de scroll. Los efectos de texto, SVG, medios, cine, 3D y GPU las aceptan con
+  `progress`, `source` o `drive()`.
+- **Pistas.** `effect.track()` devuelve una pista que una línea de tiempo puede secuenciar.
+- **Presets.** Los revelados con scroll, la presencia y las secuencias de títulos reciben presets de entrada.
+- **Contratos DOM.** [F06](/es/docs/animations/effects/feedback/#f06) lee `data-state` y el evento
+  `neshel-exit` de una lista, sin dependencia en ningún sentido.
+
+## Límites
+
+- El host no ve los valores de **hojas de estilo** para `transform`, `opacity` o `filter`, y sus valores en
+  línea los sustituyen mientras un efecto aporta. Usa las propiedades `translate`, `rotate` y `scale` para
+  el diseño estático, o anima un contenedor.
+- Una `transition` tuya sobre una propiedad animada lucha con el motor: cada fotograma iniciaría otra
+  transición. Quítala de esa propiedad.
+- Un elemento que usa su propio `::before` o `::after` no puede usar además los efectos que dibujan ahí.
+- Varias capas que giran sobre ejes distintos se suman por eje, lo cual es aproximado.
+- Dos copias del paquete en una página no se coordinan.
