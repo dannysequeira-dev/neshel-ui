@@ -7,16 +7,16 @@ Method: every failed `CI` run in the period (and attempt 1 of every rerun) read 
 
 ## Summary
 
-| Class      | Items                                       | Status                                                                                                  |
-| ---------- | ------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
-| functional | A1 K-15 nested-overlay Escape               | **Fixed in 017.1** at the cause (components); regression + stress tests; was mislabelled a test flake   |
-| config     | A2 TS2307 on new subpaths (×5)              | Fixed per phase; **class closed in 017** by a `pnpm test` guard (`tests/ts-paths.test.mjs`)             |
-| infra      | A3 WebGL2 absent (K-16)                     | Authorised narrow exception (Firefox + Linux + real WebGL2 absence, 6 explicit skips); unchanged        |
-| quality    | A4 Biome format of evidence files (×2)      | Fixed in-phase; `pnpm lint` locally catches it; no change needed                                        |
-| flake      | A5 issue #9 / #11 (press swap, composition) | Fixed in `b7bfe14` (PR #12); #9 closed after three clean main runs; **no recurrence** since             |
-| test       | A6 G01 one-finger drag order dependence     | Fixed in 012 (`7297b31`, deterministic start); no recurrence                                            |
-| test       | A7 React Router pending-state 700 ms        | Fixed in 013 (`a666b5a`, waits for the functional state); latency cause not investigated; no recurrence |
-| infra/risk | A8 macOS minifies larger than Windows       | Fixed by reducing code (no budget raised) in 012/013; **cause not investigated** — open hypothesis      |
+| Class      | Items                                               | Status                                                                                                |
+| ---------- | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| functional | A1 K-15 nested-overlay Escape                       | **Fixed in 017.1** at the cause (components); regression + stress tests; was mislabelled a test flake |
+| config     | A2 TS2307 on new subpaths (×5)                      | Fixed per phase; **class closed in 017** by a `pnpm test` guard (`tests/ts-paths.test.mjs`)           |
+| infra      | A3 WebGL2 absent (K-16)                             | Authorised narrow exception (Firefox + Linux + real WebGL2 absence, 6 explicit skips); unchanged      |
+| quality    | A4 Biome format (×4: also 44240706724, 43811802094) | Fixed in-phase; `pnpm lint` locally catches it; no change needed                                      |
+| flake      | A5 issue #9 / #11 (press swap, composition)         | Fixed in `b7bfe14` (PR #12); #9 closed after three clean main runs; **no recurrence** since           |
+| test       | A6 G01 one-finger drag order dependence             | Fixed in 012 (`7297b31`, deterministic start); no recurrence                                          |
+| functional | A7 React Router pending-state 700 ms                | Test relaxed in 013 (`a666b5a`); **recurred** in 017 and fixed at the cause (B3, `d946298`)           |
+| infra/risk | A8 macOS minifies larger than Windows               | Fixed by reducing code (no budget raised) in 012/013; **cause not investigated** — open hypothesis    |
 
 ## Items
 
@@ -88,16 +88,31 @@ Runs 44196197830 (`composeTransform` 641 B > 614 B) and 44425908497 (`Storyboard
 output was never explained; entries within ~1 % of their budget can fail only on macOS. Phase 017 records the
 margin of every measured entry on Windows and checks macOS in CI; no budget is raised without approval.
 
+### A9 — Runs of phases 008/009 (read on 2026-11-24)
+
+The first version of this audit claimed every failed run since 2026-11-16 but had not read these. Errors below are from
+their logs; their causes belong to the 008/009 evidence and were **not re-investigated** here.
+
+| Run                      | SHA                         | Job                        | Error                                                |
+| ------------------------ | --------------------------- | -------------------------- | ---------------------------------------------------- |
+| 43936536735 (attempt 1)  | `79cedf4`                   | `browsers / ubuntu-latest` | scene: progress follows scroll with the stage pinned |
+| 43878431209              | `5e59ce9`                   | `browsers / ubuntu-latest` | WAAPI: real browser animation, end state committed   |
+| 43813368226, 43810901141 | `89665bf`, `fd3885c` (main) | `macos-latest / Node 26`   | reduced motion (live change): flat cards             |
+| 43804188974              | `9402b61`                   | `macos-latest / Node 26`   | corner: spring-animated amount                       |
+| 43796180289              | `53272c7`                   | `macos-latest / Node 26`   | six Tilt3D lab cases                                 |
+| 44240706724, 43811802094 | `d88b0b2`, `4da0d19`        | Node matrix                | Biome format (class A4)                              |
+
 ## Failures found during Phase 017
 
 ### B1 — `L08 presence` re-entry on macOS (test synchronisation)
 
 Run 45218099547 (`4a1baf7`, PR #18), `macos-latest / Node 26` (CDP) and `browsers / macos-latest` (Playwright
 Chromium): `FAIL L08 presence … same element on re-entry`. Never seen before; not on Windows/Ubuntu.
-Cause (confirmed): the case clicked "re-enter" after a fixed 1 + 3 frames, assuming the 220 ms exit outlasts four
+Cause (reproduced by simulation): the case clicked "re-enter" after a fixed 1 + 3 frames, assuming the 220 ms exit outlasts four
 frames. The frame scheduler clamps each delta at 66 ms, so with frames slower than ~55 ms the exit completes first
-and the card unmounts. The lab page got heavier in 017 (the F06 demo now loads the Components toaster), enough for
-macOS runners. Reproduction: wrapping `requestAnimationFrame` to add 40 ms per frame → 0/8 same element (node
+and the card unmounts. Why it first showed here was not measured (the lab page also loads Components in 017; a
+hypothesis, not a confirmed cause). With +60 ms per frame the old wait passed 3/8. Slow frames were simulated, not
+observed on the macOS runners. Reproduction: wrapping `requestAnimationFrame` to add 40 ms per frame → 0/8 same element (node
 unmounted after 346 ms); 0 ms → 10/10. Fix: wait until the exit is observably running (card connected,
 0 < opacity < 1) and re-enter in that same task — 10/10 at +0, +40 and +60 ms per frame. The behaviour asserted
 (re-entry during the exit keeps the node) is unchanged.

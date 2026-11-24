@@ -65,7 +65,8 @@ export interface ToasterStore {
   protect(id: string | undefined): void;
   subscribe(listener: () => void): () => void;
   /**
-   * Clears every toast, timer, pause reason and listener (idempotent). A destroyed store is inert: `show()` still
+   * Clears every toast, timer, pause reason and listener (idempotent); subscribers are notified once of the final,
+   * empty state. A destroyed store is inert: `show()` still
    * validates its input but returns `""` and creates nothing, `subscribe()` registers nothing, the rest do nothing.
    */
   destroy(): void;
@@ -255,9 +256,13 @@ export function createToaster(options: ToasterOptions = {}): ToasterStore {
       toasts = [];
       queued = [];
       protectedId = undefined;
-      listeners.clear();
       reasons.clear();
       toastCounters.stores--;
+      // Mounted consumers (useSyncExternalStore) get the final, empty snapshot once. Listeners are released first,
+      // so nothing a listener does can notify again.
+      const last = [...listeners];
+      listeners.clear();
+      for (const fn of last) fn();
     },
   };
 }

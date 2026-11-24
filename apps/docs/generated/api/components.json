@@ -4852,7 +4852,7 @@
           "name": "destroy",
           "type": "() => void",
           "optional": false,
-          "description": "Clears every toast, timer, pause reason and listener (idempotent). A destroyed store is inert: `show()` still\nvalidates its input but returns `\"\"` and creates nothing, `subscribe()` registers nothing, the rest do nothing."
+          "description": "Clears every toast, timer, pause reason and listener (idempotent); subscribers are notified once of the final,\nempty state. A destroyed store is inert: `show()` still\nvalidates its input but returns `\"\"` and creates nothing, `subscribe()` registers nothing, the rest do nothing."
         },
         {
           "name": "dismiss",

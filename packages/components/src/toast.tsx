@@ -64,6 +64,9 @@ function announcementState(store: ToasterStore) {
   return state;
 }
 
+/** Distinguishes the pause reasons of each mounted Toaster (never rendered, so SSR is unaffected). */
+let instances = 0;
+
 interface Entry {
   toast: Toast;
   exiting: boolean;
@@ -123,6 +126,14 @@ export function Toaster(props: ToasterProps) {
   const alertRef = useRef<HTMLDivElement | null>(null);
   const returnFocus = useRef<HTMLElement | null>(null);
   const [owner] = useState(() => Symbol("toaster"));
+  // Pause reasons are owned by this instance: several Toasters may share a store, and the consumer's own reasons
+  // ("hidden", "hover", …) must stay independent.
+  const [reasons] = useState(() => {
+    const prefix = `neshel-toaster-${++instances}`;
+    return { hidden: `${prefix}:hidden`, hover: `${prefix}:hover`, focus: `${prefix}:focus` };
+  });
+  /** The toast this instance protects from eviction (its focused one). */
+  const protecting = useRef<string | undefined>(undefined);
 
   // Announcement ownership: the first mounted Toaster of a store announces; the next takes over on unmount.
   useEffect(() => {
@@ -152,12 +163,24 @@ export function Toaster(props: ToasterProps) {
       if (!toasts.some((toast) => toast.id === id)) state.announced.delete(id);
   }, [toasts, toaster, owner]);
 
-  // Hidden page pauses the timers; the hotkey moves focus into the region.
+  // Hidden page pauses the timers. Unmounting (or changing store) releases only what this instance owns.
   useEffect(() => {
     const onVisibility = () =>
-      document.hidden ? toaster.pause("hidden") : toaster.resume("hidden");
+      document.hidden ? toaster.pause(reasons.hidden) : toaster.resume(reasons.hidden);
     onVisibility();
     document.addEventListener("visibilitychange", onVisibility);
+    return () => {
+      document.removeEventListener("visibilitychange", onVisibility);
+      toaster.resume(reasons.hidden);
+      toaster.resume(reasons.hover);
+      toaster.resume(reasons.focus);
+      if (protecting.current !== undefined) toaster.protect(undefined);
+      protecting.current = undefined;
+    };
+  }, [toaster, reasons]);
+
+  // The hotkey moves focus into the region.
+  useEffect(() => {
     const onKey = (event: globalThis.KeyboardEvent) => {
       if (!hotkey || event.key !== hotkey || event.defaultPrevented) return;
       const first = region.current?.querySelector<HTMLElement>(".neshel-toast[data-state='open']");
@@ -168,15 +191,8 @@ export function Toaster(props: ToasterProps) {
       first.focus();
     };
     window.addEventListener("keydown", onKey);
-    return () => {
-      document.removeEventListener("visibilitychange", onVisibility);
-      window.removeEventListener("keydown", onKey);
-      toaster.resume("hidden");
-      toaster.resume("hover");
-      toaster.resume("focus");
-      toaster.protect(undefined);
-    };
-  }, [toaster, hotkey]);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [hotkey]);
 
   const finishExit = (id: string, generation: number) => {
     const before = entriesRef.current.length;
@@ -210,22 +226,24 @@ export function Toaster(props: ToasterProps) {
       aria-label={label}
       onPointerEnter={(event) => {
         onPointerEnter?.(event);
-        toaster.pause("hover");
+        toaster.pause(reasons.hover);
       }}
       onPointerLeave={(event) => {
         onPointerLeave?.(event);
-        toaster.resume("hover");
+        toaster.resume(reasons.hover);
       }}
       onFocus={(event) => {
         onFocus?.(event);
-        toaster.pause("focus");
+        toaster.pause(reasons.focus);
         const item = (event.target as HTMLElement).closest?.(".neshel-toast");
-        toaster.protect(item?.getAttribute("data-id") ?? undefined);
+        protecting.current = item?.getAttribute("data-id") ?? undefined;
+        toaster.protect(protecting.current);
       }}
       onBlur={(event) => {
         onBlur?.(event);
         if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
-          toaster.resume("focus");
+          toaster.resume(reasons.focus);
+          protecting.current = undefined;
           toaster.protect(undefined);
         }
       }}

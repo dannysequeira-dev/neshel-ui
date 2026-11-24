@@ -4,7 +4,8 @@ Legend: `[x]` done and verified locally; `[~]` done, awaiting CI; `[ ]` open. Ev
 
 ## 017.0 Recovery & CI investigation
 
-- [x] T001 Read CLAUDE.md, constitution, vision, architecture, package contracts, roadmap, ADRs 0012–0014/0022–0031
+- [x] T001 Read CLAUDE.md, constitution, roadmap, package contracts (start); vision, architecture, ADRs 0012–0014, 0018,
+  0020, 0022, 0030 only on 2026-11-24 (found the ADR 0012 §2 deviation, see its amendment); other ADRs not read
 - [x] T002 Branch `feature/017-components-completion` from `origin/main` `365a24d`
 - [x] T003 Final state of main run 45117009871: 13/14, `browsers / macos-latest` failed (K-15)
 - [x] T004 CI audit of every failed run 2026-11-16 → 2026-11-23 ([ci-audit.md](ci-audit.md))
@@ -51,6 +52,8 @@ Legend: `[x]` done and verified locally; `[~]` done, awaiting CI; `[ ]` open. Ev
 - [x] T046 Package contracts, READMEs, 015 contract marked superseded
 
 ## 017.7 Final validation
+
+- [x] T054 PR #18 review R1/R2 (tests first) and R3 (run table, audit corrections)
 
 - [x] T050 Full local gates (`pnpm check`, Storybook, docs, Next, starters, release simulation)
 - [x] T051 PR #18 opened; CI 14/14 on the first attempt (run 45297051951, `d946298`)

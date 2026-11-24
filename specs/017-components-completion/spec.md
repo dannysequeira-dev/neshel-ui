@@ -5,7 +5,7 @@ main CI run 45117009871 finished 13/14 — `browsers / macos-latest` failed on K
 
 **Created**: 2026-11-23
 
-**Status**: Draft — in implementation (slice 017.1 under way). Planned vs implemented vs verified is tracked in
+**Status**: Implemented; PR #18 in owner review. Planned vs implemented vs verified is tracked in
 [evidence.md](evidence.md).
 
 **Input**: Owner direction 2026-11-22, summarised in [brief.md](brief.md).

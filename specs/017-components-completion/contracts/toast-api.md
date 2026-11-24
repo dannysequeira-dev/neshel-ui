@@ -20,15 +20,15 @@ interface ToasterStore {
 }
 ```
 
-| Rule               | Contract                                                                                                                     |
-| ------------------ | ---------------------------------------------------------------------------------------------------------------------------- |
-| Validation         | non-empty `title`; tone in the closed set; non-empty `action.label`; invalid input throws `TypeError` even after `destroy()` |
-| Duration           | omitted → 6000 ms + 60 ms/char (≤ 20000); with `action` → `Infinity`; numbers clamped 1000–60000; `Infinity` persistent      |
-| Re-show            | same id replaces content, `version + 1`, restarts its timer (queued: replaced in place, no timer)                            |
-| Overflow `"evict"` | beyond `max`, the oldest toast that is neither protected (focused) nor the new one is dismissed                              |
-| Overflow `"queue"` | beyond `max`, new toasts wait (not rendered, not announced, no timer) and are promoted oldest-first                          |
-| Pause              | any active reason stops every timer; resuming continues with the remaining time                                              |
-| Destroy            | clears toasts, queue, timers, reasons, listeners; idempotent; afterwards every method is inert                               |
+| Rule               | Contract                                                                                                                                                                                                  |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Validation         | non-empty `title`; tone in the closed set; non-empty `action.label`; invalid input throws `TypeError` even after `destroy()`                                                                              |
+| Duration           | omitted → 6000 ms + 60 ms/char (≤ 20000); with `action` → `Infinity`; numbers clamped 1000–60000; `Infinity` persistent                                                                                   |
+| Re-show            | same id replaces content, `version + 1`, restarts its timer (queued: replaced in place, no timer)                                                                                                         |
+| Overflow `"evict"` | beyond `max`, the oldest toast that is neither protected (focused) nor the new one is dismissed                                                                                                           |
+| Overflow `"queue"` | beyond `max`, new toasts wait (not rendered, not announced, no timer) and are promoted oldest-first                                                                                                       |
+| Pause              | any active reason stops every timer; resuming continues with the remaining time                                                                                                                           |
+| Destroy            | clears toasts, queue, timers, reasons and listeners, then notifies the subscribers it had **once** of the final empty state (a mounted `<Toaster>` empties); idempotent; afterwards every method is inert |
 
 The store is owned by the consumer; `<Toaster>` never destroys it. Changes from 015: `warning` tone (Components has
 the semantic warning token pair), `overflow`/`queued`, `action.label` validation, error prefix
@@ -43,8 +43,9 @@ the semantic warning token pair), `overflow`/`queued`, `action.label` validation
 - **Regions**: `role="status" aria-live="polite"` and `role="alert"` exist from the first render (also in SSR).
   `tone: "error"` goes to the alert region. Each toast id/version is announced **once per store**: the first mounted
   `<Toaster>` of a store announces, the next one takes over when it unmounts.
-- **Timers**: paused on pointer hover, focus inside the region and `document.hidden`; unmount resumes every reason.
-- **Keyboard and focus**: a toast appearing never moves focus. `hotkey` focuses the first open toast (remembering
+- **Timers**: paused on pointer hover, focus inside the region and `document.hidden`. Each mounted `<Toaster>` owns
+  its pause reasons and the protection of its focused toast: leaving, blurring or unmounting one releases only its own,
+  timers resume when no owner is left, and consumer reasons (even `"hover"`, `"focus"`, `"hidden"`) are independent.
   where focus came from). Escape on a focused toast closes it; focus moves to the next toast, the previous one or
   back to the remembered element. Every toast has a close button named by `closeLabel`; the action button runs
   `onAction` and closes the toast.

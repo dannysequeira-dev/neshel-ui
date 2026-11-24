@@ -47,3 +47,11 @@ offers no multiple Select and no Combobox.
   `render` props.
 - Downshift / React Aria for selection: a third interaction model next to Radix; React Aria's
   hooks are heavier to theme; not requested by the owner.
+
+## Amendment — feature 017 (2026-11-24, **Proposed**, pending owner approval)
+
+§2 limits Base UI to its `select` and `combobox` subpaths. Feature 017 also imports `accordion`, `collapsible` and
+`switch` (Accordion, Collapsible, Switch): same dependency and version, no new package
+([research R3](../../specs/017-components-completion/research.md)); the `check:pack` allow-list names the five subpaths.
+§4's Escape layering is extended by
+[overlay-escape.md](../../specs/017-components-completion/contracts/overlay-escape.md).

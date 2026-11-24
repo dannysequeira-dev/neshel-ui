@@ -128,6 +128,48 @@ subpaths; two docs demos needed `"use client"` (Next build); a stale generated A
 
 ## CI runs of this phase
 
-| Run         | SHA       | Event             | Attempt | Result                                                                          |
-| ----------- | --------- | ----------------- | ------- | ------------------------------------------------------------------------------- |
-| 45205431714 | `8514902` | workflow_dispatch | 1       | failure 11/14 — docs ×3 (stale generated API); every browsers/stress job passed |
+| Run         | SHA       | Event             | Attempt | Result                                                                                                                                                                                                                      |
+| ----------- | --------- | ----------------- | ------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 45205431714 | `8514902` | workflow_dispatch | 1       | failure 11/14 — docs ×3 (stale generated API data; fixed in `d2922d1`/`4a1baf7`)                                                                                                                                            |
+| 45218099547 | `4a1baf7` | pull_request      | 1       | failure 10/14 — `L08 presence` in `macos-latest / Node 26` and `browsers / macos-latest` (B1), Toast tests in `ubuntu-latest / Node 22` (B2), `docs / ubuntu-latest` cancelled (cause not investigated); fixed in `573bde7` |
+| 45225595701 | `573bde7` | pull_request      | 1       | success 14/14                                                                                                                                                                                                               |
+| 45229978481 | `573bde7` | workflow_dispatch | 1       | cancelled 13/14 — `ubuntu-latest / Node 26`: Chrome did not start and the script hung until the job timeout (B4); fixed in `d946298`                                                                                        |
+| 45230008637 | `573bde7` | workflow_dispatch | 1       | failure 13/14 — `browsers / macos-latest`: React Router pending state (B3); fixed in `d946298`                                                                                                                              |
+| 45297051951 | `d946298` | pull_request      | 1       | success 14/14                                                                                                                                                                                                               |
+| 45299935827 | `d946298` | workflow_dispatch | 1       | success 14/14 (independent run)                                                                                                                                                                                             |
+| 45299961886 | `d946298` | workflow_dispatch | 1       | success 14/14 (independent run)                                                                                                                                                                                             |
+| 45309958238 | `a2bce42` | pull_request      | 1       | success 14/14 (head of the final review)                                                                                                                                                                                    |
+
+Read from the GitHub API on 2026-11-24. The run of the commit that contains this table cannot be listed inside it: it
+is reported in PR #18 once GitHub completes it. No rerun of a failed attempt was used.
+
+**Correction (2026-11-24).** Until this commit the table stopped at 45205431714 although the PR text and the report
+said every run was recorded: the edits used unchecked string replacements that silently matched nothing. The same
+happened to part of the CI audit summary. `4a1baf7` was reported as 11/14; it was 10/14.
+
+## PR #18 final review — R1 and R2
+
+Review: [comment 7120398889](https://github.com/dannysequeira-dev/neshel-ui/pull/18#issuecomment-7120398889) on
+`a2bce42`. Tests first: `packages/components/test/toast-lifecycle.test.mjs`, **11/11 failing** before the fixes,
+**11/11 passing** after (jsdom; the failures were not reproduced in a browser).
+
+|                        | R1 — pauses shared by several Toasters                                                                                                                                          | R2 — `destroy()` with a mounted Toaster                                                                        |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| Reproduction           | two Toasters, hidden page, unmount one → timers resumed; both hovered, leave one → resumed                                                                                      | show toasts, `destroy()` → items stayed `open` in the DOM                                                      |
+| Cause                  | every Toaster used the same store reasons `hidden`/`hover`/`focus` (a `Set`)                                                                                                    | listeners were cleared without notifying, so `useSyncExternalStore` kept its old snapshot                      |
+| Fix                    | reasons prefixed per instance; unmount releases only its own; store API unchanged                                                                                               | state and listeners are cleared first, then the former listeners are notified once; re-entrant calls are inert |
+| Same cause, also fixed | a consumer's own `pause("hover")` was released by a Toaster; unmounting one Toaster dropped the protection of another's focused toast; changing `hotkey` released active pauses | —                                                                                                              |
+| Tests                  | plain and StrictMode: hidden, hover; remaining time; consumer reasons; focus/protection; hotkey                                                                                 | plain and StrictMode: UI, timers, later calls; one final notification                                          |
+
+Files: `packages/components/src/toast.tsx`, `toast-store.ts`, the new test, `contracts/toast-api.md`, API data and its
+Spanish text. Package tests 843 → 854 (Components 72 → 83).
+
+Local gates after the fixes (Windows 11, 2026-11-24), all exit 0: `pnpm check` (packages 854/854), `check:consumer`,
+`check:browsers` 216/216, `stress:overlays` 360/360, `check:browser` 12711 assertions, `check:browser:components` 166,
+`check:browser:animations` 197/197, `check:animations:engines` 205/0/0 in each engine, animations consumer, routers,
+bundles and animations bundles, Playground and Storybook builds, docs (api, check, build, site), `check:next`,
+`check:starters`, `release:simulate`. Budgets unchanged: Toaster 8.73 → 8.83 KiB (≤ 10), entire library 128.42 → 128.53
+KiB (≤ 142), `styles.css` 6.25 KiB (≤ 7).
+
+Known and unchanged: an announcement line stays in its visually hidden live region for at most 7 s (a bounded timer of
+the Toaster, not of the store), also after `destroy()`.
