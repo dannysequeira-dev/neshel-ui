@@ -14,7 +14,7 @@ stylesheet explicitly.
   `FontMetrics`, `defaults.breakpoints` and `defaults.typography.metrics` (Inter), font metric
   tokens in the stylesheets, and the augmentable `BreakpointRegistry` / `BreakpointName` types
   shared by layout and typography (ADR 0010).
-- 21 semantic colour roles with documented contrast pairs; light, dark, `system` and named
+- 25 semantic colour roles with documented contrast pairs; light, dark, `system` and named
   themes extending light or dark (ADR 0006).
 
 ## `@neshel-ui/layout`

@@ -40,7 +40,7 @@ export interface EntranceOptions {
   reducedMotion?: ReducedMotion;
   /**
    * Play when attached (default true). `<Reveal>` sets it to false while hydrating server-rendered
-   * markup, so visible content is not hidden again (contracts/accessibility-010.md §1).
+   * markup, so visible content is not hidden again.
    */
   appear?: boolean;
   /** Changing this value replays the entrance from the start. */
@@ -48,19 +48,19 @@ export interface EntranceOptions {
   /** Called once per run: `"completed"`, `"cancelled"` or `"interrupted"`. */
   onFinish?: (status: MotionResult["status"]) => void;
   /**
-   * Phase 011 (scroll triggers): while no run plays, keep the start pose (content hidden until a replay).
+   * While no run plays, keep the start pose (content hidden until a replay).
    * Ignored when motion is reduced and after `beforeprint`; `<Reveal>` never sets it. Default false.
    */
   hold?: boolean;
-  /** Phase 011: `playback: "out"` plays end -> start and then holds the start pose (reverse on leave). Default `"in"`. */
+  /** `playback: "out"` plays end -> start and then holds the start pose (reverse on leave). Default `"in"`. */
   playback?: "in" | "out";
   /**
-   * Phase 012 (presence re-entry): a replay that interrupts a running run continues from the current progress
+   * A replay that interrupts a running run continues from the current progress
    * with the remaining fraction of the duration, instead of restarting from the start pose. Default false.
    */
   continuous?: boolean;
   /**
-   * Phase 013 (timelines, scene segments): an external progress motion value (0 = start pose, 1 = visible)
+   * An external progress motion value (0 = start pose, 1 = visible)
    * renders the entrance instead of its own clock — seekable, scrubbable, reversible. `appear`, `replay`,
    * `hold`, `playback`, `delay` and `onFinish` are then ignored; reduced motion keeps the declared behaviour.
    */

@@ -35,9 +35,9 @@ export interface StaggerOptions<Options extends EntranceOptions = EntranceOption
   replay?: string | number | boolean;
   /** Called once when every child's run has settled (with the last status). */
   onFinish?: (status: MotionResult["status"]) => void;
-  /** Phase 011: forwarded to every child (see `EntranceOptions.hold`). */
+  /** Forwarded to every child (see `EntranceOptions.hold`). */
   hold?: boolean;
-  /** Phase 011: forwarded to every child (see `EntranceOptions.playback`). */
+  /** Forwarded to every child (see `EntranceOptions.playback`). */
   playback?: "in" | "out";
 }
 
