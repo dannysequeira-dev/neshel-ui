@@ -72,3 +72,27 @@ otro durante su vida. Consulta [Formularios](/es/docs/guides/forms/).
 siendo los nombres accesibles y aparecen como tooltips al pasar el puntero o al enfocar.
 `collapsible="offcanvas"` oculta la barra lateral por completo al contraerla. `collapsible="none"` la
 mantiene expandida. En móvil, la barra lateral siempre es un cajón.
+
+## Accordion frente a Collapsible
+
+| | Accordion | Collapsible |
+| --- | --- | --- |
+| Secciones | Varias relacionadas | Una |
+| Disparador | Un encabezado con un botón | Un botón |
+| Teclado | Flechas, Inicio y Fin entre encabezados | Enter y Espacio |
+| Estado | `value` (string o lista) | `open` (booleano) |
+
+## Switch frente a casilla de verificación
+
+Un **Switch** surte efecto de inmediato. Una **casilla** es una opción que espera al botón de envío, o una
+de varias que se pueden marcar a la vez; usa el `<input type="checkbox">` nativo.
+
+## Toast frente a Dialog y mensaje en la página
+
+| | Toast | AlertDialog | Mensaje en la página |
+| --- | --- | --- | --- |
+| Úsalo para | Confirmar algo que ya ocurrió | Una decisión antes de continuar | Errores de un campo o de la página |
+| Interrumpe | No | Sí | No |
+| Desaparece solo | Normalmente | No | No |
+
+Nunca pongas la única copia de información importante en un toast.

@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@fontsource-variable/inter": "5.2.8",
+    "@neshel-ui/animations": "workspace:*",
     "@neshel-ui/components": "workspace:*",
     "@neshel-ui/config": "workspace:*",
     "@neshel-ui/layout": "workspace:*",

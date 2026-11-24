@@ -22,7 +22,18 @@ const AXE_PAGES = [
   "/en/docs/components/select/",
   "/es/docs/guides/theming/",
   "/en/examples/form/",
+  "/es/docs/animations/",
+  "/en/docs/animations/reference/hover/",
+  "/en/docs/components/toast/",
 ];
+
+const catalogue = JSON.parse(
+  readFileSync(join(repoRoot, "apps", "docs", "animations", "catalog.json"), "utf8"),
+);
+const familyPath = (locale, family) => `/${locale}/docs/animations/effects/${family.slug}/`;
+const effectsOf = (family) =>
+  catalogue.effects.filter((effect) => effect.id.replace(/\d+$/, "") === family.prefix);
+const AXE_TAGS = `{ resultTypes: ["violations"], runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"] } }`;
 
 async function main() {
   const outIndex = process.argv.indexOf("--out");
@@ -221,6 +232,97 @@ async function main() {
       return true;
     });
 
+    // Feature 018: every effect section, its code and its live example, in both languages.
+    await attempt(
+      `animation pages: ${catalogue.effects.length} effects documented, live examples mounted, no errors (EN and ES)`,
+      async () => {
+        const problems = [];
+        for (const locale of ["en", "es"]) {
+          for (const family of catalogue.families) {
+            await open(familyPath(locale, family));
+            const live = effectsOf(family).filter((effect) => effect.demo !== "source");
+            await d
+              .waitFor(
+                `document.querySelectorAll("[data-effect-example]").length === ${live.length}`,
+                `${locale}/${family.slug} examples`,
+                15000,
+              )
+              .catch((error) => problems.push(error.message));
+            await sleep(500);
+            const missing = await d.evaluate(
+              `${JSON.stringify(effectsOf(family).map((effect) => effect.id.toLowerCase()))}.filter((id) => !document.getElementById(id))`,
+            );
+            if (missing.length) problems.push(`${locale}/${family.slug}: no anchor ${missing}`);
+            const empty = await d.evaluate(
+              `[...document.querySelectorAll("[data-effect-example]")].filter((e) => !e.firstElementChild).map((e) => e.dataset.effectExample)`,
+            );
+            if (empty.length) problems.push(`${locale}/${family.slug}: empty example ${empty}`);
+            if (page.errors.length)
+              problems.push(`${locale}/${family.slug}: ${page.errors.slice(0, 3).join(" | ")}`);
+          }
+        }
+        return problems.length ? problems.join("; ") : true;
+      },
+    );
+
+    await attempt("catalogue lists every effect, filters by text and by family", async () => {
+      await open("/es/docs/animations/catalogue/");
+      const rows = () =>
+        d.evaluate(`document.querySelectorAll("[data-catalogue] tbody tr").length`);
+      const all = await rows();
+      if (all !== catalogue.effects.length) return `${all} rows`;
+      await d.evaluate(`document.querySelector('[data-catalogue] input[type="search"]').focus()`);
+      await d.type("mascara");
+      await d.waitFor(
+        `document.querySelectorAll("[data-catalogue] tbody tr").length < ${all}`,
+        "text filter",
+        5000,
+      );
+      const found = await d.evaluate(
+        `[...document.querySelectorAll("[data-catalogue] tbody td:first-child")].map((c) => c.textContent)`,
+      );
+      if (!found.includes("E07") || !found.includes("T09")) return `filter found ${found}`;
+      const href = await d.evaluate(
+        `document.querySelector("[data-catalogue] tbody a").getAttribute("href")`,
+      );
+      return href.endsWith("/es/docs/animations/effects/entrance/#e07") ? true : href;
+    });
+
+    await attempt("search finds an effect by its id and name", async () => {
+      await open("/en/docs/");
+      await d.press("k", 2);
+      await d.waitFor(`document.querySelector('[role="dialog"] input')`, "search dialog", 5000);
+      const found = `[...document.querySelectorAll('[id^="fd-search-option-"]')].some((o) => o.id.includes("/en/docs/animations/effects/text"))`;
+      await d.type("Typewriter");
+      await d.waitFor(found, "Typewriter result", 8000).catch(async () => {
+        await d.evaluate(`document.querySelector('[role="dialog"] input')?.select()`);
+        await d.type("Typewriter");
+        await d.waitFor(found, "Typewriter result", 15000);
+      });
+      await d.press("Escape");
+      return true;
+    });
+
+    await attempt(
+      "an animation example reacts to real input (drag-free controls move it)",
+      async () => {
+        await open(
+          familyPath(
+            "en",
+            catalogue.families.find((family) => family.prefix === "G"),
+          ),
+        );
+        const card = `document.querySelector('[data-effect-example="G01"] [role="group"]')`;
+        await d.waitFor(card, "G01", 15000);
+        await d.evaluate(`document.getElementById("g01").scrollIntoView()`);
+        await sleep(300);
+        await d.evaluate(`${card}.focus()`);
+        await d.press("ArrowDown");
+        await d.waitFor(`/translate|matrix/.test(${card}.style.transform)`, "keyboard move", 5000);
+        return true;
+      },
+    );
+
     await attempt("example pages render (dashboard, form, landing) without errors", async () => {
       for (const slug of ["dashboard", "form", "landing"]) {
         await open(`/en/examples/${slug}/`);
@@ -307,12 +409,20 @@ async function main() {
         async () => {
           await page.emulateColorScheme(scheme);
           const problems = [];
-          for (const path of AXE_PAGES) {
+          // Every animation family once per scheme: English in light, Spanish in dark.
+          const families = catalogue.families.map((family) =>
+            familyPath(scheme === "light" ? "en" : "es", family),
+          );
+          for (const path of [
+            ...AXE_PAGES,
+            `/${scheme === "light" ? "en" : "es"}/docs/animations/catalogue/`,
+            ...families,
+          ]) {
             await open(path);
-            await sleep(300);
+            await sleep(path.includes("/effects/") ? 2500 : 300); // entrances finish first
             await d.evaluate(axeSource);
             const violations = await d.evaluate(
-              `axe.run(document, { resultTypes: ["violations"], runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21a", "wcag21aa", "wcag22aa"] } }).then((r) => r.violations.map((v) => v.id + " (" + v.nodes.length + "): " + v.nodes.slice(0, 2).map((n) => n.target.join(" ")).join(" | ")))`,
+              `axe.run(document, ${AXE_TAGS}).then((r) => r.violations.map((v) => v.id + " (" + v.nodes.length + "): " + v.nodes.slice(0, 2).map((n) => n.target.join(" ")).join(" | ")))`,
             );
             if (violations.length) problems.push(`${path}: ${violations.join("; ")}`);
           }

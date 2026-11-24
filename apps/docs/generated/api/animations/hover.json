@@ -1,0 +1,1066 @@
+{
+  "package": "@neshel-ui/animations/hover",
+  "exports": [
+    {
+      "name": "BorderSweepOptions",
+      "description": "H06 — Border gradient sweep: a rotating conic gradient ring on the `::after` layer.",
+      "module": "hover/effects",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "colors",
+          "type": "readonly [string, string]",
+          "optional": true,
+          "description": "Two gradient colours (default indigo and pink)."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": "Turn the effect off and return to rest."
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "Duration of one turn in ms (500–20000, default 3000)."
+        },
+        {
+          "name": "pointerTypes",
+          "type": "readonly HoverPointerType[]",
+          "optional": true,
+          "description": "Pointer types that activate the effect (default mouse and pen; touch is opt-in)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy (default `\"user\"`).",
+          "default": "\"user\""
+        },
+        {
+          "name": "spring",
+          "type": "SpringOptions | SpringPreset",
+          "optional": true,
+          "description": "Spring of the transition (default `\"snappy\"`).",
+          "default": "\"snappy\""
+        },
+        {
+          "name": "width",
+          "type": "number",
+          "optional": true,
+          "description": "Ring width in px (1–8, default 2)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "CursorFollower",
+      "description": "H11 `<CursorFollower>`: a decorative dot follows the pointer inside the area (mouse/pen; off for reduced\nmotion). Needs `@neshel-ui/animations/hover.css`.",
+      "module": "hover/hover",
+      "kind": "component",
+      "signature": "(props: CursorFollowerProps): Element",
+      "props": "CursorFollowerProps",
+      "client": true
+    },
+    {
+      "name": "CursorFollowerOptions",
+      "description": "",
+      "module": "hover/cursor-follower",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "blend",
+          "type": "boolean",
+          "optional": true,
+          "description": "Blend with the content (`mix-blend-mode: difference`, default false)."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": "Turn the effect off and return to rest."
+        },
+        {
+          "name": "pointerTypes",
+          "type": "readonly (\"mouse\" | \"pen\")[]",
+          "optional": true,
+          "description": "Pointer types that show the follower (default mouse and pen; touch is not supported)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy (default `\"user\"`).",
+          "default": "\"user\""
+        },
+        {
+          "name": "size",
+          "type": "number",
+          "optional": true,
+          "description": "Diameter in px (4–160, default 28)."
+        },
+        {
+          "name": "spring",
+          "type": "SpringOptions | SpringPreset",
+          "optional": true,
+          "description": "Spring of the transition (default `\"snappy\"`).",
+          "default": "\"snappy\""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "CursorFollowerProps",
+      "description": "",
+      "module": "hover/hover",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "asChild",
+          "type": "boolean",
+          "optional": true,
+          "description": "Apply the effects to the single child element instead of rendering a `<div>`."
+        },
+        {
+          "name": "blend",
+          "type": "boolean",
+          "optional": true,
+          "description": "Blend with the content (`mix-blend-mode: difference`, default false)."
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "conflicts",
+          "type": "ConflictPolicy",
+          "optional": true,
+          "description": "Conflict reporting for exclusive channels (default: warn in development)."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": "Turn the effect off and return to rest."
+        },
+        {
+          "name": "pointerTypes",
+          "type": "readonly (\"mouse\" | \"pen\")[]",
+          "optional": true,
+          "description": "Pointer types that show the follower (default mouse and pen; touch is not supported)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy (default `\"user\"`).",
+          "default": "\"user\""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "size",
+          "type": "number",
+          "optional": true,
+          "description": "Diameter in px (4–160, default 28)."
+        },
+        {
+          "name": "spring",
+          "type": "SpringOptions | SpringPreset",
+          "optional": true,
+          "description": "Spring of the transition (default `\"snappy\"`).",
+          "default": "\"snappy\""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "GlowOptions",
+      "description": "H02 — Glow / ring: a soft ring and glow on the decor layer (additive; never replaces focus styles).",
+      "module": "hover/effects",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "blur",
+          "type": "number",
+          "optional": true,
+          "description": "Glow blur in px (0–64, default 16)."
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "optional": true,
+          "description": "Glow colour (CSS colour; default the theme ring colour or indigo)."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": "Turn the effect off and return to rest."
+        },
+        {
+          "name": "pointerTypes",
+          "type": "readonly HoverPointerType[]",
+          "optional": true,
+          "description": "Pointer types that activate the effect (default mouse and pen; touch is opt-in)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy (default `\"user\"`).",
+          "default": "\"user\""
+        },
+        {
+          "name": "size",
+          "type": "number",
+          "optional": true,
+          "description": "Ring spread in px (0–16, default 3)."
+        },
+        {
+          "name": "spring",
+          "type": "SpringOptions | SpringPreset",
+          "optional": true,
+          "description": "Spring of the transition (default `\"snappy\"`).",
+          "default": "\"snappy\""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "Hover",
+      "description": "",
+      "module": "hover/hover",
+      "kind": "component",
+      "signature": "<Options, Resolved>(props: HoverProps<Options, Resolved>): Element",
+      "props": "HoverProps<Options, Resolved>",
+      "client": true
+    },
+    {
+      "name": "HoverOptions",
+      "description": "Options shared by the hover effects.",
+      "module": "hover/shared",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": "Turn the effect off and return to rest."
+        },
+        {
+          "name": "pointerTypes",
+          "type": "readonly HoverPointerType[]",
+          "optional": true,
+          "description": "Pointer types that activate the effect (default mouse and pen; touch is opt-in)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy (default `\"user\"`).",
+          "default": "\"user\""
+        },
+        {
+          "name": "spring",
+          "type": "SpringOptions | SpringPreset",
+          "optional": true,
+          "description": "Spring of the transition (default `\"snappy\"`).",
+          "default": "\"snappy\""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "HoverPointerType",
+      "description": "",
+      "module": "hover/shared",
+      "kind": "type",
+      "definition": "\"mouse\" | \"pen\" | \"touch\""
+    },
+    {
+      "name": "HoverProps",
+      "description": "",
+      "module": "hover/hover",
+      "kind": "type",
+      "props": [
+        {
+          "name": "asChild",
+          "type": "boolean",
+          "optional": true,
+          "description": "Apply the effects to the single child element instead of rendering a `<div>`."
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "conflicts",
+          "type": "ConflictPolicy",
+          "optional": true,
+          "description": "Conflict reporting for exclusive channels (default: warn in development)."
+        },
+        {
+          "name": "options",
+          "type": "undefined | NoInfer<Partial<Options>>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "preset",
+          "type": "readonly PresetInput<any, any>[] | PresetInput<Options, Resolved>",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ],
+      "definition": "EffectPrimitiveProps<Options, Resolved>"
+    },
+    {
+      "name": "LiftOptions",
+      "description": "H01 — Lift: translate up (transform layer) plus a shadow on the decor layer.",
+      "module": "hover/effects",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": "Turn the effect off and return to rest."
+        },
+        {
+          "name": "distance",
+          "type": "number",
+          "optional": true,
+          "description": "Lift distance in px (0–40, default 4)."
+        },
+        {
+          "name": "pointerTypes",
+          "type": "readonly HoverPointerType[]",
+          "optional": true,
+          "description": "Pointer types that activate the effect (default mouse and pen; touch is opt-in)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy (default `\"user\"`).",
+          "default": "\"user\""
+        },
+        {
+          "name": "scale",
+          "type": "number",
+          "optional": true,
+          "description": "Scale while lifted (1–1.2, default 1)."
+        },
+        {
+          "name": "shadow",
+          "type": "boolean",
+          "optional": true,
+          "description": "Render the lift shadow on the decor layer (default true; needs hover.css)."
+        },
+        {
+          "name": "spring",
+          "type": "SpringOptions | SpringPreset",
+          "optional": true,
+          "description": "Spring of the transition (default `\"snappy\"`).",
+          "default": "\"snappy\""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "MagneticOptions",
+      "description": "H04 — Magnetic pull: the element follows the pointer a little (transform layer, spring).",
+      "module": "hover/effects",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": "Turn the effect off and return to rest."
+        },
+        {
+          "name": "max",
+          "type": "number",
+          "optional": true,
+          "description": "Largest displacement in px (0–64, default 12)."
+        },
+        {
+          "name": "pointerTypes",
+          "type": "readonly HoverPointerType[]",
+          "optional": true,
+          "description": "Pointer types that activate the effect (default mouse and pen; touch is opt-in)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy (default `\"user\"`).",
+          "default": "\"user\""
+        },
+        {
+          "name": "spring",
+          "type": "SpringOptions | SpringPreset",
+          "optional": true,
+          "description": "Spring of the transition (default `\"snappy\"`).",
+          "default": "\"snappy\""
+        },
+        {
+          "name": "strength",
+          "type": "number",
+          "optional": true,
+          "description": "Share of the pointer offset followed (0–1, default 0.35)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "MediaZoomOptions",
+      "description": "H08 — Media zoom inside frame: the frame clips; its media child scales (child transform layer).",
+      "module": "hover/effects",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": "Turn the effect off and return to rest."
+        },
+        {
+          "name": "pointerTypes",
+          "type": "readonly HoverPointerType[]",
+          "optional": true,
+          "description": "Pointer types that activate the effect (default mouse and pen; touch is opt-in)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy (default `\"user\"`).",
+          "default": "\"user\""
+        },
+        {
+          "name": "scale",
+          "type": "number",
+          "optional": true,
+          "description": "Zoom factor (1–2, default 1.08)."
+        },
+        {
+          "name": "spring",
+          "type": "SpringOptions | SpringPreset",
+          "optional": true,
+          "description": "Spring of the transition (default `\"snappy\"`).",
+          "default": "\"snappy\""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ParallaxOptions",
+      "description": "H09 — Pointer parallax layers: children with `data-neshel-depth` move by depth (transform layers).",
+      "module": "hover/effects",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": "Turn the effect off and return to rest."
+        },
+        {
+          "name": "pointerTypes",
+          "type": "readonly HoverPointerType[]",
+          "optional": true,
+          "description": "Pointer types that activate the effect (default mouse and pen; touch is opt-in)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy (default `\"user\"`).",
+          "default": "\"user\""
+        },
+        {
+          "name": "spring",
+          "type": "SpringOptions | SpringPreset",
+          "optional": true,
+          "description": "Spring of the transition (default `\"snappy\"`).",
+          "default": "\"snappy\""
+        },
+        {
+          "name": "strength",
+          "type": "number",
+          "optional": true,
+          "description": "Displacement in px at depth 1 and the box edge (0–100, default 16)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ResolvedTilt3DOptions",
+      "description": "",
+      "module": "hover/tilt/options",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "axis",
+          "type": "Tilt3DAxis",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "focusTilt",
+          "type": "boolean",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "maxTilt",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "perspective",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "pointerTypes",
+          "type": "ReadonlySet<string>",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "reverse",
+          "type": "boolean",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "scale",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "spring",
+          "type": "Required<SpringOptions>",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ShineOptions",
+      "description": "H10 — Shine / glare sweep: one highlight sweep across the decor layer on each activation.",
+      "module": "hover/effects",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "angle",
+          "type": "number",
+          "optional": true,
+          "description": "Gradient angle in degrees (0–360, default 110)."
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "optional": true,
+          "description": "Highlight colour (default translucent white)."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": "Turn the effect off and return to rest."
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "Sweep duration in ms (100–5000, default 700)."
+        },
+        {
+          "name": "pointerTypes",
+          "type": "readonly HoverPointerType[]",
+          "optional": true,
+          "description": "Pointer types that activate the effect (default mouse and pen; touch is opt-in)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy (default `\"user\"`).",
+          "default": "\"user\""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "SpotlightOptions",
+      "description": "H05 — Spotlight: a radial highlight that follows the pointer on the decor layer.",
+      "module": "hover/effects",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "color",
+          "type": "string",
+          "optional": true,
+          "description": "Highlight colour (default white)."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": "Turn the effect off and return to rest."
+        },
+        {
+          "name": "intensity",
+          "type": "number",
+          "optional": true,
+          "description": "Strength of the highlight (0–1, default 0.22)."
+        },
+        {
+          "name": "pointerTypes",
+          "type": "readonly HoverPointerType[]",
+          "optional": true,
+          "description": "Pointer types that activate the effect (default mouse and pen; touch is opt-in)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy (default `\"user\"`).",
+          "default": "\"user\""
+        },
+        {
+          "name": "size",
+          "type": "number",
+          "optional": true,
+          "description": "Radius in px (40–1000, default 240)."
+        },
+        {
+          "name": "spring",
+          "type": "SpringOptions | SpringPreset",
+          "optional": true,
+          "description": "Spring of the transition (default `\"snappy\"`).",
+          "default": "\"snappy\""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "Tilt3D",
+      "description": "",
+      "module": "hover/tilt/tilt-3d",
+      "kind": "component",
+      "signature": "({ maxTilt, perspective, scale, axis, reverse, spring, pointerTypes, focusTilt, reducedMotion, disabled, asChild, className, ref, children, ...rest }: Tilt3DProps): Element",
+      "props": "Tilt3DProps",
+      "client": true
+    },
+    {
+      "name": "Tilt3DAxis",
+      "description": "",
+      "module": "hover/tilt/options",
+      "kind": "type",
+      "definition": "\"both\" | \"x\" | \"y\""
+    },
+    {
+      "name": "Tilt3DController",
+      "description": "",
+      "module": "hover/tilt/controller",
+      "kind": "interface",
+      "definition": "Tilt3DController",
+      "props": [
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": "Remove every listener, stop the frame task and restore the element's own styles."
+        },
+        {
+          "name": "state",
+          "type": "Tilt3DState",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "update",
+          "type": "(options?: Tilt3DOptions) => void",
+          "optional": false,
+          "description": "Apply new options (validated); the current pose follows them."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "Tilt3DOptions",
+      "description": "",
+      "module": "hover/tilt/options",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "axis",
+          "type": "Tilt3DAxis",
+          "optional": true,
+          "description": "Which rotation axes follow the pointer (default `\"both\"`).",
+          "default": "\"both\""
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": "Turn the effect off and return to rest."
+        },
+        {
+          "name": "focusTilt",
+          "type": "boolean",
+          "optional": true,
+          "description": "Keyboard focus inside the element shows a gentle fixed pose (default true).",
+          "default": "true"
+        },
+        {
+          "name": "maxTilt",
+          "type": "number",
+          "optional": true,
+          "description": "Largest rotation in degrees at the element's edges (default 10, range 0–45)."
+        },
+        {
+          "name": "perspective",
+          "type": "number",
+          "optional": true,
+          "description": "Perspective distance in px; smaller is more dramatic (default 1000, at least 100)."
+        },
+        {
+          "name": "pointerTypes",
+          "type": "readonly Tilt3DPointerType[]",
+          "optional": true,
+          "description": "Pointer types that drive the tilt (default mouse and pen). Touch is opt-in because a finger\nmoving over a card usually means scrolling."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy (default `\"user\"`: follow `prefers-reduced-motion`).",
+          "default": "\"user\""
+        },
+        {
+          "name": "reverse",
+          "type": "boolean",
+          "optional": true,
+          "description": "Invert the inward default: the region under the pointer comes forward (default false).",
+          "default": "false"
+        },
+        {
+          "name": "scale",
+          "type": "number",
+          "optional": true,
+          "description": "Scale while the pointer or keyboard focus is on the element (default 1, range 0.5–2)."
+        },
+        {
+          "name": "spring",
+          "type": "SpringOptions",
+          "optional": true,
+          "description": "Spring used to follow the pointer and to return to rest."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "Tilt3DPointerType",
+      "description": "",
+      "module": "hover/tilt/options",
+      "kind": "type",
+      "definition": "\"mouse\" | \"pen\" | \"touch\""
+    },
+    {
+      "name": "Tilt3DProps",
+      "description": "",
+      "module": "hover/tilt/tilt-3d",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "asChild",
+          "type": "boolean",
+          "optional": true,
+          "description": "Apply the effect to the single child element instead of rendering a `<div>`."
+        },
+        {
+          "name": "axis",
+          "type": "Tilt3DAxis",
+          "optional": true,
+          "description": "Which rotation axes follow the pointer (default `\"both\"`).",
+          "default": "\"both\""
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": "Turn the effect off and return to rest."
+        },
+        {
+          "name": "focusTilt",
+          "type": "boolean",
+          "optional": true,
+          "description": "Keyboard focus inside the element shows a gentle fixed pose (default true).",
+          "default": "true"
+        },
+        {
+          "name": "maxTilt",
+          "type": "number",
+          "optional": true,
+          "description": "Largest rotation in degrees at the element's edges (default 10, range 0–45)."
+        },
+        {
+          "name": "perspective",
+          "type": "number",
+          "optional": true,
+          "description": "Perspective distance in px; smaller is more dramatic (default 1000, at least 100)."
+        },
+        {
+          "name": "pointerTypes",
+          "type": "readonly Tilt3DPointerType[]",
+          "optional": true,
+          "description": "Pointer types that drive the tilt (default mouse and pen). Touch is opt-in because a finger\nmoving over a card usually means scrolling."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy (default `\"user\"`: follow `prefers-reduced-motion`).",
+          "default": "\"user\""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reverse",
+          "type": "boolean",
+          "optional": true,
+          "description": "Invert the inward default: the region under the pointer comes forward (default false).",
+          "default": "false"
+        },
+        {
+          "name": "scale",
+          "type": "number",
+          "optional": true,
+          "description": "Scale while the pointer or keyboard focus is on the element (default 1, range 0.5–2)."
+        },
+        {
+          "name": "spring",
+          "type": "SpringOptions",
+          "optional": true,
+          "description": "Spring used to follow the pointer and to return to rest."
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "Tilt3DState",
+      "description": "Value of the `data-neshel-tilt` attribute (styling and test hook).",
+      "module": "hover/tilt/controller",
+      "kind": "type",
+      "definition": "\"rest\" | \"pointer\" | \"focus\" | \"reduced\" | \"disabled\""
+    },
+    {
+      "name": "UnderlineOptions",
+      "description": "H07 — Underline grow: a bar that grows along the bottom edge (decor layer).",
+      "module": "hover/effects",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "color",
+          "type": "string",
+          "optional": true,
+          "description": "Bar colour (default `currentColor`).",
+          "default": "currentColor"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": "Turn the effect off and return to rest."
+        },
+        {
+          "name": "origin",
+          "type": "\"left\" | \"center\" | \"right\"",
+          "optional": true,
+          "description": "Where the bar grows from (default `\"left\"`; logical start/end are not mirrored in RTL).",
+          "default": "\"left\""
+        },
+        {
+          "name": "pointerTypes",
+          "type": "readonly HoverPointerType[]",
+          "optional": true,
+          "description": "Pointer types that activate the effect (default mouse and pen; touch is opt-in)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy (default `\"user\"`).",
+          "default": "\"user\""
+        },
+        {
+          "name": "spring",
+          "type": "SpringOptions | SpringPreset",
+          "optional": true,
+          "description": "Spring of the transition (default `\"snappy\"`).",
+          "default": "\"snappy\""
+        },
+        {
+          "name": "thickness",
+          "type": "number",
+          "optional": true,
+          "description": "Bar thickness in px (1–8, default 2)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "borderSweep",
+      "description": "",
+      "module": "hover/effects",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<BorderSweepOptions, ResolvedBorderSweep>>"
+    },
+    {
+      "name": "createTilt3D",
+      "description": "Imperative controller with a Tilt3D-shaped handle. Tilt3D only composes `transform`, so it is attached\nwithout the exclusive-channel arbiter (smaller bundle); behaviour equals `attachEffect`.",
+      "module": "hover/tilt/controller",
+      "kind": "function",
+      "signature": "(element: HTMLElement, options?: Tilt3DOptions | undefined): Tilt3DController"
+    },
+    {
+      "name": "cursorFollower",
+      "description": "",
+      "module": "hover/cursor-follower",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<CursorFollowerOptions, ResolvedFollower>>"
+    },
+    {
+      "name": "glow",
+      "description": "",
+      "module": "hover/effects",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<GlowOptions, ResolvedGlow>>"
+    },
+    {
+      "name": "hoverEffects",
+      "description": "Every hover definition in catalogue order (H01–H11), for explicit registries.",
+      "module": "hover/index",
+      "kind": "const",
+      "type": "readonly AnyEffectDefinition[]"
+    },
+    {
+      "name": "lift",
+      "description": "",
+      "module": "hover/effects",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<LiftOptions, ResolvedLift>>"
+    },
+    {
+      "name": "magnetic",
+      "description": "",
+      "module": "hover/effects",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<MagneticOptions, ResolvedMagnetic>>"
+    },
+    {
+      "name": "mediaZoom",
+      "description": "",
+      "module": "hover/effects",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<MediaZoomOptions, ResolvedMediaZoom>>"
+    },
+    {
+      "name": "parallax",
+      "description": "",
+      "module": "hover/effects",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<ParallaxOptions, ResolvedParallax>>"
+    },
+    {
+      "name": "shine",
+      "description": "",
+      "module": "hover/effects",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<ShineOptions, ResolvedShine>>"
+    },
+    {
+      "name": "spotlight",
+      "description": "",
+      "module": "hover/effects",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<SpotlightOptions, ResolvedSpotlight>>"
+    },
+    {
+      "name": "tilt3D",
+      "description": "The Tilt3D definition (`hover/tilt-3d`): one composable `transform` layer, no exclusive channel.",
+      "module": "hover/tilt/controller",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<Tilt3DOptions, ResolvedTilt3DOptions>>"
+    },
+    {
+      "name": "underline",
+      "description": "",
+      "module": "hover/effects",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<UnderlineOptions, ResolvedUnderline>>"
+    },
+    {
+      "name": "useTilt3D",
+      "description": "",
+      "module": "hover/tilt/use-tilt-3d",
+      "kind": "function",
+      "signature": "(ref: RefObject<HTMLElement | null>, options?: Tilt3DOptions | undefined): void"
+    }
+  ]
+}

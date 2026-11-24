@@ -1,0 +1,676 @@
+{
+  "package": "@neshel-ui/animations/feedback",
+  "exports": [
+    {
+      "name": "DotsPulse",
+      "description": "F04 — three pulsing dots (indeterminate); slow opacity under reduced motion.",
+      "module": "feedback/react",
+      "kind": "component",
+      "signature": "({ label, decorative, size, className, style, ...rest }: IndicatorProps): Element",
+      "props": "IndicatorProps",
+      "client": true
+    },
+    {
+      "name": "EnterExit",
+      "description": "F06 — enter/exit motion for the items of a list another component owns (`data-state` + `neshel-exit`, see\n`createEnterExit`). Renders no element of its own; content, roles, timers and focus stay with the owner.",
+      "module": "feedback/react",
+      "kind": "component",
+      "signature": "({ children, from, exitTo, distance, duration, selector, reducedMotion, }: EnterExitProps): Element",
+      "props": "EnterExitProps",
+      "client": true
+    },
+    {
+      "name": "EnterExitControl",
+      "description": "",
+      "module": "feedback/enter-exit",
+      "kind": "interface",
+      "definition": "EnterExitControl",
+      "props": [
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": "Idempotent: stops observing and restores every item's styles."
+        },
+        {
+          "name": "size",
+          "type": "number",
+          "optional": false,
+          "description": "Items currently tracked."
+        },
+        {
+          "name": "update",
+          "type": "(options: EnterExitOptions) => void",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "EnterExitOptions",
+      "description": "",
+      "module": "feedback/enter-exit",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "distance",
+          "type": "number",
+          "optional": true,
+          "description": "Travel in px (0–200, default 12)."
+        },
+        {
+          "name": "duration",
+          "type": "number | DurationPreset",
+          "optional": true,
+          "description": "Duration in ms or a `motionDefaults.duration` preset (default 220).",
+          "default": "220"
+        },
+        {
+          "name": "exitTo",
+          "type": "EnterExitSide",
+          "optional": true,
+          "description": "Side the items leave towards (default `\"end\"`).",
+          "default": "\"end\""
+        },
+        {
+          "name": "from",
+          "type": "EnterExitSide",
+          "optional": true,
+          "description": "Side the items enter from (default `\"bottom\"`; logical start/end follow the writing direction).",
+          "default": "\"bottom\""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy (default `\"user\"`): reduced → opacity only.",
+          "default": "\"user\""
+        },
+        {
+          "name": "selector",
+          "type": "string",
+          "optional": true,
+          "description": "Items to animate inside the container (default `\"[data-state]\"`).",
+          "default": "\"[data-state]\""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "EnterExitProps",
+      "description": "",
+      "module": "feedback/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactElement",
+          "optional": false,
+          "description": "One element: the list container (e.g. a Components `<Toaster motion=\"none\">`)."
+        },
+        {
+          "name": "distance",
+          "type": "number",
+          "optional": true,
+          "description": "Travel in px (0–200, default 12)."
+        },
+        {
+          "name": "duration",
+          "type": "number | DurationPreset",
+          "optional": true,
+          "description": "Duration in ms or a `motionDefaults.duration` preset (default 220).",
+          "default": "220"
+        },
+        {
+          "name": "exitTo",
+          "type": "EnterExitSide",
+          "optional": true,
+          "description": "Side the items leave towards (default `\"end\"`).",
+          "default": "\"end\""
+        },
+        {
+          "name": "from",
+          "type": "EnterExitSide",
+          "optional": true,
+          "description": "Side the items enter from (default `\"bottom\"`; logical start/end follow the writing direction).",
+          "default": "\"bottom\""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy (default `\"user\"`): reduced → opacity only.",
+          "default": "\"user\""
+        },
+        {
+          "name": "selector",
+          "type": "string",
+          "optional": true,
+          "description": "Items to animate inside the container (default `\"[data-state]\"`).",
+          "default": "\"[data-state]\""
+        }
+      ],
+      "inherits": [],
+      "definition": "EnterExitOptions & { /** One element: the list container (e.g. a Components `<Toaster motion=\"none\">`). */ children: ReactElement; }"
+    },
+    {
+      "name": "EnterExitSide",
+      "description": "",
+      "module": "feedback/enter-exit",
+      "kind": "type",
+      "definition": "\"bottom\" | \"top\" | \"start\" | \"end\""
+    },
+    {
+      "name": "FeedbackDebugInfo",
+      "description": "",
+      "module": "feedback/index",
+      "kind": "interface",
+      "definition": "FeedbackDebugInfo",
+      "props": [
+        {
+          "name": "enterExit",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "loadingButtons",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "optimistic",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "LoadingButton",
+      "description": "F07 — loading morph on the single button child (same element, name and focus; no double activation).",
+      "module": "feedback/react",
+      "kind": "component",
+      "signature": "({ loading, children, controlRef }: LoadingButtonProps): Element",
+      "props": "LoadingButtonProps",
+      "client": true
+    },
+    {
+      "name": "LoadingButtonControl",
+      "description": "",
+      "module": "feedback/states",
+      "kind": "interface",
+      "definition": "LoadingButtonControl",
+      "props": [
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "set",
+          "type": "(loading: boolean) => void",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "LoadingButtonOptions",
+      "description": "",
+      "module": "feedback/states",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "loading",
+          "type": "boolean",
+          "optional": true,
+          "description": "Initial state (default false).",
+          "default": "false"
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "LoadingButtonProps",
+      "description": "",
+      "module": "feedback/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactElement",
+          "optional": false,
+          "description": "One button element (e.g. a Components `Button` without its `loading` prop)."
+        },
+        {
+          "name": "controlRef",
+          "type": "RefObject<LoadingButtonControl | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "loading",
+          "type": "boolean",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": [],
+      "definition": "{ loading: boolean; /** One button element (e.g. a Components `Button` without its `loading` prop). */ children: ReactElement; controlRef?: RefObject<LoadingButtonControl | null>; }"
+    },
+    {
+      "name": "NeshelExitDetail",
+      "description": "Detail of the `neshel-exit` event a list owner dispatches on an item before removing it.",
+      "module": "feedback/enter-exit",
+      "kind": "interface",
+      "definition": "NeshelExitDetail",
+      "props": [
+        {
+          "name": "waitUntil",
+          "type": "(promise: Promise<unknown>) => void",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "OptimisticPulse",
+      "description": "F08 — pending/confirmed/failed states on the single child; `failed` calls `onRollback`.",
+      "module": "feedback/react",
+      "kind": "component",
+      "signature": "({ status, onRollback, children, controlRef, }: OptimisticPulseProps): Element",
+      "props": "OptimisticPulseProps",
+      "client": true
+    },
+    {
+      "name": "OptimisticPulseControl",
+      "description": "",
+      "module": "feedback/states",
+      "kind": "interface",
+      "definition": "OptimisticPulseControl",
+      "props": [
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "set",
+          "type": "(status: OptimisticStatus) => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "status",
+          "type": "OptimisticStatus",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "OptimisticPulseOptions",
+      "description": "",
+      "module": "feedback/states",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "onRollback",
+          "type": "() => void",
+          "optional": true,
+          "description": "Called when the status becomes `failed` (undo the optimistic change)."
+        },
+        {
+          "name": "status",
+          "type": "OptimisticStatus",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "OptimisticPulseProps",
+      "description": "",
+      "module": "feedback/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactElement",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "controlRef",
+          "type": "RefObject<OptimisticPulseControl | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onRollback",
+          "type": "() => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "status",
+          "type": "OptimisticStatus",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": [],
+      "definition": "{ status: OptimisticStatus; onRollback?(): void; children: ReactElement; controlRef?: RefObject<OptimisticPulseControl | null>; }"
+    },
+    {
+      "name": "OptimisticStatus",
+      "description": "",
+      "module": "feedback/states",
+      "kind": "type",
+      "definition": "\"idle\" | \"pending\" | \"confirmed\" | \"failed\""
+    },
+    {
+      "name": "PendingText",
+      "description": "F10 — the text stays one readable text; a light band sweeps while `pending`.",
+      "module": "feedback/react",
+      "kind": "component",
+      "signature": "({ pending, className, children, ...rest }: PendingTextProps): Element",
+      "props": "PendingTextProps",
+      "client": true
+    },
+    {
+      "name": "PendingTextProps",
+      "description": "",
+      "module": "feedback/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "pending",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ],
+      "definition": "Omit<ComponentPropsWithoutRef<\"span\">, \"children\"> & { pending?: boolean; children: ReactNode; }"
+    },
+    {
+      "name": "ProgressBar",
+      "description": "F03 — progress bar: determinate with a real value, indeterminate sweep otherwise.",
+      "module": "feedback/react",
+      "kind": "component",
+      "signature": "({ label, value, max, valueText, className, style, ...rest }: ProgressBarProps): Element",
+      "props": "ProgressBarProps",
+      "client": true
+    },
+    {
+      "name": "ProgressBarProps",
+      "description": "",
+      "module": "feedback/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "label",
+          "type": "string",
+          "optional": false,
+          "description": "Accessible name (required)."
+        },
+        {
+          "name": "max",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "value",
+          "type": "number",
+          "optional": true,
+          "description": "Known progress; omit for an indeterminate indicator (no `aria-valuenow`)."
+        },
+        {
+          "name": "valueText",
+          "type": "string",
+          "optional": true,
+          "description": "Human-readable value (`aria-valuetext`)."
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ],
+      "definition": "ProgressProps & Omit<ComponentPropsWithoutRef<\"div\">, \"children\" | \"role\">"
+    },
+    {
+      "name": "ProgressRing",
+      "description": "F09 — progress ring (`pathLength`-normalised SVG; transitions are package CSS).",
+      "module": "feedback/react",
+      "kind": "component",
+      "signature": "(props: ProgressRingProps): Element",
+      "props": "ProgressRingProps",
+      "client": true
+    },
+    {
+      "name": "ProgressRingProps",
+      "description": "",
+      "module": "feedback/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "label",
+          "type": "string",
+          "optional": false,
+          "description": "Accessible name (required)."
+        },
+        {
+          "name": "max",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "type": "ProgressSource",
+          "optional": true,
+          "description": "0–1 source (timeline value, scroll progress…): visual per frame, `aria-valuenow` on integer changes."
+        },
+        {
+          "name": "size",
+          "type": "string",
+          "optional": true,
+          "description": "CSS length (default 2.5em).",
+          "default": "2.5em"
+        },
+        {
+          "name": "value",
+          "type": "number",
+          "optional": true,
+          "description": "Known progress; omit for an indeterminate indicator (no `aria-valuenow`)."
+        },
+        {
+          "name": "valueText",
+          "type": "string",
+          "optional": true,
+          "description": "Human-readable value (`aria-valuetext`)."
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "ProgressSource",
+      "description": "Any 0–1 progress source (the 011 `ScrollProgress` and motion values fit).",
+      "module": "core/progress-driver",
+      "kind": "interface",
+      "definition": "ProgressSource",
+      "props": [
+        {
+          "name": "get",
+          "type": "() => number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "subscribe",
+          "type": "(listener: (progress: number) => void) => () => void",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "Shimmer",
+      "description": "F02 — adds the `shimmer` token to the single child (e.g. a Components `Skeleton`); `::after` sweep.",
+      "module": "feedback/react",
+      "kind": "component",
+      "signature": "({ children }: { children: ReactElement<unknown, string | JSXElementConstructor<any>>; }): Element",
+      "props": "{\n    children: ReactElement;\n}",
+      "client": true
+    },
+    {
+      "name": "SkeletonShimmer",
+      "description": "F02 — a decorative placeholder with a shimmer (`aria-hidden`; mark the region `aria-busy`).",
+      "module": "feedback/react",
+      "kind": "component",
+      "signature": "({ width, height, shape, className, style, ...rest }: SkeletonShimmerProps): Element",
+      "props": "SkeletonShimmerProps",
+      "client": true
+    },
+    {
+      "name": "SkeletonShimmerProps",
+      "description": "",
+      "module": "feedback/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "height",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "shape",
+          "type": "\"line\" | \"rect\" | \"circle\"",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "width",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ],
+      "definition": "Omit<ComponentPropsWithoutRef<\"span\">, \"children\"> & { width?: string; height?: string; shape?: \"line\" | \"rect\" | \"circle\"; }"
+    },
+    {
+      "name": "Spinner",
+      "description": "F01 — indeterminate spinner (`role=\"progressbar\"`, no value); slow pulse under reduced motion.",
+      "module": "feedback/react",
+      "kind": "component",
+      "signature": "({ label, decorative, size, className, style, ...rest }: IndicatorProps): Element",
+      "props": "IndicatorProps",
+      "client": true
+    },
+    {
+      "name": "SuccessMark",
+      "description": "F05 — success check drawn when `show` becomes true (shape shared with S10 through core).",
+      "module": "feedback/react",
+      "kind": "component",
+      "signature": "({ show, label, size, circle, className, ...rest }: SuccessMarkProps): Element",
+      "props": "SuccessMarkProps",
+      "client": true
+    },
+    {
+      "name": "SuccessMarkProps",
+      "description": "",
+      "module": "feedback/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "circle",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "description": "Accessible name; omitted → decorative. It never announces (no live region)."
+        },
+        {
+          "name": "show",
+          "type": "boolean",
+          "optional": false,
+          "description": "Draw the mark (only when the operation really succeeded)."
+        },
+        {
+          "name": "size",
+          "type": "number",
+          "optional": true,
+          "description": "px (default 40).",
+          "default": "40"
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "createEnterExit",
+      "description": "Animate the items of a keyed list on enter and exit. The container keeps its own semantics; F06 never moves\nfocus, never announces and never removes an item.",
+      "module": "feedback/enter-exit",
+      "kind": "function",
+      "signature": "(container: HTMLElement, options?: EnterExitOptions | undefined): EnterExitControl"
+    },
+    {
+      "name": "createLoadingButton",
+      "description": "F07 — keep the same button (identity, accessible name, focus) while an operation runs: `aria-disabled`,\nactivation blocked in the capture phase (click, Enter/Space and implicit submission all arrive as a click),\nwidth locked from one measurement, label hidden visually (still in the DOM), spinner on the `::after` layer.",
+      "module": "feedback/states",
+      "kind": "function",
+      "signature": "(button: HTMLElement, options?: LoadingButtonOptions | undefined): LoadingButtonControl"
+    },
+    {
+      "name": "createOptimisticPulse",
+      "description": "F08 — an optimistic change is shown as pending (soft `::before` pulse, `aria-busy`), never as confirmed until the\ncaller says so; `failed` shows a distinct static state and calls `onRollback`.",
+      "module": "feedback/states",
+      "kind": "function",
+      "signature": "(element: HTMLElement, options?: OptimisticPulseOptions | undefined): OptimisticPulseControl"
+    },
+    {
+      "name": "getFeedbackDebugInfo",
+      "description": "Live feedback counters (tests, lab).",
+      "module": "feedback/index",
+      "kind": "function",
+      "signature": "(): FeedbackDebugInfo"
+    }
+  ]
+}

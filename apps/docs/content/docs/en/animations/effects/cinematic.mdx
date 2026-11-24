@@ -1,0 +1,68 @@
+---
+title: Cinematic & Scenes
+description: "The 10 effects C01–C10: purpose, API, options, examples, reduced motion and cost."
+---
+
+<AnimationsStatus />
+
+Cinematic effects share one idea: a timeline is a pure function of time that renders through each element's motion host, so it can be sought, scrubbed and reversed and it composes with every other effect. Server markup is the visible content; covers, lenses and bars are package layers (`aria-hidden`, inert) that appear only with JavaScript. Every effect offers `track()` so that a timeline can sequence it.
+
+## C01 · Timeline [#c01]
+
+`useTimeline` builds a timeline for a component and destroys it with it; `createTimeline` is the engine. `add` places tracks one after another, at a label or with offsets such as `"-=300"`; `play`, `pause`, `reverse` and `seek(0–1)` control it.
+
+<Effect id="C01" />
+
+## C02 · Scene chapters [#c02]
+
+`<SceneChapters>` divides a progress into `<Chapter>`s by `weight`; each `<SceneSegment>` animates a part of its chapter (`span`). Give it the `source` of a `<ScrollScene>` or a controlled `progress`; `onChapterChange` reports the active one.
+
+<Effect id="C02" />
+
+## C03 · Camera [#c03]
+
+`<CameraStage>` pans and zooms over a large canvas. `useCamera()` moves it: `camera.to({ focus: element })` or `{ x, y, zoom }`. Keyboard focus inside the canvas brings the camera along, and without JavaScript it is a scrollable region.
+
+<Effect id="C03" />
+
+## C04 · Split reveal [#c04]
+
+`<SplitReveal>` covers its content with two halves that part along `direction` (`"x"` or `"y"`). `open` controls it; without `open` it reveals once when mounted on the client.
+
+<Effect id="C04" />
+
+## C05 · Curtain and shutter [#c05]
+
+`<CurtainReveal>` opens from the centre with `pattern="curtain"` or in `slats` with `pattern="shutter"`. The content underneath receives no writes and stays in the accessibility tree.
+
+<Effect id="C05" />
+
+## C06 · Title sequence [#c06]
+
+`<TitleSequence>` plays its element children one after another with an entrance `effect` every `interval` ms, over an optional `background`. It does not split text: each child is one line.
+
+<Effect id="C06" />
+
+## C07 · Spotlight and vignette [#c07]
+
+`<Spotlight>` dims the stage except a circle around `target` (`radius`, `padding`). The dimmed content stays interactive; the lens is decoration, so describe the step in text.
+
+<Effect id="C07" />
+
+## C08 · Depth of field [#c08]
+
+`<DepthOfField>` blurs its children by their distance to the `focus` index: `falloff` (4 px per step) up to `maxBlur` (8). At most six layers; −1 keeps everything sharp.
+
+<Effect id="C08" />
+
+## C09 · Storyboard [#c09]
+
+`<Storyboard>` is a carousel of `<StoryboardFrame>`s with rotation, previous, next and stop controls and a `label`. `autoplay` is opt-in, pauses on hover, focus, off screen and hidden pages, and never runs under reduced motion. The controls are unstyled buttons; if your CSS resets button padding, give them at least 24 × 24 px.
+
+<Effect id="C09" />
+
+## C10 · Letterbox [#c10]
+
+`<Letterbox>` slides two bars in while `active`, for a `ratio` of 2.39 by default. It renders a positioned frame; the content is not resized.
+
+<Effect id="C10" />

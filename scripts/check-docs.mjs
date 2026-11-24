@@ -1,9 +1,11 @@
 // pnpm check:docs [--only <check>]... — documentation verification (feature 006, contracts/docs-content.md).
-// Checks: api-fresh, coverage, translations, links, demos, snippets, config. Requires built packages.
+// Checks: api-fresh, coverage, catalogue, unreleased, translations, links, demos, snippets, config.
+// Requires built packages.
 import { spawnSync } from "node:child_process";
 import { existsSync, mkdirSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { dirname, join, relative, sep } from "node:path";
+import { checkCatalogue } from "./docs/catalogue.mjs";
 import { API_PACKAGES, extractAll } from "./docs/extract-api.mjs";
 import { repoRoot } from "./lib/workspace.mjs";
 
@@ -84,6 +86,11 @@ function headingSlugs(body) {
     if (inFence) continue;
     const heading = line.match(/^#{2,6}\s+(.+?)\s*#*$/);
     if (!heading) continue;
+    const explicit = heading[1].match(/\[#([^\]]+)\]$/);
+    if (explicit) {
+      slugs.add(explicit[1]);
+      continue;
+    }
     const base = slugify(heading[1].replace(/\[([^\]]+)\]\([^)]+\)/g, "$1"));
     const n = counts.get(base) ?? 0;
     counts.set(base, n + 1);
@@ -153,6 +160,44 @@ function checkCoverage(problems, pages, api) {
   return targets;
 }
 
+/**
+ * Exports that are on main but not in the published packages (apps/docs/published-api.json, the export
+ * names of tag v0.1.0): every page that documents one must show <Unreleased />, and no other page may.
+ */
+export function unreleasedProblems(pages, api, published) {
+  const problems = [];
+  let count = 0;
+  for (const page of pages) {
+    const pkg = page.data.package;
+    if (!API_PACKAGES.includes(pkg)) continue;
+    const fresh = (page.data.exports ?? []).filter(
+      (name) => !published.exports[pkg].includes(name),
+    );
+    if (page.locale === "en") count += fresh.length;
+    const marked = prose(page.body).includes("<Unreleased />");
+    if (fresh.length && !marked)
+      problems.push(
+        `unreleased: ${page.locale}/${page.rel} documents ${fresh.join(", ")}, not in ${published.version}; add <Unreleased />`,
+      );
+    if (!fresh.length && marked)
+      problems.push(`unreleased: ${page.locale}/${page.rel} is marked but everything is published`);
+  }
+  for (const pkg of API_PACKAGES)
+    for (const name of published.exports[pkg])
+      if (!api[pkg].exports.some((item) => item.name === name))
+        problems.push(
+          `unreleased: ${pkg}:${name} was published in ${published.version} and is gone`,
+        );
+  return { problems, count };
+}
+
+function checkUnreleased(problems, pages, api) {
+  const published = JSON.parse(readFileSync(join(docsRoot, "published-api.json"), "utf8"));
+  const result = unreleasedProblems(pages, api, published);
+  problems.push(...result.problems);
+  return result.count;
+}
+
 function checkTranslations(problems, pages) {
   const exceptionsFile = join(docsRoot, "translations.json");
   const exceptions = existsSync(exceptionsFile)
@@ -182,6 +227,10 @@ function checkTranslations(problems, pages) {
       [...prose(body).matchAll(/<Preview\s+demo="([^"]+)"/g)].map((m) => m[1]).join(",");
     if (previews(page.body) !== previews(other.body))
       problems.push(`translations: previews differ between en/${rel} and es/${rel}`);
+    const effects = (body) =>
+      [...prose(body).matchAll(/<Effect id="([^"]+)"/g)].map((m) => m[1]).join(",");
+    if (effects(page.body) !== effects(other.body))
+      problems.push(`translations: effects differ between en/${rel} and es/${rel}`);
     const tables = (body) =>
       [...prose(body).matchAll(/<ApiTable\s+package="([^"]+)"\s+name="([^"]+)"/g)]
         .map((m) => `${m[1]}:${m[2]}`)
@@ -482,7 +531,7 @@ function checkConfigs(problems, snippetConfigs) {
 
 // ---------------------------------------------------------------------------------------------
 
-function main() {
+async function main() {
   const only = process.argv.flatMap((arg, i) => (process.argv[i - 1] === "--only" ? [arg] : []));
   const run = (name) => only.length === 0 || only.includes(name);
   const problems = [];
@@ -498,6 +547,8 @@ function main() {
     const targets = checkCoverage(problems, pages, api);
     summary.coverageTargets = Object.values(targets).reduce((n, list) => n + list.length, 0);
   }
+  if (run("catalogue")) summary.catalogue = await checkCatalogue(problems, pages, api);
+  if (run("unreleased")) summary.unreleased = checkUnreleased(problems, pages, api);
   if (run("translations")) summary.translations = checkTranslations(problems, pages).fallbacks;
   if (run("links")) {
     checkLinks(problems, pages);
@@ -524,4 +575,4 @@ function main() {
   } else console.info("check:docs: all checks passed");
 }
 
-if (process.argv[1] && toPosix(process.argv[1]).endsWith("scripts/check-docs.mjs")) main();
+if (process.argv[1] && toPosix(process.argv[1]).endsWith("scripts/check-docs.mjs")) await main();

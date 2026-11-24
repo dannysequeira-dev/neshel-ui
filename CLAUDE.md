@@ -22,9 +22,10 @@ Phase 016 (Advanced 3D & Distortion D01–D11, the last 11 catalogue entries; op
 Accepted) is merged into `main` as the squash commit `365a24d` (PR #17); its main CI run 45117009871 finished 13/14
 (`browsers / macos-latest` failed on K-15). Phase 017 (Components completion: K-15 fix and CI audit, Toast/Toaster
 moved from `@neshel-ui/animations/feedback` to `@neshel-ui/components` with F06 kept as a generic enter/exit
-primitive, Accordion, Collapsible, Switch) is the **current phase**, in development on
-`feature/017-components-completion` (`specs/017-components-completion/`); its PR needs the owner's review — never
-merge it automatically. Completing
+primitive, Accordion, Collapsible, Switch) is merged into `main` as the squash commit `f1672cf` (PR #18; main CI
+45463495420 14/14) and approved by the owner. Phase 018 (Documentation: animations catalogue and guides, public
+packages, integrity checks) is the **current phase**, in development on `feature/018-documentation`
+(`specs/018-documentation/`); its PR needs the owner's review — never merge it automatically. Completing
 the catalogue does not authorise the first animations publication.
 `@neshel-ui/animations` is **private** (0.0.0) and must stay private until the owner approves its
 first publication; it is outside the Changesets fixed group and the release scripts. The five public
@@ -111,6 +112,9 @@ legitimate third-party licence notices. Check every commit message and PR body b
   custom breakpoints, component labs with SSR; network). `--artifacts <dir>` keeps the builds.
 - `pnpm check:browser` / `pnpm check:browser:components --consumers <dir>` — computed styles and
   real-input interaction + axe checks in headless Chrome against those builds.
+- `pnpm docs:api [--check]` / `pnpm check:docs` / `pnpm docs:build` / `pnpm check:docs-site` — generated API data,
+  documentation integrity (coverage, catalogue, unreleased API, translations, links, snippets), static export and
+  browser checks of the site.
 - `pnpm check:starters [--from-registry]` — starter ZIPs built from tarballs, or (after a publication)
   installed from npm and built.
 - `pnpm check` — doctor, lint, typecheck, test, build, check:exports, check:pack (offline; includes

@@ -1,0 +1,20 @@
+{
+  "title": "Effects",
+  "pages": [
+    "entrance",
+    "hover",
+    "press",
+    "gestures",
+    "scroll-triggers",
+    "scroll-parallax",
+    "cinematic",
+    "page-transitions",
+    "layout",
+    "text",
+    "svg",
+    "media",
+    "ambient",
+    "feedback",
+    "advanced"
+  ]
+}

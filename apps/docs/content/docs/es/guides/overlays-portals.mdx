@@ -74,6 +74,29 @@ sustituciones en línea.
 
 <Preview demo="components/popover-combobox" />
 
+### Capas anidadas
+
+En `Dialog`, `Sheet`, `MobileMenu`, `AlertDialog` y `Popover`:
+
+- Un Escape cierra **una** capa: la superior abierta, siguiendo el árbol de React a través de los portales.
+- Solo se ejecuta el `onEscapeKeyDown` de esa capa, una vez. `event.preventDefault()` dentro de él mantiene
+  abiertas todas las capas.
+- El foco vuelve al disparador de la capa que se cerró.
+- Una capa controlada que ignora `onOpenChange(false)` sigue abierta, y también las que tiene debajo.
+
+`DropdownMenu`, `Tooltip` y `NavigationMenu` conservan el comportamiento de Radix, igual que las capas de
+Radix que añadas tú.
+
+<Callout type="warn" title="En 0.1.0">
+  Con una entrada muy rápida, un Escape podía cerrar dos diálogos anidados en la versión publicada 0.1.0.
+  Las reglas anteriores están en la rama main y llegarán en la próxima versión.
+</Callout>
+
+### Toasts y superposiciones
+
+Un toast nunca mueve el foco, así que no cierra ni interrumpe un diálogo abierto. Escape cierra un toast
+solo mientras el foco está dentro de él. [Toast](/es/docs/components/toast/) aún no está en 0.1.0.
+
 ## Fondo
 
 El color del fondo modal es `var(--neshel-overlay-backdrop)` cuando lo estableces y, si no, una mezcla

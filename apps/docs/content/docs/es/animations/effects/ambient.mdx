@@ -1,0 +1,68 @@
+---
+title: Fondo y ambiente
+description: "Los 10 efectos B01–B10: propósito, API, opciones, ejemplos, movimiento reducido y coste."
+---
+
+<AnimationsStatus />
+
+Los efectos de ambiente son pura decoración: sus capas llevan `aria-hidden`, ignoran el puntero y nunca contienen contenido. Solo se mueven en pantalla, con la página visible, sin movimiento reducido y mientras el interruptor de página lo permita. El movimiento termina tras `duration` (5 s por defecto); `Infinity` es explícito y debe ir con `<AmbientMotionToggle>` o `ambientMotion.pause()` (WCAG 2.2.2). Comprueba el contraste del texto con la parte más clara de la decoración.
+
+## B01 · Degradado en movimiento [#b01]
+
+`<GradientShift>` desliza un degradado de mayor tamaño con dos a seis `colors` detrás de sus hijos; `angle` y `speed` (la duración del ciclo en ms) definen el movimiento.
+
+<Effect id="B01" />
+
+## B02 · Aurora [#b02]
+
+`<Aurora>` mueve de dos a cinco manchas suaves (`blobs`) con `intensity` (0.6). Son degradados radiales, no elementos desenfocados, así que resultan económicas en áreas grandes.
+
+<Effect id="B02" />
+
+## B03 · Grano [#b03]
+
+`<Grain>` superpone una textura de ruido compartida con `opacity` (0.08, hasta 0.3), `scale` y `blend`. `jitter` la mueve a saltos, a 8 Hz como máximo, y está desactivado por defecto.
+
+<Effect id="B03" />
+
+## B04 · Partículas [#b04]
+
+`<Particles>` dibuja partículas con semilla cuyo número sigue el área (`density`) hasta `max` (120, nunca más de 400); `links` conecta vecinas con un máximo de 150. Con movimiento reducido dibuja un fotograma fijo. Pon el padding en un elemento interior: en el propio contenedor estira el dibujo.
+
+<Effect id="B04" />
+
+## B05 · Campo de estrellas [#b05]
+
+`<Starfield>` dibuja capas de estrellas que derivan o avanzan hacia quien mira (`mode` `"drift"` o `"warp"`), con `twinkle` y `speed`. Prefiere `drift`: warp ocupa todo el campo visual. Como con las partículas, pon el padding en un elemento interior.
+
+<Effect id="B05" />
+
+## B06 · Cuadrícula y puntos [#b06]
+
+`<GridPattern>` repite un `pattern` de cuadrícula o puntos exactamente una `cell`, por lo que no se nota el corte; `direction`, `speed` y `fade` lo ajustan. Solo mueve una capa propia.
+
+<Effect id="B06" />
+
+## B07 · Degradado de malla [#b07]
+
+`<MeshGradient>` mueve puntos radiales de color sobre una base: de tres a seis `colors`, `amplitude` (0.12) y `speed`. Está hecho con capas CSS, sin WebGL.
+
+<Effect id="B07" />
+
+## B08 · Formas flotantes [#b08]
+
+`<FloatingShapes>` hace flotar cada uno de sus hijos (24 como máximo) `amplitude` píxeles y `rotate` grados con un `period`. Los hijos son la decoración, así que deja el contenido real en otro sitio.
+
+<Effect id="B08" />
+
+## B09 · Resplandor del puntero [#b09]
+
+`<PointerGlow>` sigue al puntero con una luz suave: `size` (360 px), `color`, `intensity` y `smoothing`. Solo funciona con los `pointerTypes` configurados y queda quieto con movimiento reducido.
+
+<Effect id="B09" />
+
+## B10 · Ondas [#b10]
+
+`<Waves>` repite de una a cuatro capas (`layers`) de ondas SVG con `amplitude`, `wavelength` y `colors`, arriba o abajo (`position`). Las rutas se generan una vez. El ejemplo incluye el interruptor de página.
+
+<Effect id="B10" />

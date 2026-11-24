@@ -75,6 +75,10 @@ export function SignupForm() {
 `MultiSelect` y `Combobox` usan `value`/`defaultValue`/`onValueChange` con valores de **texto**
 (`string | null` para selección única, `string[]` para múltiple).
 
+`Switch` usa `checked`/`defaultChecked`/`onCheckedChange`. Como una casilla, añade `name=value` a los datos
+del formulario solo mientras está activado (`value` es `"on"` por defecto), y al restablecer el formulario
+vuelve a `defaultChecked`. [Switch](/es/docs/components/switch/) aún no está en 0.1.0.
+
 ## Validación
 
 - Usa las restricciones nativas (`required`, `type`, `pattern`) para la validación del navegador.

@@ -7,6 +7,8 @@ exports: [Switch, SwitchProps]
 
 <ComponentKind package="components" name="Switch" />
 
+<Unreleased />
+
 ## Purpose
 
 `Switch` turns a setting on or off. Use it for immediate, binary settings; use a checkbox for
@@ -30,7 +32,14 @@ import { Label, Switch } from "@neshel-ui/components";
 
 `checked` with `onCheckedChange`, or `defaultChecked`. In a form the switch submits `name=value`
 (`value` defaults to `"on"`) only while it is on; `required` blocks submission while it is off;
-a form reset restores `defaultChecked`.
+a form reset restores `defaultChecked` and, like native inputs, does not call `onCheckedChange`.
+
+<Preview demo="components/switch-controlled" />
+
+## Sizes and states
+
+`uiSize` is `sm`, `md` (default) or `lg`, like the other fields. `readOnly` keeps the value and stays
+focusable; `disabled` removes it from the tab order and from the form data.
 
 ## Accessibility
 
@@ -46,3 +55,10 @@ a form reset restores `defaultChecked`.
 | ------------- | --------------- |
 | Space / Enter | Toggle          |
 | Tab           | Move focus      |
+
+## Common mistakes
+
+- A switch without a label, or a label that changes with the state: keep the name constant and let
+  `aria-checked` tell the state.
+- A switch that only takes effect after pressing Save: use a checkbox.
+- Reading `false` from the form data: an off switch is absent, like an unchecked checkbox.

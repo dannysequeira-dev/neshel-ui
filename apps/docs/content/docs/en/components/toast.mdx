@@ -7,6 +7,8 @@ exports: [createToaster, Toaster, Toast, ToastAction, ToastInput, ToastTone, Toa
 
 <ComponentKind package="components" name="Toaster" />
 
+<Unreleased />
+
 ## Purpose
 
 A toast confirms the result of an action ("Draft saved") or reports a problem without
@@ -41,9 +43,22 @@ import { createToaster, Toaster } from "@neshel-ui/components";
 - More than `max` toasts: the oldest unfocused one is dismissed, or with `overflow: "queue"` new
   toasts wait for a free slot.
 - `destroy()` clears everything and is idempotent; a destroyed store ignores later calls.
+- Showing an existing `id` again replaces its content and restarts its timer — "Uploading…" becomes
+  "Uploaded" in the same toast.
+- `pause(reason)` and `resume(reason)` add your own reasons; timers run only when none is active and
+  continue with the remaining time.
 - Several `<Toaster>`s may render one store; each toast is announced once.
 - `motion="none"` turns off the built-in transitions, e.g. to let `@neshel-ui/animations` F06
   animate the toasts.
+
+<Preview demo="components/toast-queue" />
+
+## Placement and lifetime
+
+Create the store once per application (module scope) and render one `<Toaster>` near the root. With a
+store created inside a component, call `destroy()` when it unmounts; `<Toaster>` never destroys it. On a
+server, do not share one module store between requests: show toasts only from the browser.
+`placement` uses logical corners, so `bottom-end` is at the left in right-to-left pages.
 
 ## Accessibility
 
@@ -61,3 +76,20 @@ import { createToaster, Toaster } from "@neshel-ui/components";
 | F8     | Move focus to the toasts (`hotkey`)   |
 | Escape | Close the focused toast               |
 | Tab    | Move between toast buttons            |
+
+## Styling and motion
+
+`motion="css"` uses the built-in transitions (opacity only under reduced motion). With `motion="none"`,
+another layer can animate the items: each one exposes `data-state` (`entering`, `open`, `closing`) and
+dispatches a `neshel-exit` event whose `detail.waitUntil(promise)` keeps it mounted for at most one second.
+
+## Limitations
+
+No provider, no global singleton, no swipe to dismiss and no promise helper.
+
+## Common mistakes
+
+- Essential information or a required decision in a toast: use an inline message or an
+  [AlertDialog](/en/docs/components/alert-dialog/).
+- Adding your own live region for the same message: it would be announced twice.
+- An action that exists only in the toast: offer it elsewhere too.

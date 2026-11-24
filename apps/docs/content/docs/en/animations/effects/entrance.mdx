@@ -1,0 +1,74 @@
+---
+title: Entrance & Reveal
+description: "The 11 effects E01–E11: purpose, API, options, examples, reduced motion and cost."
+---
+
+<AnimationsStatus />
+
+Entrances play once when an element appears on the client and then leave it exactly as it was. `<Reveal>` takes one preset; `<Stagger>` applies one to each child. Server-rendered content stays visible and is not hidden again while hydrating (`appear="client"`); changing `replayKey` plays it again. All of them accept `duration`, `delay`, `easing`, `onFinish` and `reducedMotion`, and a timeline can drive them through `progress`. No stylesheet is needed.
+
+## E01 · Fade in [#e01]
+
+The plainest entrance: opacity from 0 to 1 with `fadeIn`. Use it when position carries no meaning, or as a calm default for content that replaces a loading state.
+
+<Effect id="E01" />
+
+## E02 · Fade and slide [#e02]
+
+`fadeSlide` adds a short travel: `direction` (default `"up"`) and `distance` (16 px, up to 200). `fadeUp`, `fadeDown`, `fadeLeft` and `fadeRight` are the same effect with the direction fixed.
+
+<Effect id="E02" />
+
+## E03 · Scale in [#e03]
+
+`scaleIn` grows the element from `from` (0.92, between 0.3 and 1) while it fades in. It suits small surfaces such as cards, popups and badges.
+
+<Effect id="E03" />
+
+## E04 · Zoom in [#e04]
+
+`zoomIn` is the opposite of scale in: it starts larger than the final size (`from` 1.12, up to 2) and settles. It can overflow its box while it runs, so leave room or clip the parent.
+
+<Effect id="E04" />
+
+## E05 · Blur in [#e05]
+
+`blurIn` sharpens the content from `amount` pixels of blur (12, up to 40). It owns the `filter` channel while it runs, so another filter effect on the same element waits for it.
+
+<Effect id="E05" />
+
+## E06 · Clip reveal [#e06]
+
+`clipReveal` uncovers the element with `clip-path`: an inset that travels in `direction`, or a circle from the centre with `shape: "circle"` (the `clipCircle` preset). Shadows outside the box are clipped until it ends.
+
+<Effect id="E06" />
+
+## E07 · Gradient-mask wipe [#e07]
+
+`maskWipe` reveals the element with a soft edge that travels in `direction` (default `"right"`); `softness` is the width of that edge as a percentage (25). It owns the `mask` channel while it runs.
+
+<Effect id="E07" />
+
+## E08 · Rotate in [#e08]
+
+`rotateIn` straightens the element from `angle` degrees (−6, between −180 and 180) as it fades in. Small angles read as a gesture; large ones are distracting on text.
+
+<Effect id="E08" />
+
+## E09 · Flip in [#e09]
+
+`flipIn` turns the element around an axis: `axis`, `angle` (70) and `perspective` (800 px). `flipX` and `flipY` fix the axis. The perspective is part of the composed transform, so no wrapper is needed.
+
+<Effect id="E09" />
+
+## E10 · Staggered children [#e10]
+
+`<Stagger>` gives each element child the same entrance with a delay of `interval` ms (60). `order` starts from the `"start"`, `"end"` or `"center"`, and `maxStagger` (900 ms) caps the total so that long lists do not keep people waiting.
+
+<Effect id="E10" />
+
+## E11 · Spring entrance [#e11]
+
+`springIn` enters with a spring instead of a fixed duration: `spring` (stiffness and damping or a preset), `distance` (24) and `from` (0.9). It can overshoot and can be interrupted without a jump.
+
+<Effect id="E11" />

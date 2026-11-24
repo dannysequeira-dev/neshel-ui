@@ -1,0 +1,2808 @@
+{
+  "package": "@neshel-ui/animations/text",
+  "exports": [
+    {
+      "name": "FontAxes",
+      "description": "T10 — variable-font axis animation.",
+      "module": "text/react",
+      "kind": "component",
+      "signature": "(props: FontAxesProps): ReactElement<any, string | JSXElementConstructor<any>>",
+      "props": "FontAxesProps",
+      "client": true
+    },
+    {
+      "name": "FontAxesControl",
+      "description": "",
+      "module": "text/axes",
+      "kind": "interface",
+      "definition": "FontAxesControl",
+      "props": [
+        {
+          "name": "cancel",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": "Idempotent: stops, releases and restores."
+        },
+        {
+          "name": "drive",
+          "type": "(source: ProgressSource) => () => void",
+          "optional": false,
+          "description": "Follow a 0–1 source instead of the own clock; returns the unsubscribe."
+        },
+        {
+          "name": "finish",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "finished",
+          "type": "Promise<MotionResult>",
+          "optional": false,
+          "description": "Promise of the current (or next) run."
+        },
+        {
+          "name": "pause",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "play",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "type": "number",
+          "optional": false,
+          "description": "Rendered progress 0–1."
+        },
+        {
+          "name": "reverse",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "seek",
+          "type": "(progress: number) => void",
+          "optional": false,
+          "description": "Render the effect at a time fraction 0–1 of its run (eased)."
+        },
+        {
+          "name": "state",
+          "type": "MotionState",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "to",
+          "type": "(axes: FontAxes) => Promise<unknown>",
+          "optional": false,
+          "description": "Animate from the current values to new targets."
+        },
+        {
+          "name": "track",
+          "type": "(options?: ProgressTrackOptions) => ProgressTrack",
+          "optional": false,
+          "description": "A value track for `createTimeline().add(…)`: the timeline clock drives this effect."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "FontAxesOptions",
+      "description": "",
+      "module": "text/axes",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–10000; default per effect)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "from",
+          "type": "FontAxes",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "onComplete",
+          "type": "(result: MotionResult) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "type": "ProgressSource",
+          "optional": true,
+          "description": "Drive the effect from a 0–1 source (`ScrollProgress`, motion value, …) instead of its clock."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "to",
+          "type": "FontAxes",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "trigger",
+          "type": "TextTrigger",
+          "optional": true,
+          "description": "When the effect plays by itself (default `\"visible\"`). Ignored with `progress`.",
+          "default": "\"visible\""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "FontAxesProps",
+      "description": "",
+      "module": "text/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "active",
+          "type": "boolean",
+          "optional": true,
+          "description": "`true` animates to `to`, `false` back to `from` (default: play once on mount when undefined)."
+        },
+        {
+          "name": "as",
+          "type": "ElementType",
+          "optional": true,
+          "description": "Element to render (default per component; e.g. `\"h2\"`, `\"p\"`)."
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "controlRef",
+          "type": "RefObject<C | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–10000; default per effect)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "from",
+          "type": "FontAxes",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "onComplete",
+          "type": "(result: MotionResult) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "type": "ProgressSource",
+          "optional": true,
+          "description": "Drive the effect from a 0–1 source (`ScrollProgress`, motion value, …) instead of its clock."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "to",
+          "type": "FontAxes",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ],
+      "definition": "HostProps & Omit<FontAxesOptions, \"trigger\"> & WithControl<FontAxesControl> & { children?: ReactNode; /** `true` animates to `to`, `false` back to `from` (default: play once on mount when undefined). */ active?: boolean; }"
+    },
+    {
+      "name": "FontAxesValues",
+      "description": "",
+      "module": "text/axes",
+      "kind": "type",
+      "definition": "Record<string, number>"
+    },
+    {
+      "name": "GradientSweepOptions",
+      "description": "",
+      "module": "text/sweep",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "angle",
+          "type": "number",
+          "optional": true,
+          "description": "Gradient angle in degrees (default 100).",
+          "default": "100"
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "optional": true,
+          "description": "Highlight colour (CSS; default `var(--neshel-primary, #6366f1)`).",
+          "default": "var(--neshel-primary, #6366f1)"
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "One cycle, ms (default per effect)."
+        },
+        {
+          "name": "onComplete",
+          "type": "() => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "repeat",
+          "type": "number",
+          "optional": true,
+          "description": "Extra cycles (0–1000 or `Infinity`, explicit)."
+        },
+        {
+          "name": "trigger",
+          "type": "TextTrigger",
+          "optional": true,
+          "description": "`visible`/`mount` start the loop on creation (default `\"visible\"`); `manual` waits for `play()`.",
+          "default": "\"visible\""
+        },
+        {
+          "name": "width",
+          "type": "number",
+          "optional": true,
+          "description": "Band half-width as a fraction of the element (0.05–0.5; default 0.25)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "GradientText",
+      "description": "T04 — gradient sweep text (renders a `<span>` by default).",
+      "module": "text/react",
+      "kind": "component",
+      "signature": "(props: GradientTextProps): ReactElement<any, string | JSXElementConstructor<any>>",
+      "props": "GradientTextProps",
+      "client": true
+    },
+    {
+      "name": "GradientTextProps",
+      "description": "",
+      "module": "text/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "angle",
+          "type": "number",
+          "optional": true,
+          "description": "Gradient angle in degrees (default 100).",
+          "default": "100"
+        },
+        {
+          "name": "as",
+          "type": "ElementType",
+          "optional": true,
+          "description": "Element to render (default per component; e.g. `\"h2\"`, `\"p\"`)."
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "optional": true,
+          "description": "Highlight colour (CSS; default `var(--neshel-primary, #6366f1)`).",
+          "default": "var(--neshel-primary, #6366f1)"
+        },
+        {
+          "name": "controlRef",
+          "type": "RefObject<C | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "One cycle, ms (default per effect)."
+        },
+        {
+          "name": "onComplete",
+          "type": "() => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "paused",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "repeat",
+          "type": "number",
+          "optional": true,
+          "description": "Extra cycles (0–1000 or `Infinity`, explicit)."
+        },
+        {
+          "name": "trigger",
+          "type": "TextTrigger",
+          "optional": true,
+          "description": "`visible`/`mount` start the loop on creation (default `\"visible\"`); `manual` waits for `play()`.",
+          "default": "\"visible\""
+        },
+        {
+          "name": "width",
+          "type": "number",
+          "optional": true,
+          "description": "Band half-width as a fraction of the element (0.05–0.5; default 0.25)."
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ],
+      "definition": "HostProps & GradientSweepOptions & WithControl<LoopEffectControl> & { children?: ReactNode; paused?: boolean; }"
+    },
+    {
+      "name": "Highlight",
+      "description": "T08 — highlighter draw (renders `<mark>` by default).",
+      "module": "text/react",
+      "kind": "component",
+      "signature": "(props: HighlightProps): ReactElement<any, string | JSXElementConstructor<any>>",
+      "props": "HighlightProps",
+      "client": true
+    },
+    {
+      "name": "HighlightProps",
+      "description": "",
+      "module": "text/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "as",
+          "type": "ElementType",
+          "optional": true,
+          "description": "Element to render (default per component; e.g. `\"h2\"`, `\"p\"`)."
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "optional": true,
+          "description": "Band colour (CSS; default translucent yellow, `--neshel-highlight-color`)."
+        },
+        {
+          "name": "controlRef",
+          "type": "RefObject<C | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–10000; default per effect)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onComplete",
+          "type": "(result: MotionResult) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "type": "ProgressSource",
+          "optional": true,
+          "description": "Drive the effect from a 0–1 source (`ScrollProgress`, motion value, …) instead of its clock."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "trigger",
+          "type": "TextTrigger",
+          "optional": true,
+          "description": "When the effect plays by itself (default `\"visible\"`). Ignored with `progress`.",
+          "default": "\"visible\""
+        },
+        {
+          "name": "variant",
+          "type": "\"marker\" | \"underline\"",
+          "optional": true,
+          "description": "`\"marker\"` (default; most of the line height) or `\"underline\"` (a low band)."
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ],
+      "definition": "HostProps & HighlighterOptions & WithControl<ProgressControl> & { children?: ReactNode; }"
+    },
+    {
+      "name": "HighlighterOptions",
+      "description": "",
+      "module": "text/highlight",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "color",
+          "type": "string",
+          "optional": true,
+          "description": "Band colour (CSS; default translucent yellow, `--neshel-highlight-color`)."
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–10000; default per effect)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onComplete",
+          "type": "(result: MotionResult) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "type": "ProgressSource",
+          "optional": true,
+          "description": "Drive the effect from a 0–1 source (`ScrollProgress`, motion value, …) instead of its clock."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "trigger",
+          "type": "TextTrigger",
+          "optional": true,
+          "description": "When the effect plays by itself (default `\"visible\"`). Ignored with `progress`.",
+          "default": "\"visible\""
+        },
+        {
+          "name": "variant",
+          "type": "\"marker\" | \"underline\"",
+          "optional": true,
+          "description": "`\"marker\"` (default; most of the line height) or `\"underline\"` (a low band)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "LineReveal",
+      "description": "T11 — line-by-line reveal from a progress source (e.g. `useScrollScene()` / `ScrollProgress`).",
+      "module": "text/react",
+      "kind": "component",
+      "signature": "(props: LineRevealProps): ReactElement<any, string | JSXElementConstructor<any>>",
+      "props": "LineRevealProps",
+      "client": true
+    },
+    {
+      "name": "LineRevealOptions",
+      "description": "",
+      "module": "text/reveal",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "distance",
+          "type": "string",
+          "optional": true,
+          "description": "CSS length of the slide (default `\"0.6em\"`).",
+          "default": "\"0.6em\""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–10000; default per effect)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "locale",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "maxPieces",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "mode",
+          "type": "\"scrub\" | \"enter\"",
+          "optional": true,
+          "description": "`\"scrub\"` (default): lines follow the source; `\"enter\"`: play once past `threshold`."
+        },
+        {
+          "name": "onComplete",
+          "type": "(result: MotionResult) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "order",
+          "type": "RevealOrder",
+          "optional": true,
+          "description": "Default `\"start\"`.",
+          "default": "\"start\""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "seed",
+          "type": "number",
+          "optional": true,
+          "description": "Seed of `order: \"random\"` (deterministic)."
+        },
+        {
+          "name": "source",
+          "type": "ProgressSource",
+          "optional": true,
+          "description": "0–1 progress source; required for `scrub`, optional for `enter` (default IntersectionObserver)."
+        },
+        {
+          "name": "stagger",
+          "type": "number",
+          "optional": true,
+          "description": "Overlap between pieces: 0 (together) … 1 (one after another); default 0.2."
+        },
+        {
+          "name": "threshold",
+          "type": "number",
+          "optional": true,
+          "description": "`enter` threshold 0–1 (default 0.25).",
+          "default": "0.25"
+        },
+        {
+          "name": "variant",
+          "type": "RevealVariant",
+          "optional": true,
+          "description": "Default `\"fade-up\"`.",
+          "default": "\"fade-up\""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "LineRevealProps",
+      "description": "",
+      "module": "text/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "as",
+          "type": "ElementType",
+          "optional": true,
+          "description": "Element to render (default per component; e.g. `\"h2\"`, `\"p\"`)."
+        },
+        {
+          "name": "children",
+          "type": "string | number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "controlRef",
+          "type": "RefObject<C | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "distance",
+          "type": "string",
+          "optional": true,
+          "description": "CSS length of the slide (default `\"0.6em\"`).",
+          "default": "\"0.6em\""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–10000; default per effect)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "locale",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "maxPieces",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "mode",
+          "type": "\"scrub\" | \"enter\"",
+          "optional": true,
+          "description": "`\"scrub\"` (default): lines follow the source; `\"enter\"`: play once past `threshold`."
+        },
+        {
+          "name": "onComplete",
+          "type": "(result: MotionResult) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "order",
+          "type": "RevealOrder",
+          "optional": true,
+          "description": "Default `\"start\"`.",
+          "default": "\"start\""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "seed",
+          "type": "number",
+          "optional": true,
+          "description": "Seed of `order: \"random\"` (deterministic)."
+        },
+        {
+          "name": "source",
+          "type": "ProgressSource",
+          "optional": true,
+          "description": "0–1 progress source; required for `scrub`, optional for `enter` (default IntersectionObserver)."
+        },
+        {
+          "name": "stagger",
+          "type": "number",
+          "optional": true,
+          "description": "Overlap between pieces: 0 (together) … 1 (one after another); default 0.2."
+        },
+        {
+          "name": "threshold",
+          "type": "number",
+          "optional": true,
+          "description": "`enter` threshold 0–1 (default 0.25).",
+          "default": "0.25"
+        },
+        {
+          "name": "variant",
+          "type": "RevealVariant",
+          "optional": true,
+          "description": "Default `\"fade-up\"`.",
+          "default": "\"fade-up\""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ],
+      "definition": "HostProps & LineRevealOptions & WithControl<ProgressControl> & { children: string | number; }"
+    },
+    {
+      "name": "LoopEffectControl",
+      "description": "Control of a continuous effect (loop) — also seekable, timeline- and source-driven.",
+      "module": "core/loop",
+      "kind": "interface",
+      "definition": "LoopEffectControl",
+      "props": [
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "drive",
+          "type": "(source: ProgressSource) => () => void",
+          "optional": false,
+          "description": "Follow a 0–1 source (own clock paused); returns the unsubscribe."
+        },
+        {
+          "name": "pause",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "play",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "type": "number",
+          "optional": false,
+          "description": "Progress 0–1 of the whole run (of one cycle when `repeat` is `Infinity`)."
+        },
+        {
+          "name": "seek",
+          "type": "(progress: number) => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "state",
+          "type": "LoopState",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "stop",
+          "type": "() => void",
+          "optional": false,
+          "description": "Stop and show the rest state."
+        },
+        {
+          "name": "track",
+          "type": "(options?: ProgressTrackOptions) => ProgressTrack",
+          "optional": false,
+          "description": "A value track for `createTimeline().add(…)` (finite runs; one cycle when infinite)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "LoopTextOptions",
+      "description": "",
+      "module": "text/engine/loop-effect",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "One cycle, ms (default per effect)."
+        },
+        {
+          "name": "onComplete",
+          "type": "() => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "repeat",
+          "type": "number",
+          "optional": true,
+          "description": "Extra cycles (0–1000 or `Infinity`, explicit)."
+        },
+        {
+          "name": "trigger",
+          "type": "TextTrigger",
+          "optional": true,
+          "description": "`visible`/`mount` start the loop on creation (default `\"visible\"`); `manual` waits for `play()`.",
+          "default": "\"visible\""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "NumberRoll",
+      "description": "T05 — number roll. Server markup: the formatted value.",
+      "module": "text/react",
+      "kind": "component",
+      "signature": "(props: NumberRollProps): ReactElement<any, string | JSXElementConstructor<any>>",
+      "props": "NumberRollProps",
+      "client": true
+    },
+    {
+      "name": "NumberRollControl",
+      "description": "",
+      "module": "text/number",
+      "kind": "interface",
+      "definition": "NumberRollControl",
+      "props": [
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "finished",
+          "type": "Promise<MotionResult>",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "set",
+          "type": "(value: number | bigint, options?: { animate?: boolean; }) => Promise<MotionResult>",
+          "optional": false,
+          "description": "Roll to a new value (`animate: false` jumps)."
+        },
+        {
+          "name": "text",
+          "type": "string",
+          "optional": false,
+          "description": "The accessible (formatted) text."
+        },
+        {
+          "name": "value",
+          "type": "number | bigint",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "NumberRollOptions",
+      "description": "",
+      "module": "text/number",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (default 800).",
+          "default": "800"
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "format",
+          "type": "Intl.NumberFormatOptions",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "locale",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "value",
+          "type": "number | bigint",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "NumberRollProps",
+      "description": "",
+      "module": "text/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "as",
+          "type": "ElementType",
+          "optional": true,
+          "description": "Element to render (default per component; e.g. `\"h2\"`, `\"p\"`)."
+        },
+        {
+          "name": "controlRef",
+          "type": "RefObject<C | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (default 800).",
+          "default": "800"
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "format",
+          "type": "Intl.NumberFormatOptions",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "locale",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "value",
+          "type": "number | bigint",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ],
+      "definition": "HostProps & Omit<NumberRollOptions, \"value\"> & WithControl<NumberRollControl> & { value: number | bigint; }"
+    },
+    {
+      "name": "ProgressControl",
+      "description": "",
+      "module": "core/progress-driver",
+      "kind": "interface",
+      "definition": "ProgressControl",
+      "props": [
+        {
+          "name": "cancel",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": "Idempotent: stops, releases and restores."
+        },
+        {
+          "name": "drive",
+          "type": "(source: ProgressSource) => () => void",
+          "optional": false,
+          "description": "Follow a 0–1 source instead of the own clock; returns the unsubscribe."
+        },
+        {
+          "name": "finish",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "finished",
+          "type": "Promise<MotionResult>",
+          "optional": false,
+          "description": "Promise of the current (or next) run."
+        },
+        {
+          "name": "pause",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "play",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "type": "number",
+          "optional": false,
+          "description": "Rendered progress 0–1."
+        },
+        {
+          "name": "reverse",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "seek",
+          "type": "(progress: number) => void",
+          "optional": false,
+          "description": "Render the effect at a time fraction 0–1 of its run (eased)."
+        },
+        {
+          "name": "state",
+          "type": "MotionState",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "track",
+          "type": "(options?: ProgressTrackOptions) => ProgressTrack",
+          "optional": false,
+          "description": "A value track for `createTimeline().add(…)`: the timeline clock drives this effect."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ProgressSource",
+      "description": "Any 0–1 progress source (the 011 `ScrollProgress` and motion values fit).",
+      "module": "core/progress-driver",
+      "kind": "interface",
+      "definition": "ProgressSource",
+      "props": [
+        {
+          "name": "get",
+          "type": "() => number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "subscribe",
+          "type": "(listener: (progress: number) => void) => () => void",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "RevealOrder",
+      "description": "",
+      "module": "text/reveal",
+      "kind": "type",
+      "definition": "\"start\" | \"end\" | \"center\" | \"random\""
+    },
+    {
+      "name": "RevealVariant",
+      "description": "",
+      "module": "text/reveal",
+      "kind": "type",
+      "definition": "\"fade-up\" | \"fade\" | \"fade-down\" | \"blur\" | \"scale\""
+    },
+    {
+      "name": "RotatingWords",
+      "description": "T06 — rotating words. Server markup: the first word (and the full list for assistive technology).",
+      "module": "text/react",
+      "kind": "component",
+      "signature": "(props: RotatingWordsProps): ReactElement<any, string | JSXElementConstructor<any>>",
+      "props": "RotatingWordsProps",
+      "client": true
+    },
+    {
+      "name": "RotatingWordsControl",
+      "description": "",
+      "module": "text/rotate",
+      "kind": "interface",
+      "definition": "RotatingWordsControl",
+      "props": [
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "drive",
+          "type": "(source: ProgressSource) => () => void",
+          "optional": false,
+          "description": "Follow a 0–1 source (own clock paused); returns the unsubscribe."
+        },
+        {
+          "name": "index",
+          "type": "number",
+          "optional": false,
+          "description": "Index of the word currently shown."
+        },
+        {
+          "name": "pause",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "play",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "type": "number",
+          "optional": false,
+          "description": "Progress 0–1 of the whole run (of one cycle when `repeat` is `Infinity`)."
+        },
+        {
+          "name": "seek",
+          "type": "(progress: number) => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "state",
+          "type": "LoopState",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "stop",
+          "type": "() => void",
+          "optional": false,
+          "description": "Stop and show the rest state."
+        },
+        {
+          "name": "track",
+          "type": "(options?: ProgressTrackOptions) => ProgressTrack",
+          "optional": false,
+          "description": "A value track for `createTimeline().add(…)` (finite runs; one cycle when infinite)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "RotatingWordsOptions",
+      "description": "",
+      "module": "text/rotate",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "accessibleText",
+          "type": "string",
+          "optional": true,
+          "description": "Accessible text (default: the words joined by \", \")."
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "Swap transition ms (0–2000; default 450)."
+        },
+        {
+          "name": "interval",
+          "type": "number",
+          "optional": true,
+          "description": "ms each word stays (1000–20000; default 2500)."
+        },
+        {
+          "name": "onComplete",
+          "type": "() => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "pauseOnHover",
+          "type": "boolean",
+          "optional": true,
+          "description": "Pause while hovered or focused (default true).",
+          "default": "true"
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "repeat",
+          "type": "number",
+          "optional": true,
+          "description": "Extra cycles (0–1000 or `Infinity`, explicit)."
+        },
+        {
+          "name": "trigger",
+          "type": "TextTrigger",
+          "optional": true,
+          "description": "`visible`/`mount` start the loop on creation (default `\"visible\"`); `manual` waits for `play()`.",
+          "default": "\"visible\""
+        },
+        {
+          "name": "variant",
+          "type": "\"slide-up\" | \"slide-down\" | \"fade\"",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "words",
+          "type": "readonly string[]",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "RotatingWordsProps",
+      "description": "",
+      "module": "text/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "accessibleText",
+          "type": "string",
+          "optional": true,
+          "description": "Accessible text (default: the words joined by \", \")."
+        },
+        {
+          "name": "as",
+          "type": "ElementType",
+          "optional": true,
+          "description": "Element to render (default per component; e.g. `\"h2\"`, `\"p\"`)."
+        },
+        {
+          "name": "controlRef",
+          "type": "RefObject<C | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "Swap transition ms (0–2000; default 450)."
+        },
+        {
+          "name": "interval",
+          "type": "number",
+          "optional": true,
+          "description": "ms each word stays (1000–20000; default 2500)."
+        },
+        {
+          "name": "onComplete",
+          "type": "() => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "pauseOnHover",
+          "type": "boolean",
+          "optional": true,
+          "description": "Pause while hovered or focused (default true).",
+          "default": "true"
+        },
+        {
+          "name": "paused",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "repeat",
+          "type": "number",
+          "optional": true,
+          "description": "Extra cycles (0–1000 or `Infinity`, explicit)."
+        },
+        {
+          "name": "trigger",
+          "type": "TextTrigger",
+          "optional": true,
+          "description": "`visible`/`mount` start the loop on creation (default `\"visible\"`); `manual` waits for `play()`.",
+          "default": "\"visible\""
+        },
+        {
+          "name": "variant",
+          "type": "\"slide-up\" | \"slide-down\" | \"fade\"",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "words",
+          "type": "readonly string[]",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ],
+      "definition": "HostProps & RotatingWordsOptions & WithControl<RotatingWordsControl> & { paused?: boolean; }"
+    },
+    {
+      "name": "ScrambleOptions",
+      "description": "",
+      "module": "text/scramble",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "charset",
+          "type": "string",
+          "optional": true,
+          "description": "Glyphs shown while decoding (split into graphemes; default letters, digits and symbols)."
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–10000; default per effect)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "locale",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "maxPieces",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onComplete",
+          "type": "(result: MotionResult) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "type": "ProgressSource",
+          "optional": true,
+          "description": "Drive the effect from a 0–1 source (`ScrollProgress`, motion value, …) instead of its clock."
+        },
+        {
+          "name": "rate",
+          "type": "number",
+          "optional": true,
+          "description": "Glyph changes per second (1–60; default 24)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "seed",
+          "type": "number",
+          "optional": true,
+          "description": "Seed of the glyph sequence (default 1).",
+          "default": "1"
+        },
+        {
+          "name": "trigger",
+          "type": "TextTrigger",
+          "optional": true,
+          "description": "When the effect plays by itself (default `\"visible\"`). Ignored with `progress`.",
+          "default": "\"visible\""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ScrambleText",
+      "description": "T03 — scramble / decode.",
+      "module": "text/react",
+      "kind": "component",
+      "signature": "(props: ScrambleTextProps): ReactElement<any, string | JSXElementConstructor<any>>",
+      "props": "ScrambleTextProps",
+      "client": true
+    },
+    {
+      "name": "ScrambleTextProps",
+      "description": "",
+      "module": "text/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "as",
+          "type": "ElementType",
+          "optional": true,
+          "description": "Element to render (default per component; e.g. `\"h2\"`, `\"p\"`)."
+        },
+        {
+          "name": "charset",
+          "type": "string",
+          "optional": true,
+          "description": "Glyphs shown while decoding (split into graphemes; default letters, digits and symbols)."
+        },
+        {
+          "name": "children",
+          "type": "string | number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "controlRef",
+          "type": "RefObject<C | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–10000; default per effect)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "locale",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "maxPieces",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onComplete",
+          "type": "(result: MotionResult) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "type": "ProgressSource",
+          "optional": true,
+          "description": "Drive the effect from a 0–1 source (`ScrollProgress`, motion value, …) instead of its clock."
+        },
+        {
+          "name": "rate",
+          "type": "number",
+          "optional": true,
+          "description": "Glyph changes per second (1–60; default 24)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "seed",
+          "type": "number",
+          "optional": true,
+          "description": "Seed of the glyph sequence (default 1).",
+          "default": "1"
+        },
+        {
+          "name": "trigger",
+          "type": "TextTrigger",
+          "optional": true,
+          "description": "When the effect plays by itself (default `\"visible\"`). Ignored with `progress`.",
+          "default": "\"visible\""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ],
+      "definition": "HostProps & ScrambleOptions & WithControl<ProgressControl> & { children: string | number; }"
+    },
+    {
+      "name": "SplitGranularity",
+      "description": "",
+      "module": "text/engine/split",
+      "kind": "type",
+      "definition": "\"chars\" | \"words\" | \"lines\""
+    },
+    {
+      "name": "SplitText",
+      "description": "",
+      "module": "text/engine/split",
+      "kind": "interface",
+      "definition": "SplitText",
+      "props": [
+        {
+          "name": "lines",
+          "type": "readonly HTMLElement[]",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "onChange",
+          "type": "(listener: () => void) => () => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "pieces",
+          "type": "readonly HTMLElement[]",
+          "optional": false,
+          "description": "Animated unit in reading order (chars, words or lines)."
+        },
+        {
+          "name": "reason",
+          "type": "string | undefined",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "refresh",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "revert",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "root",
+          "type": "HTMLElement | null",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "split",
+          "type": "SplitGranularity",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "state",
+          "type": "\"split\" | \"unsupported\" | \"reverted\"",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "text",
+          "type": "string",
+          "optional": false,
+          "description": "The accessible text."
+        },
+        {
+          "name": "words",
+          "type": "readonly HTMLElement[]",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "SplitTextOptions",
+      "description": "",
+      "module": "text/engine/split",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "locale",
+          "type": "string",
+          "optional": true,
+          "description": "Default: the closest `[lang]` of the element, else the document language."
+        },
+        {
+          "name": "maxPieces",
+          "type": "number",
+          "optional": true,
+          "description": "Maximum animated pieces (default 1000, 1–5000; TextReveal and TextWave default to 200, K-5): chars degrade\nto words, words to lines above it."
+        },
+        {
+          "name": "split",
+          "type": "SplitGranularity",
+          "optional": true,
+          "description": "Default `\"words\"`. `chars` and `lines` always contain word pieces.",
+          "default": "\"words\""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "TextDebugInfo",
+      "description": "",
+      "module": "text/engine/debug",
+      "kind": "interface",
+      "definition": "TextDebugInfo",
+      "props": [
+        {
+          "name": "effects",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "observers",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "reads",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "resplits",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "splits",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "TextEffectOptions",
+      "description": "",
+      "module": "text/engine/effect",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–10000; default per effect)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onComplete",
+          "type": "(result: MotionResult) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "type": "ProgressSource",
+          "optional": true,
+          "description": "Drive the effect from a 0–1 source (`ScrollProgress`, motion value, …) instead of its clock."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "trigger",
+          "type": "TextTrigger",
+          "optional": true,
+          "description": "When the effect plays by itself (default `\"visible\"`). Ignored with `progress`.",
+          "default": "\"visible\""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "TextMask",
+      "description": "T09 — text mask reveal.",
+      "module": "text/react",
+      "kind": "component",
+      "signature": "(props: TextMaskProps): ReactElement<any, string | JSXElementConstructor<any>>",
+      "props": "TextMaskProps",
+      "client": true
+    },
+    {
+      "name": "TextMaskOptions",
+      "description": "",
+      "module": "text/mask",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–10000; default per effect)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "locale",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onComplete",
+          "type": "(result: MotionResult) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "type": "ProgressSource",
+          "optional": true,
+          "description": "Drive the effect from a 0–1 source (`ScrollProgress`, motion value, …) instead of its clock."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "scope",
+          "type": "\"lines\" | \"element\"",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "stagger",
+          "type": "number",
+          "optional": true,
+          "description": "Line overlap 0–1 (default 0.25).",
+          "default": "0.25"
+        },
+        {
+          "name": "trigger",
+          "type": "TextTrigger",
+          "optional": true,
+          "description": "When the effect plays by itself (default `\"visible\"`). Ignored with `progress`.",
+          "default": "\"visible\""
+        },
+        {
+          "name": "variant",
+          "type": "\"rise\" | \"wipe\"",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "TextMaskProps",
+      "description": "",
+      "module": "text/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "as",
+          "type": "ElementType",
+          "optional": true,
+          "description": "Element to render (default per component; e.g. `\"h2\"`, `\"p\"`)."
+        },
+        {
+          "name": "children",
+          "type": "string | number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "controlRef",
+          "type": "RefObject<C | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–10000; default per effect)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "locale",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onComplete",
+          "type": "(result: MotionResult) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "type": "ProgressSource",
+          "optional": true,
+          "description": "Drive the effect from a 0–1 source (`ScrollProgress`, motion value, …) instead of its clock."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "scope",
+          "type": "\"lines\" | \"element\"",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "stagger",
+          "type": "number",
+          "optional": true,
+          "description": "Line overlap 0–1 (default 0.25).",
+          "default": "0.25"
+        },
+        {
+          "name": "trigger",
+          "type": "TextTrigger",
+          "optional": true,
+          "description": "When the effect plays by itself (default `\"visible\"`). Ignored with `progress`.",
+          "default": "\"visible\""
+        },
+        {
+          "name": "variant",
+          "type": "\"rise\" | \"wipe\"",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ],
+      "definition": "HostProps & TextMaskOptions & WithControl<ProgressControl> & { children: string | number; }"
+    },
+    {
+      "name": "TextReveal",
+      "description": "T01 — split reveal.",
+      "module": "text/react",
+      "kind": "component",
+      "signature": "(props: TextRevealProps): ReactElement<any, string | JSXElementConstructor<any>>",
+      "props": "TextRevealProps",
+      "client": true
+    },
+    {
+      "name": "TextRevealOptions",
+      "description": "",
+      "module": "text/reveal",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "distance",
+          "type": "string",
+          "optional": true,
+          "description": "CSS length of the slide (default `\"0.6em\"`).",
+          "default": "\"0.6em\""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–10000; default per effect)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "locale",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "maxPieces",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onComplete",
+          "type": "(result: MotionResult) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "order",
+          "type": "RevealOrder",
+          "optional": true,
+          "description": "Default `\"start\"`.",
+          "default": "\"start\""
+        },
+        {
+          "name": "progress",
+          "type": "ProgressSource",
+          "optional": true,
+          "description": "Drive the effect from a 0–1 source (`ScrollProgress`, motion value, …) instead of its clock."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "seed",
+          "type": "number",
+          "optional": true,
+          "description": "Seed of `order: \"random\"` (deterministic)."
+        },
+        {
+          "name": "split",
+          "type": "SplitGranularity",
+          "optional": true,
+          "description": "Default `\"words\"`.",
+          "default": "\"words\""
+        },
+        {
+          "name": "stagger",
+          "type": "number",
+          "optional": true,
+          "description": "Overlap between pieces: 0 (together) … 1 (one after another); default 0.2."
+        },
+        {
+          "name": "trigger",
+          "type": "TextTrigger",
+          "optional": true,
+          "description": "When the effect plays by itself (default `\"visible\"`). Ignored with `progress`.",
+          "default": "\"visible\""
+        },
+        {
+          "name": "variant",
+          "type": "RevealVariant",
+          "optional": true,
+          "description": "Default `\"fade-up\"`.",
+          "default": "\"fade-up\""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "TextRevealProps",
+      "description": "",
+      "module": "text/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "as",
+          "type": "ElementType",
+          "optional": true,
+          "description": "Element to render (default per component; e.g. `\"h2\"`, `\"p\"`)."
+        },
+        {
+          "name": "children",
+          "type": "string | number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "controlRef",
+          "type": "RefObject<C | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "distance",
+          "type": "string",
+          "optional": true,
+          "description": "CSS length of the slide (default `\"0.6em\"`).",
+          "default": "\"0.6em\""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–10000; default per effect)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "locale",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "maxPieces",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onComplete",
+          "type": "(result: MotionResult) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "order",
+          "type": "RevealOrder",
+          "optional": true,
+          "description": "Default `\"start\"`.",
+          "default": "\"start\""
+        },
+        {
+          "name": "progress",
+          "type": "ProgressSource",
+          "optional": true,
+          "description": "Drive the effect from a 0–1 source (`ScrollProgress`, motion value, …) instead of its clock."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "seed",
+          "type": "number",
+          "optional": true,
+          "description": "Seed of `order: \"random\"` (deterministic)."
+        },
+        {
+          "name": "split",
+          "type": "SplitGranularity",
+          "optional": true,
+          "description": "Default `\"words\"`.",
+          "default": "\"words\""
+        },
+        {
+          "name": "stagger",
+          "type": "number",
+          "optional": true,
+          "description": "Overlap between pieces: 0 (together) … 1 (one after another); default 0.2."
+        },
+        {
+          "name": "trigger",
+          "type": "TextTrigger",
+          "optional": true,
+          "description": "When the effect plays by itself (default `\"visible\"`). Ignored with `progress`.",
+          "default": "\"visible\""
+        },
+        {
+          "name": "variant",
+          "type": "RevealVariant",
+          "optional": true,
+          "description": "Default `\"fade-up\"`.",
+          "default": "\"fade-up\""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ],
+      "definition": "HostProps & TextRevealOptions & WithControl<ProgressControl> & { children: string | number; }"
+    },
+    {
+      "name": "TextSupport",
+      "description": "",
+      "module": "text/support",
+      "kind": "interface",
+      "definition": "TextSupport",
+      "props": [
+        {
+          "name": "backgroundClipText",
+          "type": "boolean",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "clamp",
+          "type": "boolean",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "fontVariation",
+          "type": "boolean",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "mask",
+          "type": "boolean",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "segmenter",
+          "type": "boolean",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "trigonometry",
+          "type": "boolean",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "TextTrigger",
+      "description": "",
+      "module": "text/engine/effect",
+      "kind": "type",
+      "definition": "\"visible\" | \"mount\" | \"manual\""
+    },
+    {
+      "name": "TextWaveOptions",
+      "description": "",
+      "module": "text/wave",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "amplitude",
+          "type": "string",
+          "optional": true,
+          "description": "CSS length (default `\"0.18em\"`; keep ≤ 0.5em).",
+          "default": "\"0.18em\""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "One cycle, ms (default per effect)."
+        },
+        {
+          "name": "locale",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "maxPieces",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onComplete",
+          "type": "() => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "repeat",
+          "type": "number",
+          "optional": true,
+          "description": "Extra cycles (0–1000 or `Infinity`, explicit)."
+        },
+        {
+          "name": "spread",
+          "type": "number",
+          "optional": true,
+          "description": "Phase offset between clusters in radians (0–3; default 0.5)."
+        },
+        {
+          "name": "trigger",
+          "type": "TextTrigger",
+          "optional": true,
+          "description": "`visible`/`mount` start the loop on creation (default `\"visible\"`); `manual` waits for `play()`.",
+          "default": "\"visible\""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "Typewriter",
+      "description": "T02 — typewriter.",
+      "module": "text/react",
+      "kind": "component",
+      "signature": "(props: TypewriterProps): ReactElement<any, string | JSXElementConstructor<any>>",
+      "props": "TypewriterProps",
+      "client": true
+    },
+    {
+      "name": "TypewriterControl",
+      "description": "",
+      "module": "text/typewriter",
+      "kind": "interface",
+      "definition": "TypewriterControl",
+      "props": [
+        {
+          "name": "cancel",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": "Idempotent: stops, releases and restores."
+        },
+        {
+          "name": "drive",
+          "type": "(source: ProgressSource) => () => void",
+          "optional": false,
+          "description": "Follow a 0–1 source instead of the own clock; returns the unsubscribe."
+        },
+        {
+          "name": "finish",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "finished",
+          "type": "Promise<MotionResult>",
+          "optional": false,
+          "description": "Promise of the current (or next) run."
+        },
+        {
+          "name": "pause",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "play",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "type": "number",
+          "optional": false,
+          "description": "Rendered progress 0–1."
+        },
+        {
+          "name": "restart",
+          "type": "() => void",
+          "optional": false,
+          "description": "`seek(0)` then `play()`."
+        },
+        {
+          "name": "reverse",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "seek",
+          "type": "(progress: number) => void",
+          "optional": false,
+          "description": "Render the effect at a time fraction 0–1 of its run (eased)."
+        },
+        {
+          "name": "state",
+          "type": "MotionState",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "track",
+          "type": "(options?: ProgressTrackOptions) => ProgressTrack",
+          "optional": false,
+          "description": "A value track for `createTimeline().add(…)`: the timeline clock drives this effect."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "TypewriterOptions",
+      "description": "",
+      "module": "text/typewriter",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "caret",
+          "type": "\"typing\" | \"always\" | \"none\"",
+          "optional": true,
+          "description": "`\"typing\"` (default): caret while typing; `\"always\"`: also at rest; `\"none\"`."
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–10000; default per effect)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "locale",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "maxPieces",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onComplete",
+          "type": "(result: MotionResult) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "type": "ProgressSource",
+          "optional": true,
+          "description": "Drive the effect from a 0–1 source (`ScrollProgress`, motion value, …) instead of its clock."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "speed",
+          "type": "number",
+          "optional": true,
+          "description": "Graphemes per second (1–200; default 30)."
+        },
+        {
+          "name": "trigger",
+          "type": "TextTrigger",
+          "optional": true,
+          "description": "When the effect plays by itself (default `\"visible\"`). Ignored with `progress`.",
+          "default": "\"visible\""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "TypewriterProps",
+      "description": "",
+      "module": "text/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "as",
+          "type": "ElementType",
+          "optional": true,
+          "description": "Element to render (default per component; e.g. `\"h2\"`, `\"p\"`)."
+        },
+        {
+          "name": "caret",
+          "type": "\"typing\" | \"always\" | \"none\"",
+          "optional": true,
+          "description": "`\"typing\"` (default): caret while typing; `\"always\"`: also at rest; `\"none\"`."
+        },
+        {
+          "name": "children",
+          "type": "string | number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "controlRef",
+          "type": "RefObject<C | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–10000; default per effect)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "locale",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "maxPieces",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onComplete",
+          "type": "(result: MotionResult) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "type": "ProgressSource",
+          "optional": true,
+          "description": "Drive the effect from a 0–1 source (`ScrollProgress`, motion value, …) instead of its clock."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "speed",
+          "type": "number",
+          "optional": true,
+          "description": "Graphemes per second (1–200; default 30)."
+        },
+        {
+          "name": "trigger",
+          "type": "TextTrigger",
+          "optional": true,
+          "description": "When the effect plays by itself (default `\"visible\"`). Ignored with `progress`.",
+          "default": "\"visible\""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ],
+      "definition": "HostProps & TypewriterOptions & WithControl<TypewriterControl> & { children: string | number; }"
+    },
+    {
+      "name": "WaveText",
+      "description": "T07 — kinetic wave.",
+      "module": "text/react",
+      "kind": "component",
+      "signature": "(props: WaveTextProps): ReactElement<any, string | JSXElementConstructor<any>>",
+      "props": "WaveTextProps",
+      "client": true
+    },
+    {
+      "name": "WaveTextProps",
+      "description": "",
+      "module": "text/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "amplitude",
+          "type": "string",
+          "optional": true,
+          "description": "CSS length (default `\"0.18em\"`; keep ≤ 0.5em).",
+          "default": "\"0.18em\""
+        },
+        {
+          "name": "as",
+          "type": "ElementType",
+          "optional": true,
+          "description": "Element to render (default per component; e.g. `\"h2\"`, `\"p\"`)."
+        },
+        {
+          "name": "children",
+          "type": "string | number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "controlRef",
+          "type": "RefObject<C | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "One cycle, ms (default per effect)."
+        },
+        {
+          "name": "locale",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "maxPieces",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onComplete",
+          "type": "() => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "paused",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "repeat",
+          "type": "number",
+          "optional": true,
+          "description": "Extra cycles (0–1000 or `Infinity`, explicit)."
+        },
+        {
+          "name": "spread",
+          "type": "number",
+          "optional": true,
+          "description": "Phase offset between clusters in radians (0–3; default 0.5)."
+        },
+        {
+          "name": "trigger",
+          "type": "TextTrigger",
+          "optional": true,
+          "description": "`visible`/`mount` start the loop on creation (default `\"visible\"`); `manual` waits for `play()`.",
+          "default": "\"visible\""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ],
+      "definition": "HostProps & TextWaveOptions & WithControl<LoopEffectControl> & { children: string | number; paused?: boolean; }"
+    },
+    {
+      "name": "WordSegment",
+      "description": "Unicode segmentation (Phase 014; contracts/text-splitter.md §1, research R1). `Intl.Segmenter` first:\nextended grapheme clusters (emoji ZWJ sequences, modifiers, flags, combining marks) and dictionary words\nfor spaceless scripts. Without it, an approximate Unicode-property fallback (documented). Segments are\nlossless: their concatenation is always the input. UTF-16 code units are never treated as characters.",
+      "module": "text/engine/segment",
+      "kind": "interface",
+      "definition": "WordSegment",
+      "props": [
+        {
+          "name": "space",
+          "type": "boolean",
+          "optional": false,
+          "description": "A whitespace run — stays a plain text node between pieces."
+        },
+        {
+          "name": "text",
+          "type": "string",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "wordLike",
+          "type": "boolean",
+          "optional": false,
+          "description": "A word (with attached punctuation) — an animated piece."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "createFontAxes",
+      "description": "",
+      "module": "text/axes",
+      "kind": "function",
+      "signature": "(element: HTMLElement, options: FontAxesOptions): FontAxesControl"
+    },
+    {
+      "name": "createGradientSweep",
+      "description": "",
+      "module": "text/sweep",
+      "kind": "function",
+      "signature": "(element: HTMLElement, options?: GradientSweepOptions | undefined): LoopEffectControl"
+    },
+    {
+      "name": "createHighlighter",
+      "description": "",
+      "module": "text/highlight",
+      "kind": "function",
+      "signature": "(element: HTMLElement, options?: HighlighterOptions | undefined): ProgressControl"
+    },
+    {
+      "name": "createLineReveal",
+      "description": "T11 — reveal a text line by line from a scroll (or any 0–1) progress source.",
+      "module": "text/reveal",
+      "kind": "function",
+      "signature": "(element: HTMLElement, options?: LineRevealOptions | undefined): ProgressControl"
+    },
+    {
+      "name": "createNumberRoll",
+      "description": "",
+      "module": "text/number",
+      "kind": "function",
+      "signature": "(element: HTMLElement, options: NumberRollOptions): NumberRollControl"
+    },
+    {
+      "name": "createRotatingWords",
+      "description": "",
+      "module": "text/rotate",
+      "kind": "function",
+      "signature": "(element: HTMLElement, options: RotatingWordsOptions): RotatingWordsControl"
+    },
+    {
+      "name": "createScramble",
+      "description": "",
+      "module": "text/scramble",
+      "kind": "function",
+      "signature": "(element: HTMLElement, options?: ScrambleOptions | undefined): ProgressControl"
+    },
+    {
+      "name": "createTextMask",
+      "description": "",
+      "module": "text/mask",
+      "kind": "function",
+      "signature": "(element: HTMLElement, options?: TextMaskOptions | undefined): ProgressControl"
+    },
+    {
+      "name": "createTextReveal",
+      "description": "T01 — reveal the pieces of a text (chars, words or lines).",
+      "module": "text/reveal",
+      "kind": "function",
+      "signature": "(element: HTMLElement, options?: TextRevealOptions | undefined): ProgressControl"
+    },
+    {
+      "name": "createTextWave",
+      "description": "",
+      "module": "text/wave",
+      "kind": "function",
+      "signature": "(element: HTMLElement, options?: TextWaveOptions | undefined): LoopEffectControl"
+    },
+    {
+      "name": "createTypewriter",
+      "description": "",
+      "module": "text/typewriter",
+      "kind": "function",
+      "signature": "(element: HTMLElement, options?: TypewriterOptions | undefined): TypewriterControl"
+    },
+    {
+      "name": "fontVariationSupported",
+      "description": "",
+      "module": "text/axes",
+      "kind": "function",
+      "signature": "(): boolean"
+    },
+    {
+      "name": "getSegmenterSupport",
+      "description": "",
+      "module": "text/engine/segment",
+      "kind": "function",
+      "signature": "(): { grapheme: boolean; word: boolean; }"
+    },
+    {
+      "name": "getTextDebugInfo",
+      "description": "Snapshot of the text counters (development and tests).",
+      "module": "text/engine/debug",
+      "kind": "function",
+      "signature": "(): TextDebugInfo"
+    },
+    {
+      "name": "getTextSupport",
+      "description": "",
+      "module": "text/support",
+      "kind": "function",
+      "signature": "(): TextSupport"
+    },
+    {
+      "name": "segmentGraphemes",
+      "description": "",
+      "module": "text/engine/segment",
+      "kind": "function",
+      "signature": "(text: string, locale?: string | undefined): string[]"
+    },
+    {
+      "name": "segmentWords",
+      "description": "Words with attached punctuation (`Hello,` · `«Hola»`) and whitespace runs. Leading punctuation joins the\nnext word, trailing punctuation the previous one; a punctuation-only text is one piece.",
+      "module": "text/engine/segment",
+      "kind": "function",
+      "signature": "(text: string, locale?: string | undefined): WordSegment[]"
+    },
+    {
+      "name": "splitText",
+      "description": "Split an element's text into accessible, animatable pieces (contracts/text-splitter.md §2).",
+      "module": "text/engine/split",
+      "kind": "function",
+      "signature": "(element: HTMLElement, options?: SplitTextOptions | undefined): SplitText"
+    },
+    {
+      "name": "useSplitText",
+      "description": "`useSplitText(ref, options)` — split an element you render yourself; reverted on cleanup.",
+      "module": "text/react",
+      "kind": "function",
+      "signature": "(ref: RefObject<HTMLElement | null>, options?: SplitTextOptions | undefined, content?: unknown): RefObject<SplitText | null>"
+    }
+  ]
+}

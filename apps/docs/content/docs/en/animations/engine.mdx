@@ -1,0 +1,124 @@
+---
+title: Motion engine
+description: The framework-free core — attaching effects, defining your own, the scheduler, springs and diagnostics.
+---
+
+<AnimationsStatus />
+
+`@neshel-ui/animations/core` has no React and touches neither `window` nor `document` when imported.
+The React components are thin bindings over it, so everything here also works in other frameworks.
+
+## Attach an effect
+
+```ts title="attach-lift.ts"
+import { attachEffect } from "@neshel-ui/animations/core";
+import { lift } from "@neshel-ui/animations/hover";
+
+export function liftCards(root: ParentNode) {
+  const handles = [...root.querySelectorAll<HTMLElement>(".card")].map((card) =>
+    attachEffect(card, lift, { distance: 6 }),
+  );
+  return () => {
+    for (const handle of handles) handle.destroy();
+  };
+}
+```
+
+The handle has `update(options)`, `pause()`, `resume()`, `destroy()` and `state`: `active`,
+`suspended` (it waits for a channel), `reduced`, `paused`, `destroyed` or `failed`. `destroy()` is
+idempotent and restores the element. `attachPreset` does the same with a preset and overrides.
+
+Effects that render their own elements or keep a control (`createTimeline`, `createTypewriter`,
+`createAurora`, …) are functions of their family: they return a control with `destroy()`.
+
+## Define an effect
+
+A definition declares its channels, its reduced behaviour, how it validates options and what it does:
+
+```ts title="breathe.ts"
+import { attachEffect, defineEffect, NeshelAnimationsError } from "@neshel-ui/animations/core";
+
+interface BreatheOptions {
+  /** Extra scale at the peak (0–0.2). */
+  amount?: number;
+}
+
+export const breathe = defineEffect<BreatheOptions, { amount: number }>({
+  id: "hover/breathe",
+  family: "hover",
+  channels: [{ channel: "transform", mode: "compose" }],
+  reducedMotion: "off",
+  resolve(options) {
+    const amount = options?.amount ?? 0.03;
+    if (!(amount >= 0 && amount <= 0.2))
+      throw new NeshelAnimationsError("breathe: amount must be between 0 and 0.2");
+    return { amount };
+  },
+  setup({ channels, scheduler, options, reduced, onReducedChange }) {
+    let { amount } = options;
+    let time = 0;
+    let cancel: (() => void) | undefined;
+    const start = () => {
+      cancel ??= scheduler.schedule((frame) => {
+        time += frame.delta;
+        channels.transform.set({ scale: 1 + amount * (1 - Math.cos(time)) * 0.5 });
+        if (time < 2 * Math.PI) return true;
+        stop(); // one breath, then rest: continuous motion would need a pause control
+        return false;
+      });
+    };
+    const stop = () => {
+      cancel?.();
+      cancel = undefined;
+      channels.transform.clear();
+    };
+    if (!reduced) start();
+    const unsubscribe = onReducedChange((now) => (now ? stop() : start()));
+    return {
+      update(next) {
+        amount = next.amount;
+      },
+      destroy() {
+        unsubscribe();
+        stop();
+      },
+    };
+  },
+});
+
+export const attachBreathe = (element: HTMLElement) => attachEffect(element, breathe);
+```
+
+- `resolve` runs with the same errors on the server and in the browser.
+- `setup` may write only to the channels it declared.
+- `family` and `id` follow `family/name`; an unknown family or channel is rejected.
+- Nothing registers itself. For lookup by string, build a registry from what you import:
+  `createEffectRegistry(hoverEffects)`.
+
+## Scheduler
+
+`getFrameScheduler()` is the page's single `requestAnimationFrame` loop. Each frame runs three phases
+in order — `read`, `update`, `write` — so that layout reads and style writes never interleave. A task
+that returns `true` runs again on the next frame; the function returned by `schedule()` cancels it.
+With no tasks there is no loop. `delta` is limited, so a background tab does not jump when it returns.
+
+## Springs, easing and defaults
+
+| Export                                        | Use                                                                          |
+| --------------------------------------------- | ---------------------------------------------------------------------------- |
+| `motionDefaults`                              | Named durations, easings and springs used by every effect                    |
+| `easings`, `cubicBezier`, `steps`, `linear`   | Easing functions; `toCssEasing` converts them to CSS                         |
+| `stepSpring`, `resolveSpring`                 | The spring integrator, when you own the clock                                |
+| `springEasing`                                | A spring as a CSS `linear()` easing with its duration                        |
+| `mix`, `progress`, `mapRange`, `clamp`        | Interpolation helpers                                                        |
+| `composeTransform`                            | The transform composer used by the host                                      |
+
+Options accept a preset name (`"fast"`, `"decelerate"`, `"snappy"`) or a value.
+
+## Diagnostics
+
+`getMotionDebugInfo(element)` lists the owners, waiting effects and contributions per channel.
+Families export their own counters (`getScrollDebugInfo`, `getGpuDebugInfo`, …). They are for
+development and tests; their shape is not stable.
+
+Every export: [core reference](/en/docs/animations/reference/core/).

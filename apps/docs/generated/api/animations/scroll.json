@@ -1,0 +1,2228 @@
+{
+  "package": "@neshel-ui/animations/scroll",
+  "exports": [
+    {
+      "name": "DepthParallaxOptions",
+      "description": "",
+      "module": "scroll/parallax",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "axis",
+          "type": "\"x\" | \"y\"",
+          "optional": true,
+          "description": "Movement axis (default `\"y\"`).",
+          "default": "\"y\""
+        },
+        {
+          "name": "depth",
+          "type": "number",
+          "optional": true,
+          "description": "Speed factor: positive moves against the scroll (foreground), negative lags (background). −5…5, default 1."
+        },
+        {
+          "name": "distance",
+          "type": "number",
+          "optional": true,
+          "description": "Travel at depth 1 over the whole range, px (0–2000, default 200)."
+        },
+        {
+          "name": "range",
+          "type": "readonly [RangeInput, RangeInput]",
+          "optional": true,
+          "description": "Range of the effect's own timeline (ignored with `timeline`)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "scrollAxis",
+          "type": "ScrollAxis",
+          "optional": true,
+          "description": "Scroll axis of the effect's own timeline (default `\"block\"`).",
+          "default": "\"block\""
+        },
+        {
+          "name": "smooth",
+          "type": "boolean | SpringOptions | SpringPreset",
+          "optional": true,
+          "description": "SP10 spring smoothing of the effect's own timeline."
+        },
+        {
+          "name": "source",
+          "type": "Element | Window | null",
+          "optional": true,
+          "description": "Scroll container of the effect's own timeline (default: the root scroller)."
+        },
+        {
+          "name": "timeline",
+          "type": "ScrollProgress",
+          "optional": true,
+          "description": "A shared timeline (e.g. from `useScrollScene()`); otherwise the effect creates one."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "DirectionHeaderOptions",
+      "description": "",
+      "module": "scroll/triggers",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "Slide duration in ms (default 220).",
+          "default": "220"
+        },
+        {
+          "name": "offset",
+          "type": "number",
+          "optional": true,
+          "description": "Never hide above this scroll offset, px (0–2000, default 80)."
+        },
+        {
+          "name": "onChange",
+          "type": "(hidden: boolean) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "source",
+          "type": "Element | Window | null",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "tolerance",
+          "type": "number",
+          "optional": true,
+          "description": "Scroll distance in one direction before toggling, px (0–400, default 12)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "DriverPreference",
+      "description": "",
+      "module": "scroll/engine/native",
+      "kind": "type",
+      "definition": "\"auto\" | \"native\" | \"js\""
+    },
+    {
+      "name": "HorizontalLayout",
+      "description": "",
+      "module": "scroll/horizontal",
+      "kind": "type",
+      "definition": "\"auto\" | \"pinned\" | \"stacked\" | \"scroll\""
+    },
+    {
+      "name": "HorizontalScroll",
+      "description": "",
+      "module": "scroll/horizontal",
+      "kind": "component",
+      "signature": "({ layout, label, trackClassName, className, style, ref, children, onFocus, ...rest }: HorizontalScrollProps): Element",
+      "props": "HorizontalScrollProps",
+      "client": true
+    },
+    {
+      "name": "HorizontalScrollProps",
+      "description": "",
+      "module": "scroll/horizontal",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "description": "Accessible name of the region (recommended)."
+        },
+        {
+          "name": "layout",
+          "type": "HorizontalLayout",
+          "optional": true,
+          "description": "`\"auto\"` (default) and `\"pinned\"`: pinned when the track overflows (else a native scroller), stacked\nwhenever motion is reduced (live). `\"stacked\"`: always vertical. `\"scroll\"`: always a native\nhorizontal scroller (user-driven, kept under reduced motion)."
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "trackClassName",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "ImageParallaxOptions",
+      "description": "",
+      "module": "scroll/parallax",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "amount",
+          "type": "number",
+          "optional": true,
+          "description": "Travel each way in px (0–400, default 48). The media is scaled to keep the frame covered."
+        },
+        {
+          "name": "frame",
+          "type": "Element",
+          "optional": true,
+          "description": "The clipping frame (default: the element's parent)."
+        },
+        {
+          "name": "range",
+          "type": "readonly [RangeInput, RangeInput]",
+          "optional": true,
+          "description": "Range of the effect's own timeline (ignored with `timeline`)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "scrollAxis",
+          "type": "ScrollAxis",
+          "optional": true,
+          "description": "Scroll axis of the effect's own timeline (default `\"block\"`).",
+          "default": "\"block\""
+        },
+        {
+          "name": "smooth",
+          "type": "boolean | SpringOptions | SpringPreset",
+          "optional": true,
+          "description": "SP10 spring smoothing of the effect's own timeline."
+        },
+        {
+          "name": "source",
+          "type": "Element | Window | null",
+          "optional": true,
+          "description": "Scroll container of the effect's own timeline (default: the root scroller)."
+        },
+        {
+          "name": "timeline",
+          "type": "ScrollProgress",
+          "optional": true,
+          "description": "A shared timeline (e.g. from `useScrollScene()`); otherwise the effect creates one."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "InViewInput",
+      "description": "",
+      "module": "scroll/engine/in-view",
+      "kind": "type",
+      "definition": "InViewPreset | InViewOptions"
+    },
+    {
+      "name": "InViewOptions",
+      "description": "",
+      "module": "scroll/engine/in-view",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "root",
+          "type": "Element | null",
+          "optional": true,
+          "description": "Intersection root; omitted or `null` → the viewport."
+        },
+        {
+          "name": "rootMargin",
+          "type": "string",
+          "optional": true,
+          "description": "CSS margin around the root (px or %), as in IntersectionObserver."
+        },
+        {
+          "name": "threshold",
+          "type": "number | readonly number[]",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "InViewPosition",
+      "description": "",
+      "module": "scroll/engine/in-view",
+      "kind": "type",
+      "definition": "\"before\" | \"inside\" | \"after\""
+    },
+    {
+      "name": "InViewPreset",
+      "description": "",
+      "module": "scroll/engine/in-view",
+      "kind": "type",
+      "definition": "keyof typeof inViewPresets"
+    },
+    {
+      "name": "InViewProgressOptions",
+      "description": "",
+      "module": "scroll/triggers",
+      "kind": "type",
+      "props": [
+        {
+          "name": "driver",
+          "type": "DriverPreference",
+          "optional": true,
+          "description": "`\"auto\"` (default): native scroll timeline when verified, else JS."
+        },
+        {
+          "name": "range",
+          "type": "readonly [RangeInput, RangeInput]",
+          "optional": true,
+          "description": "Range of the effect's own timeline (ignored with `timeline`)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "scrollAxis",
+          "type": "ScrollAxis",
+          "optional": true,
+          "description": "Scroll axis of the effect's own timeline (default `\"block\"`).",
+          "default": "\"block\""
+        },
+        {
+          "name": "smooth",
+          "type": "boolean | SpringOptions | SpringPreset",
+          "optional": true,
+          "description": "SP10 spring smoothing of the effect's own timeline."
+        },
+        {
+          "name": "source",
+          "type": "Element | Window | null",
+          "optional": true,
+          "description": "Scroll container of the effect's own timeline (default: the root scroller)."
+        },
+        {
+          "name": "timeline",
+          "type": "ScrollProgress",
+          "optional": true,
+          "description": "A shared timeline (e.g. from `useScrollScene()`); otherwise the effect creates one."
+        }
+      ],
+      "inherits": [],
+      "definition": "PropertyProgressOptions"
+    },
+    {
+      "name": "InViewReport",
+      "description": "",
+      "module": "scroll/engine/in-view",
+      "kind": "interface",
+      "definition": "InViewReport",
+      "props": [
+        {
+          "name": "bottom",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "inView",
+          "type": "boolean",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "position",
+          "type": "InViewPosition",
+          "optional": false,
+          "description": "`after`: the element left through the start edge (scrolled past)."
+        },
+        {
+          "name": "ratio",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "top",
+          "type": "number",
+          "optional": false,
+          "description": "Element box edges relative to the viewport at the report (free from the observer entry)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "LazyEffectOptions",
+      "description": "",
+      "module": "scroll/triggers",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "keepAlive",
+          "type": "boolean",
+          "optional": true,
+          "description": "Keep the effect attached after it first activates (default false: destroy when far)."
+        },
+        {
+          "name": "onActiveChange",
+          "type": "(active: boolean) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "options",
+          "type": "Record<string, unknown>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "preset",
+          "type": "AnyPreset",
+          "optional": false,
+          "description": "Any effect definition or preset (Tilt3D-like heavy effects, …)."
+        },
+        {
+          "name": "trigger",
+          "type": "InViewInput",
+          "optional": true,
+          "description": "Activation area (default `\"lazy\"`: two viewports around the viewport).",
+          "default": "\"lazy\""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ParallaxImage",
+      "description": "SP06: a clipping frame (`<div>` or `asChild`) whose first element child (img/video/picture) moves.",
+      "module": "scroll/react",
+      "kind": "component",
+      "signature": "({ amount, reducedMotion, asChild, className, ref, children, ...rest }: ParallaxImageProps): Element",
+      "props": "ParallaxImageProps",
+      "client": true
+    },
+    {
+      "name": "ParallaxImageProps",
+      "description": "",
+      "module": "scroll/react",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "amount",
+          "type": "number",
+          "optional": true,
+          "description": "Travel each way, px (default 48).",
+          "default": "48"
+        },
+        {
+          "name": "asChild",
+          "type": "boolean",
+          "optional": true,
+          "description": "Apply to the single child element instead of rendering a `<div>`."
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "conflicts",
+          "type": "ConflictPolicy",
+          "optional": true,
+          "description": "Conflict reporting for exclusive channels (default: warn in development)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "PinnedSceneOptions",
+      "description": "",
+      "module": "scroll/parallax",
+      "kind": "type",
+      "props": [
+        {
+          "name": "driver",
+          "type": "DriverPreference",
+          "optional": true,
+          "description": "`\"auto\"` (default): native scroll timeline when verified, else JS."
+        },
+        {
+          "name": "range",
+          "type": "readonly [RangeInput, RangeInput]",
+          "optional": true,
+          "description": "Range of the effect's own timeline (ignored with `timeline`)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "scrollAxis",
+          "type": "ScrollAxis",
+          "optional": true,
+          "description": "Scroll axis of the effect's own timeline (default `\"block\"`).",
+          "default": "\"block\""
+        },
+        {
+          "name": "smooth",
+          "type": "boolean | SpringOptions | SpringPreset",
+          "optional": true,
+          "description": "SP10 spring smoothing of the effect's own timeline."
+        },
+        {
+          "name": "source",
+          "type": "Element | Window | null",
+          "optional": true,
+          "description": "Scroll container of the effect's own timeline (default: the root scroller)."
+        },
+        {
+          "name": "timeline",
+          "type": "ScrollProgress",
+          "optional": true,
+          "description": "A shared timeline (e.g. from `useScrollScene()`); otherwise the effect creates one."
+        }
+      ],
+      "inherits": [],
+      "definition": "PropertyProgressOptions"
+    },
+    {
+      "name": "ProgressOptions",
+      "description": "Options shared by every progress-driven effect.",
+      "module": "scroll/shared",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "range",
+          "type": "readonly [RangeInput, RangeInput]",
+          "optional": true,
+          "description": "Range of the effect's own timeline (ignored with `timeline`)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "scrollAxis",
+          "type": "ScrollAxis",
+          "optional": true,
+          "description": "Scroll axis of the effect's own timeline (default `\"block\"`).",
+          "default": "\"block\""
+        },
+        {
+          "name": "smooth",
+          "type": "boolean | SpringOptions | SpringPreset",
+          "optional": true,
+          "description": "SP10 spring smoothing of the effect's own timeline."
+        },
+        {
+          "name": "source",
+          "type": "Element | Window | null",
+          "optional": true,
+          "description": "Scroll container of the effect's own timeline (default: the root scroller)."
+        },
+        {
+          "name": "timeline",
+          "type": "ScrollProgress",
+          "optional": true,
+          "description": "A shared timeline (e.g. from `useScrollScene()`); otherwise the effect creates one."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "PropertyProgressOptions",
+      "description": "",
+      "module": "scroll/parallax",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "driver",
+          "type": "DriverPreference",
+          "optional": true,
+          "description": "`\"auto\"` (default): native scroll timeline when verified, else JS."
+        },
+        {
+          "name": "range",
+          "type": "readonly [RangeInput, RangeInput]",
+          "optional": true,
+          "description": "Range of the effect's own timeline (ignored with `timeline`)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "scrollAxis",
+          "type": "ScrollAxis",
+          "optional": true,
+          "description": "Scroll axis of the effect's own timeline (default `\"block\"`).",
+          "default": "\"block\""
+        },
+        {
+          "name": "smooth",
+          "type": "boolean | SpringOptions | SpringPreset",
+          "optional": true,
+          "description": "SP10 spring smoothing of the effect's own timeline."
+        },
+        {
+          "name": "source",
+          "type": "Element | Window | null",
+          "optional": true,
+          "description": "Scroll container of the effect's own timeline (default: the root scroller)."
+        },
+        {
+          "name": "timeline",
+          "type": "ScrollProgress",
+          "optional": true,
+          "description": "A shared timeline (e.g. from `useScrollScene()`); otherwise the effect creates one."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "RangeInput",
+      "description": "A range edge. With a subject: `\"<name>\"` or `\"<name> <percent>%\"`. Without: px (number) or\n`\"<percent>%\"` of the maximum scroll.",
+      "module": "scroll/engine/progress",
+      "kind": "type",
+      "definition": "number | `${number}%` | RangeName | `${RangeName} ${number}%`"
+    },
+    {
+      "name": "RangeName",
+      "description": "",
+      "module": "scroll/engine/progress",
+      "kind": "type",
+      "definition": "(typeof RANGE_NAMES)[number]"
+    },
+    {
+      "name": "ResolvedInView",
+      "description": "",
+      "module": "scroll/engine/in-view",
+      "kind": "interface",
+      "definition": "ResolvedInView",
+      "props": [
+        {
+          "name": "root",
+          "type": "Element | null",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "rootMargin",
+          "type": "string",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "threshold",
+          "type": "number[]",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "RevealOnEnterOptions",
+      "description": "",
+      "module": "scroll/triggers",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "initial",
+          "type": "\"hold\" | \"visible\"",
+          "optional": true,
+          "description": "`\"hold\"` (default for imperative attachment): hide the start pose now, before paint. `\"visible\"`:\nkeep the element as rendered until the first report (hydrated server markup)."
+        },
+        {
+          "name": "mode",
+          "type": "TriggerMode",
+          "optional": true,
+          "description": "ST03: `\"once\"` (default), `\"repeat\"` (re-arm on every leave) or `\"reverse\"` (play out on leave-back)."
+        },
+        {
+          "name": "onEnter",
+          "type": "() => void",
+          "optional": true,
+          "description": "ST04 callbacks."
+        },
+        {
+          "name": "onEnterBack",
+          "type": "() => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onLeave",
+          "type": "() => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onLeaveBack",
+          "type": "() => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "options",
+          "type": "Record<string, unknown>",
+          "optional": true,
+          "description": "Options merged over the preset's (`appear`, `hold`, `replay`, `playback` are managed)."
+        },
+        {
+          "name": "preset",
+          "type": "AnyPreset",
+          "optional": false,
+          "description": "An Entrance definition or preset (`fadeUp`, `clipCircle`, …; for ST02 the `stagger` effect)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "trigger",
+          "type": "InViewInput",
+          "optional": true,
+          "description": "Trigger area: an `inViewPresets` name or `{ rootMargin, threshold, root }` (default `\"default\"`).",
+          "default": "\"default\""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "RevealOnScroll",
+      "description": "ST01: plays an Entrance preset when the element enters the viewport (hydrated content is not hidden).",
+      "module": "scroll/react",
+      "kind": "component",
+      "signature": "(props: RevealOnScrollProps): Element",
+      "props": "RevealOnScrollProps",
+      "client": true
+    },
+    {
+      "name": "RevealOnScrollProps",
+      "description": "",
+      "module": "scroll/react",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "asChild",
+          "type": "boolean",
+          "optional": true,
+          "description": "Apply to the single child element instead of rendering a `<div>`."
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "conflicts",
+          "type": "ConflictPolicy",
+          "optional": true,
+          "description": "Conflict reporting for exclusive channels (default: warn in development)."
+        },
+        {
+          "name": "mode",
+          "type": "TriggerMode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onEnter",
+          "type": "() => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onEnterBack",
+          "type": "() => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onLeave",
+          "type": "() => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onLeaveBack",
+          "type": "() => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "options",
+          "type": "Record<string, unknown>",
+          "optional": true,
+          "description": "Options merged over the preset's."
+        },
+        {
+          "name": "preset",
+          "type": "AnyPreset",
+          "optional": false,
+          "description": "Entrance definition or preset (`fadeUp`, …); for `<StaggerOnScroll>` the `stagger` effect/preset."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "trigger",
+          "type": "InViewInput",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "ScrollAxis",
+      "description": "",
+      "module": "scroll/engine/source",
+      "kind": "type",
+      "definition": "\"block\" | \"inline\""
+    },
+    {
+      "name": "ScrollColorShiftOptions",
+      "description": "",
+      "module": "scroll/parallax",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "range",
+          "type": "readonly [RangeInput, RangeInput]",
+          "optional": true,
+          "description": "Range of the effect's own timeline (ignored with `timeline`)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "scrollAxis",
+          "type": "ScrollAxis",
+          "optional": true,
+          "description": "Scroll axis of the effect's own timeline (default `\"block\"`).",
+          "default": "\"block\""
+        },
+        {
+          "name": "smooth",
+          "type": "boolean | SpringOptions | SpringPreset",
+          "optional": true,
+          "description": "SP10 spring smoothing of the effect's own timeline."
+        },
+        {
+          "name": "source",
+          "type": "Element | Window | null",
+          "optional": true,
+          "description": "Scroll container of the effect's own timeline (default: the root scroller)."
+        },
+        {
+          "name": "space",
+          "type": "\"oklab\" | \"oklch\" | \"srgb\"",
+          "optional": true,
+          "description": "Interpolation space of `color-mix()` (default `\"oklab\"`).",
+          "default": "\"oklab\""
+        },
+        {
+          "name": "stops",
+          "type": "readonly string[]",
+          "optional": false,
+          "description": "Two or more CSS colours (at most 8)."
+        },
+        {
+          "name": "themeTarget",
+          "type": "Element",
+          "optional": true,
+          "description": "Element receiving `data-neshel-theme` (default: the element)."
+        },
+        {
+          "name": "themes",
+          "type": "readonly string[]",
+          "optional": true,
+          "description": "Optional theme names (one per stop) written to `data-neshel-theme` on `themeTarget`."
+        },
+        {
+          "name": "timeline",
+          "type": "ScrollProgress",
+          "optional": true,
+          "description": "A shared timeline (e.g. from `useScrollScene()`); otherwise the effect creates one."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ScrollDebugInfo",
+      "description": "Scroll engine counters (contracts/scroll-engine.md §6). Plain numbers, no allocation per frame; tests and\nthe browser lab read them to prove, for example, that scrolling never triggers a geometry measurement.",
+      "module": "scroll/engine/debug",
+      "kind": "interface",
+      "definition": "ScrollDebugInfo",
+      "props": [
+        {
+          "name": "activeTimelines",
+          "type": "number",
+          "optional": false,
+          "description": "Timelines currently subscribed to their source."
+        },
+        {
+          "name": "lastFallback",
+          "type": "{ native: number | null; expected: number; property: string; }",
+          "optional": true,
+          "description": "Last behavioural-check failure: native progress (`null` = inactive) vs the JS model."
+        },
+        {
+          "name": "measurements",
+          "type": "number",
+          "optional": false,
+          "description": "Geometry measurements (one per timeline per invalidation pass)."
+        },
+        {
+          "name": "nativeAnimations",
+          "type": "number",
+          "optional": false,
+          "description": "Live native (scroll-timeline) animations."
+        },
+        {
+          "name": "nativeFallbacks",
+          "type": "number",
+          "optional": false,
+          "description": "Native animations replaced by the JS driver after the behavioural check."
+        },
+        {
+          "name": "observedTargets",
+          "type": "number",
+          "optional": false,
+          "description": "Elements watched by the shared ResizeObserver."
+        },
+        {
+          "name": "scrollReads",
+          "type": "number",
+          "optional": false,
+          "description": "Scroll position reads (one per source per frame while scrolling)."
+        },
+        {
+          "name": "sources",
+          "type": "number",
+          "optional": false,
+          "description": "Live scroll sources (one per scroller with subscribers)."
+        },
+        {
+          "name": "timelines",
+          "type": "number",
+          "optional": false,
+          "description": "Live timelines (`createScrollProgress` results not destroyed)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ScrollDiagnostics",
+      "description": "",
+      "module": "scroll/engine/progress",
+      "kind": "interface",
+      "definition": "ScrollDiagnostics",
+      "props": [
+        {
+          "name": "actual",
+          "type": "number",
+          "optional": false,
+          "description": "Fresh bounding-box subject start (includes transforms)."
+        },
+        {
+          "name": "computed",
+          "type": "number",
+          "optional": false,
+          "description": "Cached subject start (layout, px)."
+        },
+        {
+          "name": "drift",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ScrollEffect",
+      "description": "Any scroll-family effect on a `<div>` (or `asChild`); inside a `<ScrollScene>` it follows the scene.",
+      "module": "scroll/react",
+      "kind": "component",
+      "signature": "({ preset, options, asChild, conflicts, className, ref, children, ...rest }: ScrollEffectProps): Element",
+      "props": "ScrollEffectProps",
+      "client": true
+    },
+    {
+      "name": "ScrollEffectProps",
+      "description": "",
+      "module": "scroll/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "asChild",
+          "type": "boolean",
+          "optional": true,
+          "description": "Apply to the single child element instead of rendering a `<div>`."
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "conflicts",
+          "type": "ConflictPolicy",
+          "optional": true,
+          "description": "Conflict reporting for exclusive channels (default: warn in development)."
+        },
+        {
+          "name": "options",
+          "type": "object",
+          "optional": true,
+          "description": "Options of a single preset."
+        },
+        {
+          "name": "preset",
+          "type": "AnyPreset | readonly AnyPreset[]",
+          "optional": false,
+          "description": "One scroll / scroll-trigger effect or preset, or a list composed on the element."
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ],
+      "definition": "HostProps & { /** One scroll / scroll-trigger effect or preset, or a list composed on the element. */ preset: AnyPreset | readonly AnyPreset[]; /** Options of a single preset. */ options?: object; }"
+    },
+    {
+      "name": "ScrollGeometry",
+      "description": "",
+      "module": "scroll/engine/progress",
+      "kind": "interface",
+      "definition": "ScrollGeometry",
+      "props": [
+        {
+          "name": "end",
+          "type": "number",
+          "optional": false,
+          "description": "Scroll offset where progress is 1 (px)."
+        },
+        {
+          "name": "max",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "position",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "start",
+          "type": "number",
+          "optional": false,
+          "description": "Scroll offset where progress is 0 (px)."
+        },
+        {
+          "name": "subjectSize",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "subjectStart",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "viewport",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ScrollLayer",
+      "description": "SP01: a depth layer of the nearest `<ScrollScene>` (or of its own viewport range outside a scene).",
+      "module": "scroll/react",
+      "kind": "component",
+      "signature": "({ depth, distance, axis, reducedMotion, ...props }: ScrollLayerProps): Element",
+      "props": "ScrollLayerProps",
+      "client": true
+    },
+    {
+      "name": "ScrollLayerProps",
+      "description": "",
+      "module": "scroll/react",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "asChild",
+          "type": "boolean",
+          "optional": true,
+          "description": "Apply to the single child element instead of rendering a `<div>`."
+        },
+        {
+          "name": "axis",
+          "type": "\"x\" | \"y\"",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "conflicts",
+          "type": "ConflictPolicy",
+          "optional": true,
+          "description": "Conflict reporting for exclusive channels (default: warn in development)."
+        },
+        {
+          "name": "depth",
+          "type": "number",
+          "optional": true,
+          "description": "SP01 depth (−5…5, default 1)."
+        },
+        {
+          "name": "distance",
+          "type": "number",
+          "optional": true,
+          "description": "Travel at depth 1 over the scene, px (default 200).",
+          "default": "200"
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "ScrollProgress",
+      "description": "",
+      "module": "scroll/engine/progress",
+      "kind": "interface",
+      "definition": "ScrollProgress",
+      "props": [
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": "Idempotent: releases listeners, observers and frame tasks."
+        },
+        {
+          "name": "diagnose",
+          "type": "() => ScrollDiagnostics",
+          "optional": false,
+          "description": "Cached vs fresh subject position (forces layout; diagnostics only)."
+        },
+        {
+          "name": "direction",
+          "type": "1 | -1 | 0",
+          "optional": false,
+          "description": "`1` forward, `-1` backward, `0` idle."
+        },
+        {
+          "name": "geometry",
+          "type": "Readonly<ScrollGeometry>",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "get",
+          "type": "() => number",
+          "optional": false,
+          "description": "Progress 0–1 (smoothed when `smooth` is on and motion is not reduced)."
+        },
+        {
+          "name": "getRaw",
+          "type": "() => number",
+          "optional": false,
+          "description": "Unsmoothed progress 0–1."
+        },
+        {
+          "name": "getVelocity",
+          "type": "() => number",
+          "optional": false,
+          "description": "Progress units per second."
+        },
+        {
+          "name": "refresh",
+          "type": "() => void",
+          "optional": false,
+          "description": "Re-measure this timeline in the next read phase."
+        },
+        {
+          "name": "scrollVelocity",
+          "type": "number",
+          "optional": false,
+          "description": "Source velocity on this timeline's axis (px/s)."
+        },
+        {
+          "name": "subscribe",
+          "type": "(listener: (progress: number) => void) => () => void",
+          "optional": false,
+          "description": "Listener after every update (update phase) and every smoothing step, with the current progress (not\nonly on change: a draw at progress 0 matters). The first subscription starts following the source."
+        },
+        {
+          "name": "toJSON",
+          "type": "() => string",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ScrollProgressBar",
+      "description": "SP03: decorative reading-progress bar (`aria-hidden`); the browser's scrollbar stays the real control.",
+      "module": "scroll/react",
+      "kind": "component",
+      "signature": "({ source, position, driver, className, ref, ...rest }: ScrollProgressBarProps): Element",
+      "props": "ScrollProgressBarProps",
+      "client": true
+    },
+    {
+      "name": "ScrollProgressBarProps",
+      "description": "",
+      "module": "scroll/react",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "driver",
+          "type": "DriverPreference",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "position",
+          "type": "\"top\" | \"bottom\" | \"static\"",
+          "optional": true,
+          "description": "`\"top\"` (default, fixed to the viewport top), `\"bottom\"` or `\"static\"` (in flow)."
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "source",
+          "type": "Element | null",
+          "optional": true,
+          "description": "Scroll container (default: the page)."
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "ScrollProgressEffectOptions",
+      "description": "",
+      "module": "scroll/parallax",
+      "kind": "type",
+      "props": [
+        {
+          "name": "driver",
+          "type": "DriverPreference",
+          "optional": true,
+          "description": "`\"auto\"` (default): native scroll timeline when verified, else JS."
+        },
+        {
+          "name": "range",
+          "type": "readonly [RangeInput, RangeInput]",
+          "optional": true,
+          "description": "Range of the effect's own timeline (ignored with `timeline`)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "scrollAxis",
+          "type": "ScrollAxis",
+          "optional": true,
+          "description": "Scroll axis of the effect's own timeline (default `\"block\"`).",
+          "default": "\"block\""
+        },
+        {
+          "name": "smooth",
+          "type": "boolean | SpringOptions | SpringPreset",
+          "optional": true,
+          "description": "SP10 spring smoothing of the effect's own timeline."
+        },
+        {
+          "name": "source",
+          "type": "Element | Window | null",
+          "optional": true,
+          "description": "Scroll container of the effect's own timeline (default: the root scroller)."
+        },
+        {
+          "name": "timeline",
+          "type": "ScrollProgress",
+          "optional": true,
+          "description": "A shared timeline (e.g. from `useScrollScene()`); otherwise the effect creates one."
+        }
+      ],
+      "inherits": [],
+      "definition": "PropertyProgressOptions"
+    },
+    {
+      "name": "ScrollProgressOptions",
+      "description": "",
+      "module": "scroll/engine/progress",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "axis",
+          "type": "ScrollAxis",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "range",
+          "type": "readonly [RangeInput, RangeInput]",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy for smoothing (default `\"user\"`).",
+          "default": "\"user\""
+        },
+        {
+          "name": "smooth",
+          "type": "boolean | SpringOptions | SpringPreset",
+          "optional": true,
+          "description": "SP10: spring-smoothed progress (`true` = prototype spring 90/20)."
+        },
+        {
+          "name": "source",
+          "type": "Element | Window | null",
+          "optional": true,
+          "description": "Scroll container; omitted, `null` or `window` → the root scroller."
+        },
+        {
+          "name": "subject",
+          "type": "Element | null",
+          "optional": true,
+          "description": "Element whose view range is tracked; omit for the source's whole scroll range."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ScrollScene",
+      "description": "SP05: a tall `<section>` whose stage is pinned with CSS `position: sticky` (no JS spacer). Writes\n`--neshel-scene-progress` (0–1) on the section and shares its timeline with `<ScrollLayer>` and\n`<ScrollEffect>` children (`useScrollScene()`).",
+      "module": "scroll/react",
+      "kind": "component",
+      "signature": "({ length, smooth, driver, range, reducedMotion, stageClassName, className, style, ref, children, ...rest }: ScrollSceneProps): Element",
+      "props": "ScrollSceneProps",
+      "client": true
+    },
+    {
+      "name": "ScrollSceneProps",
+      "description": "",
+      "module": "scroll/react",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "driver",
+          "type": "DriverPreference",
+          "optional": true,
+          "description": "Native scroll timeline for `--neshel-scene-progress` when verified (default `\"auto\"`).",
+          "default": "\"auto\""
+        },
+        {
+          "name": "length",
+          "type": "number",
+          "optional": true,
+          "description": "Section length in viewport heights (1–20, default 3); the stage is pinned for `length − 1`."
+        },
+        {
+          "name": "range",
+          "type": "readonly [RangeInput, RangeInput]",
+          "optional": true,
+          "description": "Progress range (default `[\"contain 0%\", \"contain 100%\"]`: the pinned span).",
+          "default": "[\"contain 0%\", \"contain 100%\"]"
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "smooth",
+          "type": "boolean",
+          "optional": true,
+          "description": "SP10: spring-smoothed scene progress."
+        },
+        {
+          "name": "stageClassName",
+          "type": "string",
+          "optional": true,
+          "description": "Class of the sticky stage."
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "ScrollTrigger",
+      "description": "",
+      "module": "scroll/engine/in-view",
+      "kind": "interface",
+      "definition": "ScrollTrigger",
+      "props": [
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "state",
+          "type": "TriggerState",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ScrollTriggerOptions",
+      "description": "",
+      "module": "scroll/engine/in-view",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "mode",
+          "type": "TriggerMode",
+          "optional": true,
+          "description": "`\"once\"` stops observing after the first enter (default `\"repeat\"`).",
+          "default": "\"repeat\""
+        },
+        {
+          "name": "onChange",
+          "type": "(state: TriggerState) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onEnter",
+          "type": "() => void",
+          "optional": true,
+          "description": "before → active (scrolling forward into the area)."
+        },
+        {
+          "name": "onEnterBack",
+          "type": "() => void",
+          "optional": true,
+          "description": "after → active (scrolling back into the area)."
+        },
+        {
+          "name": "onLeave",
+          "type": "() => void",
+          "optional": true,
+          "description": "active → after (scrolled past)."
+        },
+        {
+          "name": "onLeaveBack",
+          "type": "() => void",
+          "optional": true,
+          "description": "active → before (scrolled back above the area's start)."
+        },
+        {
+          "name": "trigger",
+          "type": "InViewInput",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ScrubPose",
+      "description": "",
+      "module": "scroll/parallax",
+      "kind": "interface",
+      "definition": "ScrubPose",
+      "props": [
+        {
+          "name": "opacity",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "rotateZ",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "scale",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "translateX",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "translateY",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ScrubTransformOptions",
+      "description": "",
+      "module": "scroll/parallax",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "from",
+          "type": "ScrubPose",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "range",
+          "type": "readonly [RangeInput, RangeInput]",
+          "optional": true,
+          "description": "Range of the effect's own timeline (ignored with `timeline`)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "scrollAxis",
+          "type": "ScrollAxis",
+          "optional": true,
+          "description": "Scroll axis of the effect's own timeline (default `\"block\"`).",
+          "default": "\"block\""
+        },
+        {
+          "name": "smooth",
+          "type": "boolean | SpringOptions | SpringPreset",
+          "optional": true,
+          "description": "SP10 spring smoothing of the effect's own timeline."
+        },
+        {
+          "name": "source",
+          "type": "Element | Window | null",
+          "optional": true,
+          "description": "Scroll container of the effect's own timeline (default: the root scroller)."
+        },
+        {
+          "name": "timeline",
+          "type": "ScrollProgress",
+          "optional": true,
+          "description": "A shared timeline (e.g. from `useScrollScene()`); otherwise the effect creates one."
+        },
+        {
+          "name": "to",
+          "type": "ScrubPose",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "SectionSpy",
+      "description": "",
+      "module": "scroll/engine/in-view",
+      "kind": "interface",
+      "definition": "SectionSpy",
+      "props": [
+        {
+          "name": "active",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "refresh",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "SectionSpyHookOptions",
+      "description": "",
+      "module": "scroll/react",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "line",
+          "type": "number",
+          "optional": true,
+          "description": "Activation line (fraction of the viewport from the top, default 0.3)."
+        },
+        {
+          "name": "source",
+          "type": "Element | null",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "SectionSpyOptions",
+      "description": "",
+      "module": "scroll/engine/in-view",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "axis",
+          "type": "ScrollAxis",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "line",
+          "type": "number",
+          "optional": true,
+          "description": "Activation line as a fraction of the scrollport from its start (0–1, default 0.3)."
+        },
+        {
+          "name": "onChange",
+          "type": "(index: number, section: Element | undefined) => void",
+          "optional": true,
+          "description": "Called with the active index (-1 before the first section) and element."
+        },
+        {
+          "name": "source",
+          "type": "Element | Window | null",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "StaggerOnScroll",
+      "description": "ST02: plays the Entrance `stagger` on the children when the container enters the viewport.",
+      "module": "scroll/react",
+      "kind": "component",
+      "signature": "(props: RevealOnScrollProps): Element",
+      "props": "RevealOnScrollProps",
+      "client": true
+    },
+    {
+      "name": "StickyStack",
+      "description": "SP09: each child is wrapped in a sticky card slot whose index is in the server markup.",
+      "module": "scroll/react",
+      "kind": "component",
+      "signature": "({ top, offset, scale, reducedMotion, className, style, ref, children, ...rest }: StickyStackProps): Element",
+      "props": "StickyStackProps",
+      "client": true
+    },
+    {
+      "name": "StickyStackOptions",
+      "description": "",
+      "module": "scroll/parallax",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "range",
+          "type": "readonly [RangeInput, RangeInput]",
+          "optional": true,
+          "description": "Range of the effect's own timeline (ignored with `timeline`)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "scale",
+          "type": "number",
+          "optional": true,
+          "description": "Scale removed from a fully covered card (0–0.5, default 0.05; 0 = CSS-only stacking)."
+        },
+        {
+          "name": "scrollAxis",
+          "type": "ScrollAxis",
+          "optional": true,
+          "description": "Scroll axis of the effect's own timeline (default `\"block\"`).",
+          "default": "\"block\""
+        },
+        {
+          "name": "smooth",
+          "type": "boolean | SpringOptions | SpringPreset",
+          "optional": true,
+          "description": "SP10 spring smoothing of the effect's own timeline."
+        },
+        {
+          "name": "source",
+          "type": "Element | Window | null",
+          "optional": true,
+          "description": "Scroll container of the effect's own timeline (default: the root scroller)."
+        },
+        {
+          "name": "timeline",
+          "type": "ScrollProgress",
+          "optional": true,
+          "description": "A shared timeline (e.g. from `useScrollScene()`); otherwise the effect creates one."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "StickyStackProps",
+      "description": "",
+      "module": "scroll/react",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "offset",
+          "type": "string",
+          "optional": true,
+          "description": "Offset between stacked cards (CSS length, default `\"1.25rem\"`).",
+          "default": "\"1.25rem\""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "scale",
+          "type": "number",
+          "optional": true,
+          "description": "Scale removed from a covered card (default 0.05; 0 = CSS only)."
+        },
+        {
+          "name": "top",
+          "type": "string",
+          "optional": true,
+          "description": "Sticky top of the first card (CSS length, default `\"1rem\"`).",
+          "default": "\"1rem\""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "StuckStateOptions",
+      "description": "",
+      "module": "scroll/triggers",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "onChange",
+          "type": "(stuck: boolean) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "source",
+          "type": "Element | Window | null",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "TriggerMode",
+      "description": "",
+      "module": "scroll/engine/in-view",
+      "kind": "type",
+      "definition": "\"once\" | \"repeat\" | \"reverse\""
+    },
+    {
+      "name": "TriggerState",
+      "description": "",
+      "module": "scroll/engine/in-view",
+      "kind": "type",
+      "definition": "\"idle\" | \"before\" | \"active\" | \"after\""
+    },
+    {
+      "name": "VelocitySkewOptions",
+      "description": "",
+      "module": "scroll/parallax",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "axis",
+          "type": "\"x\" | \"y\"",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "factor",
+          "type": "number",
+          "optional": true,
+          "description": "Degrees per px/s (0–0.05, default 0.003)."
+        },
+        {
+          "name": "max",
+          "type": "number",
+          "optional": true,
+          "description": "Maximum skew in degrees (0–30, default 8)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "source",
+          "type": "Element | Window | null",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "spring",
+          "type": "SpringOptions",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ZoomOnScrollOptions",
+      "description": "",
+      "module": "scroll/parallax",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "from",
+          "type": "number",
+          "optional": true,
+          "description": "Scale at progress 0 (0.1–5, default 1)."
+        },
+        {
+          "name": "range",
+          "type": "readonly [RangeInput, RangeInput]",
+          "optional": true,
+          "description": "Range of the effect's own timeline (ignored with `timeline`)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "scrollAxis",
+          "type": "ScrollAxis",
+          "optional": true,
+          "description": "Scroll axis of the effect's own timeline (default `\"block\"`).",
+          "default": "\"block\""
+        },
+        {
+          "name": "smooth",
+          "type": "boolean | SpringOptions | SpringPreset",
+          "optional": true,
+          "description": "SP10 spring smoothing of the effect's own timeline."
+        },
+        {
+          "name": "source",
+          "type": "Element | Window | null",
+          "optional": true,
+          "description": "Scroll container of the effect's own timeline (default: the root scroller)."
+        },
+        {
+          "name": "timeline",
+          "type": "ScrollProgress",
+          "optional": true,
+          "description": "A shared timeline (e.g. from `useScrollScene()`); otherwise the effect creates one."
+        },
+        {
+          "name": "to",
+          "type": "number",
+          "optional": true,
+          "description": "Scale at progress 1 (0.1–5, default 1.2)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "colorAt",
+      "description": "Colour at progress `p` between stops (stepped when `step`).",
+      "module": "scroll/parallax",
+      "kind": "function",
+      "signature": "(stops: readonly string[], space: string, p: number, step: boolean): string"
+    },
+    {
+      "name": "coveredScale",
+      "description": "Scale of a card `index` of `count` at stack progress `p` (equal-slot model, documented).",
+      "module": "scroll/parallax",
+      "kind": "function",
+      "signature": "(index: number, count: number, p: number, scale: number): number"
+    },
+    {
+      "name": "createScrollProgress",
+      "description": "",
+      "module": "scroll/engine/progress",
+      "kind": "function",
+      "signature": "(options?: ScrollProgressOptions | undefined): ScrollProgress"
+    },
+    {
+      "name": "createScrollTrigger",
+      "description": "",
+      "module": "scroll/engine/in-view",
+      "kind": "function",
+      "signature": "(element: Element, options?: ScrollTriggerOptions | undefined): ScrollTrigger"
+    },
+    {
+      "name": "createSectionSpy",
+      "description": "",
+      "module": "scroll/engine/in-view",
+      "kind": "function",
+      "signature": "(sections: readonly Element[], options?: SectionSpyOptions | undefined): SectionSpy"
+    },
+    {
+      "name": "depthParallax",
+      "description": "",
+      "module": "scroll/parallax",
+      "kind": "const",
+      "type": "EffectDefinition<DepthParallaxOptions, ResolvedProgress & { extra: { depth: number; distance: number; axis: \"x\" | \"y\"; }; }>"
+    },
+    {
+      "name": "directionHeader",
+      "description": "ST06 — hides a sticky/fixed header (transform layer `translateY(−height)`) while scrolling forward past\n`offset`; shows it on backward scroll, near the top and while focus is inside it (keyboard users never\nlose a hidden header). `data-neshel-header=\"hidden\"` while hidden. Height is measured on invalidation.",
+      "module": "scroll/triggers",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<DirectionHeaderOptions, ResolvedHeader>>"
+    },
+    {
+      "name": "getScrollDebugInfo",
+      "description": "Snapshot of the scroll engine counters.",
+      "module": "scroll/engine/debug",
+      "kind": "function",
+      "signature": "(): ScrollDebugInfo"
+    },
+    {
+      "name": "imageParallax",
+      "description": "",
+      "module": "scroll/parallax",
+      "kind": "const",
+      "type": "EffectDefinition<ImageParallaxOptions, ResolvedProgress & { extra: { amount: number; frame: Element | undefined; }; }>"
+    },
+    {
+      "name": "inViewPresets",
+      "description": "ST10 — named trigger areas (contracts/api-011.md §1).",
+      "module": "scroll/engine/in-view",
+      "kind": "const",
+      "type": "Readonly<{ default: Readonly<{ rootMargin: \"0px 0px -10% 0px\"; threshold: 0; }>; eager: Readonly<{ rootMargin: \"0px 0px 25% 0px\"; threshold: 0; }>; lazy: Readonly<{ rootMargin: \"200% 0px 200% 0px\"; threshold: 0; }>; center: Readonly<{ rootMargin: \"-45% 0px -45% 0px\"; threshold: 0; }>; half: Readonly<{ rootMargin: \"0px\"; threshold: 0.5; }>; full: Readonly<{ rootMargin: \"0px\"; threshold: 0.99; }>; top: Readonly<{ rootMargin: \"0px 0px -85% 0px\"; threshold: 0; }>; }>"
+    },
+    {
+      "name": "inViewProgress",
+      "description": "ST05 — `--neshel-view-progress` (0–1) while the element crosses the viewport; `1` under reduced motion.",
+      "module": "scroll/triggers",
+      "kind": "const",
+      "type": "EffectDefinition<PropertyProgressOptions, ResolvedProgress & { extra: { driver: DriverPreference; }; }>"
+    },
+    {
+      "name": "lazyEffect",
+      "description": "",
+      "module": "scroll/triggers",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<LazyEffectOptions, ResolvedLazy>>"
+    },
+    {
+      "name": "nativeScrollAvailable",
+      "description": "Whether the APIs of the native driver exist (behaviour is checked per animation).",
+      "module": "scroll/engine/native",
+      "kind": "function",
+      "signature": "(): boolean"
+    },
+    {
+      "name": "observeInView",
+      "description": "Observe `element` against a trigger area; returns the unobserve function.",
+      "module": "scroll/engine/in-view",
+      "kind": "function",
+      "signature": "(element: Element, input: InViewInput | undefined, listener: Listener): () => void"
+    },
+    {
+      "name": "pinnedScene",
+      "description": "SP05: `--neshel-scene-progress` (0–1) over the pinned span of a tall section (`contain` range: from its\ntop reaching the viewport top to its bottom reaching the viewport bottom). Pinning itself is CSS sticky\n(`.neshel-scene-stage`). Reduced motion keeps the variable and adds the `scene` token to\n`data-neshel-fx-reduced` so decor can freeze.",
+      "module": "scroll/parallax",
+      "kind": "const",
+      "type": "EffectDefinition<PropertyProgressOptions, ResolvedProgress & { extra: { driver: DriverPreference; }; }>"
+    },
+    {
+      "name": "refreshScroll",
+      "description": "Re-measure every scroll timeline, trigger and effect (for changes the observers cannot see).",
+      "module": "scroll/engine/geometry",
+      "kind": "function",
+      "signature": "(): void"
+    },
+    {
+      "name": "resolveInView",
+      "description": "Validate and normalise a trigger (preset name or options).",
+      "module": "scroll/engine/in-view",
+      "kind": "function",
+      "signature": "(input: InViewInput | undefined, owner?: string | undefined): ResolvedInView"
+    },
+    {
+      "name": "revealOnEnter",
+      "description": "ST01 — play an Entrance preset when the element enters the trigger area.",
+      "module": "scroll/triggers",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<RevealOnEnterOptions, ResolvedReveal>>"
+    },
+    {
+      "name": "scrollColorShift",
+      "description": "",
+      "module": "scroll/parallax",
+      "kind": "const",
+      "type": "EffectDefinition<ScrollColorShiftOptions, ResolvedProgress & { extra: ColorExtra; }>"
+    },
+    {
+      "name": "scrollEffects",
+      "description": "Scroll & Parallax definitions in catalogue order (SP01–SP03, SP05–SP09, SP11), for registries.",
+      "module": "scroll/index",
+      "kind": "const",
+      "type": "readonly AnyEffectDefinition[]"
+    },
+    {
+      "name": "scrollProgress",
+      "description": "SP03: `--neshel-scroll-progress` (0–1) of the page (or `source`) on the element.",
+      "module": "scroll/parallax",
+      "kind": "const",
+      "type": "EffectDefinition<PropertyProgressOptions, ResolvedProgress & { extra: { driver: DriverPreference; }; }>"
+    },
+    {
+      "name": "scrollTriggerEffects",
+      "description": "Scroll Trigger definitions in catalogue order (ST01, ST02, ST05, ST06, ST07, ST09), for registries.",
+      "module": "scroll/index",
+      "kind": "const",
+      "type": "readonly AnyEffectDefinition[]"
+    },
+    {
+      "name": "scrubTransform",
+      "description": "",
+      "module": "scroll/parallax",
+      "kind": "const",
+      "type": "EffectDefinition<ScrubTransformOptions, ResolvedProgress & { extra: { from: Required<ScrubPose>; to: Required<ScrubPose>; easing: Easing; }; }>"
+    },
+    {
+      "name": "staggerOnEnter",
+      "description": "ST02 — play the E10 `stagger` (children) when the container enters the trigger area.",
+      "module": "scroll/triggers",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<RevealOnEnterOptions, ResolvedReveal>>"
+    },
+    {
+      "name": "stickyStack",
+      "description": "SP09: attached to a container whose element children are the cards. Each child gets\n`--neshel-stack-index` (scroll.css offsets its sticky `top`) and, unless `scale: 0`, a covered-card\nscale layer driven by the container's `contain` progress (exact for equal-height cards). Without\nJavaScript `<StickyStack>` renders the index inline, so stacking works from the server markup.",
+      "module": "scroll/parallax",
+      "kind": "const",
+      "type": "EffectDefinition<StickyStackOptions, ResolvedProgress & { extra: { scale: number; }; }>"
+    },
+    {
+      "name": "stuckState",
+      "description": "ST07 — `data-neshel-stuck` while a `position: sticky` element (block-start offset `top`) is pinned.\nAn IntersectionObserver with `rootMargin: -(top + 1)px 0 0 0` and thresholds 0/1 reports the pinned edge\n(no sentinel element); the release point (bottom of the containing block) comes from cached geometry\nand the source position, so scrolling reads no layout.",
+      "module": "scroll/triggers",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<StuckStateOptions, ResolvedStuck>>"
+    },
+    {
+      "name": "useInView",
+      "description": "Whether `ref`'s element is inside the trigger area (state changes only on enter/leave).",
+      "module": "scroll/react",
+      "kind": "function",
+      "signature": "(ref: RefObject<Element | null>, trigger?: InViewInput | undefined): boolean"
+    },
+    {
+      "name": "useScrollProgress",
+      "description": "A timeline for `ref`'s element (its view range) or, with `ref` omitted/null, for the page. Created after\nmount (one render); never re-renders per frame — read it in effects or subscribe.",
+      "module": "scroll/react",
+      "kind": "function",
+      "signature": "(ref?: RefObject<Element | null> | null | undefined, options?: Omit<ScrollProgressOptions, \"subject\"> | undefined): ScrollProgress | undefined"
+    },
+    {
+      "name": "useScrollScene",
+      "description": "The nearest `<ScrollScene>`'s timeline (`undefined` outside a scene or before it mounted).",
+      "module": "scroll/react",
+      "kind": "function",
+      "signature": "(): ScrollProgress | undefined"
+    },
+    {
+      "name": "useScrollTrigger",
+      "description": "ST04: trigger state of `ref`'s element; callbacks are read from the latest render.",
+      "module": "scroll/react",
+      "kind": "function",
+      "signature": "(ref: RefObject<Element | null>, options?: ScrollTriggerOptions | undefined): TriggerState"
+    },
+    {
+      "name": "useSectionSpy",
+      "description": "ST08: id of the active section among `ids` (state changes only when the section changes).",
+      "module": "scroll/react",
+      "kind": "function",
+      "signature": "(ids: readonly string[], options?: SectionSpyHookOptions | undefined): string | undefined"
+    },
+    {
+      "name": "velocitySkew",
+      "description": "",
+      "module": "scroll/parallax",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<VelocitySkewOptions, ResolvedSkew>>"
+    },
+    {
+      "name": "zoomOnScroll",
+      "description": "",
+      "module": "scroll/parallax",
+      "kind": "const",
+      "type": "EffectDefinition<ZoomOnScrollOptions, ResolvedProgress & { extra: { from: number; to: number; easing: Easing; }; }>"
+    }
+  ]
+}

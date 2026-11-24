@@ -1,0 +1,74 @@
+---
+title: 3D avanzado y distorsión
+description: "Los 11 efectos D01–D11: propósito, API, opciones, ejemplos, movimiento reducido y coste."
+---
+
+<AnimationsStatus />
+
+Siete efectos usan CSS 3D a través del motion host (`./advanced`, que nunca carga WebGL); cuatro usan una capa opcional de WebGL2 (`./gpu`). Las caras, paneles y elementos ocultos quedan inertes y con `aria-hidden`, así que nada detrás de la perspectiva recibe foco. Con WebGL la imagen nativa permanece en el DOM y vuelve ante un fallo, pérdida de contexto, movimiento reducido o desmontaje; el HTML nunca se convierte en textura, y las imágenes y mapas deben cumplir CORS.
+
+## D01 · Giro de tarjeta [#d01]
+
+`<CardFlip>` gira entre `front` y `back`. Los elementos con `data-neshel-flip-toggle` la giran, el foco pasa a la cara visible y `flipped` con `onFlippedChange` la controla. Con movimiento reducido las caras se funden.
+
+<Effect id="D01" />
+
+## D02 · Rotación de cubo [#d02]
+
+`<CubeRotate>` gira entre sus hijos como paneles de un cubo; `go`, `next` y `previous` en el control, o `index`. Solo el panel activo es interactivo y las caras nunca salen de su caja.
+
+<Effect id="D02" />
+
+## D03 · Carrusel en anillo [#d03]
+
+`<RingCarousel>` dispone sus hijos en un anillo. Se mueve con flechas, Inicio, Fin y arrastre, solo el elemento frontal es enfocable y una región discreta anuncia la diapositiva. `label` es obligatorio.
+
+<Effect id="D03" />
+
+## D04 · Pliegue de página [#d04]
+
+`<PageCurl>` despega una portada ráster (`front`, imagen o canvas) sobre contenido vivo (`under`) con una malla WebGL. `driver="css"` gira HTML vivo como página rígida y es también la alternativa sin WebGL2.
+
+<Effect id="D04" />
+
+## D05 · Esquina plegable [#d05]
+
+`<CornerRecede>` pliega la esquina bajo el puntero como papel: `size`, `angle`, `corners`; `reverse` la levanta. La solapa es una copia inerte sin ids; usa `flap="plain"` para contenido que no se puede copiar.
+
+<Effect id="D05" />
+
+## D06 · Onda líquida [#d06]
+
+`<Ripple>` envía ondas amortiguadas por una imagen con cada pulsación, o con `impact(x, y)` en el control: `amplitude`, `frequency`, `damping`. No dibuja nada cuando se agota la energía y se desactiva con movimiento reducido.
+
+<Effect id="D06" />
+
+## D07 · Interferencia [#d07]
+
+`<Glitch>` ejecuta una ráfaga corta con hover y foco, o con `play()`. `rate` está limitado a tres cambios por segundo para no superar el umbral de destellos, el texto existe una vez y se desactiva con movimiento reducido.
+
+<Effect id="D07" />
+
+## D08 · Desplazamiento por mapa [#d08]
+
+`<DisplacementHover>` distorsiona una imagen con hover y foco mediante un `map` (URL, imagen, canvas o `"noise"` generado): `strength`, `scale` y `edge`. Los mapas remotos necesitan cabeceras CORS.
+
+<Effect id="D08" />
+
+## D09 · Cuadrícula en perspectiva [#d09]
+
+`<PerspectiveGrid>` dibuja un suelo que se aleja hacia un `horizon` y avanza a `speed` durante `duration` (5 s por defecto). Es una capa decorativa detrás de tu contenido, con `play()` y `pause()`.
+
+<Effect id="D09" />
+
+## D10 · Parallax con mapa de profundidad [#d10]
+
+`<DepthParallax>` desplaza una imagen según un mapa `depth` en escala de grises (blanco es cerca) al mover el puntero. El mapa es obligatorio, con la misma proporción dentro del 2 %: la profundidad nunca se estima.
+
+<Effect id="D10" />
+
+## D11 · Tilt-shift [#d11]
+
+`<TiltShift>` desenfoca los bordes alrededor de una banda focal: `orientation`, `focus`, `size` y `blur` (6 px, hasta 12). Sin `backdrop-filter` dibuja un tinte. Deja el texto dentro de la banda focal.
+
+<Effect id="D11" />

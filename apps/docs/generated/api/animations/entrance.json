@@ -1,0 +1,1404 @@
+{
+  "package": "@neshel-ui/animations/entrance",
+  "exports": [
+    {
+      "name": "BlurInOptions",
+      "description": "E05 — Blur in.",
+      "module": "entrance/effects",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "amount",
+          "type": "number",
+          "optional": true,
+          "description": "Start blur radius in px (0–40, default 12)."
+        },
+        {
+          "name": "appear",
+          "type": "boolean",
+          "optional": true,
+          "description": "Play when attached (default true). `<Reveal>` sets it to false while hydrating server-rendered\nmarkup, so visible content is not hidden again.",
+          "default": "true"
+        },
+        {
+          "name": "continuous",
+          "type": "boolean",
+          "optional": true,
+          "description": "A replay that interrupts a running run continues from the current progress\nwith the remaining fraction of the duration, instead of restarting from the start pose. Default false."
+        },
+        {
+          "name": "delay",
+          "type": "number",
+          "optional": true,
+          "description": "Delay before the entrance starts, in ms (0–5000, default 0)."
+        },
+        {
+          "name": "duration",
+          "type": "number | DurationPreset",
+          "optional": true,
+          "description": "Duration of tween entrances in ms or a `motionDefaults.duration` preset (default 320).",
+          "default": "320"
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": "Easing of tween entrances (default `\"decelerate\"`).",
+          "default": "\"decelerate\""
+        },
+        {
+          "name": "hold",
+          "type": "boolean",
+          "optional": true,
+          "description": "While no run plays, keep the start pose (content hidden until a replay).\nIgnored when motion is reduced and after `beforeprint`; `<Reveal>` never sets it. Default false."
+        },
+        {
+          "name": "onFinish",
+          "type": "(status: MotionResult[\"status\"]) => void",
+          "optional": true,
+          "description": "Called once per run: `\"completed\"`, `\"cancelled\"` or `\"interrupted\"`."
+        },
+        {
+          "name": "playback",
+          "type": "\"in\" | \"out\"",
+          "optional": true,
+          "description": "`playback: \"out\"` plays end -> start and then holds the start pose (reverse on leave). Default `\"in\"`.",
+          "default": "\"in\""
+        },
+        {
+          "name": "progress",
+          "type": "MotionValue",
+          "optional": true,
+          "description": "An external progress motion value (0 = start pose, 1 = visible)\nrenders the entrance instead of its own clock — seekable, scrubbable, reversible. `appear`, `replay`,\n`hold`, `playback`, `delay` and `onFinish` are then ignored; reduced motion keeps the declared behaviour."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy (default `\"user\"`).",
+          "default": "\"user\""
+        },
+        {
+          "name": "replay",
+          "type": "string | number | boolean",
+          "optional": true,
+          "description": "Changing this value replays the entrance from the start."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ClipRevealOptions",
+      "description": "E06 — Clip reveal (inset from an edge, or a circle from the centre).",
+      "module": "entrance/effects",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "appear",
+          "type": "boolean",
+          "optional": true,
+          "description": "Play when attached (default true). `<Reveal>` sets it to false while hydrating server-rendered\nmarkup, so visible content is not hidden again.",
+          "default": "true"
+        },
+        {
+          "name": "continuous",
+          "type": "boolean",
+          "optional": true,
+          "description": "A replay that interrupts a running run continues from the current progress\nwith the remaining fraction of the duration, instead of restarting from the start pose. Default false."
+        },
+        {
+          "name": "delay",
+          "type": "number",
+          "optional": true,
+          "description": "Delay before the entrance starts, in ms (0–5000, default 0)."
+        },
+        {
+          "name": "direction",
+          "type": "EntranceDirection",
+          "optional": true,
+          "description": "Direction the inset reveal travels (default `\"up\"`: revealed from the bottom edge upward).",
+          "default": "\"up\""
+        },
+        {
+          "name": "duration",
+          "type": "number | DurationPreset",
+          "optional": true,
+          "description": "Duration of tween entrances in ms or a `motionDefaults.duration` preset (default 320).",
+          "default": "320"
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": "Easing of tween entrances (default `\"decelerate\"`).",
+          "default": "\"decelerate\""
+        },
+        {
+          "name": "hold",
+          "type": "boolean",
+          "optional": true,
+          "description": "While no run plays, keep the start pose (content hidden until a replay).\nIgnored when motion is reduced and after `beforeprint`; `<Reveal>` never sets it. Default false."
+        },
+        {
+          "name": "onFinish",
+          "type": "(status: MotionResult[\"status\"]) => void",
+          "optional": true,
+          "description": "Called once per run: `\"completed\"`, `\"cancelled\"` or `\"interrupted\"`."
+        },
+        {
+          "name": "playback",
+          "type": "\"in\" | \"out\"",
+          "optional": true,
+          "description": "`playback: \"out\"` plays end -> start and then holds the start pose (reverse on leave). Default `\"in\"`.",
+          "default": "\"in\""
+        },
+        {
+          "name": "progress",
+          "type": "MotionValue",
+          "optional": true,
+          "description": "An external progress motion value (0 = start pose, 1 = visible)\nrenders the entrance instead of its own clock — seekable, scrubbable, reversible. `appear`, `replay`,\n`hold`, `playback`, `delay` and `onFinish` are then ignored; reduced motion keeps the declared behaviour."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy (default `\"user\"`).",
+          "default": "\"user\""
+        },
+        {
+          "name": "replay",
+          "type": "string | number | boolean",
+          "optional": true,
+          "description": "Changing this value replays the entrance from the start."
+        },
+        {
+          "name": "shape",
+          "type": "\"inset\" | \"circle\"",
+          "optional": true,
+          "description": "`\"inset\"` (default) or `\"circle\"`."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "EntranceDirection",
+      "description": "",
+      "module": "entrance/factory",
+      "kind": "type",
+      "definition": "\"up\" | \"down\" | \"left\" | \"right\""
+    },
+    {
+      "name": "EntranceOptions",
+      "description": "Options shared by every entrance effect.",
+      "module": "entrance/factory",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "appear",
+          "type": "boolean",
+          "optional": true,
+          "description": "Play when attached (default true). `<Reveal>` sets it to false while hydrating server-rendered\nmarkup, so visible content is not hidden again.",
+          "default": "true"
+        },
+        {
+          "name": "continuous",
+          "type": "boolean",
+          "optional": true,
+          "description": "A replay that interrupts a running run continues from the current progress\nwith the remaining fraction of the duration, instead of restarting from the start pose. Default false."
+        },
+        {
+          "name": "delay",
+          "type": "number",
+          "optional": true,
+          "description": "Delay before the entrance starts, in ms (0–5000, default 0)."
+        },
+        {
+          "name": "duration",
+          "type": "number | DurationPreset",
+          "optional": true,
+          "description": "Duration of tween entrances in ms or a `motionDefaults.duration` preset (default 320).",
+          "default": "320"
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": "Easing of tween entrances (default `\"decelerate\"`).",
+          "default": "\"decelerate\""
+        },
+        {
+          "name": "hold",
+          "type": "boolean",
+          "optional": true,
+          "description": "While no run plays, keep the start pose (content hidden until a replay).\nIgnored when motion is reduced and after `beforeprint`; `<Reveal>` never sets it. Default false."
+        },
+        {
+          "name": "onFinish",
+          "type": "(status: MotionResult[\"status\"]) => void",
+          "optional": true,
+          "description": "Called once per run: `\"completed\"`, `\"cancelled\"` or `\"interrupted\"`."
+        },
+        {
+          "name": "playback",
+          "type": "\"in\" | \"out\"",
+          "optional": true,
+          "description": "`playback: \"out\"` plays end -> start and then holds the start pose (reverse on leave). Default `\"in\"`.",
+          "default": "\"in\""
+        },
+        {
+          "name": "progress",
+          "type": "MotionValue",
+          "optional": true,
+          "description": "An external progress motion value (0 = start pose, 1 = visible)\nrenders the entrance instead of its own clock — seekable, scrubbable, reversible. `appear`, `replay`,\n`hold`, `playback`, `delay` and `onFinish` are then ignored; reduced motion keeps the declared behaviour."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy (default `\"user\"`).",
+          "default": "\"user\""
+        },
+        {
+          "name": "replay",
+          "type": "string | number | boolean",
+          "optional": true,
+          "description": "Changing this value replays the entrance from the start."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "FadeInOptions",
+      "description": "E01 — Fade in.",
+      "module": "entrance/effects",
+      "kind": "type",
+      "props": [
+        {
+          "name": "appear",
+          "type": "boolean",
+          "optional": true,
+          "description": "Play when attached (default true). `<Reveal>` sets it to false while hydrating server-rendered\nmarkup, so visible content is not hidden again.",
+          "default": "true"
+        },
+        {
+          "name": "continuous",
+          "type": "boolean",
+          "optional": true,
+          "description": "A replay that interrupts a running run continues from the current progress\nwith the remaining fraction of the duration, instead of restarting from the start pose. Default false."
+        },
+        {
+          "name": "delay",
+          "type": "number",
+          "optional": true,
+          "description": "Delay before the entrance starts, in ms (0–5000, default 0)."
+        },
+        {
+          "name": "duration",
+          "type": "number | DurationPreset",
+          "optional": true,
+          "description": "Duration of tween entrances in ms or a `motionDefaults.duration` preset (default 320).",
+          "default": "320"
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": "Easing of tween entrances (default `\"decelerate\"`).",
+          "default": "\"decelerate\""
+        },
+        {
+          "name": "hold",
+          "type": "boolean",
+          "optional": true,
+          "description": "While no run plays, keep the start pose (content hidden until a replay).\nIgnored when motion is reduced and after `beforeprint`; `<Reveal>` never sets it. Default false."
+        },
+        {
+          "name": "onFinish",
+          "type": "(status: MotionResult[\"status\"]) => void",
+          "optional": true,
+          "description": "Called once per run: `\"completed\"`, `\"cancelled\"` or `\"interrupted\"`."
+        },
+        {
+          "name": "playback",
+          "type": "\"in\" | \"out\"",
+          "optional": true,
+          "description": "`playback: \"out\"` plays end -> start and then holds the start pose (reverse on leave). Default `\"in\"`.",
+          "default": "\"in\""
+        },
+        {
+          "name": "progress",
+          "type": "MotionValue",
+          "optional": true,
+          "description": "An external progress motion value (0 = start pose, 1 = visible)\nrenders the entrance instead of its own clock — seekable, scrubbable, reversible. `appear`, `replay`,\n`hold`, `playback`, `delay` and `onFinish` are then ignored; reduced motion keeps the declared behaviour."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy (default `\"user\"`).",
+          "default": "\"user\""
+        },
+        {
+          "name": "replay",
+          "type": "string | number | boolean",
+          "optional": true,
+          "description": "Changing this value replays the entrance from the start."
+        }
+      ],
+      "inherits": [],
+      "definition": "EntranceOptions"
+    },
+    {
+      "name": "FadeSlideOptions",
+      "description": "E02 — Fade + slide.",
+      "module": "entrance/effects",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "appear",
+          "type": "boolean",
+          "optional": true,
+          "description": "Play when attached (default true). `<Reveal>` sets it to false while hydrating server-rendered\nmarkup, so visible content is not hidden again.",
+          "default": "true"
+        },
+        {
+          "name": "continuous",
+          "type": "boolean",
+          "optional": true,
+          "description": "A replay that interrupts a running run continues from the current progress\nwith the remaining fraction of the duration, instead of restarting from the start pose. Default false."
+        },
+        {
+          "name": "delay",
+          "type": "number",
+          "optional": true,
+          "description": "Delay before the entrance starts, in ms (0–5000, default 0)."
+        },
+        {
+          "name": "direction",
+          "type": "EntranceDirection",
+          "optional": true,
+          "description": "Direction of travel (default `\"up\"`).",
+          "default": "\"up\""
+        },
+        {
+          "name": "distance",
+          "type": "number",
+          "optional": true,
+          "description": "Travel distance in px (0–200, default 16)."
+        },
+        {
+          "name": "duration",
+          "type": "number | DurationPreset",
+          "optional": true,
+          "description": "Duration of tween entrances in ms or a `motionDefaults.duration` preset (default 320).",
+          "default": "320"
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": "Easing of tween entrances (default `\"decelerate\"`).",
+          "default": "\"decelerate\""
+        },
+        {
+          "name": "hold",
+          "type": "boolean",
+          "optional": true,
+          "description": "While no run plays, keep the start pose (content hidden until a replay).\nIgnored when motion is reduced and after `beforeprint`; `<Reveal>` never sets it. Default false."
+        },
+        {
+          "name": "onFinish",
+          "type": "(status: MotionResult[\"status\"]) => void",
+          "optional": true,
+          "description": "Called once per run: `\"completed\"`, `\"cancelled\"` or `\"interrupted\"`."
+        },
+        {
+          "name": "playback",
+          "type": "\"in\" | \"out\"",
+          "optional": true,
+          "description": "`playback: \"out\"` plays end -> start and then holds the start pose (reverse on leave). Default `\"in\"`.",
+          "default": "\"in\""
+        },
+        {
+          "name": "progress",
+          "type": "MotionValue",
+          "optional": true,
+          "description": "An external progress motion value (0 = start pose, 1 = visible)\nrenders the entrance instead of its own clock — seekable, scrubbable, reversible. `appear`, `replay`,\n`hold`, `playback`, `delay` and `onFinish` are then ignored; reduced motion keeps the declared behaviour."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy (default `\"user\"`).",
+          "default": "\"user\""
+        },
+        {
+          "name": "replay",
+          "type": "string | number | boolean",
+          "optional": true,
+          "description": "Changing this value replays the entrance from the start."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "FlipInOptions",
+      "description": "E09 — Flip in about the X or Y axis (perspective inside the composed transform; no wrapper).",
+      "module": "entrance/effects",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "angle",
+          "type": "number",
+          "optional": true,
+          "description": "Start angle in degrees (-120–120, default 70)."
+        },
+        {
+          "name": "appear",
+          "type": "boolean",
+          "optional": true,
+          "description": "Play when attached (default true). `<Reveal>` sets it to false while hydrating server-rendered\nmarkup, so visible content is not hidden again.",
+          "default": "true"
+        },
+        {
+          "name": "axis",
+          "type": "\"x\" | \"y\"",
+          "optional": true,
+          "description": "Rotation axis (default `\"x\"`).",
+          "default": "\"x\""
+        },
+        {
+          "name": "continuous",
+          "type": "boolean",
+          "optional": true,
+          "description": "A replay that interrupts a running run continues from the current progress\nwith the remaining fraction of the duration, instead of restarting from the start pose. Default false."
+        },
+        {
+          "name": "delay",
+          "type": "number",
+          "optional": true,
+          "description": "Delay before the entrance starts, in ms (0–5000, default 0)."
+        },
+        {
+          "name": "duration",
+          "type": "number | DurationPreset",
+          "optional": true,
+          "description": "Duration of tween entrances in ms or a `motionDefaults.duration` preset (default 320).",
+          "default": "320"
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": "Easing of tween entrances (default `\"decelerate\"`).",
+          "default": "\"decelerate\""
+        },
+        {
+          "name": "hold",
+          "type": "boolean",
+          "optional": true,
+          "description": "While no run plays, keep the start pose (content hidden until a replay).\nIgnored when motion is reduced and after `beforeprint`; `<Reveal>` never sets it. Default false."
+        },
+        {
+          "name": "onFinish",
+          "type": "(status: MotionResult[\"status\"]) => void",
+          "optional": true,
+          "description": "Called once per run: `\"completed\"`, `\"cancelled\"` or `\"interrupted\"`."
+        },
+        {
+          "name": "perspective",
+          "type": "number",
+          "optional": true,
+          "description": "Perspective distance in px (200–5000, default 800)."
+        },
+        {
+          "name": "playback",
+          "type": "\"in\" | \"out\"",
+          "optional": true,
+          "description": "`playback: \"out\"` plays end -> start and then holds the start pose (reverse on leave). Default `\"in\"`.",
+          "default": "\"in\""
+        },
+        {
+          "name": "progress",
+          "type": "MotionValue",
+          "optional": true,
+          "description": "An external progress motion value (0 = start pose, 1 = visible)\nrenders the entrance instead of its own clock — seekable, scrubbable, reversible. `appear`, `replay`,\n`hold`, `playback`, `delay` and `onFinish` are then ignored; reduced motion keeps the declared behaviour."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy (default `\"user\"`).",
+          "default": "\"user\""
+        },
+        {
+          "name": "replay",
+          "type": "string | number | boolean",
+          "optional": true,
+          "description": "Changing this value replays the entrance from the start."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "MaskWipeOptions",
+      "description": "E07 — Gradient-mask wipe.",
+      "module": "entrance/effects",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "appear",
+          "type": "boolean",
+          "optional": true,
+          "description": "Play when attached (default true). `<Reveal>` sets it to false while hydrating server-rendered\nmarkup, so visible content is not hidden again.",
+          "default": "true"
+        },
+        {
+          "name": "continuous",
+          "type": "boolean",
+          "optional": true,
+          "description": "A replay that interrupts a running run continues from the current progress\nwith the remaining fraction of the duration, instead of restarting from the start pose. Default false."
+        },
+        {
+          "name": "delay",
+          "type": "number",
+          "optional": true,
+          "description": "Delay before the entrance starts, in ms (0–5000, default 0)."
+        },
+        {
+          "name": "direction",
+          "type": "EntranceDirection",
+          "optional": true,
+          "description": "Direction of the wipe (default `\"right\"`: revealed from the left edge).",
+          "default": "\"right\""
+        },
+        {
+          "name": "duration",
+          "type": "number | DurationPreset",
+          "optional": true,
+          "description": "Duration of tween entrances in ms or a `motionDefaults.duration` preset (default 320).",
+          "default": "320"
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": "Easing of tween entrances (default `\"decelerate\"`).",
+          "default": "\"decelerate\""
+        },
+        {
+          "name": "hold",
+          "type": "boolean",
+          "optional": true,
+          "description": "While no run plays, keep the start pose (content hidden until a replay).\nIgnored when motion is reduced and after `beforeprint`; `<Reveal>` never sets it. Default false."
+        },
+        {
+          "name": "onFinish",
+          "type": "(status: MotionResult[\"status\"]) => void",
+          "optional": true,
+          "description": "Called once per run: `\"completed\"`, `\"cancelled\"` or `\"interrupted\"`."
+        },
+        {
+          "name": "playback",
+          "type": "\"in\" | \"out\"",
+          "optional": true,
+          "description": "`playback: \"out\"` plays end -> start and then holds the start pose (reverse on leave). Default `\"in\"`.",
+          "default": "\"in\""
+        },
+        {
+          "name": "progress",
+          "type": "MotionValue",
+          "optional": true,
+          "description": "An external progress motion value (0 = start pose, 1 = visible)\nrenders the entrance instead of its own clock — seekable, scrubbable, reversible. `appear`, `replay`,\n`hold`, `playback`, `delay` and `onFinish` are then ignored; reduced motion keeps the declared behaviour."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy (default `\"user\"`).",
+          "default": "\"user\""
+        },
+        {
+          "name": "replay",
+          "type": "string | number | boolean",
+          "optional": true,
+          "description": "Changing this value replays the entrance from the start."
+        },
+        {
+          "name": "softness",
+          "type": "number",
+          "optional": true,
+          "description": "Width of the soft edge as a percentage of the element (0–100, default 25)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "Reveal",
+      "description": "",
+      "module": "entrance/reveal",
+      "kind": "component",
+      "signature": "<Options extends EntranceOptions, Resolved>({ preset, options, appear, replayKey, asChild, conflicts, className, ref, children, ...rest }: RevealProps<Options, Resolved>): Element",
+      "props": "RevealProps<Options, Resolved>",
+      "client": true
+    },
+    {
+      "name": "RevealAppear",
+      "description": "When the entrance plays on mount: client-only mounts (default), always, or never (replay only).",
+      "module": "entrance/reveal",
+      "kind": "type",
+      "definition": "\"client\" | \"always\" | \"never\""
+    },
+    {
+      "name": "RevealProps",
+      "description": "",
+      "module": "entrance/reveal",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "appear",
+          "type": "RevealAppear",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "asChild",
+          "type": "boolean",
+          "optional": true,
+          "description": "Apply the effect to the single child element instead of rendering a `<div>`."
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "conflicts",
+          "type": "ConflictPolicy",
+          "optional": true,
+          "description": "Conflict reporting for exclusive channels (default: warn in development)."
+        },
+        {
+          "name": "options",
+          "type": "NoInfer<Partial<Options>>",
+          "optional": true,
+          "description": "Options merged over the preset's options."
+        },
+        {
+          "name": "preset",
+          "type": "PresetInput<Options, Resolved>",
+          "optional": false,
+          "description": "An entrance definition (`fadeIn`, `clipReveal`, …) or preset (`fadeUp`, `clipCircle`, …)."
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "replayKey",
+          "type": "string | number",
+          "optional": true,
+          "description": "Changing this value replays the entrance."
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "RotateInOptions",
+      "description": "E08 — Rotate in.",
+      "module": "entrance/effects",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "angle",
+          "type": "number",
+          "optional": true,
+          "description": "Start rotation in degrees (-180–180, default -6)."
+        },
+        {
+          "name": "appear",
+          "type": "boolean",
+          "optional": true,
+          "description": "Play when attached (default true). `<Reveal>` sets it to false while hydrating server-rendered\nmarkup, so visible content is not hidden again.",
+          "default": "true"
+        },
+        {
+          "name": "continuous",
+          "type": "boolean",
+          "optional": true,
+          "description": "A replay that interrupts a running run continues from the current progress\nwith the remaining fraction of the duration, instead of restarting from the start pose. Default false."
+        },
+        {
+          "name": "delay",
+          "type": "number",
+          "optional": true,
+          "description": "Delay before the entrance starts, in ms (0–5000, default 0)."
+        },
+        {
+          "name": "duration",
+          "type": "number | DurationPreset",
+          "optional": true,
+          "description": "Duration of tween entrances in ms or a `motionDefaults.duration` preset (default 320).",
+          "default": "320"
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": "Easing of tween entrances (default `\"decelerate\"`).",
+          "default": "\"decelerate\""
+        },
+        {
+          "name": "hold",
+          "type": "boolean",
+          "optional": true,
+          "description": "While no run plays, keep the start pose (content hidden until a replay).\nIgnored when motion is reduced and after `beforeprint`; `<Reveal>` never sets it. Default false."
+        },
+        {
+          "name": "onFinish",
+          "type": "(status: MotionResult[\"status\"]) => void",
+          "optional": true,
+          "description": "Called once per run: `\"completed\"`, `\"cancelled\"` or `\"interrupted\"`."
+        },
+        {
+          "name": "playback",
+          "type": "\"in\" | \"out\"",
+          "optional": true,
+          "description": "`playback: \"out\"` plays end -> start and then holds the start pose (reverse on leave). Default `\"in\"`.",
+          "default": "\"in\""
+        },
+        {
+          "name": "progress",
+          "type": "MotionValue",
+          "optional": true,
+          "description": "An external progress motion value (0 = start pose, 1 = visible)\nrenders the entrance instead of its own clock — seekable, scrubbable, reversible. `appear`, `replay`,\n`hold`, `playback`, `delay` and `onFinish` are then ignored; reduced motion keeps the declared behaviour."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy (default `\"user\"`).",
+          "default": "\"user\""
+        },
+        {
+          "name": "replay",
+          "type": "string | number | boolean",
+          "optional": true,
+          "description": "Changing this value replays the entrance from the start."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ScaleInOptions",
+      "description": "E03 — Scale in.",
+      "module": "entrance/effects",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "appear",
+          "type": "boolean",
+          "optional": true,
+          "description": "Play when attached (default true). `<Reveal>` sets it to false while hydrating server-rendered\nmarkup, so visible content is not hidden again.",
+          "default": "true"
+        },
+        {
+          "name": "continuous",
+          "type": "boolean",
+          "optional": true,
+          "description": "A replay that interrupts a running run continues from the current progress\nwith the remaining fraction of the duration, instead of restarting from the start pose. Default false."
+        },
+        {
+          "name": "delay",
+          "type": "number",
+          "optional": true,
+          "description": "Delay before the entrance starts, in ms (0–5000, default 0)."
+        },
+        {
+          "name": "duration",
+          "type": "number | DurationPreset",
+          "optional": true,
+          "description": "Duration of tween entrances in ms or a `motionDefaults.duration` preset (default 320).",
+          "default": "320"
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": "Easing of tween entrances (default `\"decelerate\"`).",
+          "default": "\"decelerate\""
+        },
+        {
+          "name": "from",
+          "type": "number",
+          "optional": true,
+          "description": "Start scale (0.3–1, default 0.92)."
+        },
+        {
+          "name": "hold",
+          "type": "boolean",
+          "optional": true,
+          "description": "While no run plays, keep the start pose (content hidden until a replay).\nIgnored when motion is reduced and after `beforeprint`; `<Reveal>` never sets it. Default false."
+        },
+        {
+          "name": "onFinish",
+          "type": "(status: MotionResult[\"status\"]) => void",
+          "optional": true,
+          "description": "Called once per run: `\"completed\"`, `\"cancelled\"` or `\"interrupted\"`."
+        },
+        {
+          "name": "playback",
+          "type": "\"in\" | \"out\"",
+          "optional": true,
+          "description": "`playback: \"out\"` plays end -> start and then holds the start pose (reverse on leave). Default `\"in\"`.",
+          "default": "\"in\""
+        },
+        {
+          "name": "progress",
+          "type": "MotionValue",
+          "optional": true,
+          "description": "An external progress motion value (0 = start pose, 1 = visible)\nrenders the entrance instead of its own clock — seekable, scrubbable, reversible. `appear`, `replay`,\n`hold`, `playback`, `delay` and `onFinish` are then ignored; reduced motion keeps the declared behaviour."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy (default `\"user\"`).",
+          "default": "\"user\""
+        },
+        {
+          "name": "replay",
+          "type": "string | number | boolean",
+          "optional": true,
+          "description": "Changing this value replays the entrance from the start."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "SpringInOptions",
+      "description": "E11 — Spring entrance with overshoot (engine spring; interruptible).",
+      "module": "entrance/effects",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "appear",
+          "type": "boolean",
+          "optional": true,
+          "description": "Play when attached (default true). `<Reveal>` sets it to false while hydrating server-rendered\nmarkup, so visible content is not hidden again.",
+          "default": "true"
+        },
+        {
+          "name": "continuous",
+          "type": "boolean",
+          "optional": true,
+          "description": "A replay that interrupts a running run continues from the current progress\nwith the remaining fraction of the duration, instead of restarting from the start pose. Default false."
+        },
+        {
+          "name": "delay",
+          "type": "number",
+          "optional": true,
+          "description": "Delay before the entrance starts, in ms (0–5000, default 0)."
+        },
+        {
+          "name": "direction",
+          "type": "EntranceDirection",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "distance",
+          "type": "number",
+          "optional": true,
+          "description": "Travel distance in px (0–200, default 24)."
+        },
+        {
+          "name": "duration",
+          "type": "number | DurationPreset",
+          "optional": true,
+          "description": "Duration of tween entrances in ms or a `motionDefaults.duration` preset (default 320).",
+          "default": "320"
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": "Easing of tween entrances (default `\"decelerate\"`).",
+          "default": "\"decelerate\""
+        },
+        {
+          "name": "from",
+          "type": "number",
+          "optional": true,
+          "description": "Start scale (0.3–1, default 0.9)."
+        },
+        {
+          "name": "hold",
+          "type": "boolean",
+          "optional": true,
+          "description": "While no run plays, keep the start pose (content hidden until a replay).\nIgnored when motion is reduced and after `beforeprint`; `<Reveal>` never sets it. Default false."
+        },
+        {
+          "name": "onFinish",
+          "type": "(status: MotionResult[\"status\"]) => void",
+          "optional": true,
+          "description": "Called once per run: `\"completed\"`, `\"cancelled\"` or `\"interrupted\"`."
+        },
+        {
+          "name": "playback",
+          "type": "\"in\" | \"out\"",
+          "optional": true,
+          "description": "`playback: \"out\"` plays end -> start and then holds the start pose (reverse on leave). Default `\"in\"`.",
+          "default": "\"in\""
+        },
+        {
+          "name": "progress",
+          "type": "MotionValue",
+          "optional": true,
+          "description": "An external progress motion value (0 = start pose, 1 = visible)\nrenders the entrance instead of its own clock — seekable, scrubbable, reversible. `appear`, `replay`,\n`hold`, `playback`, `delay` and `onFinish` are then ignored; reduced motion keeps the declared behaviour."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy (default `\"user\"`).",
+          "default": "\"user\""
+        },
+        {
+          "name": "replay",
+          "type": "string | number | boolean",
+          "optional": true,
+          "description": "Changing this value replays the entrance from the start."
+        },
+        {
+          "name": "spring",
+          "type": "SpringOptions | SpringPreset",
+          "optional": true,
+          "description": "Spring (default `\"bouncy\"`); replaces `duration`/`easing`.",
+          "default": "\"bouncy\""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "Stagger",
+      "description": "",
+      "module": "entrance/reveal",
+      "kind": "component",
+      "signature": "<Options extends EntranceOptions, Resolved>({ preset, options, interval, order, maxStagger, delay, reducedMotion, onFinish, appear, replayKey, asChild, conflicts, className, ref, children, ...rest }: StaggerProps<Options, Resolved>): Element",
+      "props": "StaggerProps<Options, Resolved>",
+      "client": true
+    },
+    {
+      "name": "StaggerOptions",
+      "description": "",
+      "module": "entrance/stagger",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "appear",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "delay",
+          "type": "number",
+          "optional": true,
+          "description": "Delay before the first child, in ms (0–5000, default 0)."
+        },
+        {
+          "name": "hold",
+          "type": "boolean",
+          "optional": true,
+          "description": "Forwarded to every child (see `EntranceOptions.hold`)."
+        },
+        {
+          "name": "interval",
+          "type": "number",
+          "optional": true,
+          "description": "Delay between consecutive children in ms (0–1000, default 60)."
+        },
+        {
+          "name": "maxStagger",
+          "type": "number",
+          "optional": true,
+          "description": "Upper bound of the total stagger in ms; the interval shrinks to fit (0–3000, default 900)."
+        },
+        {
+          "name": "onFinish",
+          "type": "(status: MotionResult[\"status\"]) => void",
+          "optional": true,
+          "description": "Called once when every child's run has settled (with the last status)."
+        },
+        {
+          "name": "options",
+          "type": "Partial<Options>",
+          "optional": true,
+          "description": "Options merged over the preset's options for every child (except `delay`, `appear`, `replay`)."
+        },
+        {
+          "name": "order",
+          "type": "StaggerOrder",
+          "optional": true,
+          "description": "Which child starts first (default `\"start\"`).",
+          "default": "\"start\""
+        },
+        {
+          "name": "playback",
+          "type": "\"in\" | \"out\"",
+          "optional": true,
+          "description": "Forwarded to every child (see `EntranceOptions.playback`)."
+        },
+        {
+          "name": "preset",
+          "type": "PresetInput<Options, any>",
+          "optional": false,
+          "description": "Entrance applied to every child (an entrance definition or preset)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "replay",
+          "type": "string | number | boolean",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "StaggerOrder",
+      "description": "",
+      "module": "entrance/stagger",
+      "kind": "type",
+      "definition": "\"start\" | \"end\" | \"center\""
+    },
+    {
+      "name": "StaggerProps",
+      "description": "",
+      "module": "entrance/reveal",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "appear",
+          "type": "RevealAppear",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "asChild",
+          "type": "boolean",
+          "optional": true,
+          "description": "Apply the effect to the single child element instead of rendering a `<div>`."
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "conflicts",
+          "type": "ConflictPolicy",
+          "optional": true,
+          "description": "Conflict reporting for exclusive channels (default: warn in development)."
+        },
+        {
+          "name": "delay",
+          "type": "number",
+          "optional": true,
+          "description": "Delay before the first child in ms (default 0).",
+          "default": "0"
+        },
+        {
+          "name": "interval",
+          "type": "number",
+          "optional": true,
+          "description": "Delay between children in ms (default 60).",
+          "default": "60"
+        },
+        {
+          "name": "maxStagger",
+          "type": "number",
+          "optional": true,
+          "description": "Upper bound of the total stagger in ms (default 900).",
+          "default": "900"
+        },
+        {
+          "name": "onFinish",
+          "type": "(status: MotionResult[\"status\"]) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "options",
+          "type": "NoInfer<Partial<Options>>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "order",
+          "type": "StaggerOrder",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "preset",
+          "type": "PresetInput<Options, Resolved>",
+          "optional": false,
+          "description": "Entrance applied to every element child."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "replayKey",
+          "type": "string | number",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "ZoomInOptions",
+      "description": "E04 — Zoom out → in (starts larger and settles).",
+      "module": "entrance/effects",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "appear",
+          "type": "boolean",
+          "optional": true,
+          "description": "Play when attached (default true). `<Reveal>` sets it to false while hydrating server-rendered\nmarkup, so visible content is not hidden again.",
+          "default": "true"
+        },
+        {
+          "name": "continuous",
+          "type": "boolean",
+          "optional": true,
+          "description": "A replay that interrupts a running run continues from the current progress\nwith the remaining fraction of the duration, instead of restarting from the start pose. Default false."
+        },
+        {
+          "name": "delay",
+          "type": "number",
+          "optional": true,
+          "description": "Delay before the entrance starts, in ms (0–5000, default 0)."
+        },
+        {
+          "name": "duration",
+          "type": "number | DurationPreset",
+          "optional": true,
+          "description": "Duration of tween entrances in ms or a `motionDefaults.duration` preset (default 320).",
+          "default": "320"
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": "Easing of tween entrances (default `\"decelerate\"`).",
+          "default": "\"decelerate\""
+        },
+        {
+          "name": "from",
+          "type": "number",
+          "optional": true,
+          "description": "Start scale (1–2, default 1.12)."
+        },
+        {
+          "name": "hold",
+          "type": "boolean",
+          "optional": true,
+          "description": "While no run plays, keep the start pose (content hidden until a replay).\nIgnored when motion is reduced and after `beforeprint`; `<Reveal>` never sets it. Default false."
+        },
+        {
+          "name": "onFinish",
+          "type": "(status: MotionResult[\"status\"]) => void",
+          "optional": true,
+          "description": "Called once per run: `\"completed\"`, `\"cancelled\"` or `\"interrupted\"`."
+        },
+        {
+          "name": "playback",
+          "type": "\"in\" | \"out\"",
+          "optional": true,
+          "description": "`playback: \"out\"` plays end -> start and then holds the start pose (reverse on leave). Default `\"in\"`.",
+          "default": "\"in\""
+        },
+        {
+          "name": "progress",
+          "type": "MotionValue",
+          "optional": true,
+          "description": "An external progress motion value (0 = start pose, 1 = visible)\nrenders the entrance instead of its own clock — seekable, scrubbable, reversible. `appear`, `replay`,\n`hold`, `playback`, `delay` and `onFinish` are then ignored; reduced motion keeps the declared behaviour."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy (default `\"user\"`).",
+          "default": "\"user\""
+        },
+        {
+          "name": "replay",
+          "type": "string | number | boolean",
+          "optional": true,
+          "description": "Changing this value replays the entrance from the start."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "blurIn",
+      "description": "",
+      "module": "entrance/effects",
+      "kind": "const",
+      "type": "EffectDefinition<BlurInOptions, ResolvedEntrance<{ amount: number; }>>"
+    },
+    {
+      "name": "clipCircle",
+      "description": "",
+      "module": "entrance/effects",
+      "kind": "const",
+      "type": "EffectPreset<ClipRevealOptions, ResolvedEntrance<{ shape: \"inset\" | \"circle\"; direction: EntranceDirection; }>>"
+    },
+    {
+      "name": "clipReveal",
+      "description": "",
+      "module": "entrance/effects",
+      "kind": "const",
+      "type": "EffectDefinition<ClipRevealOptions, ResolvedEntrance<{ shape: \"inset\" | \"circle\"; direction: EntranceDirection; }>>"
+    },
+    {
+      "name": "entranceEffects",
+      "description": "Every entrance definition in catalogue order (E01–E11), for explicit registries.",
+      "module": "entrance/index",
+      "kind": "const",
+      "type": "readonly AnyEffectDefinition[]"
+    },
+    {
+      "name": "fadeDown",
+      "description": "",
+      "module": "entrance/effects",
+      "kind": "const",
+      "type": "EffectPreset<FadeSlideOptions, ResolvedEntrance<{ direction: EntranceDirection; distance: number; }>>"
+    },
+    {
+      "name": "fadeIn",
+      "description": "",
+      "module": "entrance/effects",
+      "kind": "const",
+      "type": "EffectDefinition<EntranceOptions, ResolvedEntrance<null>>"
+    },
+    {
+      "name": "fadeLeft",
+      "description": "",
+      "module": "entrance/effects",
+      "kind": "const",
+      "type": "EffectPreset<FadeSlideOptions, ResolvedEntrance<{ direction: EntranceDirection; distance: number; }>>"
+    },
+    {
+      "name": "fadeRight",
+      "description": "",
+      "module": "entrance/effects",
+      "kind": "const",
+      "type": "EffectPreset<FadeSlideOptions, ResolvedEntrance<{ direction: EntranceDirection; distance: number; }>>"
+    },
+    {
+      "name": "fadeSlide",
+      "description": "",
+      "module": "entrance/effects",
+      "kind": "const",
+      "type": "EffectDefinition<FadeSlideOptions, ResolvedEntrance<{ direction: EntranceDirection; distance: number; }>>"
+    },
+    {
+      "name": "fadeUp",
+      "description": "",
+      "module": "entrance/effects",
+      "kind": "const",
+      "type": "EffectPreset<FadeSlideOptions, ResolvedEntrance<{ direction: EntranceDirection; distance: number; }>>"
+    },
+    {
+      "name": "flipIn",
+      "description": "",
+      "module": "entrance/effects",
+      "kind": "const",
+      "type": "EffectDefinition<FlipInOptions, ResolvedEntrance<{ axis: \"x\" | \"y\"; angle: number; perspective: number; }>>"
+    },
+    {
+      "name": "flipX",
+      "description": "",
+      "module": "entrance/effects",
+      "kind": "const",
+      "type": "EffectPreset<FlipInOptions, ResolvedEntrance<{ axis: \"x\" | \"y\"; angle: number; perspective: number; }>>"
+    },
+    {
+      "name": "flipY",
+      "description": "",
+      "module": "entrance/effects",
+      "kind": "const",
+      "type": "EffectPreset<FlipInOptions, ResolvedEntrance<{ axis: \"x\" | \"y\"; angle: number; perspective: number; }>>"
+    },
+    {
+      "name": "maskWipe",
+      "description": "",
+      "module": "entrance/effects",
+      "kind": "const",
+      "type": "EffectDefinition<MaskWipeOptions, ResolvedEntrance<{ direction: EntranceDirection; softness: number; }>>"
+    },
+    {
+      "name": "rotateIn",
+      "description": "",
+      "module": "entrance/effects",
+      "kind": "const",
+      "type": "EffectDefinition<RotateInOptions, ResolvedEntrance<{ angle: number; }>>"
+    },
+    {
+      "name": "scaleIn",
+      "description": "",
+      "module": "entrance/effects",
+      "kind": "const",
+      "type": "EffectDefinition<ScaleInOptions, ResolvedEntrance<{ from: number; }>>"
+    },
+    {
+      "name": "springIn",
+      "description": "",
+      "module": "entrance/effects",
+      "kind": "const",
+      "type": "EffectDefinition<SpringInOptions, ResolvedEntrance<{ direction: EntranceDirection; distance: number; from: number; }>>"
+    },
+    {
+      "name": "stagger",
+      "description": "",
+      "module": "entrance/stagger",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<StaggerOptions<EntranceOptions>, ResolvedStagger>>"
+    },
+    {
+      "name": "zoomIn",
+      "description": "",
+      "module": "entrance/effects",
+      "kind": "const",
+      "type": "EffectDefinition<ZoomInOptions, ResolvedEntrance<{ from: number; }>>"
+    }
+  ]
+}

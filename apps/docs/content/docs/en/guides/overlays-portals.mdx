@@ -71,6 +71,28 @@ Every overlay content and every selection control accepts `container`. Prefer na
 
 <Preview demo="components/popover-combobox" />
 
+### Nested layers
+
+For `Dialog`, `Sheet`, `MobileMenu`, `AlertDialog` and `Popover`:
+
+- One Escape closes **one** layer: the topmost open one, following the React tree through portals.
+- Only that layer's `onEscapeKeyDown` runs, once. `event.preventDefault()` in it keeps every layer open.
+- Focus returns to the trigger of the layer that closed.
+- A controlled layer that ignores `onOpenChange(false)` stays open, and so do the layers below it.
+
+`DropdownMenu`, `Tooltip` and `NavigationMenu` keep Radix's own handling, as do Radix layers you add
+yourself.
+
+<Callout type="warn" title="In 0.1.0">
+  With very fast input, one Escape could close two nested dialogs in the published 0.1.0. The rules above
+  are on the main branch and will be in the next release.
+</Callout>
+
+### Toasts and overlays
+
+A toast never moves focus, so it does not close or interrupt an open dialog. Escape closes a toast only
+while focus is inside it. [Toast](/en/docs/components/toast/) is not in 0.1.0 yet.
+
 ## Backdrop
 
 The modal backdrop colour is `var(--neshel-overlay-backdrop)` when you set it, otherwise a mix of the

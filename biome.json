@@ -60,6 +60,17 @@
       "preset": "recommended"
     }
   },
+  "overrides": [
+    {
+      "includes": ["apps/docs/demos/animations/**", "apps/docs/components/animations/**"],
+      "linter": {
+        "rules": {
+          "performance": { "noImgElement": "off" },
+          "a11y": { "noNoninteractiveTabindex": "off" }
+        }
+      }
+    }
+  ],
   "assist": {
     "actions": {
       "source": {

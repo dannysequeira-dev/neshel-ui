@@ -1,0 +1,74 @@
+---
+title: Typography & Text
+description: "The 11 effects T01–T11: purpose, API, options, examples, reduced motion and cost."
+---
+
+<AnimationsStatus />
+
+Text effects split text without hiding it from anyone: one accessible copy keeps the original nodes and the visual pieces are `aria-hidden`. Grapheme clusters, bidirectional text and shaping scripts are respected; links and controls are never split. Each effect writes one value per frame and `text.css` does the per-piece math; without it the text is visible and static. Long texts are limited by `maxPieces`. All return a control with `play`, `pause`, `seek`, `track` and `drive`.
+
+## T01 · Split reveal [#t01]
+
+`<TextReveal>` reveals `split` pieces (`chars`, `words` or `lines`) with a `variant` such as `fade-up` or `blur`; `stagger` and `order` shape the sequence. Line pieces regroup on resize without replaying.
+
+<Effect id="T01" />
+
+## T02 · Typewriter [#t02]
+
+`<Typewriter>` shows `speed` graphemes per second with an optional `caret`. The full sentence is accessible from the start, the layout does not move, and `finish()` shows everything.
+
+<Effect id="T02" />
+
+## T03 · Scramble [#t03]
+
+`<ScrambleText>` decodes from random glyphs of `charset`; the same `seed` always gives the same sequence, at most `rate` changes per second. Width and line breaks never change.
+
+<Effect id="T03" />
+
+## T04 · Gradient sweep [#t04]
+
+`<GradientText>` sweeps a band of `color` across text that otherwise keeps its own colour; `repeat` is 0 by default. In forced colours it is plain text. Check the contrast of the band colour.
+
+<Effect id="T04" />
+
+## T05 · Number roll [#t05]
+
+`<NumberRoll>` rolls digit columns to a new `value` formatted with `locale` and `format` (Intl). Assistive technology reads the formatted number once per change; there is no live region.
+
+<Effect id="T05" />
+
+## T06 · Rotating words [#t06]
+
+`<RotatingWords>` shows `words` one at a time every `interval` ms in a box as wide as the longest, so nothing shifts. It pauses on hover, focus and off screen; `accessibleText` is the single text read aloud.
+
+<Effect id="T06" />
+
+## T07 · Kinetic wave [#t07]
+
+`<WaveText>` moves graphemes in a sine wave of `amplitude` for `repeat` extra cycles and returns to rest. It is decorative and off under reduced motion; keep it for short words.
+
+<Effect id="T07" />
+
+## T08 · Highlighter [#t08]
+
+`<Highlight>` draws a marker band or an underline (`variant`) behind inline text, across line breaks and in the reading direction. Forced colours draw a system underline instead. Use `<mark>` semantics yourself if the meaning matters.
+
+<Effect id="T08" />
+
+## T09 · Text mask [#t09]
+
+`<TextMask>` reveals lines with `variant` `"rise"` (inside clipped line boxes) or `"wipe"`; `scope: "element"` masks the whole element instead. Without mask support the text is simply visible.
+
+<Effect id="T09" />
+
+## T10 · Variable-font axes [#t10]
+
+`<FontAxes>` animates variable-font axes between `from` and `to`, toggled with `active`. Registered axes use the high-level CSS properties and custom ones merge with your variation settings; a static font jumps between its weights.
+
+<Effect id="T10" />
+
+## T11 · Line reveal on scroll [#t11]
+
+`<LineReveal>` reveals lines from a `source` — a `ScrollProgress`, a motion value — in `mode` `"scrub"`, or once past a `threshold` with `"enter"`. Under reduced motion every line is shown.
+
+<Effect id="T11" />

@@ -42,3 +42,23 @@ export function ReleaseNotice({ locale = "en" }: { locale?: Locale }) {
   if (release.published) return null;
   return <Callout type="warn">{t.releaseNotice}</Callout>;
 }
+
+/** Notice for API that is on main but not in the published 0.1.0 (checked against the tag's exports). */
+export function Unreleased({ locale = "en" }: { locale?: Locale }) {
+  const t = dictionary(locale);
+  return (
+    <Callout type="warn" title={t.unreleased}>
+      {t.unreleasedText}
+    </Callout>
+  );
+}
+
+/** Status of the private animations package; `check:docs` fails when its manifest stops being private. */
+export function AnimationsStatus({ locale = "en" }: { locale?: Locale }) {
+  const t = dictionary(locale);
+  return (
+    <Callout type="warn" title={t.animationsTitle}>
+      {t.animationsText}
+    </Callout>
+  );
+}

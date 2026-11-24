@@ -1,0 +1,68 @@
+---
+title: SVG & Paths
+description: "The 10 effects S01–S10: purpose, API, options, examples, reduced motion and cost."
+---
+
+<AnimationsStatus />
+
+SVG effects work on your own elements and restore them exactly: dash styles, `d` attributes and gradient stops come back on destroy. Most are hooks that take a ref and return a ref to a control with `play`, `pause`, `seek`, `track` and `drive`. Path maths is exported as pure functions (`parsePathData`, `measurePath`, `interpolatePath`). One writer owns an attribute at a time; a second one waits.
+
+## S01 · Path draw [#s01]
+
+`usePathDraw` draws a path from its start, or from its end with `reverse`. With `release` (the default) your own dash pattern returns when it completes. `<PathDraw>` wraps one shape, and several paths can use `stagger`.
+
+<Effect id="S01" />
+
+## S02 · Path morph [#s02]
+
+`usePathMorph` moves between `shapes` whose commands are compatible; `to(index)` continues from the rendered shape if it is interrupted. `incompatible` decides between an error and a swap; paths are never resampled.
+
+<Effect id="S02" />
+
+## S03 · Motion path [#s03]
+
+`useMotionPath` moves an element along `path`, in CSS pixels relative to the element, with `rotate`, `repeat` and `yoyo`. It uses `offset-path` natively and falls back to JavaScript geometry.
+
+<Effect id="S03" />
+
+## S04 · Icon morph [#s04]
+
+`<MorphIcon>` changes a decorative icon between named `shapes`; `menuCloseShapes` is included. The button around it owns the accessible name and `aria-expanded`.
+
+<Effect id="S04" />
+
+## S05 · Gradient stops [#s05]
+
+`useGradientStops` animates `color`, `opacity` and `offset` of the stops you list, by index. It is finite by default (`repeat: 0`) and goes back and forth with `yoyo`.
+
+<Effect id="S05" />
+
+## S06 · Chart draw [#s06]
+
+`useChartDraw` draws the `lines` of a chart and shows each of its `points` as the line reaches it. The animation is not the data: give the SVG a text alternative.
+
+<Effect id="S06" />
+
+## S07 · Turbulence [#s07]
+
+`useTurbulence` wobbles an element with an SVG filter: `amplitude` (6 px, up to 24), `frequency`, `octaves` and an update `rate` of at most 30 per second. It is off under reduced motion and paused off screen.
+
+<Effect id="S07" />
+
+## S08 · Logo reveal [#s08]
+
+`useLogoReveal` uncovers a logo with a mask `pattern` (four wipes or a circle), optionally after drawing `outline` paths. Without mask support the logo is fully visible; its name is never touched.
+
+<Effect id="S08" />
+
+## S09 · Dash flow [#s09]
+
+`useDashFlow` makes the dashes of a path travel: `dash`, `gap` and `speed` (negative reverses). It is finite by default and has `play()` and `pause()`; an infinite `repeat` needs a pause control.
+
+<Effect id="S09" />
+
+## S10 · Success checkmark [#s10]
+
+`<SuccessCheck>` draws a circle and then a check. It is decorative unless you give it a `title`; announce success with your own status message, only when it really happened.
+
+<Effect id="S10" />

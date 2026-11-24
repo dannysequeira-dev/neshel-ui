@@ -1,0 +1,125 @@
+---
+title: Motor de movimiento
+description: El núcleo sin framework — adjuntar efectos, definir los tuyos, el planificador, los resortes y el diagnóstico.
+---
+
+<AnimationsStatus />
+
+`@neshel-ui/animations/core` no tiene React y no toca `window` ni `document` al importarse. Los componentes
+de React son una capa fina sobre él, así que todo lo de esta página funciona también en otros frameworks.
+
+## Adjuntar un efecto
+
+```ts title="attach-lift.ts"
+import { attachEffect } from "@neshel-ui/animations/core";
+import { lift } from "@neshel-ui/animations/hover";
+
+export function liftCards(root: ParentNode) {
+  const handles = [...root.querySelectorAll<HTMLElement>(".card")].map((card) =>
+    attachEffect(card, lift, { distance: 6 }),
+  );
+  return () => {
+    for (const handle of handles) handle.destroy();
+  };
+}
+```
+
+El handle tiene `update(options)`, `pause()`, `resume()`, `destroy()` y `state`: `active`, `suspended`
+(espera un canal), `reduced`, `paused`, `destroyed` o `failed`. `destroy()` es idempotente y restaura el
+elemento. `attachPreset` hace lo mismo con un preset y ajustes.
+
+Los efectos que dibujan sus propios elementos o conservan un control (`createTimeline`,
+`createTypewriter`, `createAurora`…) son funciones de su familia: devuelven un control con `destroy()`.
+
+## Definir un efecto
+
+Una definición declara sus canales, su comportamiento reducido, cómo valida opciones y qué hace:
+
+```ts title="breathe.ts"
+import { attachEffect, defineEffect, NeshelAnimationsError } from "@neshel-ui/animations/core";
+
+interface BreatheOptions {
+  /** Extra scale at the peak (0–0.2). */
+  amount?: number;
+}
+
+export const breathe = defineEffect<BreatheOptions, { amount: number }>({
+  id: "hover/breathe",
+  family: "hover",
+  channels: [{ channel: "transform", mode: "compose" }],
+  reducedMotion: "off",
+  resolve(options) {
+    const amount = options?.amount ?? 0.03;
+    if (!(amount >= 0 && amount <= 0.2))
+      throw new NeshelAnimationsError("breathe: amount must be between 0 and 0.2");
+    return { amount };
+  },
+  setup({ channels, scheduler, options, reduced, onReducedChange }) {
+    let { amount } = options;
+    let time = 0;
+    let cancel: (() => void) | undefined;
+    const start = () => {
+      cancel ??= scheduler.schedule((frame) => {
+        time += frame.delta;
+        channels.transform.set({ scale: 1 + amount * (1 - Math.cos(time)) * 0.5 });
+        if (time < 2 * Math.PI) return true;
+        stop(); // one breath, then rest: continuous motion would need a pause control
+        return false;
+      });
+    };
+    const stop = () => {
+      cancel?.();
+      cancel = undefined;
+      channels.transform.clear();
+    };
+    if (!reduced) start();
+    const unsubscribe = onReducedChange((now) => (now ? stop() : start()));
+    return {
+      update(next) {
+        amount = next.amount;
+      },
+      destroy() {
+        unsubscribe();
+        stop();
+      },
+    };
+  },
+});
+
+export const attachBreathe = (element: HTMLElement) => attachEffect(element, breathe);
+```
+
+- `resolve` se ejecuta con los mismos errores en el servidor y en el navegador.
+- `setup` solo puede escribir en los canales que declaró.
+- `family` e `id` siguen `familia/nombre`; una familia o canal desconocidos se rechazan.
+- Nada se registra solo. Para buscar por texto, crea un registro con lo que importes:
+  `createEffectRegistry(hoverEffects)`.
+
+## Planificador
+
+`getFrameScheduler()` es el único bucle `requestAnimationFrame` de la página. Cada fotograma ejecuta tres
+fases en orden — `read`, `update`, `write` — para que las lecturas de layout y las escrituras de estilo
+nunca se mezclen. Una tarea que devuelve `true` se repite en el siguiente fotograma; la función que
+devuelve `schedule()` la cancela. Sin tareas no hay bucle. `delta` está limitado, así que una pestaña en
+segundo plano no da saltos al volver.
+
+## Resortes, easing y valores por defecto
+
+| Exportación                                   | Uso                                                                          |
+| --------------------------------------------- | ---------------------------------------------------------------------------- |
+| `motionDefaults`                              | Duraciones, easings y resortes con nombre que usan todos los efectos         |
+| `easings`, `cubicBezier`, `steps`, `linear`   | Funciones de easing; `toCssEasing` las convierte a CSS                       |
+| `stepSpring`, `resolveSpring`                 | El integrador de resortes, cuando tú controlas el reloj                      |
+| `springEasing`                                | Un resorte como easing CSS `linear()` con su duración                        |
+| `mix`, `progress`, `mapRange`, `clamp`        | Utilidades de interpolación                                                  |
+| `composeTransform`                            | El compositor de transform que usa el host                                   |
+
+Las opciones aceptan un nombre (`"fast"`, `"decelerate"`, `"snappy"`) o un valor.
+
+## Diagnóstico
+
+`getMotionDebugInfo(element)` enumera dueños, efectos en espera y aportaciones por canal. Las familias
+exportan sus propios contadores (`getScrollDebugInfo`, `getGpuDebugInfo`…). Son para desarrollo y pruebas;
+su forma no es estable.
+
+Todas las exportaciones: [referencia de core](/es/docs/animations/reference/core/).

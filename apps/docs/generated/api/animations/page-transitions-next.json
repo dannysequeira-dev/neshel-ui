@@ -1,0 +1,76 @@
+{
+  "package": "@neshel-ui/animations/page-transitions/next",
+  "exports": [
+    {
+      "name": "NextPageTransitions",
+      "description": "Root-layout component: progress, direction and focus around App Router navigations.",
+      "module": "page-transitions/next",
+      "kind": "component",
+      "signature": "({ focus, progress, children }: NextPageTransitionsProps): Element",
+      "props": "NextPageTransitionsProps",
+      "client": true
+    },
+    {
+      "name": "NextPageTransitionsProps",
+      "description": "",
+      "module": "page-transitions/next",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "focus",
+          "type": "\"auto\" | \"none\"",
+          "optional": true,
+          "description": "Focus `[data-neshel-route-focus]` after a committed push/replace (default `\"auto\"`).",
+          "default": "\"auto\""
+        },
+        {
+          "name": "progress",
+          "type": "RouteProgressOptions | false",
+          "optional": true,
+          "description": "Route progress options, or `false` to render none."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "TransitionLink",
+      "description": "`next/link` plus Neshel transition types and the pending state (PT10).",
+      "module": "page-transitions/next",
+      "kind": "component",
+      "signature": "({ effect, transitionTypes, onNavigate, href, ref, ...props }: TransitionLinkProps): Element",
+      "props": "TransitionLinkProps",
+      "client": true
+    },
+    {
+      "name": "TransitionLinkProps",
+      "description": "",
+      "module": "page-transitions/next",
+      "kind": "type",
+      "props": [
+        {
+          "name": "effect",
+          "type": "PageEffect",
+          "optional": true,
+          "description": "Effect type added to the navigation's transition types (default `\"fade\"`).",
+          "default": "\"fade\""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLAnchorElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "next"
+      ],
+      "definition": "Omit<ComponentProps<LinkComponent>, \"ref\"> & { /** Effect type added to the navigation's transition types (default `\"fade\"`). */ effect?: PageEffect; ref?: Ref<HTMLAnchorElement>; }"
+    }
+  ]
+}

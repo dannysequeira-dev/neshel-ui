@@ -1,0 +1,1303 @@
+{
+  "package": "@neshel-ui/animations/core",
+  "exports": [
+    {
+      "name": "AnimateElementOptions",
+      "description": "",
+      "module": "core/waapi",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "conflicts",
+          "type": "ConflictPolicy",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "effectId",
+          "type": "string",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "priority",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "AnyEffectDefinition",
+      "description": "",
+      "module": "core/effect",
+      "kind": "type",
+      "definition": "EffectDefinition<any, any>",
+      "props": [
+        {
+          "name": "channels",
+          "type": "readonly ChannelClaim[]",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "family",
+          "type": "FamilyId",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "id",
+          "type": "EffectId",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "policy",
+          "type": "(options: Resolved) => ReducedMotion | undefined",
+          "optional": true,
+          "description": "Reduced-motion policy carried by the options (e.g. Tilt3D's `reducedMotion` prop)."
+        },
+        {
+          "name": "priority",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedBehaviour",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "resolve",
+          "type": "(options: Options | undefined) => Resolved",
+          "optional": false,
+          "description": "Validates options; throw `NeshelAnimationsError` for invalid input."
+        },
+        {
+          "name": "setup",
+          "type": "(context: EffectContext<Resolved>) => EffectInstance<Resolved>",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "AttachConfig",
+      "description": "",
+      "module": "core/attach",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "conflicts",
+          "type": "ConflictPolicy",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "priority",
+          "type": "number",
+          "optional": true,
+          "description": "Overrides the definition's priority for this attachment."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Overrides the policy carried by the options."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ChannelBinding",
+      "description": "",
+      "module": "core/controls",
+      "kind": "type",
+      "definition": "{ channel: \"opacity\"; } | { channel: \"transform\"; layer(value: number): TransformLayer; } | { channel: ExclusiveChannel; format(value: number): string; }",
+      "props": [
+        {
+          "name": "channel",
+          "type": "\"opacity\" | \"transform\" | ExclusiveChannel",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "format",
+          "type": "(value: number) => string",
+          "optional": false,
+          "description": "",
+          "variantOnly": true
+        },
+        {
+          "name": "layer",
+          "type": "(value: number) => TransformLayer",
+          "optional": false,
+          "description": "",
+          "variantOnly": true
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ChannelClaim",
+      "description": "",
+      "module": "core/effect",
+      "kind": "type",
+      "definition": "{ channel: \"transform\"; mode: \"compose\"; } | { channel: \"opacity\"; mode: \"multiply\"; } | { channel: ExclusiveChannel; mode: \"exclusive\"; }",
+      "props": [
+        {
+          "name": "channel",
+          "type": "\"transform\" | \"opacity\" | ExclusiveChannel",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "mode",
+          "type": "\"compose\" | \"multiply\" | \"exclusive\"",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ChannelHandles",
+      "description": "",
+      "module": "core/effect",
+      "kind": "interface",
+      "definition": "ChannelHandles",
+      "props": [
+        {
+          "name": "exclusive",
+          "type": "(channel: ExclusiveChannel) => { set(value: string): void; clear(): void; }",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "opacity",
+          "type": "{ set(value: number): void; clear(): void; }",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "transform",
+          "type": "{ set(layer: TransformLayer): void; clear(): void; }",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ConflictPolicy",
+      "description": "",
+      "module": "core/arbiter",
+      "kind": "type",
+      "definition": "\"warn\" | \"error\" | \"silent\""
+    },
+    {
+      "name": "ControlOptions",
+      "description": "",
+      "module": "core/controls",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "DEFAULT_SPRING",
+      "description": "",
+      "module": "core/spring",
+      "kind": "const",
+      "type": "Readonly<Required<SpringOptions>>"
+    },
+    {
+      "name": "DurationPreset",
+      "description": "",
+      "module": "core/defaults",
+      "kind": "type",
+      "definition": "keyof typeof motionDefaults.duration"
+    },
+    {
+      "name": "Easing",
+      "description": "",
+      "module": "core/easing",
+      "kind": "type",
+      "definition": "((t: number) => number) & { readonly css?: string; }"
+    },
+    {
+      "name": "EasingPreset",
+      "description": "",
+      "module": "core/easing",
+      "kind": "type",
+      "definition": "keyof typeof easings"
+    },
+    {
+      "name": "EffectContext",
+      "description": "",
+      "module": "core/effect",
+      "kind": "interface",
+      "definition": "EffectContext<Resolved>",
+      "props": [
+        {
+          "name": "channels",
+          "type": "ChannelHandles",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "element",
+          "type": "Element & { readonly style: CSSStyleDeclaration; }",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "onReducedChange",
+          "type": "(listener: (reduced: boolean) => void) => () => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "options",
+          "type": "Resolved",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "reduced",
+          "type": "boolean",
+          "optional": false,
+          "description": "Whether motion must be reduced now (live)."
+        },
+        {
+          "name": "scheduler",
+          "type": "FrameScheduler",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "EffectDefinition",
+      "description": "",
+      "module": "core/effect",
+      "kind": "interface",
+      "definition": "EffectDefinition<Options, Resolved>",
+      "props": [
+        {
+          "name": "channels",
+          "type": "readonly ChannelClaim[]",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "family",
+          "type": "FamilyId",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "id",
+          "type": "EffectId",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "policy",
+          "type": "(options: Resolved) => ReducedMotion | undefined",
+          "optional": true,
+          "description": "Reduced-motion policy carried by the options (e.g. Tilt3D's `reducedMotion` prop)."
+        },
+        {
+          "name": "priority",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedBehaviour",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "resolve",
+          "type": "(options: Options | undefined) => Resolved",
+          "optional": false,
+          "description": "Validates options; throw `NeshelAnimationsError` for invalid input."
+        },
+        {
+          "name": "setup",
+          "type": "(context: EffectContext<Resolved>) => EffectInstance<Resolved>",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "EffectHandle",
+      "description": "",
+      "module": "core/effect",
+      "kind": "interface",
+      "definition": "EffectHandle<Options>",
+      "props": [
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": "Idempotent; releases channels (restoring styles) and every listener."
+        },
+        {
+          "name": "pause",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "resume",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "state",
+          "type": "EffectState",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "update",
+          "type": "(options?: Options) => void",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "EffectId",
+      "description": "",
+      "module": "core/effect",
+      "kind": "type",
+      "definition": "`${FamilyId}/${string}`"
+    },
+    {
+      "name": "EffectInstance",
+      "description": "",
+      "module": "core/effect",
+      "kind": "interface",
+      "definition": "EffectInstance<Resolved>",
+      "props": [
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": "Must release every listener and frame task it created."
+        },
+        {
+          "name": "pause",
+          "type": "() => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "resume",
+          "type": "() => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "update",
+          "type": "(options: Resolved) => void",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "EffectPreset",
+      "description": "",
+      "module": "core/preset",
+      "kind": "interface",
+      "definition": "EffectPreset<Options, Resolved>",
+      "props": [
+        {
+          "name": "effect",
+          "type": "EffectDefinition<Options, Resolved>",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false,
+          "description": "Kebab-case preset name, unique within its effect (e.g. `\"fade-up\"`)."
+        },
+        {
+          "name": "options",
+          "type": "Readonly<Options>",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "EffectRegistry",
+      "description": "",
+      "module": "core/effect",
+      "kind": "interface",
+      "definition": "EffectRegistry",
+      "props": [
+        {
+          "name": "get",
+          "type": "(id: string) => AnyEffectDefinition | undefined",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "has",
+          "type": "(id: string) => boolean",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "list",
+          "type": "(family?: FamilyId) => readonly AnyEffectDefinition[]",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "EffectState",
+      "description": "`failed`: a resumed `setup()` threw; the attachment released everything and reported the error.",
+      "module": "core/effect",
+      "kind": "type",
+      "definition": "\"active\" | \"suspended\" | \"reduced\" | \"paused\" | \"destroyed\" | \"failed\""
+    },
+    {
+      "name": "ExclusiveChannel",
+      "description": "",
+      "module": "core/host",
+      "kind": "type",
+      "definition": "(typeof EXCLUSIVE_CHANNELS)[number] | `--neshel-${string}`"
+    },
+    {
+      "name": "FamilyId",
+      "description": "",
+      "module": "core/effect",
+      "kind": "type",
+      "definition": "(typeof FAMILIES)[number]"
+    },
+    {
+      "name": "FrameInfo",
+      "description": "",
+      "module": "core/scheduler",
+      "kind": "interface",
+      "definition": "FrameInfo",
+      "props": [
+        {
+          "name": "delta",
+          "type": "number",
+          "optional": false,
+          "description": "Seconds since the previous frame, clamped to `maxDelta` (0 on the first frame)."
+        },
+        {
+          "name": "time",
+          "type": "number",
+          "optional": false,
+          "description": "`requestAnimationFrame` timestamp (ms)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "FramePhase",
+      "description": "Frame scheduler (contracts/core-engine.md §1, ADR 0018 §3).\n\nOne `requestAnimationFrame` loop shared by every effect. Each frame runs three phases in a fixed\norder so effects never interleave layout reads with style writes (no layout thrashing):\n\n  read   — measure (getBoundingClientRect, scroll positions)\n  update — advance springs and timelines (pure computation)\n  write  — apply styles (transform, custom properties)\n\nA task runs once per frame while it returns `true`; returning anything else removes it. Tasks\nadded to a later phase during a frame run in that same frame; tasks added to the current or an\nearlier phase run in the next frame. The loop stops requesting frames when no task is pending,\nso an idle page costs nothing. On the server (no `requestAnimationFrame`) scheduling is a no-op.",
+      "module": "core/scheduler",
+      "kind": "type",
+      "definition": "\"read\" | \"update\" | \"write\""
+    },
+    {
+      "name": "FrameScheduler",
+      "description": "",
+      "module": "core/scheduler",
+      "kind": "interface",
+      "definition": "FrameScheduler",
+      "props": [
+        {
+          "name": "schedule",
+          "type": "(task: FrameTask, phase?: FramePhase) => () => void",
+          "optional": false,
+          "description": "Queue `task` in `phase` (default `\"update\"`); returns an idempotent cancel function.",
+          "default": "\"update\""
+        },
+        {
+          "name": "size",
+          "type": "number",
+          "optional": false,
+          "description": "Number of pending tasks (diagnostics and tests)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "FrameSchedulerOptions",
+      "description": "",
+      "module": "core/scheduler",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "maxDelta",
+          "type": "number",
+          "optional": true,
+          "description": "Upper bound of `delta` in seconds (default 1/15) so a background tab never \"jumps\"."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "FrameTask",
+      "description": "Return `true` to run again on the next frame; any other value (or none) ends the task.",
+      "module": "core/scheduler",
+      "kind": "type",
+      "definition": "(frame: FrameInfo) => unknown"
+    },
+    {
+      "name": "MotionControl",
+      "description": "",
+      "module": "core/controls",
+      "kind": "interface",
+      "definition": "MotionControl",
+      "props": [
+        {
+          "name": "cancel",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "finish",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "finished",
+          "type": "Promise<MotionResult>",
+          "optional": false,
+          "description": "Promise of the current run."
+        },
+        {
+          "name": "pause",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "play",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "reverse",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "state",
+          "type": "MotionState",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "MotionDebugInfo",
+      "description": "",
+      "module": "core/debug",
+      "kind": "interface",
+      "definition": "MotionDebugInfo",
+      "props": [
+        {
+          "name": "channels",
+          "type": "Array<{ channel: string; mode: \"compose\" | \"multiply\" | \"exclusive\"; owner?: string; waiting: string[]; contributions: number; }>",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "writes",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "MotionDirection",
+      "description": "",
+      "module": "core/controls",
+      "kind": "type",
+      "definition": "\"forward\" | \"reverse\""
+    },
+    {
+      "name": "MotionResult",
+      "description": "",
+      "module": "core/controls",
+      "kind": "interface",
+      "definition": "MotionResult",
+      "props": [
+        {
+          "name": "direction",
+          "type": "MotionDirection",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "status",
+          "type": "\"completed\" | \"cancelled\" | \"interrupted\"",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "value",
+          "type": "number",
+          "optional": false,
+          "description": "Final value (JS driver) or progress 0–1 (WAAPI driver)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "MotionState",
+      "description": "",
+      "module": "core/controls",
+      "kind": "type",
+      "definition": "\"idle\" | \"running\" | \"paused\" | \"completed\" | \"cancelled\" | \"interrupted\" | \"failed\""
+    },
+    {
+      "name": "MotionValue",
+      "description": "Motion values: numbers that animate without React state (contracts/controllers.md §3).",
+      "module": "core/motion-value",
+      "kind": "interface",
+      "definition": "MotionValue",
+      "props": [
+        {
+          "name": "get",
+          "type": "() => number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "getVelocity",
+          "type": "() => number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "set",
+          "type": "(value: number) => void",
+          "optional": false,
+          "description": "Set directly (velocity becomes 0); interrupts nothing by itself."
+        },
+        {
+          "name": "subscribe",
+          "type": "(listener: (value: number) => void) => () => void",
+          "optional": false,
+          "description": "Listener runs synchronously on every change; returns the unsubscribe function."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "NeshelAnimationsError",
+      "description": "Error thrown for invalid effect usage; identical on the server and the client (ADR 0009 §6).",
+      "module": "core/errors",
+      "kind": "class"
+    },
+    {
+      "name": "PresetInput",
+      "description": "A definition (default options) or a preset (definition + options).",
+      "module": "core/preset",
+      "kind": "type",
+      "definition": "EffectDefinition<Options, Resolved> | EffectPreset<Options, Resolved>",
+      "props": [
+        {
+          "name": "channels",
+          "type": "readonly ChannelClaim[]",
+          "optional": false,
+          "description": "",
+          "variantOnly": true
+        },
+        {
+          "name": "effect",
+          "type": "EffectDefinition<Options, Resolved>",
+          "optional": false,
+          "description": "",
+          "variantOnly": true
+        },
+        {
+          "name": "family",
+          "type": "FamilyId",
+          "optional": false,
+          "description": "",
+          "variantOnly": true
+        },
+        {
+          "name": "id",
+          "type": "EffectId",
+          "optional": false,
+          "description": "",
+          "variantOnly": true
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false,
+          "description": "Kebab-case preset name, unique within its effect (e.g. `\"fade-up\"`).",
+          "variantOnly": true
+        },
+        {
+          "name": "options",
+          "type": "Readonly<Options>",
+          "optional": false,
+          "description": "",
+          "variantOnly": true
+        },
+        {
+          "name": "policy",
+          "type": "(options: Resolved) => ReducedMotion | undefined",
+          "optional": true,
+          "description": "Reduced-motion policy carried by the options (e.g. Tilt3D's `reducedMotion` prop).",
+          "variantOnly": true
+        },
+        {
+          "name": "priority",
+          "type": "number",
+          "optional": true,
+          "description": "",
+          "variantOnly": true
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedBehaviour",
+          "optional": false,
+          "description": "",
+          "variantOnly": true
+        },
+        {
+          "name": "resolve",
+          "type": "(options: Options | undefined) => Resolved",
+          "optional": false,
+          "description": "Validates options; throw `NeshelAnimationsError` for invalid input.",
+          "variantOnly": true
+        },
+        {
+          "name": "setup",
+          "type": "(context: EffectContext<Resolved>) => EffectInstance<Resolved>",
+          "optional": false,
+          "description": "",
+          "variantOnly": true
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ReducedBehaviour",
+      "description": "",
+      "module": "core/effect",
+      "kind": "type",
+      "definition": "\"off\" | \"fade\" | \"instant\" | \"static\" | \"reduced\""
+    },
+    {
+      "name": "ReducedMotion",
+      "description": "Reduced-motion policy (contracts/accessibility.md, constitution IV).\n\n- `\"user\"` (default everywhere): follow `prefers-reduced-motion`.\n- `\"always\"`: always use the reduced variant (e.g. an application-level \"reduce motion\" setting).\n- `\"never\"`: ignore the preference. Reserved for motion essential to the meaning (WCAG 2.3.3);\n  effects in this package never default to it.",
+      "module": "core/reduced-motion",
+      "kind": "type",
+      "definition": "\"user\" | \"always\" | \"never\""
+    },
+    {
+      "name": "SpringOptions",
+      "description": "Damped spring integrator (contracts/core-engine.md §2).\n\nPure and framework-agnostic: the caller owns the state object and the clock. Semi-implicit Euler\nwith fixed sub-steps (at most 1/240 s) keeps the integration stable for any frame rate; the\nspring snaps to its target once both the distance and the speed fall below the rest thresholds,\nso an idle effect stops scheduling frames.",
+      "module": "core/spring",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "damping",
+          "type": "number",
+          "optional": true,
+          "description": "Damping coefficient c (default 26). `c >= 2 * sqrt(k * m)` never overshoots.",
+          "default": "26"
+        },
+        {
+          "name": "mass",
+          "type": "number",
+          "optional": true,
+          "description": "Mass m (default 1).",
+          "default": "1"
+        },
+        {
+          "name": "restDelta",
+          "type": "number",
+          "optional": true,
+          "description": "Distance below which the spring may rest (default 0.01, in the value's unit)."
+        },
+        {
+          "name": "restSpeed",
+          "type": "number",
+          "optional": true,
+          "description": "Speed below which the spring may rest (default 0.01 units/s)."
+        },
+        {
+          "name": "stiffness",
+          "type": "number",
+          "optional": true,
+          "description": "Spring constant k (default 170). Higher is faster.",
+          "default": "170"
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "SpringPreset",
+      "description": "",
+      "module": "core/defaults",
+      "kind": "type",
+      "definition": "keyof typeof motionDefaults.spring"
+    },
+    {
+      "name": "SpringState",
+      "description": "",
+      "module": "core/spring",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "value",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "velocity",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "TransformLayer",
+      "description": "Transform composition (contracts/composition.md, ADR 0018 §4).\n\nSeveral effects may move the same element. Instead of each effect writing `transform` (last\nwrite wins), JavaScript-driven effects contribute *layers* to the element's motion host (host.ts),\nwhich writes one composed `transform` per frame through its style ledger. CSS-driven effects use the individual\n`translate` / `rotate` / `scale` properties, which the browser applies before `transform`, so\nboth kinds coexist without conflicts.\n\nRules (deterministic and independent of layer order):\n- translations add (px); rotations add per axis (deg); scales multiply (`scale` with `scaleX`/`scaleY`,\n  Phase 012, additive; written as `scale(x, y)` only when non-uniform);\n- `perspective` takes the smallest positive value (the strongest perspective wins);\n- skews add per axis (deg; Phase 011, additive);\n- output order: perspective, translate3d, rotateX, rotateY, rotateZ, skew, scale (CSS order);\n- identity parts are omitted; the identity composition is `\"none\"`.\nSumming per-axis rotations is exact for one rotating layer and a close approximation for\nseveral small rotations (3D rotations do not commute); documented, not hidden.",
+      "module": "core/compose",
+      "kind": "interface",
+      "definition": "TransformLayer",
+      "props": [
+        {
+          "name": "perspective",
+          "type": "number",
+          "optional": true,
+          "description": "Perspective distance in px (applied first)."
+        },
+        {
+          "name": "rotateX",
+          "type": "number",
+          "optional": true,
+          "description": "Degrees."
+        },
+        {
+          "name": "rotateY",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "rotateZ",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "scale",
+          "type": "number",
+          "optional": true,
+          "description": "Uniform scale factor."
+        },
+        {
+          "name": "scaleX",
+          "type": "number",
+          "optional": true,
+          "description": "Horizontal scale factor (Phase 012, multiplies with `scale`)."
+        },
+        {
+          "name": "scaleY",
+          "type": "number",
+          "optional": true,
+          "description": "Vertical scale factor (Phase 012, multiplies with `scale`)."
+        },
+        {
+          "name": "skewX",
+          "type": "number",
+          "optional": true,
+          "description": "Degrees (Phase 011, SP11)."
+        },
+        {
+          "name": "skewY",
+          "type": "number",
+          "optional": true,
+          "description": "Degrees (Phase 011, SP11)."
+        },
+        {
+          "name": "translateX",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "translateY",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "translateZ",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "Transition",
+      "description": "",
+      "module": "core/controls",
+      "kind": "type",
+      "definition": "{ type: \"spring\"; spring?: SpringOptions | SpringPreset; } | { type: \"tween\"; duration?: number | DurationPreset; easing?: Easing | EasingPreset; delay?: number; }",
+      "props": [
+        {
+          "name": "delay",
+          "type": "number",
+          "optional": true,
+          "description": "",
+          "variantOnly": true
+        },
+        {
+          "name": "duration",
+          "type": "number | DurationPreset",
+          "optional": true,
+          "description": "",
+          "variantOnly": true
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": "",
+          "variantOnly": true
+        },
+        {
+          "name": "spring",
+          "type": "SpringOptions | SpringPreset",
+          "optional": true,
+          "description": "",
+          "variantOnly": true
+        },
+        {
+          "name": "type",
+          "type": "\"spring\" | \"tween\"",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "TweenControl",
+      "description": "",
+      "module": "core/controls",
+      "kind": "interface",
+      "definition": "TweenControl",
+      "props": [
+        {
+          "name": "cancel",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "finish",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "finished",
+          "type": "Promise<MotionResult>",
+          "optional": false,
+          "description": "Promise of the current run."
+        },
+        {
+          "name": "pause",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "play",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "reverse",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "seek",
+          "type": "(progress: number) => void",
+          "optional": false,
+          "description": "Set progress in [0, 1] (clamped). From a settled state the control becomes paused in a new run."
+        },
+        {
+          "name": "state",
+          "type": "MotionState",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "animateElement",
+      "description": "",
+      "module": "core/waapi",
+      "kind": "function",
+      "signature": "(element: Animated, channel: ExclusiveChannel, keyframes: readonly string[], transition: Transition | undefined, options: AnimateElementOptions): TweenControl"
+    },
+    {
+      "name": "animateValue",
+      "description": "Animate a motion value with a spring (default) or a tween; starts immediately.",
+      "module": "core/controls",
+      "kind": "function",
+      "signature": "(value: MotionValue, target: number, transition?: Transition | undefined, options?: ControlOptions | undefined): MotionControl | TweenControl"
+    },
+    {
+      "name": "attachEffect",
+      "description": "Attach a definition to an element (full engine: composition and exclusive-channel arbitration).",
+      "module": "core/effect",
+      "kind": "function",
+      "signature": "<Options, Resolved>(element: Element & { readonly style: CSSStyleDeclaration; }, definition: EffectDefinition<Options, Resolved>, options?: Options | undefined, config?: AttachConfig | undefined): EffectHandle<Options>"
+    },
+    {
+      "name": "attachPreset",
+      "description": "Attach a preset (or a definition) to an element through the full engine.",
+      "module": "core/preset",
+      "kind": "function",
+      "signature": "<Options, Resolved>(element: Element & { readonly style: CSSStyleDeclaration; }, input: PresetInput<Options, Resolved>, overrides?: Partial<Options> | undefined, config?: AttachConfig | undefined): EffectHandle<Options>"
+    },
+    {
+      "name": "bindChannel",
+      "description": "Write a motion value into an element channel through its motion host; returns the release\nfunction, which restores the captured inline value.",
+      "module": "core/controls",
+      "kind": "function",
+      "signature": "(value: MotionValue, element: Element & { readonly style: CSSStyleDeclaration; }, binding: ChannelBinding, options: { effectId: string; priority?: number | undefined; conflicts?: ConflictPolicy | undefined; }): () => void"
+    },
+    {
+      "name": "clamp",
+      "description": "Pure interpolation helpers (contracts/motion-defaults.md §4).",
+      "module": "core/interpolate",
+      "kind": "const",
+      "client": false
+    },
+    {
+      "name": "composeTransform",
+      "description": "",
+      "module": "core/compose",
+      "kind": "function",
+      "signature": "(layers: Iterable<TransformLayer>): string"
+    },
+    {
+      "name": "createEffectRegistry",
+      "description": "",
+      "module": "core/effect",
+      "kind": "function",
+      "signature": "(definitions: readonly AnyEffectDefinition[]): EffectRegistry"
+    },
+    {
+      "name": "createFrameScheduler",
+      "description": "",
+      "module": "core/scheduler",
+      "kind": "function",
+      "signature": "(options?: FrameSchedulerOptions | undefined): FrameScheduler"
+    },
+    {
+      "name": "cubicBezier",
+      "description": "CSS `cubic-bezier()` solved with Newton–Raphson and a bisection fallback (error ≤ 1e-6 in x).",
+      "module": "core/easing",
+      "kind": "function",
+      "signature": "(x1: number, y1: number, x2: number, y2: number): Easing"
+    },
+    {
+      "name": "defineEffect",
+      "description": "",
+      "module": "core/effect",
+      "kind": "function",
+      "signature": "<Options, Resolved>(definition: EffectDefinition<Options, Resolved>): Readonly<EffectDefinition<Options, Resolved>>"
+    },
+    {
+      "name": "definePreset",
+      "description": "Define a preset; its options are validated by `effect.resolve` now (same error everywhere).",
+      "module": "core/preset",
+      "kind": "function",
+      "signature": "<Options, Resolved>(name: string, effect: EffectDefinition<Options, Resolved>, options: Options): EffectPreset<Options, Resolved>"
+    },
+    {
+      "name": "easings",
+      "description": "Named easings (values tuned in 009 with the lab).",
+      "module": "core/easing",
+      "kind": "const",
+      "type": "Readonly<{ linear: Easing; standard: Easing; emphasized: Easing; decelerate: Easing; accelerate: Easing; }>"
+    },
+    {
+      "name": "getFrameScheduler",
+      "description": "The page-wide scheduler, created on first use (never at import time).",
+      "module": "core/scheduler",
+      "kind": "function",
+      "signature": "(): FrameScheduler"
+    },
+    {
+      "name": "getMotionDebugInfo",
+      "description": "",
+      "module": "core/debug",
+      "kind": "function",
+      "signature": "(element: object): MotionDebugInfo | undefined"
+    },
+    {
+      "name": "linear",
+      "description": "",
+      "module": "core/easing",
+      "kind": "const",
+      "client": false
+    },
+    {
+      "name": "mapRange",
+      "description": "",
+      "module": "core/interpolate",
+      "kind": "function",
+      "signature": "(value: number, inMin: number, inMax: number, outMin: number, outMax: number, options?: { clamp?: boolean | undefined; } | undefined): number"
+    },
+    {
+      "name": "mix",
+      "description": "Linear interpolation from `from` to `to` at `t` (not clamped).",
+      "module": "core/interpolate",
+      "kind": "const",
+      "client": false
+    },
+    {
+      "name": "motionDefaults",
+      "description": "",
+      "module": "core/defaults",
+      "kind": "const",
+      "type": "Readonly<{ duration: Readonly<{ instant: 0; fast: 120; normal: 200; slow: 320; deliberate: 500; }>; easing: Readonly<{ linear: Easing; standard: Easing; emphasized: Easing; decelerate: Easing; accelerate: Easing; }>; distance: Readonly<{ sm: 4; md: 8; lg: 16; }>; spring: Readonly<{ gentle: Readonly<{ stiffness: 120; damping: 20; mass: 1; }>; snappy: Readonly<{ stiffness: 300; damping: 30; mass: 1; }>; bouncy: Readonly<{ stiffness: 260; damping: 12; mass: 1; }>; }>; }>"
+    },
+    {
+      "name": "motionValue",
+      "description": "",
+      "module": "core/motion-value",
+      "kind": "function",
+      "signature": "(initial: number): MotionValue"
+    },
+    {
+      "name": "prefersReducedMotion",
+      "description": "Current OS/browser preference; `false` on the server or without `matchMedia`.",
+      "module": "core/reduced-motion",
+      "kind": "function",
+      "signature": "(): boolean"
+    },
+    {
+      "name": "progress",
+      "description": "Inverse of `mix`: where `value` sits between `from` and `to` (0 when they are equal).",
+      "module": "core/interpolate",
+      "kind": "const",
+      "client": false
+    },
+    {
+      "name": "resolveSpring",
+      "description": "Validated, complete options; throws `RangeError` for non-finite or out-of-range values.",
+      "module": "core/spring",
+      "kind": "function",
+      "signature": "(options?: SpringOptions | undefined): Required<SpringOptions>"
+    },
+    {
+      "name": "shouldReduceMotion",
+      "description": "Whether motion must be reduced for `policy` given the system preference.",
+      "module": "core/reduced-motion",
+      "kind": "function",
+      "signature": "(policy: ReducedMotion, systemPrefersReduced: boolean): boolean"
+    },
+    {
+      "name": "springEasing",
+      "description": "Sample a spring from 0 to 1 into a CSS `linear()` easing plus the duration until rest (ms), so CSS\nand WAAPI drivers keep the spring's character (research R4 of feature 008).",
+      "module": "core/easing",
+      "kind": "function",
+      "signature": "(spring?: SpringOptions | undefined, options?: { points?: number | undefined; } | undefined): { easing: string; duration: number; }"
+    },
+    {
+      "name": "stepSpring",
+      "description": "Advance `state` toward `target` by `dt` seconds (mutates `state`).\nReturns `true` when the spring is at rest on the target.",
+      "module": "core/spring",
+      "kind": "function",
+      "signature": "(state: SpringState, target: number, options: Required<SpringOptions>, dt: number): boolean"
+    },
+    {
+      "name": "steps",
+      "description": "CSS `steps(count, jump-start | jump-end)`.",
+      "module": "core/easing",
+      "kind": "function",
+      "signature": "(count: number, position?: \"start\" | \"end\" | undefined): Easing"
+    },
+    {
+      "name": "subscribeReducedMotion",
+      "description": "Call `listener` whenever the preference changes; returns the unsubscribe function.",
+      "module": "core/reduced-motion",
+      "kind": "function",
+      "signature": "(listener: (reduced: boolean) => void): () => void"
+    },
+    {
+      "name": "toCssEasing",
+      "description": "CSS string of a preset or of an easing created by `cubicBezier`/`steps`/`linear`.",
+      "module": "core/easing",
+      "kind": "function",
+      "signature": "(easing: Easing | \"linear\" | \"standard\" | \"emphasized\" | \"decelerate\" | \"accelerate\"): string"
+    }
+  ]
+}

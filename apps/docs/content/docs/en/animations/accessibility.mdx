@@ -1,0 +1,69 @@
+---
+title: Accessibility of motion
+description: Reduced motion policies, keyboard alternatives, continuous motion, flashing and what your application must still do.
+---
+
+<AnimationsStatus />
+
+## Reduced motion
+
+Every effect accepts `reducedMotion`:
+
+| Policy     | Meaning                                                                       |
+| ---------- | ----------------------------------------------------------------------------- |
+| `"user"`   | Follow `prefers-reduced-motion`, live (the default)                           |
+| `"always"` | Always the reduced variant, for example from a setting in your application    |
+| `"never"`  | Always the full motion; justify it, because it ignores the person's choice    |
+
+What "reduced" means depends on the effect. Each one declares one of these behaviours:
+
+| Behaviour | What people see                                                                    |
+| --------- | ---------------------------------------------------------------------------------- |
+| `off`     | No motion at all (decorative effects)                                              |
+| `fade`    | Opacity only, no travel                                                            |
+| `instant` | The end state at once                                                              |
+| `static`  | The decoration or the content stays still                                          |
+| `reduced` | A smaller signal stays because it conveys state (press, progress, errors)          |
+| `n/a`     | Nothing moves by itself, so nothing changes                                        |
+
+Dragging, pinching and rotating keep following the hand: that motion belongs to the person. Only what
+happens by itself afterwards is removed. Values that other code relies on (a scroll progress, a chapter)
+still change.
+
+## Keyboard and pointer alternatives
+
+- Functional gestures have keys and a non-drag alternative: see
+  [Physics & Gestures](/en/docs/animations/effects/gestures/). Keys are installed when the element is
+  focusable, so give it `tabIndex={0}`, a role and a name.
+- Hover effects also react to `:focus-visible` unless they are purely decorative.
+- Hidden faces, slides and exiting items are `inert` and `aria-hidden`.
+
+## Motion that continues
+
+WCAG 2.2.2 asks for a way to pause motion that starts by itself and lasts more than five seconds.
+Ambient effects stop after five seconds by default and loops are finite. If you choose
+`duration: Infinity` or an infinite `repeat`, add a control: `<AmbientMotionToggle>`, the buttons of
+`<Storyboard>`, or your own `pause()`.
+
+## Flashing and vestibular triggers
+
+`<Glitch>` is capped at three changes per second. Large parallax, zoom and full-screen travel are the
+usual vestibular triggers: prefer small amplitudes even without reduced motion.
+
+## Text and live regions
+
+Split text keeps one accessible copy. Indicators never announce: your own status message does, once,
+and only when the result is real.
+
+## What you must still do
+
+- Name interactive elements and give images alternative text.
+- Say errors and successes in text; motion is never the only signal.
+- Check contrast over moving backgrounds at their least favourable moment.
+- Test with your own content, a keyboard and real assistive technology.
+
+<Callout type="warn" title="What has been verified">
+  Automated checks run in Chromium, Firefox and WebKit (Playwright) with axe-core. Safari itself,
+  physical touch devices, physical GPUs and screen readers have not been verified for this package;
+  those manual checks are pending before any publication.
+</Callout>

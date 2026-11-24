@@ -1,0 +1,81 @@
+---
+title: SSR, estilos y compatibilidad
+description: Renderizado en servidor e hidratación, qué hoja de estilos necesita cada familia y compatibilidad de navegadores con sus alternativas.
+---
+
+<AnimationsStatus />
+
+## Renderizado en servidor
+
+- Todos los módulos se pueden importar en el servidor: nada lee `window` ni `document` al importarse.
+- El HTML del servidor es el elemento normal y visible. Cubiertas, lentes, canvas y piezas de texto se
+  añaden en el navegador.
+- El contenido hidratado no se vuelve a ocultar: las entradas se ejecutan en montajes de cliente
+  (`appear="client"`) y los revelados con scroll solo retienen lo que está por debajo de la pantalla.
+- Componentes y hooks son módulos de cliente. En el App Router de Next.js úsalos en un componente de
+  cliente o importa el componente directamente desde uno de servidor. Los presets son objetos con
+  funciones: pásalos dentro de componentes de cliente, no a través de la frontera con el servidor.
+- Las opciones se validan con el mismo error en el servidor y en el navegador.
+
+## Hojas de estilos
+
+Son opcionales, CSS normal en la capa `components.neshel`; no hace falta Tailwind. Solo dibujan capas del
+paquete y nunca declaran una transición o animación en tus elementos.
+
+| Hoja                                   | La necesitan                                                             |
+| -------------------------------------- | ------------------------------------------------------------------------ |
+| `styles.css`                           | Hover, pulsación y scroll juntos                                         |
+| `hover.css`                            | Decoración de hover, profundidad de la inclinación, seguidor del cursor  |
+| `press.css`                            | Onda, estallido, interruptor, casilla, intercambio, pulsación prolongada |
+| `scroll.css`                           | Escenas, barra de progreso, sección horizontal, pila, marco de imagen    |
+| `gestures.css`                         | Controles incluidos de deslizar, tirar, zoom, reordenar y scroll elástico |
+| `layout.css`                           | Altura automática, acordeón, indicador, fundido, mampostería             |
+| `cinematic.css`                        | Cámara, cubiertas, foco, guion gráfico, bandas, capítulos                |
+| `page-transitions.css`                 | Efectos de transición de página y progreso de ruta                       |
+| `page-transitions-mpa.css`             | Lo mismo más la activación entre documentos                              |
+| `text.css`, `svg.css`                  | Piezas de texto; iconos del paquete y contenedor del filtro SVG          |
+| `media.css`, `ambient.css`             | Marcos, comparador, lightbox; capas de ambiente                          |
+| `feedback.css`                         | Indicadores y capas de tokens                                            |
+| `advanced.css`, `gpu.css`              | Estructura 3D; marcos de GPU                                             |
+
+Sin la hoja el contenido sigue visible; solo falta la decoración. Las entradas no necesitan ninguna.
+
+## Compatibilidad de navegadores
+
+| Capacidad                         | La usan                         | Sin ella                                               |
+| --------------------------------- | ------------------------------- | ------------------------------------------------------ |
+| View Transitions                  | Transiciones de página          | La actualización ocurre de inmediato                   |
+| View Transitions entre documentos | PT09                            | Navegación normal (Firefox 159)                        |
+| Scroll timelines                  | Propiedades ligadas al scroll   | JavaScript con geometría en caché                      |
+| `offset-path`                     | S03                             | Geometría en JavaScript                                |
+| `background-clip: text`, `mask`   | T04, T09, S08, F10              | Texto o logotipo normal y visible                      |
+| `backdrop-filter`                 | D11                             | Un tinte, o nada                                       |
+| Canvas 2D                         | M09, B04, B05                   | Un fundido (M09); sin decoración                       |
+| WebGL2                            | D04, D06, D08, D10              | El contenido original (D04: página CSS rígida)         |
+| `Intl.Segmenter`                  | División de texto               | Segmentación aproximada                                |
+
+Verificado con Chromium, Firefox y WebKit de Playwright. WebKit no es Safari: Safari no se ha comprobado.
+Firefox de Playwright en la CI de Linux no tiene WebGL2, así que ahí se omiten los efectos de GPU.
+
+## Frameworks
+
+- **Next.js App Router** (16.4 o posterior) y **React Router** (8 o posterior): adaptadores de transición de
+  página, probados con una aplicación real de cada uno.
+- **Vite**: el paquete se compila e hidrata en una aplicación externa en CI.
+
+```tsx title="app/root.tsx"
+import "@neshel-ui/animations/page-transitions.css";
+import { PageTransition } from "@neshel-ui/animations/page-transitions";
+import { RouterPageTransitions } from "@neshel-ui/animations/page-transitions/react-router";
+import type { ReactNode } from "react";
+
+export function Root({ children }: { children: ReactNode }) {
+  return (
+    <RouterPageTransitions>
+      <PageTransition effect="fade">{children}</PageTransition>
+    </RouterPageTransitions>
+  );
+}
+```
+
+No uses además la prop `viewTransition` de React Router: iniciaría una segunda transición.

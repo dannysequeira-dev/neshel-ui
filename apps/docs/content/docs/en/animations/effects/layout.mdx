@@ -1,0 +1,68 @@
+---
+title: Layout Animations
+description: "The 10 effects L01–L10: purpose, API, options, examples, reduced motion and cost."
+---
+
+<AnimationsStatus />
+
+Layout animations measure layout boxes once before a change and once in the next read phase, then animate a transform back to the real position (FLIP). Nothing is measured per frame, and text is not distorted unless you ask for `layout: "size"`. `<Presence>` keeps a removed child mounted, inert and hidden from assistive technology, only until its exit ends; a watchdog removes it if an animation never completes.
+
+## L01 · FLIP move [#l01]
+
+Wrap the list in `<LayoutGroup>` and each item in `<LayoutItem>`; when an update changes their boxes they move from the old position. Without React, `createLayoutGroup()` with `snapshot()` and `play()` does the same for `flipMove`.
+
+<Effect id="L01" />
+
+## L02 · Auto height [#l02]
+
+`<AutoHeight>` follows the observed height of its content, including text that grows or asynchronous content. It expects to size to its content: do not stretch it with a grid or flex parent.
+
+<Effect id="L02" />
+
+## L03 · List enter and exit [#l03]
+
+`<AnimatedList>` combines presence and FLIP: items enter and exit with `listItem` (or your `enter` and `exit` presets) while their siblings move into place. Give every item a stable `key`.
+
+<Effect id="L03" />
+
+## L04 · Shared layout [#l04]
+
+A `<LayoutItem>` with a `layoutId` that mounts where another one with the same id was animates from that box: moving highlights, cards between containers. Keep both inside one `<LayoutGroup>`.
+
+<Effect id="L04" />
+
+## L05 · Grid reflow [#l05]
+
+`<Reflow>` animates the children of a grid or flex container whenever it reflows — resize, column change, a child that grows — without React renders.
+
+<Effect id="L05" />
+
+## L06 · Accordion height [#l06]
+
+`<Collapse>` opens and closes a panel with `open`; `driver` chooses CSS, measured JavaScript or `"auto"`. Wire `aria-expanded` and `aria-controls` on your button. For a complete widget use the Components Accordion or Collapsible.
+
+<Effect id="L06" />
+
+## L07 · Tab indicator [#l07]
+
+`<TabIndicator>` slides a package-rendered indicator to the `active` tab, given as an element or an index. It is decoration: your tabs keep their roles, selection state and keyboard behaviour.
+
+<Effect id="L07" />
+
+## L08 · Presence [#l08]
+
+`<Presence>` runs an `exit` entrance backwards before a keyed child unmounts, and `enter` when it arrives; removing it again mid-way continues from the current pose. `usePresence` and `useIsPresent` read the state inside.
+
+<Effect id="L08" />
+
+## L09 · Content cross-fade [#l09]
+
+`<CrossFade>` fades between the old and new content when `swapKey` changes, stacked in one cell while the height follows. The old content is inert during the swap.
+
+<Effect id="L09" />
+
+## L10 · Masonry reflow [#l10]
+
+`<Masonry>` lays children out in columns of at least `minColumnWidth` with `gap`, using grid row spans from observed heights, and animates reflows. Visual order can differ from the DOM order across columns.
+
+<Effect id="L10" />

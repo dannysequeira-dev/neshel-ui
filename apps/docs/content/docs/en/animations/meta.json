@@ -1,0 +1,17 @@
+{
+  "title": "Animations (experimental)",
+  "pages": [
+    "index",
+    "catalogue",
+    "---Guides---",
+    "composition",
+    "engine",
+    "react",
+    "controllers",
+    "accessibility",
+    "performance",
+    "ssr-styles-support",
+    "effects",
+    "reference"
+  ]
+}

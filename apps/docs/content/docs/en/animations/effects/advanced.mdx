@@ -1,0 +1,74 @@
+---
+title: Advanced 3D & Distortion
+description: "The 11 effects D01–D11: purpose, API, options, examples, reduced motion and cost."
+---
+
+<AnimationsStatus />
+
+Seven effects use CSS 3D through the motion host (`./advanced`, which never loads WebGL); four use an optional WebGL2 layer (`./gpu`). Hidden faces, panels and items are inert and `aria-hidden`, so nothing behind the perspective can be focused. With WebGL the native image stays in the DOM and comes back on failure, context loss, reduced motion and unmount; HTML is never turned into a texture, and images and maps must be CORS-clean.
+
+## D01 · Card flip [#d01]
+
+`<CardFlip>` turns between `front` and `back`. Elements with `data-neshel-flip-toggle` turn it, focus moves to the visible face, and `flipped` with `onFlippedChange` controls it. Under reduced motion the faces fade.
+
+<Effect id="D01" />
+
+## D02 · Cube rotation [#d02]
+
+`<CubeRotate>` rotates between its children as panels of a cube; `go`, `next` and `previous` on the control, or `index`. Only the active panel is interactive, and the faces never leave the panel box.
+
+<Effect id="D02" />
+
+## D03 · Ring carousel [#d03]
+
+`<RingCarousel>` arranges its children on a ring. Arrow keys, Home, End and dragging move it, only the front item is focusable, and a polite region announces the slide. `label` is required.
+
+<Effect id="D03" />
+
+## D04 · Page curl [#d04]
+
+`<PageCurl>` peels a raster `front` (an image or a canvas) over live `under` content with a WebGL mesh. `driver="css"` turns live HTML as a rigid page, and it is also the fallback without WebGL2.
+
+<Effect id="D04" />
+
+## D05 · Corner recede [#d05]
+
+`<CornerRecede>` folds the corner under the pointer away like paper: `size`, `angle`, `corners`; `reverse` lifts it. The flap is an inert copy without ids; use `flap="plain"` for content that cannot be copied.
+
+<Effect id="D05" />
+
+## D06 · Liquid ripple [#d06]
+
+`<Ripple>` sends damped waves through an image from each press, or from `impact(x, y)` on the control: `amplitude`, `frequency`, `damping`. It draws nothing once the energy is gone and is off under reduced motion.
+
+<Effect id="D06" />
+
+## D07 · Glitch [#d07]
+
+`<Glitch>` plays a short burst on hover and focus, or with `play()`. `rate` is capped at three changes per second to stay below the flash threshold, the text exists once, and it is off under reduced motion.
+
+<Effect id="D07" />
+
+## D08 · Displacement hover [#d08]
+
+`<DisplacementHover>` distorts an image on hover and focus through a `map` (a URL, an image, a canvas or generated `"noise"`): `strength`, `scale` and `edge`. Remote maps need CORS headers.
+
+<Effect id="D08" />
+
+## D09 · Perspective grid [#d09]
+
+`<PerspectiveGrid>` draws a floor that recedes to a `horizon` and moves at `speed` for `duration` (5 s by default). It is one decorative layer behind your content, with `play()` and `pause()`.
+
+<Effect id="D09" />
+
+## D10 · Depth parallax [#d10]
+
+`<DepthParallax>` shifts an image by a grayscale `depth` map (white is near) as the pointer moves. The map is required, with the same aspect ratio within 2 %: depth is never estimated.
+
+<Effect id="D10" />
+
+## D11 · Tilt shift [#d11]
+
+`<TiltShift>` blurs the edges around a focal band: `orientation`, `focus`, `size` and `blur` (6 px, up to 12). Without `backdrop-filter` it draws a tint instead. Keep text inside the focal band.
+
+<Effect id="D11" />

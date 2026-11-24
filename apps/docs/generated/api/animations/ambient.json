@@ -1,0 +1,1860 @@
+{
+  "package": "@neshel-ui/animations/ambient",
+  "exports": [
+    {
+      "name": "AmbientBlock",
+      "description": "",
+      "module": "ambient/engine/ambient",
+      "kind": "type",
+      "definition": "\"offscreen\" | \"hidden\" | \"reduced\" | \"toggle\" | \"paused\""
+    },
+    {
+      "name": "AmbientControl",
+      "description": "",
+      "module": "ambient/engine/ambient",
+      "kind": "interface",
+      "definition": "AmbientControl",
+      "props": [
+        {
+          "name": "blocked",
+          "type": "readonly AmbientBlock[]",
+          "optional": false,
+          "description": "Why the decoration is not moving right now (empty while it moves)."
+        },
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "moving",
+          "type": "boolean",
+          "optional": false,
+          "description": "Whether it is moving now."
+        },
+        {
+          "name": "pause",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "play",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "state",
+          "type": "AmbientState",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "stop",
+          "type": "() => void",
+          "optional": false,
+          "description": "Stop and show the rest frame."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "AmbientDebugInfo",
+      "description": "",
+      "module": "ambient/engine/debug",
+      "kind": "interface",
+      "definition": "AmbientDebugInfo",
+      "props": [
+        {
+          "name": "contexts",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "cssRunning",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "draws",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "effects",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "observers",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "surfaces",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "ticking",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "toggles",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "visibilityListeners",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "AmbientMotionSwitch",
+      "description": "",
+      "module": "ambient/engine/registry",
+      "kind": "interface",
+      "definition": "AmbientMotionSwitch",
+      "props": [
+        {
+          "name": "pause",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "paused",
+          "type": "boolean",
+          "optional": false,
+          "description": "Whether the user paused ambient motion for the page."
+        },
+        {
+          "name": "resume",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "subscribe",
+          "type": "(listener: (paused: boolean) => void) => () => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "toggle",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "AmbientMotionToggle",
+      "description": "The page-level pause control for ambient motion (WCAG 2.2.2): a native toggle button.",
+      "module": "ambient/react",
+      "kind": "component",
+      "signature": "({ label, className, ...rest }: AmbientMotionToggleProps): Element",
+      "props": "AmbientMotionToggleProps",
+      "client": true
+    },
+    {
+      "name": "AmbientMotionToggleProps",
+      "description": "",
+      "module": "ambient/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "description": "Visible label (default \"Pause background motion\"); `aria-pressed` reports the paused state.",
+          "default": "\"Pause background motion\""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ],
+      "definition": "Omit<ComponentPropsWithoutRef<\"button\">, \"children\" | \"onClick\" | \"aria-pressed\"> & { /** Visible label (default \"Pause background motion\"); `aria-pressed` reports the paused state. */ label?: string; }"
+    },
+    {
+      "name": "AmbientOptions",
+      "description": "",
+      "module": "ambient/engine/ambient",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms of motion before resting (100–600000, default 5000) or `Infinity` (explicit; offer `<AmbientMotionToggle>`)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "trigger",
+          "type": "\"mount\" | \"manual\"",
+          "optional": true,
+          "description": "`mount` (default) starts at once; `manual` waits for `play()`."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "AmbientState",
+      "description": "",
+      "module": "ambient/engine/ambient",
+      "kind": "type",
+      "definition": "\"idle\" | \"running\" | \"paused\" | \"completed\""
+    },
+    {
+      "name": "Aurora",
+      "description": "B02 — aurora blobs behind the children.",
+      "module": "ambient/react",
+      "kind": "component",
+      "signature": "(props: AuroraProps): Element",
+      "props": "AuroraProps",
+      "client": true
+    },
+    {
+      "name": "AuroraOptions",
+      "description": "",
+      "module": "ambient/layers",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "blobs",
+          "type": "number",
+          "optional": true,
+          "description": "2–5 (default 3).",
+          "default": "3"
+        },
+        {
+          "name": "colors",
+          "type": "readonly string[]",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms of motion before resting (100–600000, default 5000) or `Infinity` (explicit; offer `<AmbientMotionToggle>`)."
+        },
+        {
+          "name": "intensity",
+          "type": "number",
+          "optional": true,
+          "description": "Layer opacity 0–1 (default 0.6).",
+          "default": "0.6"
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "speed",
+          "type": "number",
+          "optional": true,
+          "description": "One cycle in ms (8000–60000, default 18000)."
+        },
+        {
+          "name": "trigger",
+          "type": "\"mount\" | \"manual\"",
+          "optional": true,
+          "description": "`mount` (default) starts at once; `manual` waits for `play()`."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "AuroraProps",
+      "description": "",
+      "module": "ambient/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "blobs",
+          "type": "number",
+          "optional": true,
+          "description": "2–5 (default 3).",
+          "default": "3"
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "colors",
+          "type": "readonly string[]",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "controlRef",
+          "type": "RefObject<AmbientControl | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms of motion before resting (100–600000, default 5000) or `Infinity` (explicit; offer `<AmbientMotionToggle>`)."
+        },
+        {
+          "name": "intensity",
+          "type": "number",
+          "optional": true,
+          "description": "Layer opacity 0–1 (default 0.6).",
+          "default": "0.6"
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "speed",
+          "type": "number",
+          "optional": true,
+          "description": "One cycle in ms (8000–60000, default 18000)."
+        },
+        {
+          "name": "trigger",
+          "type": "\"mount\" | \"manual\"",
+          "optional": true,
+          "description": "`mount` (default) starts at once; `manual` waits for `play()`."
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ],
+      "definition": "DivProps & AuroraOptions"
+    },
+    {
+      "name": "CanvasAmbientOptions",
+      "description": "",
+      "module": "ambient/canvas",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "color",
+          "type": "string",
+          "optional": true,
+          "description": "CSS colour (default: the container's text colour)."
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms of motion before resting (100–600000, default 5000) or `Infinity` (explicit; offer `<AmbientMotionToggle>`)."
+        },
+        {
+          "name": "fps",
+          "type": "number",
+          "optional": true,
+          "description": "Frame-rate cap 15–60 (default 60; 30 in low-power mode)."
+        },
+        {
+          "name": "lowPower",
+          "type": "\"auto\" | boolean",
+          "optional": true,
+          "description": "`auto` (default) detects limited devices; `true`/`false` force it."
+        },
+        {
+          "name": "maxDpr",
+          "type": "number",
+          "optional": true,
+          "description": "DPR cap 1–3 (default 2).",
+          "default": "2"
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "seed",
+          "type": "number",
+          "optional": true,
+          "description": "PRNG seed (default 7).",
+          "default": "7"
+        },
+        {
+          "name": "trigger",
+          "type": "\"mount\" | \"manual\"",
+          "optional": true,
+          "description": "`mount` (default) starts at once; `manual` waits for `play()`."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "FloatingShapes",
+      "description": "B08 — the children are the shapes (mark purely visual shapes `aria-hidden`).",
+      "module": "ambient/react",
+      "kind": "component",
+      "signature": "(props: FloatingShapesProps): Element",
+      "props": "FloatingShapesProps",
+      "client": true
+    },
+    {
+      "name": "FloatingShapesOptions",
+      "description": "",
+      "module": "ambient/interactive",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "amplitude",
+          "type": "number",
+          "optional": true,
+          "description": "px (0–40, default 12)."
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms of motion before resting (100–600000, default 5000) or `Infinity` (explicit; offer `<AmbientMotionToggle>`)."
+        },
+        {
+          "name": "max",
+          "type": "number",
+          "optional": true,
+          "description": "Children moved at most (1–24, default 24)."
+        },
+        {
+          "name": "period",
+          "type": "number",
+          "optional": true,
+          "description": "One float cycle in ms (2000–30000, default 7000)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "rotate",
+          "type": "number",
+          "optional": true,
+          "description": "Degrees (0–30, default 6)."
+        },
+        {
+          "name": "trigger",
+          "type": "\"mount\" | \"manual\"",
+          "optional": true,
+          "description": "`mount` (default) starts at once; `manual` waits for `play()`."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "FloatingShapesProps",
+      "description": "",
+      "module": "ambient/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "amplitude",
+          "type": "number",
+          "optional": true,
+          "description": "px (0–40, default 12)."
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "controlRef",
+          "type": "RefObject<AmbientControl | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms of motion before resting (100–600000, default 5000) or `Infinity` (explicit; offer `<AmbientMotionToggle>`)."
+        },
+        {
+          "name": "max",
+          "type": "number",
+          "optional": true,
+          "description": "Children moved at most (1–24, default 24)."
+        },
+        {
+          "name": "period",
+          "type": "number",
+          "optional": true,
+          "description": "One float cycle in ms (2000–30000, default 7000)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "rotate",
+          "type": "number",
+          "optional": true,
+          "description": "Degrees (0–30, default 6)."
+        },
+        {
+          "name": "trigger",
+          "type": "\"mount\" | \"manual\"",
+          "optional": true,
+          "description": "`mount` (default) starts at once; `manual` waits for `play()`."
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ],
+      "definition": "DivProps & FloatingShapesOptions"
+    },
+    {
+      "name": "GradientShift",
+      "description": "B01 — gradient shift behind the children.",
+      "module": "ambient/react",
+      "kind": "component",
+      "signature": "(props: GradientShiftProps): Element",
+      "props": "GradientShiftProps",
+      "client": true
+    },
+    {
+      "name": "GradientShiftOptions",
+      "description": "",
+      "module": "ambient/layers",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "angle",
+          "type": "number",
+          "optional": true,
+          "description": "Degrees (default 120).",
+          "default": "120"
+        },
+        {
+          "name": "colors",
+          "type": "readonly string[]",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms of motion before resting (100–600000, default 5000) or `Infinity` (explicit; offer `<AmbientMotionToggle>`)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "speed",
+          "type": "number",
+          "optional": true,
+          "description": "One cycle in ms (4000–60000, default 14000)."
+        },
+        {
+          "name": "trigger",
+          "type": "\"mount\" | \"manual\"",
+          "optional": true,
+          "description": "`mount` (default) starts at once; `manual` waits for `play()`."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "GradientShiftProps",
+      "description": "",
+      "module": "ambient/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "angle",
+          "type": "number",
+          "optional": true,
+          "description": "Degrees (default 120).",
+          "default": "120"
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "colors",
+          "type": "readonly string[]",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "controlRef",
+          "type": "RefObject<AmbientControl | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms of motion before resting (100–600000, default 5000) or `Infinity` (explicit; offer `<AmbientMotionToggle>`)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "speed",
+          "type": "number",
+          "optional": true,
+          "description": "One cycle in ms (4000–60000, default 14000)."
+        },
+        {
+          "name": "trigger",
+          "type": "\"mount\" | \"manual\"",
+          "optional": true,
+          "description": "`mount` (default) starts at once; `manual` waits for `play()`."
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ],
+      "definition": "DivProps & GradientShiftOptions"
+    },
+    {
+      "name": "Grain",
+      "description": "B03 — grain overlay (static texture by default).",
+      "module": "ambient/react",
+      "kind": "component",
+      "signature": "(props: GrainProps): Element",
+      "props": "GrainProps",
+      "client": true
+    },
+    {
+      "name": "GrainOptions",
+      "description": "",
+      "module": "ambient/layers",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "blend",
+          "type": "\"normal\" | \"overlay\" | \"soft-light\" | \"multiply\" | \"screen\"",
+          "optional": true,
+          "description": "`mix-blend-mode` (default `overlay`).",
+          "default": "overlay"
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms of motion before resting (100–600000, default 5000) or `Infinity` (explicit; offer `<AmbientMotionToggle>`)."
+        },
+        {
+          "name": "jitter",
+          "type": "boolean",
+          "optional": true,
+          "description": "Stepped texture shift at ≤ 8 Hz (default false: static grain)."
+        },
+        {
+          "name": "opacity",
+          "type": "number",
+          "optional": true,
+          "description": "0–0.3 (default 0.08).",
+          "default": "0.08"
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "scale",
+          "type": "number",
+          "optional": true,
+          "description": "Texture scale 0.5–4 (default 1).",
+          "default": "1"
+        },
+        {
+          "name": "trigger",
+          "type": "\"mount\" | \"manual\"",
+          "optional": true,
+          "description": "`mount` (default) starts at once; `manual` waits for `play()`."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "GrainProps",
+      "description": "",
+      "module": "ambient/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "blend",
+          "type": "\"normal\" | \"overlay\" | \"soft-light\" | \"multiply\" | \"screen\"",
+          "optional": true,
+          "description": "`mix-blend-mode` (default `overlay`).",
+          "default": "overlay"
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "controlRef",
+          "type": "RefObject<AmbientControl | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms of motion before resting (100–600000, default 5000) or `Infinity` (explicit; offer `<AmbientMotionToggle>`)."
+        },
+        {
+          "name": "jitter",
+          "type": "boolean",
+          "optional": true,
+          "description": "Stepped texture shift at ≤ 8 Hz (default false: static grain)."
+        },
+        {
+          "name": "opacity",
+          "type": "number",
+          "optional": true,
+          "description": "0–0.3 (default 0.08).",
+          "default": "0.08"
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "scale",
+          "type": "number",
+          "optional": true,
+          "description": "Texture scale 0.5–4 (default 1).",
+          "default": "1"
+        },
+        {
+          "name": "trigger",
+          "type": "\"mount\" | \"manual\"",
+          "optional": true,
+          "description": "`mount` (default) starts at once; `manual` waits for `play()`."
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ],
+      "definition": "DivProps & GrainOptions"
+    },
+    {
+      "name": "GridPattern",
+      "description": "B06 — drifting grid or dots.",
+      "module": "ambient/react",
+      "kind": "component",
+      "signature": "(props: GridPatternProps): Element",
+      "props": "GridPatternProps",
+      "client": true
+    },
+    {
+      "name": "GridPatternOptions",
+      "description": "",
+      "module": "ambient/layers",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "cell",
+          "type": "number",
+          "optional": true,
+          "description": "Cell in px (8–160, default 32)."
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "direction",
+          "type": "\"diagonal\" | \"up\" | \"down\" | \"left\" | \"right\"",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms of motion before resting (100–600000, default 5000) or `Infinity` (explicit; offer `<AmbientMotionToggle>`)."
+        },
+        {
+          "name": "fade",
+          "type": "boolean",
+          "optional": true,
+          "description": "Radial fade toward the edges (default true).",
+          "default": "true"
+        },
+        {
+          "name": "lineWidth",
+          "type": "number",
+          "optional": true,
+          "description": "Line width / dot radius in px (0.5–4, default 1)."
+        },
+        {
+          "name": "pattern",
+          "type": "\"grid\" | \"dots\"",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "speed",
+          "type": "number",
+          "optional": true,
+          "description": "Cells per second (0–2, default 0.15)."
+        },
+        {
+          "name": "trigger",
+          "type": "\"mount\" | \"manual\"",
+          "optional": true,
+          "description": "`mount` (default) starts at once; `manual` waits for `play()`."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "GridPatternProps",
+      "description": "",
+      "module": "ambient/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "cell",
+          "type": "number",
+          "optional": true,
+          "description": "Cell in px (8–160, default 32)."
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "controlRef",
+          "type": "RefObject<AmbientControl | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "direction",
+          "type": "\"diagonal\" | \"up\" | \"down\" | \"left\" | \"right\"",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms of motion before resting (100–600000, default 5000) or `Infinity` (explicit; offer `<AmbientMotionToggle>`)."
+        },
+        {
+          "name": "fade",
+          "type": "boolean",
+          "optional": true,
+          "description": "Radial fade toward the edges (default true).",
+          "default": "true"
+        },
+        {
+          "name": "lineWidth",
+          "type": "number",
+          "optional": true,
+          "description": "Line width / dot radius in px (0.5–4, default 1)."
+        },
+        {
+          "name": "pattern",
+          "type": "\"grid\" | \"dots\"",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "speed",
+          "type": "number",
+          "optional": true,
+          "description": "Cells per second (0–2, default 0.15)."
+        },
+        {
+          "name": "trigger",
+          "type": "\"mount\" | \"manual\"",
+          "optional": true,
+          "description": "`mount` (default) starts at once; `manual` waits for `play()`."
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ],
+      "definition": "DivProps & GridPatternOptions"
+    },
+    {
+      "name": "MeshGradient",
+      "description": "B07 — mesh gradient.",
+      "module": "ambient/react",
+      "kind": "component",
+      "signature": "(props: MeshGradientProps): Element",
+      "props": "MeshGradientProps",
+      "client": true
+    },
+    {
+      "name": "MeshGradientOptions",
+      "description": "",
+      "module": "ambient/layers",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "amplitude",
+          "type": "number",
+          "optional": true,
+          "description": "Point travel as a fraction of the box (0–0.3, default 0.12)."
+        },
+        {
+          "name": "colors",
+          "type": "readonly string[]",
+          "optional": true,
+          "description": "Base colour then 2–5 point colours (default a 4-point palette)."
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms of motion before resting (100–600000, default 5000) or `Infinity` (explicit; offer `<AmbientMotionToggle>`)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "speed",
+          "type": "number",
+          "optional": true,
+          "description": "One cycle in ms (10000–90000, default 24000)."
+        },
+        {
+          "name": "trigger",
+          "type": "\"mount\" | \"manual\"",
+          "optional": true,
+          "description": "`mount` (default) starts at once; `manual` waits for `play()`."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "MeshGradientProps",
+      "description": "",
+      "module": "ambient/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "amplitude",
+          "type": "number",
+          "optional": true,
+          "description": "Point travel as a fraction of the box (0–0.3, default 0.12)."
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "colors",
+          "type": "readonly string[]",
+          "optional": true,
+          "description": "Base colour then 2–5 point colours (default a 4-point palette)."
+        },
+        {
+          "name": "controlRef",
+          "type": "RefObject<AmbientControl | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms of motion before resting (100–600000, default 5000) or `Infinity` (explicit; offer `<AmbientMotionToggle>`)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "speed",
+          "type": "number",
+          "optional": true,
+          "description": "One cycle in ms (10000–90000, default 24000)."
+        },
+        {
+          "name": "trigger",
+          "type": "\"mount\" | \"manual\"",
+          "optional": true,
+          "description": "`mount` (default) starts at once; `manual` waits for `play()`."
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ],
+      "definition": "DivProps & MeshGradientOptions"
+    },
+    {
+      "name": "Particles",
+      "description": "B04 — particle field on a decorative canvas.",
+      "module": "ambient/react",
+      "kind": "component",
+      "signature": "(props: ParticlesProps): Element",
+      "props": "ParticlesProps",
+      "client": true
+    },
+    {
+      "name": "ParticlesOptions",
+      "description": "",
+      "module": "ambient/canvas",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "color",
+          "type": "string",
+          "optional": true,
+          "description": "CSS colour (default: the container's text colour)."
+        },
+        {
+          "name": "density",
+          "type": "number",
+          "optional": true,
+          "description": "Particles per 100 000 px² (0–40, default 8)."
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms of motion before resting (100–600000, default 5000) or `Infinity` (explicit; offer `<AmbientMotionToggle>`)."
+        },
+        {
+          "name": "fps",
+          "type": "number",
+          "optional": true,
+          "description": "Frame-rate cap 15–60 (default 60; 30 in low-power mode)."
+        },
+        {
+          "name": "linkDistance",
+          "type": "number",
+          "optional": true,
+          "description": "Link distance in px (20–200, default 110)."
+        },
+        {
+          "name": "links",
+          "type": "boolean",
+          "optional": true,
+          "description": "Lines between near particles (only with ≤ 150 particles; default false)."
+        },
+        {
+          "name": "lowPower",
+          "type": "\"auto\" | boolean",
+          "optional": true,
+          "description": "`auto` (default) detects limited devices; `true`/`false` force it."
+        },
+        {
+          "name": "max",
+          "type": "number",
+          "optional": true,
+          "description": "Upper bound (1–400, default 120)."
+        },
+        {
+          "name": "maxDpr",
+          "type": "number",
+          "optional": true,
+          "description": "DPR cap 1–3 (default 2).",
+          "default": "2"
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "seed",
+          "type": "number",
+          "optional": true,
+          "description": "PRNG seed (default 7).",
+          "default": "7"
+        },
+        {
+          "name": "size",
+          "type": "number",
+          "optional": true,
+          "description": "Radius in px (0.5–6, default 1.6)."
+        },
+        {
+          "name": "speed",
+          "type": "number",
+          "optional": true,
+          "description": "px per second (0–120, default 18)."
+        },
+        {
+          "name": "trigger",
+          "type": "\"mount\" | \"manual\"",
+          "optional": true,
+          "description": "`mount` (default) starts at once; `manual` waits for `play()`."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ParticlesProps",
+      "description": "",
+      "module": "ambient/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "optional": true,
+          "description": "CSS colour (default: the container's text colour)."
+        },
+        {
+          "name": "controlRef",
+          "type": "RefObject<AmbientControl | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "density",
+          "type": "number",
+          "optional": true,
+          "description": "Particles per 100 000 px² (0–40, default 8)."
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms of motion before resting (100–600000, default 5000) or `Infinity` (explicit; offer `<AmbientMotionToggle>`)."
+        },
+        {
+          "name": "fps",
+          "type": "number",
+          "optional": true,
+          "description": "Frame-rate cap 15–60 (default 60; 30 in low-power mode)."
+        },
+        {
+          "name": "linkDistance",
+          "type": "number",
+          "optional": true,
+          "description": "Link distance in px (20–200, default 110)."
+        },
+        {
+          "name": "links",
+          "type": "boolean",
+          "optional": true,
+          "description": "Lines between near particles (only with ≤ 150 particles; default false)."
+        },
+        {
+          "name": "lowPower",
+          "type": "\"auto\" | boolean",
+          "optional": true,
+          "description": "`auto` (default) detects limited devices; `true`/`false` force it."
+        },
+        {
+          "name": "max",
+          "type": "number",
+          "optional": true,
+          "description": "Upper bound (1–400, default 120)."
+        },
+        {
+          "name": "maxDpr",
+          "type": "number",
+          "optional": true,
+          "description": "DPR cap 1–3 (default 2).",
+          "default": "2"
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "seed",
+          "type": "number",
+          "optional": true,
+          "description": "PRNG seed (default 7).",
+          "default": "7"
+        },
+        {
+          "name": "size",
+          "type": "number",
+          "optional": true,
+          "description": "Radius in px (0.5–6, default 1.6)."
+        },
+        {
+          "name": "speed",
+          "type": "number",
+          "optional": true,
+          "description": "px per second (0–120, default 18)."
+        },
+        {
+          "name": "trigger",
+          "type": "\"mount\" | \"manual\"",
+          "optional": true,
+          "description": "`mount` (default) starts at once; `manual` waits for `play()`."
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ],
+      "definition": "DivProps & ParticlesOptions"
+    },
+    {
+      "name": "PointerGlow",
+      "description": "B09 — glow following the pointer behind the children.",
+      "module": "ambient/react",
+      "kind": "component",
+      "signature": "(props: PointerGlowProps): Element",
+      "props": "PointerGlowProps",
+      "client": true
+    },
+    {
+      "name": "PointerGlowOptions",
+      "description": "",
+      "module": "ambient/interactive",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "color",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "intensity",
+          "type": "number",
+          "optional": true,
+          "description": "0–1 (default 0.35).",
+          "default": "0.35"
+        },
+        {
+          "name": "pointerTypes",
+          "type": "readonly (\"mouse\" | \"pen\" | \"touch\")[]",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "size",
+          "type": "number",
+          "optional": true,
+          "description": "Glow diameter in px (80–1200, default 360)."
+        },
+        {
+          "name": "smoothing",
+          "type": "number",
+          "optional": true,
+          "description": "0 (snappy) – 0.95 (floaty), default 0.2."
+        },
+        {
+          "name": "trigger",
+          "type": "\"mount\" | \"manual\"",
+          "optional": true,
+          "description": "`mount` (default) starts at once; `manual` waits for `play()`."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "PointerGlowProps",
+      "description": "",
+      "module": "ambient/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "controlRef",
+          "type": "RefObject<AmbientControl | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "intensity",
+          "type": "number",
+          "optional": true,
+          "description": "0–1 (default 0.35).",
+          "default": "0.35"
+        },
+        {
+          "name": "pointerTypes",
+          "type": "readonly (\"mouse\" | \"pen\" | \"touch\")[]",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "size",
+          "type": "number",
+          "optional": true,
+          "description": "Glow diameter in px (80–1200, default 360)."
+        },
+        {
+          "name": "smoothing",
+          "type": "number",
+          "optional": true,
+          "description": "0 (snappy) – 0.95 (floaty), default 0.2."
+        },
+        {
+          "name": "trigger",
+          "type": "\"mount\" | \"manual\"",
+          "optional": true,
+          "description": "`mount` (default) starts at once; `manual` waits for `play()`."
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ],
+      "definition": "DivProps & PointerGlowOptions"
+    },
+    {
+      "name": "Starfield",
+      "description": "B05 — starfield on a decorative canvas.",
+      "module": "ambient/react",
+      "kind": "component",
+      "signature": "(props: StarfieldProps): Element",
+      "props": "StarfieldProps",
+      "client": true
+    },
+    {
+      "name": "StarfieldOptions",
+      "description": "",
+      "module": "ambient/canvas",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "color",
+          "type": "string",
+          "optional": true,
+          "description": "CSS colour (default: the container's text colour)."
+        },
+        {
+          "name": "density",
+          "type": "number",
+          "optional": true,
+          "description": "Stars per 100 000 px² (0–80, default 20)."
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms of motion before resting (100–600000, default 5000) or `Infinity` (explicit; offer `<AmbientMotionToggle>`)."
+        },
+        {
+          "name": "fps",
+          "type": "number",
+          "optional": true,
+          "description": "Frame-rate cap 15–60 (default 60; 30 in low-power mode)."
+        },
+        {
+          "name": "lowPower",
+          "type": "\"auto\" | boolean",
+          "optional": true,
+          "description": "`auto` (default) detects limited devices; `true`/`false` force it."
+        },
+        {
+          "name": "max",
+          "type": "number",
+          "optional": true,
+          "description": "Upper bound (1–800, default 360)."
+        },
+        {
+          "name": "maxDpr",
+          "type": "number",
+          "optional": true,
+          "description": "DPR cap 1–3 (default 2).",
+          "default": "2"
+        },
+        {
+          "name": "mode",
+          "type": "\"drift\" | \"warp\"",
+          "optional": true,
+          "description": "`drift` (default, sideways parallax) or `warp` (stars fly outward; more vestibular)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "seed",
+          "type": "number",
+          "optional": true,
+          "description": "PRNG seed (default 7).",
+          "default": "7"
+        },
+        {
+          "name": "speed",
+          "type": "number",
+          "optional": true,
+          "description": "0–1 (default 0.25).",
+          "default": "0.25"
+        },
+        {
+          "name": "trigger",
+          "type": "\"mount\" | \"manual\"",
+          "optional": true,
+          "description": "`mount` (default) starts at once; `manual` waits for `play()`."
+        },
+        {
+          "name": "twinkle",
+          "type": "number",
+          "optional": true,
+          "description": "Twinkle amplitude 0–1 (default 0.3; ≤ 1 Hz per star, no flashing)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "StarfieldProps",
+      "description": "",
+      "module": "ambient/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "optional": true,
+          "description": "CSS colour (default: the container's text colour)."
+        },
+        {
+          "name": "controlRef",
+          "type": "RefObject<AmbientControl | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "density",
+          "type": "number",
+          "optional": true,
+          "description": "Stars per 100 000 px² (0–80, default 20)."
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms of motion before resting (100–600000, default 5000) or `Infinity` (explicit; offer `<AmbientMotionToggle>`)."
+        },
+        {
+          "name": "fps",
+          "type": "number",
+          "optional": true,
+          "description": "Frame-rate cap 15–60 (default 60; 30 in low-power mode)."
+        },
+        {
+          "name": "lowPower",
+          "type": "\"auto\" | boolean",
+          "optional": true,
+          "description": "`auto` (default) detects limited devices; `true`/`false` force it."
+        },
+        {
+          "name": "max",
+          "type": "number",
+          "optional": true,
+          "description": "Upper bound (1–800, default 360)."
+        },
+        {
+          "name": "maxDpr",
+          "type": "number",
+          "optional": true,
+          "description": "DPR cap 1–3 (default 2).",
+          "default": "2"
+        },
+        {
+          "name": "mode",
+          "type": "\"drift\" | \"warp\"",
+          "optional": true,
+          "description": "`drift` (default, sideways parallax) or `warp` (stars fly outward; more vestibular)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "seed",
+          "type": "number",
+          "optional": true,
+          "description": "PRNG seed (default 7).",
+          "default": "7"
+        },
+        {
+          "name": "speed",
+          "type": "number",
+          "optional": true,
+          "description": "0–1 (default 0.25).",
+          "default": "0.25"
+        },
+        {
+          "name": "trigger",
+          "type": "\"mount\" | \"manual\"",
+          "optional": true,
+          "description": "`mount` (default) starts at once; `manual` waits for `play()`."
+        },
+        {
+          "name": "twinkle",
+          "type": "number",
+          "optional": true,
+          "description": "Twinkle amplitude 0–1 (default 0.3; ≤ 1 Hz per star, no flashing)."
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ],
+      "definition": "DivProps & StarfieldOptions"
+    },
+    {
+      "name": "Waves",
+      "description": "B10 — layered SVG waves.",
+      "module": "ambient/react",
+      "kind": "component",
+      "signature": "(props: WavesProps): Element",
+      "props": "WavesProps",
+      "client": true
+    },
+    {
+      "name": "WavesOptions",
+      "description": "",
+      "module": "ambient/layers",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "amplitude",
+          "type": "number",
+          "optional": true,
+          "description": "px (4–80, default 18)."
+        },
+        {
+          "name": "colors",
+          "type": "readonly string[]",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms of motion before resting (100–600000, default 5000) or `Infinity` (explicit; offer `<AmbientMotionToggle>`)."
+        },
+        {
+          "name": "layers",
+          "type": "number",
+          "optional": true,
+          "description": "1–4 (default 3).",
+          "default": "3"
+        },
+        {
+          "name": "position",
+          "type": "\"bottom\" | \"top\"",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "speed",
+          "type": "number",
+          "optional": true,
+          "description": "One wavelength travel in ms (4000–60000, default 12000)."
+        },
+        {
+          "name": "trigger",
+          "type": "\"mount\" | \"manual\"",
+          "optional": true,
+          "description": "`mount` (default) starts at once; `manual` waits for `play()`."
+        },
+        {
+          "name": "wavelength",
+          "type": "number",
+          "optional": true,
+          "description": "px (80–1600, default 600)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "WavesProps",
+      "description": "",
+      "module": "ambient/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "amplitude",
+          "type": "number",
+          "optional": true,
+          "description": "px (4–80, default 18)."
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "colors",
+          "type": "readonly string[]",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "controlRef",
+          "type": "RefObject<AmbientControl | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms of motion before resting (100–600000, default 5000) or `Infinity` (explicit; offer `<AmbientMotionToggle>`)."
+        },
+        {
+          "name": "layers",
+          "type": "number",
+          "optional": true,
+          "description": "1–4 (default 3).",
+          "default": "3"
+        },
+        {
+          "name": "position",
+          "type": "\"bottom\" | \"top\"",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "speed",
+          "type": "number",
+          "optional": true,
+          "description": "One wavelength travel in ms (4000–60000, default 12000)."
+        },
+        {
+          "name": "trigger",
+          "type": "\"mount\" | \"manual\"",
+          "optional": true,
+          "description": "`mount` (default) starts at once; `manual` waits for `play()`."
+        },
+        {
+          "name": "wavelength",
+          "type": "number",
+          "optional": true,
+          "description": "px (80–1600, default 600)."
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ],
+      "definition": "DivProps & WavesOptions"
+    },
+    {
+      "name": "ambientMotion",
+      "description": "The page-level ambient switch (shared by every ambient effect and `<AmbientMotionToggle>`).",
+      "module": "ambient/engine/registry",
+      "kind": "const",
+      "type": "AmbientMotionSwitch"
+    },
+    {
+      "name": "createAurora",
+      "description": "B02 — soft radial blobs drifting (no blur filter).",
+      "module": "ambient/layers",
+      "kind": "function",
+      "signature": "(container: HTMLElement, options?: AuroraOptions | undefined): AmbientControl"
+    },
+    {
+      "name": "createFloatingShapes",
+      "description": "B08 — the container's children bob and sway gently out of phase.",
+      "module": "ambient/interactive",
+      "kind": "function",
+      "signature": "(container: HTMLElement, options?: FloatingShapesOptions | undefined): AmbientControl"
+    },
+    {
+      "name": "createGradientShift",
+      "description": "B01 — a slowly shifting multi-stop gradient (oversized plane, compositor `transform` keyframes).",
+      "module": "ambient/layers",
+      "kind": "function",
+      "signature": "(container: HTMLElement, options?: GradientShiftOptions | undefined): AmbientControl"
+    },
+    {
+      "name": "createGrain",
+      "description": "B03 — film grain from one shared static texture (no noise generated per frame).",
+      "module": "ambient/layers",
+      "kind": "function",
+      "signature": "(container: HTMLElement, options?: GrainOptions | undefined): AmbientControl"
+    },
+    {
+      "name": "createGridPattern",
+      "description": "B06 — a grid or dot pattern drifting one cell per loop (seamless `transform`).",
+      "module": "ambient/layers",
+      "kind": "function",
+      "signature": "(container: HTMLElement, options?: GridPatternOptions | undefined): AmbientControl"
+    },
+    {
+      "name": "createMeshGradient",
+      "description": "B07 — mesh-like gradient: large radial colour points over a base, drifting slowly (CSS, no GPU).",
+      "module": "ambient/layers",
+      "kind": "function",
+      "signature": "(container: HTMLElement, options?: MeshGradientOptions | undefined): AmbientControl"
+    },
+    {
+      "name": "createParticles",
+      "description": "B04 — a seeded particle field drifting and wrapping, optionally linked.",
+      "module": "ambient/canvas",
+      "kind": "function",
+      "signature": "(container: HTMLElement, options?: ParticlesOptions | undefined): AmbientControl"
+    },
+    {
+      "name": "createPointerGlow",
+      "description": "B09 — a soft glow under the pointer inside the container (hidden at rest and under reduced motion).",
+      "module": "ambient/interactive",
+      "kind": "function",
+      "signature": "(container: HTMLElement, options?: PointerGlowOptions | undefined): AmbientControl"
+    },
+    {
+      "name": "createStarfield",
+      "description": "B05 — a seeded starfield with depth (drift parallax or warp), twinkling softly.",
+      "module": "ambient/canvas",
+      "kind": "function",
+      "signature": "(container: HTMLElement, options?: StarfieldOptions | undefined): AmbientControl"
+    },
+    {
+      "name": "createWaves",
+      "description": "B10 — layered SVG waves travelling one wavelength per loop (tiles generated once).",
+      "module": "ambient/layers",
+      "kind": "function",
+      "signature": "(container: HTMLElement, options?: WavesOptions | undefined): AmbientControl"
+    },
+    {
+      "name": "getAmbientDebugInfo",
+      "description": "",
+      "module": "ambient/engine/debug",
+      "kind": "function",
+      "signature": "(): AmbientDebugInfo"
+    },
+    {
+      "name": "waveTile",
+      "description": "One wavelength of a sine wave as a filled SVG tile (cubic approximation, 4 segments).",
+      "module": "ambient/layers",
+      "kind": "function",
+      "signature": "(wavelength: number, amplitude: number, height: number, color: string): string"
+    }
+  ]
+}

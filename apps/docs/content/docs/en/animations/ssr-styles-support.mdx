@@ -1,0 +1,82 @@
+---
+title: SSR, styles and support
+description: Server rendering and hydration, which stylesheet each family needs, and browser support with fallbacks.
+---
+
+<AnimationsStatus />
+
+## Server rendering
+
+- Every module can be imported on the server: nothing reads `window` or `document` at import.
+- The server markup is the plain, visible element. Covers, lenses, canvases and split pieces are added
+  in the browser.
+- Hydrated content is not hidden again: entrances play on client mounts (`appear="client"`), and scroll
+  reveals hold only what is below the fold.
+- Components and hooks are client modules. In the Next.js App Router, use them in a client component
+  or import the component directly from a server component. Presets are objects with functions: pass
+  them inside client components, not across the server boundary.
+- Options are validated with the same error on the server and in the browser.
+
+## Stylesheets
+
+Stylesheets are opt-in, plain CSS in the `components.neshel` layer; Tailwind is not needed. They only
+render layers the package owns and never declare a transition or animation on your elements.
+
+| Stylesheet                             | Needed by                                                                |
+| -------------------------------------- | ------------------------------------------------------------------------ |
+| `styles.css`                           | Hover, press and scroll together                                         |
+| `hover.css`                            | Decoration of the hover effects, tilt depth, cursor follower             |
+| `press.css`                            | Ripple, burst, toggle, checkbox, content swap, long press                |
+| `scroll.css`                           | Scenes, progress bar, horizontal section, stack, image frame             |
+| `gestures.css`                         | Built-in controls of swipe, pull, zoom, reorder and elastic scroll       |
+| `layout.css`                           | Auto height, collapse, tab indicator, cross-fade, masonry                |
+| `cinematic.css`                        | Camera, covers, spotlight, storyboard, letterbox, chapters               |
+| `page-transitions.css`                 | Page transition effects and route progress                               |
+| `page-transitions-mpa.css`             | The same plus the cross-document opt-in                                  |
+| `text.css`, `svg.css`                  | Text pieces; package-rendered icons and the SVG filter host              |
+| `media.css`, `ambient.css`             | Frames, slider, lightbox; ambient layers                                 |
+| `feedback.css`                         | Indicators and token layers                                              |
+| `advanced.css`, `gpu.css`              | 3D structure; GPU frames                                                 |
+
+Without the stylesheet the content stays visible; only the decoration is missing. Entrance effects
+need none.
+
+## Browser support
+
+| Capability                        | Used by                         | Without it                                             |
+| --------------------------------- | ------------------------------- | ------------------------------------------------------ |
+| View Transitions                  | Page transitions                | The update runs at once                                |
+| Cross-document View Transitions   | PT09                            | Normal navigation (Firefox 159)                        |
+| Scroll timelines                  | Scroll custom properties        | JavaScript with cached geometry                        |
+| `offset-path`                     | S03                             | JavaScript geometry                                    |
+| `background-clip: text`, `mask`   | T04, T09, S08, F10              | Plain, visible text or logo                            |
+| `backdrop-filter`                 | D11                             | A tint, or nothing                                     |
+| Canvas 2D                         | M09, B04, B05                   | A fade (M09); no decoration                            |
+| WebGL2                            | D04, D06, D08, D10              | The original content (D04: a rigid CSS page)           |
+| `Intl.Segmenter`                  | Text splitting                  | Approximate segmentation                               |
+
+Verified with Playwright's Chromium, Firefox and WebKit. WebKit is not Safari: Safari has not been
+checked. Playwright Firefox on Linux CI has no WebGL2, so the GPU effects are skipped there.
+
+## Frameworks
+
+- **Next.js App Router** (16.4 or later) and **React Router** (8 or later): page-transition adapters,
+  tested with a real application of each.
+- **Vite**: the packed package is built and hydrated in an external application in CI.
+
+```tsx title="app/root.tsx"
+import "@neshel-ui/animations/page-transitions.css";
+import { PageTransition } from "@neshel-ui/animations/page-transitions";
+import { RouterPageTransitions } from "@neshel-ui/animations/page-transitions/react-router";
+import type { ReactNode } from "react";
+
+export function Root({ children }: { children: ReactNode }) {
+  return (
+    <RouterPageTransitions>
+      <PageTransition effect="fade">{children}</PageTransition>
+    </RouterPageTransitions>
+  );
+}
+```
+
+Do not also use React Router's `viewTransition` prop: it would start a second transition.

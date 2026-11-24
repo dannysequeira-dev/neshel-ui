@@ -1,0 +1,247 @@
+{
+  "package": "@neshel-ui/animations",
+  "exports": [
+    {
+      "name": "AttachConfig",
+      "description": "",
+      "module": "core/attach",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "conflicts",
+          "type": "ConflictPolicy",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "priority",
+          "type": "number",
+          "optional": true,
+          "description": "Overrides the definition's priority for this attachment."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Overrides the policy carried by the options."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "EffectDefinition",
+      "description": "",
+      "module": "core/effect",
+      "kind": "interface",
+      "definition": "EffectDefinition<Options, Resolved>",
+      "props": [
+        {
+          "name": "channels",
+          "type": "readonly ChannelClaim[]",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "family",
+          "type": "FamilyId",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "id",
+          "type": "EffectId",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "policy",
+          "type": "(options: Resolved) => ReducedMotion | undefined",
+          "optional": true,
+          "description": "Reduced-motion policy carried by the options (e.g. Tilt3D's `reducedMotion` prop)."
+        },
+        {
+          "name": "priority",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedBehaviour",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "resolve",
+          "type": "(options: Options | undefined) => Resolved",
+          "optional": false,
+          "description": "Validates options; throw `NeshelAnimationsError` for invalid input."
+        },
+        {
+          "name": "setup",
+          "type": "(context: EffectContext<Resolved>) => EffectInstance<Resolved>",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "EffectHandle",
+      "description": "",
+      "module": "core/effect",
+      "kind": "interface",
+      "definition": "EffectHandle<Options>",
+      "props": [
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": "Idempotent; releases channels (restoring styles) and every listener."
+        },
+        {
+          "name": "pause",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "resume",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "state",
+          "type": "EffectState",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "update",
+          "type": "(options?: Options) => void",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "EffectState",
+      "description": "`failed`: a resumed `setup()` threw; the attachment released everything and reported the error.",
+      "module": "core/effect",
+      "kind": "type",
+      "definition": "\"active\" | \"suspended\" | \"reduced\" | \"paused\" | \"destroyed\" | \"failed\""
+    },
+    {
+      "name": "MotionValue",
+      "description": "Motion values: numbers that animate without React state (contracts/controllers.md §3).",
+      "module": "core/motion-value",
+      "kind": "interface",
+      "definition": "MotionValue",
+      "props": [
+        {
+          "name": "get",
+          "type": "() => number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "getVelocity",
+          "type": "() => number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "set",
+          "type": "(value: number) => void",
+          "optional": false,
+          "description": "Set directly (velocity becomes 0); interrupts nothing by itself."
+        },
+        {
+          "name": "subscribe",
+          "type": "(listener: (value: number) => void) => () => void",
+          "optional": false,
+          "description": "Listener runs synchronously on every change; returns the unsubscribe function."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "NeshelAnimationsError",
+      "description": "Error thrown for invalid effect usage; identical on the server and the client (ADR 0009 §6).",
+      "module": "core/errors",
+      "kind": "class"
+    },
+    {
+      "name": "ReducedMotion",
+      "description": "Reduced-motion policy (contracts/accessibility.md, constitution IV).\n\n- `\"user\"` (default everywhere): follow `prefers-reduced-motion`.\n- `\"always\"`: always use the reduced variant (e.g. an application-level \"reduce motion\" setting).\n- `\"never\"`: ignore the preference. Reserved for motion essential to the meaning (WCAG 2.3.3);\n  effects in this package never default to it.",
+      "module": "core/reduced-motion",
+      "kind": "type",
+      "definition": "\"user\" | \"always\" | \"never\""
+    },
+    {
+      "name": "SpringOptions",
+      "description": "Damped spring integrator (contracts/core-engine.md §2).\n\nPure and framework-agnostic: the caller owns the state object and the clock. Semi-implicit Euler\nwith fixed sub-steps (at most 1/240 s) keeps the integration stable for any frame rate; the\nspring snaps to its target once both the distance and the speed fall below the rest thresholds,\nso an idle effect stops scheduling frames.",
+      "module": "core/spring",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "damping",
+          "type": "number",
+          "optional": true,
+          "description": "Damping coefficient c (default 26). `c >= 2 * sqrt(k * m)` never overshoots.",
+          "default": "26"
+        },
+        {
+          "name": "mass",
+          "type": "number",
+          "optional": true,
+          "description": "Mass m (default 1).",
+          "default": "1"
+        },
+        {
+          "name": "restDelta",
+          "type": "number",
+          "optional": true,
+          "description": "Distance below which the spring may rest (default 0.01, in the value's unit)."
+        },
+        {
+          "name": "restSpeed",
+          "type": "number",
+          "optional": true,
+          "description": "Speed below which the spring may rest (default 0.01 units/s)."
+        },
+        {
+          "name": "stiffness",
+          "type": "number",
+          "optional": true,
+          "description": "Spring constant k (default 170). Higher is faster.",
+          "default": "170"
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "useMotionEffect",
+      "description": "",
+      "module": "react/use-motion-effect",
+      "kind": "function",
+      "signature": "<Options, Resolved>(ref: RefObject<Element | null>, definition: EffectDefinition<Options, Resolved>, options?: Options | undefined, config?: AttachConfig | undefined): EffectHandle<Options> | undefined"
+    },
+    {
+      "name": "useMotionValue",
+      "description": "A motion value that is stable for the component's lifetime.",
+      "module": "react/use-motion-value",
+      "kind": "function",
+      "signature": "(initial: number): MotionValue"
+    },
+    {
+      "name": "useMotionValueEvent",
+      "description": "Subscribe to a motion value without re-rendering; the latest listener is always called.",
+      "module": "react/use-motion-value",
+      "kind": "function",
+      "signature": "(value: MotionValue, listener: (current: number) => void): void"
+    }
+  ]
+}

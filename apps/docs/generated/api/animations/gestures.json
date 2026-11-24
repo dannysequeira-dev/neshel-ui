@@ -1,0 +1,2037 @@
+{
+  "package": "@neshel-ui/animations/gestures",
+  "exports": [
+    {
+      "name": "Constraints",
+      "description": "",
+      "module": "gestures/shared",
+      "kind": "type",
+      "definition": "\"parent\" | Element | { left?: number; right?: number; top?: number; bottom?: number; }"
+    },
+    {
+      "name": "DecayOptions",
+      "description": "Physics primitives (Phase 012; contracts/gesture-engine.md §5, research R4–R6). Pure functions and a small\nvelocity tracker: no scheduler, no DOM. Springs are NOT here — gestures use the 009 integrator\n(`stepSpring`) through the 010 spring rig, so there is still one spring integrator.",
+      "module": "gestures/engine/physics",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "power",
+          "type": "number",
+          "optional": true,
+          "description": "Fraction of the release velocity carried into the motion (0–1, default 0.8)."
+        },
+        {
+          "name": "restSpeed",
+          "type": "number",
+          "optional": true,
+          "description": "Speed below which the motion rests, px/s (default 5).",
+          "default": "5"
+        },
+        {
+          "name": "timeConstant",
+          "type": "number",
+          "optional": true,
+          "description": "Time constant τ in ms (50–2000, default 325)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "DecayState",
+      "description": "",
+      "module": "gestures/engine/physics",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "value",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "velocity",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "DragOptions",
+      "description": "G01 — Drag with inertia.",
+      "module": "gestures/drag",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "axis",
+          "type": "GestureAxis",
+          "optional": true,
+          "description": "Movement axis (default `\"both\"`).",
+          "default": "\"both\""
+        },
+        {
+          "name": "constraints",
+          "type": "Constraints",
+          "optional": true,
+          "description": "Limits of the movement: `\"parent\"`, an element, or px from the rest position."
+        },
+        {
+          "name": "controls",
+          "type": "GestureControls",
+          "optional": true,
+          "description": "Non-gesture alternatives (`createGestureControls()` / `useGestureControls()`)."
+        },
+        {
+          "name": "decay",
+          "type": "DecayOptions",
+          "optional": true,
+          "description": "Decay of the inertia (`power` 0–1, `timeConstant` 50–2000 ms)."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": "Turn the gesture off (disabled elements never react either)."
+        },
+        {
+          "name": "elastic",
+          "type": "number",
+          "optional": true,
+          "description": "Rubber band beyond the constraints while dragging (0 hard … 1, default 0.35)."
+        },
+        {
+          "name": "inertia",
+          "type": "boolean",
+          "optional": true,
+          "description": "Keep moving after release with exponential decay (default true).",
+          "default": "true"
+        },
+        {
+          "name": "keyboardStep",
+          "type": "number",
+          "optional": true,
+          "description": "px per arrow key (1–200, default 10; Shift × 5). Requires a focusable element."
+        },
+        {
+          "name": "onEnd",
+          "type": "(position: Point) => void",
+          "optional": true,
+          "description": "Called when the element comes to rest after a drag, a key or a command."
+        },
+        {
+          "name": "onStart",
+          "type": "() => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "pointerTypes",
+          "type": "readonly PointerKind[]",
+          "optional": true,
+          "description": "Pointer kinds that may start the gesture (default mouse, pen and touch)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy (default `\"user\"`): automatic motion jumps to its end; direct manipulation stays.",
+          "default": "\"user\""
+        },
+        {
+          "name": "spring",
+          "type": "SpringOptions | SpringPreset",
+          "optional": true,
+          "description": "Spring used for bounces and keyboard moves (default `\"snappy\"`-like 300/30).",
+          "default": "\"snappy\""
+        },
+        {
+          "name": "threshold",
+          "type": "number",
+          "optional": true,
+          "description": "px of movement before the gesture starts (0–40, default 3)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "DragSnapOptions",
+      "description": "G02 — Drag constraints + snap points.",
+      "module": "gestures/drag",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "axis",
+          "type": "GestureAxis",
+          "optional": true,
+          "description": "Movement axis (default `\"both\"`).",
+          "default": "\"both\""
+        },
+        {
+          "name": "constraints",
+          "type": "Constraints",
+          "optional": true,
+          "description": "Limits of the movement: `\"parent\"`, an element, or px from the rest position."
+        },
+        {
+          "name": "controls",
+          "type": "GestureControls",
+          "optional": true,
+          "description": "Non-gesture alternatives (`createGestureControls()` / `useGestureControls()`)."
+        },
+        {
+          "name": "decay",
+          "type": "DecayOptions",
+          "optional": true,
+          "description": "Decay of the inertia (`power` 0–1, `timeConstant` 50–2000 ms)."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": "Turn the gesture off (disabled elements never react either)."
+        },
+        {
+          "name": "elastic",
+          "type": "number",
+          "optional": true,
+          "description": "Rubber band beyond the constraints while dragging (0 hard … 1, default 0.35)."
+        },
+        {
+          "name": "keyboardStep",
+          "type": "number",
+          "optional": true,
+          "description": "px per arrow key (1–200, default 10; Shift × 5). Requires a focusable element."
+        },
+        {
+          "name": "onEnd",
+          "type": "(position: Point) => void",
+          "optional": true,
+          "description": "Called when the element comes to rest after a drag, a key or a command."
+        },
+        {
+          "name": "onSnap",
+          "type": "(point: Point, index: number) => void",
+          "optional": true,
+          "description": "Called at rest with the snap point and its index (-1 for grid points)."
+        },
+        {
+          "name": "onStart",
+          "type": "() => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "pointerTypes",
+          "type": "readonly PointerKind[]",
+          "optional": true,
+          "description": "Pointer kinds that may start the gesture (default mouse, pen and touch)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy (default `\"user\"`): automatic motion jumps to its end; direct manipulation stays.",
+          "default": "\"user\""
+        },
+        {
+          "name": "snap",
+          "type": "readonly Partial<Point>[] | { grid: Partial<Point>; }",
+          "optional": true,
+          "description": "Snap points (px from the rest position) or a grid (default: the rest position only)."
+        },
+        {
+          "name": "spring",
+          "type": "SpringOptions | SpringPreset",
+          "optional": true,
+          "description": "Spring used for bounces and keyboard moves (default `\"snappy\"`-like 300/30).",
+          "default": "\"snappy\""
+        },
+        {
+          "name": "threshold",
+          "type": "number",
+          "optional": true,
+          "description": "px of movement before the gesture starts (0–40, default 3)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ElasticEdgeOptions",
+      "description": "G06 — Elastic edge (visual overscroll, decorative).",
+      "module": "gestures/scroller",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "axis",
+          "type": "\"x\" | \"y\"",
+          "optional": true,
+          "description": "Scroll axis of the container (default `\"y\"`).",
+          "default": "\"y\""
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "max",
+          "type": "number",
+          "optional": true,
+          "description": "Maximum visual stretch in px (8–200, default 64)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Decorative: reduced motion turns it off (default `\"user\"`).",
+          "default": "\"user\""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ElasticScroll",
+      "description": "A package-rendered scroll container whose content stretches visually at its edges (decorative).",
+      "module": "gestures/react",
+      "kind": "component",
+      "signature": "(props: ElasticScrollProps): Element",
+      "props": "ElasticScrollProps",
+      "client": true
+    },
+    {
+      "name": "ElasticScrollProps",
+      "description": "",
+      "module": "gestures/react",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "axis",
+          "type": "\"x\" | \"y\"",
+          "optional": true,
+          "description": "Scroll axis of the container (default `\"y\"`).",
+          "default": "\"y\""
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "description": "Accessible name of the scrollable region (default \"Scrollable content\").",
+          "default": "\"Scrollable content\""
+        },
+        {
+          "name": "max",
+          "type": "number",
+          "optional": true,
+          "description": "Maximum visual stretch in px (8–200, default 64)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Decorative: reduced motion turns it off (default `\"user\"`).",
+          "default": "\"user\""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "FlingOptions",
+      "description": "G07 — Throw / fling with decay.",
+      "module": "gestures/drag",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "axis",
+          "type": "GestureAxis",
+          "optional": true,
+          "description": "Movement axis (default `\"both\"`).",
+          "default": "\"both\""
+        },
+        {
+          "name": "bounce",
+          "type": "number",
+          "optional": true,
+          "description": "Energy kept when bouncing off a constraint (0–1, default 0.5)."
+        },
+        {
+          "name": "constraints",
+          "type": "Constraints",
+          "optional": true,
+          "description": "Limits of the movement: `\"parent\"`, an element, or px from the rest position."
+        },
+        {
+          "name": "controls",
+          "type": "GestureControls",
+          "optional": true,
+          "description": "Non-gesture alternatives (`createGestureControls()` / `useGestureControls()`)."
+        },
+        {
+          "name": "decay",
+          "type": "DecayOptions",
+          "optional": true,
+          "description": "Decay of the inertia (`power` 0–1, `timeConstant` 50–2000 ms)."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": "Turn the gesture off (disabled elements never react either)."
+        },
+        {
+          "name": "elastic",
+          "type": "number",
+          "optional": true,
+          "description": "Rubber band beyond the constraints while dragging (0 hard … 1, default 0.35)."
+        },
+        {
+          "name": "keyboardStep",
+          "type": "number",
+          "optional": true,
+          "description": "px per arrow key (1–200, default 10; Shift × 5). Requires a focusable element."
+        },
+        {
+          "name": "onRest",
+          "type": "(position: Point) => void",
+          "optional": true,
+          "description": "Called when the thrown element comes to rest."
+        },
+        {
+          "name": "onStart",
+          "type": "() => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "pointerTypes",
+          "type": "readonly PointerKind[]",
+          "optional": true,
+          "description": "Pointer kinds that may start the gesture (default mouse, pen and touch)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy (default `\"user\"`): automatic motion jumps to its end; direct manipulation stays.",
+          "default": "\"user\""
+        },
+        {
+          "name": "spring",
+          "type": "SpringOptions | SpringPreset",
+          "optional": true,
+          "description": "Spring used for bounces and keyboard moves (default `\"snappy\"`-like 300/30).",
+          "default": "\"snappy\""
+        },
+        {
+          "name": "threshold",
+          "type": "number",
+          "optional": true,
+          "description": "px of movement before the gesture starts (0–40, default 3)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "Gesture",
+      "description": "`<Gesture>`: physics & gesture effects on a `<div>` or, with `asChild`, your own element.",
+      "module": "gestures/react",
+      "kind": "component",
+      "signature": "<Options, Resolved>(props: GestureProps<Options, Resolved>): Element",
+      "props": "GestureProps<Options, Resolved>",
+      "client": true
+    },
+    {
+      "name": "GestureAxis",
+      "description": "",
+      "module": "gestures/engine/gesture",
+      "kind": "type",
+      "definition": "\"x\" | \"y\" | \"both\""
+    },
+    {
+      "name": "GestureCommonOptions",
+      "description": "Options shared by every gesture effect.",
+      "module": "gestures/shared",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "controls",
+          "type": "GestureControls",
+          "optional": true,
+          "description": "Non-gesture alternatives (`createGestureControls()` / `useGestureControls()`)."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": "Turn the gesture off (disabled elements never react either)."
+        },
+        {
+          "name": "pointerTypes",
+          "type": "readonly PointerKind[]",
+          "optional": true,
+          "description": "Pointer kinds that may start the gesture (default mouse, pen and touch)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy (default `\"user\"`): automatic motion jumps to its end; direct manipulation stays.",
+          "default": "\"user\""
+        },
+        {
+          "name": "threshold",
+          "type": "number",
+          "optional": true,
+          "description": "px of movement before the gesture starts (0–40, default 3)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "GestureControls",
+      "description": "",
+      "module": "gestures/engine/controls",
+      "kind": "interface",
+      "definition": "GestureControls",
+      "props": [
+        {
+          "name": "dismiss",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "moveBy",
+          "type": "(dx: number, dy: number) => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "moveTo",
+          "type": "(x: number, y: number) => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "refresh",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "reset",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "rotateBy",
+          "type": "(degrees: number) => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "snapTo",
+          "type": "(index: number) => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "zoomBy",
+          "type": "(factor: number) => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "zoomTo",
+          "type": "(scale: number) => void",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "GestureDebugInfo",
+      "description": "",
+      "module": "gestures/engine/debug",
+      "kind": "interface",
+      "definition": "GestureDebugInfo",
+      "props": [
+        {
+          "name": "claims",
+          "type": "number",
+          "optional": false,
+          "description": "Pointers currently claimed by an active exclusive gesture."
+        },
+        {
+          "name": "sessions",
+          "type": "number",
+          "optional": false,
+          "description": "Pointer sessions alive (one per element with an attached gesture)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "GestureHandle",
+      "description": "",
+      "module": "gestures/engine/gesture",
+      "kind": "interface",
+      "definition": "GestureHandle",
+      "props": [
+        {
+          "name": "cancel",
+          "type": "() => void",
+          "optional": false,
+          "description": "Abort the current gesture (`onCancel` when active); its pointers are ignored until released."
+        },
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "phase",
+          "type": "GesturePhase",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "session",
+          "type": "PointerSession",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "setOptions",
+          "type": "(options: GestureOptions) => void",
+          "optional": false,
+          "description": "Replace options (live); `touchAction` changes apply at once."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "GestureOptions",
+      "description": "",
+      "module": "gestures/engine/gesture",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "accept",
+          "type": "(event: PointerEvent | undefined, pointer: SessionPointer) => boolean",
+          "optional": true,
+          "description": "Call before activation to veto it (e.g. a handle-only reorder)."
+        },
+        {
+          "name": "axis",
+          "type": "GestureAxis",
+          "optional": true,
+          "description": "Required direction before activation (default `\"both\"`): a vertical swipe never starts an x drag.",
+          "default": "\"both\""
+        },
+        {
+          "name": "exclusive",
+          "type": "boolean",
+          "optional": true,
+          "description": "Exclusive gestures never share a pointer with another exclusive gesture (default true).",
+          "default": "true"
+        },
+        {
+          "name": "onCancel",
+          "type": "(state: GestureState) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onEnd",
+          "type": "(state: GestureState) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onMove",
+          "type": "(state: GestureState) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onPress",
+          "type": "(state: GestureState) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onStart",
+          "type": "(state: GestureState) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onTap",
+          "type": "(state: GestureState) => void",
+          "optional": true,
+          "description": "Released while still pending (no movement beyond the threshold)."
+        },
+        {
+          "name": "pointerTypes",
+          "type": "readonly string[]",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "pointers",
+          "type": "1 | 2",
+          "optional": true,
+          "description": "1 = drag-like (default); 2 = transform gesture (also follows its 1-pointer phase)."
+        },
+        {
+          "name": "threshold",
+          "type": "number",
+          "optional": true,
+          "description": "px before activation (default 3; 0 = on press). Two pointers activate a transform gesture at once."
+        },
+        {
+          "name": "touchAction",
+          "type": "readonly TouchToken[]",
+          "optional": true,
+          "description": "Touch gestures left to the browser on this element (`touch-action` contribution)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "GesturePhase",
+      "description": "",
+      "module": "gestures/engine/gesture",
+      "kind": "type",
+      "definition": "\"idle\" | \"pending\" | \"active\""
+    },
+    {
+      "name": "GestureProps",
+      "description": "",
+      "module": "gestures/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "asChild",
+          "type": "boolean",
+          "optional": true,
+          "description": "Apply the effects to the single child element instead of rendering a `<div>`."
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "conflicts",
+          "type": "ConflictPolicy",
+          "optional": true,
+          "description": "Conflict reporting for exclusive channels (default: warn in development)."
+        },
+        {
+          "name": "options",
+          "type": "undefined | NoInfer<Partial<Options>>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "preset",
+          "type": "readonly PresetInput<any, any>[] | PresetInput<Options, Resolved>",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ],
+      "definition": "EffectPrimitiveProps<Options, Resolved>"
+    },
+    {
+      "name": "GestureState",
+      "description": "",
+      "module": "gestures/engine/gesture",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "acceleration",
+          "type": "Vec",
+          "optional": false,
+          "description": "px/s² (diagnostic)."
+        },
+        {
+          "name": "delta",
+          "type": "Vec",
+          "optional": false,
+          "description": "Movement since the previous callback."
+        },
+        {
+          "name": "event",
+          "type": "PointerEvent | undefined",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "offset",
+          "type": "Vec",
+          "optional": false,
+          "description": "Movement since the gesture started, including scroll compensation (px, client axes)."
+        },
+        {
+          "name": "origin",
+          "type": "Vec",
+          "optional": false,
+          "description": "Centroid of the active pointers (client coordinates)."
+        },
+        {
+          "name": "pointerType",
+          "type": "string",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "pointers",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "rotation",
+          "type": "number",
+          "optional": false,
+          "description": "Two pointers: angle change in degrees since start (accumulated); 0 otherwise."
+        },
+        {
+          "name": "scale",
+          "type": "number",
+          "optional": false,
+          "description": "Two pointers: distance ratio since start (accumulated across re-bases); 1 otherwise."
+        },
+        {
+          "name": "velocity",
+          "type": "Vec",
+          "optional": false,
+          "description": "px/s (research R4)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "PinchZoom",
+      "description": "Pinch-zoom media with zoom buttons and keys (WCAG 2.5.1); one-finger page scrolling kept at scale 1.",
+      "module": "gestures/react",
+      "kind": "component",
+      "signature": "(props: PinchZoomProps): Element",
+      "props": "PinchZoomProps",
+      "client": true
+    },
+    {
+      "name": "PinchZoomOptions",
+      "description": "G08 — Pinch-zoom media.",
+      "module": "gestures/transform",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "controls",
+          "type": "GestureControls",
+          "optional": true,
+          "description": "Non-gesture alternatives (`createGestureControls()` / `useGestureControls()`)."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": "Turn the gesture off (disabled elements never react either)."
+        },
+        {
+          "name": "doubleTapScale",
+          "type": "number",
+          "optional": true,
+          "description": "Scale of a double tap / double click (1–10, default 2; 1 disables)."
+        },
+        {
+          "name": "maxScale",
+          "type": "number",
+          "optional": true,
+          "description": "Maximum scale (1–10, default 4)."
+        },
+        {
+          "name": "minScale",
+          "type": "number",
+          "optional": true,
+          "description": "Minimum scale (0.5–1, default 1)."
+        },
+        {
+          "name": "onZoomChange",
+          "type": "(scale: number) => void",
+          "optional": true,
+          "description": "Called with the scale after a gesture, a key or a command."
+        },
+        {
+          "name": "pointerTypes",
+          "type": "readonly PointerKind[]",
+          "optional": true,
+          "description": "Pointer kinds that may start the gesture (default mouse, pen and touch)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy (default `\"user\"`): automatic motion jumps to its end; direct manipulation stays.",
+          "default": "\"user\""
+        },
+        {
+          "name": "spring",
+          "type": "SpringOptions | SpringPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "step",
+          "type": "number",
+          "optional": true,
+          "description": "Factor of the zoom keys and buttons (1.1–4, default 1.5)."
+        },
+        {
+          "name": "threshold",
+          "type": "number",
+          "optional": true,
+          "description": "px of movement before the gesture starts (0–40, default 3)."
+        },
+        {
+          "name": "wheel",
+          "type": "boolean",
+          "optional": true,
+          "description": "Ctrl/⌘ + wheel and trackpad pinch zoom over the frame (opt-in; prevents the page zoom there)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "PinchZoomProps",
+      "description": "",
+      "module": "gestures/react",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactElement",
+          "optional": false,
+          "description": "Exactly one media element (img, video, canvas, picture, …)."
+        },
+        {
+          "name": "controlLabels",
+          "type": "{ zoomIn?: string; zoomOut?: string; reset?: string; }",
+          "optional": true,
+          "description": "Button labels (defaults \"Zoom in\", \"Zoom out\", \"Reset zoom\")."
+        },
+        {
+          "name": "controls",
+          "type": "GestureControls",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": "Turn the gesture off (disabled elements never react either)."
+        },
+        {
+          "name": "doubleTapScale",
+          "type": "number",
+          "optional": true,
+          "description": "Scale of a double tap / double click (1–10, default 2; 1 disables)."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "description": "Accessible name of the zoomable region (default \"Zoomable media\").",
+          "default": "\"Zoomable media\""
+        },
+        {
+          "name": "maxScale",
+          "type": "number",
+          "optional": true,
+          "description": "Maximum scale (1–10, default 4)."
+        },
+        {
+          "name": "minScale",
+          "type": "number",
+          "optional": true,
+          "description": "Minimum scale (0.5–1, default 1)."
+        },
+        {
+          "name": "onZoomChange",
+          "type": "(scale: number) => void",
+          "optional": true,
+          "description": "Called with the scale after a gesture, a key or a command."
+        },
+        {
+          "name": "pointerTypes",
+          "type": "readonly PointerKind[]",
+          "optional": true,
+          "description": "Pointer kinds that may start the gesture (default mouse, pen and touch)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy (default `\"user\"`): automatic motion jumps to its end; direct manipulation stays.",
+          "default": "\"user\""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "spring",
+          "type": "SpringOptions | SpringPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "step",
+          "type": "number",
+          "optional": true,
+          "description": "Factor of the zoom keys and buttons (1.1–4, default 1.5)."
+        },
+        {
+          "name": "threshold",
+          "type": "number",
+          "optional": true,
+          "description": "px of movement before the gesture starts (0–40, default 3)."
+        },
+        {
+          "name": "wheel",
+          "type": "boolean",
+          "optional": true,
+          "description": "Ctrl/⌘ + wheel and trackpad pinch zoom over the frame (opt-in; prevents the page zoom there)."
+        },
+        {
+          "name": "zoomControls",
+          "type": "boolean",
+          "optional": true,
+          "description": "Render the zoom buttons (default true).",
+          "default": "true"
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "Point",
+      "description": "",
+      "module": "gestures/drag",
+      "kind": "interface",
+      "definition": "Point",
+      "props": [
+        {
+          "name": "x",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "y",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "PointerKind",
+      "description": "",
+      "module": "gestures/engine/gesture",
+      "kind": "type",
+      "definition": "\"mouse\" | \"pen\" | \"touch\""
+    },
+    {
+      "name": "PullToRefresh",
+      "description": "An optional pull-to-refresh indicator on a package-rendered scroll container, plus an explicit refresh\nbutton. Never blocks scrolling or the browser's own behaviour (research R3).",
+      "module": "gestures/react",
+      "kind": "component",
+      "signature": "(props: PullToRefreshProps): Element",
+      "props": "PullToRefreshProps",
+      "client": true
+    },
+    {
+      "name": "PullToRefreshOptions",
+      "description": "G04 — Pull-to-refresh indicator.",
+      "module": "gestures/scroller",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "controls",
+          "type": "GestureControls",
+          "optional": true,
+          "description": "Non-gesture alternatives (`createGestureControls()` / `useGestureControls()`)."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": "Turn the gesture off (disabled elements never react either)."
+        },
+        {
+          "name": "onRefresh",
+          "type": "() => unknown",
+          "optional": true,
+          "description": "The refresh action (provided by the consumer); a returned promise keeps the busy state until it settles."
+        },
+        {
+          "name": "onStatus",
+          "type": "(status: \"refreshing\" | \"done\") => void",
+          "optional": true,
+          "description": "Called with `\"refreshing\"` and `\"done\"` (announcements; `<PullToRefresh>` announces them)."
+        },
+        {
+          "name": "pointerTypes",
+          "type": "readonly PointerKind[]",
+          "optional": true,
+          "description": "Pointer kinds that may start the gesture (default mouse, pen and touch)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy (default `\"user\"`): automatic motion jumps to its end; direct manipulation stays.",
+          "default": "\"user\""
+        },
+        {
+          "name": "threshold",
+          "type": "number",
+          "optional": true,
+          "description": "Pull distance (px) that triggers a refresh on release (24–240, default 72)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "PullToRefreshProps",
+      "description": "",
+      "module": "gestures/react",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "controls",
+          "type": "GestureControls",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": "Turn the gesture off (disabled elements never react either)."
+        },
+        {
+          "name": "onRefresh",
+          "type": "() => unknown",
+          "optional": true,
+          "description": "The refresh action (provided by the consumer); a returned promise keeps the busy state until it settles."
+        },
+        {
+          "name": "pointerTypes",
+          "type": "readonly PointerKind[]",
+          "optional": true,
+          "description": "Pointer kinds that may start the gesture (default mouse, pen and touch)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy (default `\"user\"`): automatic motion jumps to its end; direct manipulation stays.",
+          "default": "\"user\""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "refreshButton",
+          "type": "boolean",
+          "optional": true,
+          "description": "Render the built-in refresh button (default true).",
+          "default": "true"
+        },
+        {
+          "name": "refreshLabel",
+          "type": "string",
+          "optional": true,
+          "description": "Label of the built-in refresh button (default \"Refresh\").",
+          "default": "\"Refresh\""
+        },
+        {
+          "name": "scrollerLabel",
+          "type": "string",
+          "optional": true,
+          "description": "Accessible name of the scrollable region (default \"Scrollable content\").",
+          "default": "\"Scrollable content\""
+        },
+        {
+          "name": "statusLabels",
+          "type": "{ refreshing?: string; done?: string; }",
+          "optional": true,
+          "description": "Announcements (default \"Refreshing…\" / \"Content updated\")."
+        },
+        {
+          "name": "threshold",
+          "type": "number",
+          "optional": true,
+          "description": "Pull distance (px) that triggers a refresh on release (24–240, default 72)."
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "Reorder",
+      "description": "Drag-to-reorder list. The order is yours: `onReorder(from, to)` asks you to move an item; React re-renders\nand the items settle from where they are shown (no DOM reordering by the package, no lost state).",
+      "module": "gestures/react",
+      "kind": "component",
+      "signature": "(props: ReorderProps): Element",
+      "props": "ReorderProps",
+      "client": true
+    },
+    {
+      "name": "ReorderAnnouncements",
+      "description": "",
+      "module": "gestures/reorder",
+      "kind": "interface",
+      "definition": "ReorderAnnouncements",
+      "props": [
+        {
+          "name": "cancel",
+          "type": "(label: string, position: number, count: number) => string",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "drop",
+          "type": "(label: string, position: number, count: number) => string",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "grab",
+          "type": "(label: string, position: number, count: number) => string",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "move",
+          "type": "(label: string, position: number, count: number) => string",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ReorderHandle",
+      "description": "The drag handle and keyboard control of an item (a real button; touch drags start here).",
+      "module": "gestures/react",
+      "kind": "component",
+      "signature": "(props: ReorderHandleProps): Element",
+      "props": "ReorderHandleProps",
+      "client": true
+    },
+    {
+      "name": "ReorderHandleProps",
+      "description": "",
+      "module": "gestures/react",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "aria-label",
+          "type": "string",
+          "optional": true,
+          "description": "Accessible name (default \"Reorder <label>\").",
+          "default": "\"Reorder <label>\""
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLButtonElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "ReorderItem",
+      "description": "",
+      "module": "gestures/react",
+      "kind": "component",
+      "signature": "(props: ReorderItemProps): Element",
+      "props": "ReorderItemProps",
+      "client": true
+    },
+    {
+      "name": "ReorderItemProps",
+      "description": "",
+      "module": "gestures/react",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "as",
+          "type": "\"li\" | \"div\"",
+          "optional": true,
+          "description": "Item element (default `\"li\"`).",
+          "default": "\"li\""
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "index",
+          "type": "number",
+          "optional": true,
+          "description": "Position of the item in your order (enables `useReorderItem().isFirst/isLast`)."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "description": "Name used in announcements (default: the item's text)."
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "ReorderOptions",
+      "description": "",
+      "module": "gestures/reorder",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "announce",
+          "type": "(message: string) => void",
+          "optional": true,
+          "description": "Announce a message (default: a shared polite live region; `<Reorder>` passes its own)."
+        },
+        {
+          "name": "announcements",
+          "type": "Partial<ReorderAnnouncements>",
+          "optional": true,
+          "description": "Override the English announcements."
+        },
+        {
+          "name": "axis",
+          "type": "\"x\" | \"y\"",
+          "optional": true,
+          "description": "List direction (default `\"y\"`).",
+          "default": "\"y\""
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onReorder",
+          "type": "(from: number, to: number) => void",
+          "optional": true,
+          "description": "Move the item at `from` to `to` in the consumer's order (required for the list to change)."
+        },
+        {
+          "name": "pointerTypes",
+          "type": "readonly PointerKind[]",
+          "optional": true,
+          "description": "Pointer kinds that may drag (default mouse, pen and touch; touch always needs a handle)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced motion: shifts and settling jump (default `\"user\"`).",
+          "default": "\"user\""
+        },
+        {
+          "name": "spring",
+          "type": "SpringOptions | SpringPreset",
+          "optional": true,
+          "description": "Spring of shifts and settling (default 420/36)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ReorderProps",
+      "description": "",
+      "module": "gestures/react",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "announcements",
+          "type": "Partial<ReorderAnnouncements>",
+          "optional": true,
+          "description": "Override the English announcements."
+        },
+        {
+          "name": "as",
+          "type": "\"ul\" | \"ol\" | \"div\"",
+          "optional": true,
+          "description": "List element (default `\"ul\"`).",
+          "default": "\"ul\""
+        },
+        {
+          "name": "axis",
+          "type": "\"x\" | \"y\"",
+          "optional": true,
+          "description": "List direction (default `\"y\"`).",
+          "default": "\"y\""
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "instructions",
+          "type": "string",
+          "optional": true,
+          "description": "Keyboard instructions read with each handle (default English)."
+        },
+        {
+          "name": "onReorder",
+          "type": "(from: number, to: number) => void",
+          "optional": true,
+          "description": "Move the item at `from` to `to` in the consumer's order (required for the list to change)."
+        },
+        {
+          "name": "pointerTypes",
+          "type": "readonly PointerKind[]",
+          "optional": true,
+          "description": "Pointer kinds that may drag (default mouse, pen and touch; touch always needs a handle)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced motion: shifts and settling jump (default `\"user\"`).",
+          "default": "\"user\""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "spring",
+          "type": "SpringOptions | SpringPreset",
+          "optional": true,
+          "description": "Spring of shifts and settling (default 420/36)."
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "RotateGestureOptions",
+      "description": "G09 — Rotate gesture.",
+      "module": "gestures/transform",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "controls",
+          "type": "GestureControls",
+          "optional": true,
+          "description": "Non-gesture alternatives (`createGestureControls()` / `useGestureControls()`)."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": "Turn the gesture off (disabled elements never react either)."
+        },
+        {
+          "name": "keyStep",
+          "type": "number",
+          "optional": true,
+          "description": "Degrees per `[` / `]` key and default `rotateBy` button step (1–90, default 15).",
+          "default": "rotateBy"
+        },
+        {
+          "name": "onRotateEnd",
+          "type": "(degrees: number) => void",
+          "optional": true,
+          "description": "Called with the rotation (degrees) after a gesture, a key or a command."
+        },
+        {
+          "name": "pointerTypes",
+          "type": "readonly PointerKind[]",
+          "optional": true,
+          "description": "Pointer kinds that may start the gesture (default mouse, pen and touch)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy (default `\"user\"`): automatic motion jumps to its end; direct manipulation stays.",
+          "default": "\"user\""
+        },
+        {
+          "name": "spring",
+          "type": "SpringOptions | SpringPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "step",
+          "type": "number",
+          "optional": true,
+          "description": "Snap the rotation to multiples of `step` degrees on release (0 = free, default 0)."
+        },
+        {
+          "name": "threshold",
+          "type": "number",
+          "optional": true,
+          "description": "px of movement before the gesture starts (0–40, default 3)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "SpringFollowOptions",
+      "description": "G05 — Spring follow (value chasing).",
+      "module": "gestures/follow",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced motion jumps to the value (default `\"user\"`).",
+          "default": "\"user\""
+        },
+        {
+          "name": "rotate",
+          "type": "MotionValue",
+          "optional": true,
+          "description": "Rotation to chase (degrees)."
+        },
+        {
+          "name": "scale",
+          "type": "MotionValue",
+          "optional": true,
+          "description": "Scale factor to chase."
+        },
+        {
+          "name": "spring",
+          "type": "SpringOptions | SpringPreset",
+          "optional": true,
+          "description": "Spring (default `\"gentle\"`-like 120/18).",
+          "default": "\"gentle\""
+        },
+        {
+          "name": "x",
+          "type": "MotionValue",
+          "optional": true,
+          "description": "Horizontal translation to chase (px)."
+        },
+        {
+          "name": "y",
+          "type": "MotionValue",
+          "optional": true,
+          "description": "Vertical translation to chase (px)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "SquashStretchOptions",
+      "description": "G11 — Velocity squash & stretch (decorative).",
+      "module": "gestures/follow",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "intensity",
+          "type": "number",
+          "optional": true,
+          "description": "Strength (0–1, default 0.25); the deformation never exceeds 25 %."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Decorative: reduced motion turns it off (default `\"user\"`).",
+          "default": "\"user\""
+        },
+        {
+          "name": "spring",
+          "type": "SpringOptions | SpringPreset",
+          "optional": true,
+          "description": "Spring of the deformation (default 400/24)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "SwipeDirection",
+      "description": "G03 — Swipe to dismiss.",
+      "module": "gestures/drag",
+      "kind": "type",
+      "definition": "\"x\" | \"left\" | \"right\" | \"y\" | \"up\" | \"down\""
+    },
+    {
+      "name": "SwipeDismiss",
+      "description": "Swipe to dismiss with a built-in, accessible dismiss button (WCAG 2.5.7).",
+      "module": "gestures/react",
+      "kind": "component",
+      "signature": "(props: SwipeDismissProps): Element",
+      "props": "SwipeDismissProps",
+      "client": true
+    },
+    {
+      "name": "SwipeDismissOptions",
+      "description": "",
+      "module": "gestures/drag",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "controls",
+          "type": "GestureControls",
+          "optional": true,
+          "description": "Non-gesture alternatives (`createGestureControls()` / `useGestureControls()`)."
+        },
+        {
+          "name": "direction",
+          "type": "SwipeDirection",
+          "optional": true,
+          "description": "Allowed direction(s) (default `\"x\"`: left or right).",
+          "default": "\"x\""
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": "Turn the gesture off (disabled elements never react either)."
+        },
+        {
+          "name": "distance",
+          "type": "number",
+          "optional": true,
+          "description": "Fraction of the element's size that dismisses on release (0.1–1, default 0.5)."
+        },
+        {
+          "name": "keyboard",
+          "type": "boolean",
+          "optional": true,
+          "description": "Delete / Backspace dismiss when the element is focused (default true).",
+          "default": "true"
+        },
+        {
+          "name": "onDismiss",
+          "type": "(direction: \"left\" | \"right\" | \"up\" | \"down\") => void",
+          "optional": true,
+          "description": "Called once when the element has left; the consumer removes it."
+        },
+        {
+          "name": "pointerTypes",
+          "type": "readonly PointerKind[]",
+          "optional": true,
+          "description": "Pointer kinds that may start the gesture (default mouse, pen and touch)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy (default `\"user\"`): automatic motion jumps to its end; direct manipulation stays.",
+          "default": "\"user\""
+        },
+        {
+          "name": "threshold",
+          "type": "number",
+          "optional": true,
+          "description": "px of movement before the gesture starts (0–40, default 3)."
+        },
+        {
+          "name": "velocity",
+          "type": "number",
+          "optional": true,
+          "description": "Release speed that dismisses, px/s (100–5000, default 800)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "SwipeDismissProps",
+      "description": "",
+      "module": "gestures/react",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "controls",
+          "type": "GestureControls",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "direction",
+          "type": "SwipeDirection",
+          "optional": true,
+          "description": "Allowed direction(s) (default `\"x\"`: left or right).",
+          "default": "\"x\""
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": "Turn the gesture off (disabled elements never react either)."
+        },
+        {
+          "name": "dismissButton",
+          "type": "boolean",
+          "optional": true,
+          "description": "Render the built-in dismiss button (default true). Provide your own accessible control when false.",
+          "default": "true"
+        },
+        {
+          "name": "dismissLabel",
+          "type": "string",
+          "optional": true,
+          "description": "Accessible name of the built-in dismiss button (default \"Dismiss\").",
+          "default": "\"Dismiss\""
+        },
+        {
+          "name": "distance",
+          "type": "number",
+          "optional": true,
+          "description": "Fraction of the element's size that dismisses on release (0.1–1, default 0.5)."
+        },
+        {
+          "name": "keyboard",
+          "type": "boolean",
+          "optional": true,
+          "description": "Delete / Backspace dismiss when the element is focused (default true).",
+          "default": "true"
+        },
+        {
+          "name": "onDismiss",
+          "type": "(direction: \"left\" | \"right\" | \"up\" | \"down\") => void",
+          "optional": true,
+          "description": "Called once when the element has left; the consumer removes it."
+        },
+        {
+          "name": "pointerTypes",
+          "type": "readonly PointerKind[]",
+          "optional": true,
+          "description": "Pointer kinds that may start the gesture (default mouse, pen and touch)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy (default `\"user\"`): automatic motion jumps to its end; direct manipulation stays.",
+          "default": "\"user\""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "threshold",
+          "type": "number",
+          "optional": true,
+          "description": "px of movement before the gesture starts (0–40, default 3)."
+        },
+        {
+          "name": "velocity",
+          "type": "number",
+          "optional": true,
+          "description": "Release speed that dismisses, px/s (100–5000, default 800)."
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "VelocityTracker",
+      "description": "",
+      "module": "gestures/engine/physics",
+      "kind": "interface",
+      "definition": "VelocityTracker",
+      "props": [
+        {
+          "name": "acceleration",
+          "type": "() => { x: number; y: number; }",
+          "optional": false,
+          "description": "Change of velocity between the last two estimates, px/s² (diagnostic)."
+        },
+        {
+          "name": "add",
+          "type": "(time: number, x: number, y: number) => void",
+          "optional": false,
+          "description": "Add a sample (`time` in ms)."
+        },
+        {
+          "name": "reset",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "velocity",
+          "type": "(time?: number) => { x: number; y: number; }",
+          "optional": false,
+          "description": "Velocity in px/s at `time` (ms); 0 when the last sample is older than 40 ms (the pointer stopped)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "createGesture",
+      "description": "",
+      "module": "gestures/engine/gesture",
+      "kind": "function",
+      "signature": "(element: HTMLElement, initial: GestureOptions): GestureHandle"
+    },
+    {
+      "name": "createGestureControls",
+      "description": "Create a controls object (one per controlled element; stable for its lifetime).",
+      "module": "gestures/engine/controls",
+      "kind": "function",
+      "signature": "(): GestureControls"
+    },
+    {
+      "name": "createVelocityTracker",
+      "description": "Release-velocity estimate from the samples of the last `windowMs` (default 100): slope between the oldest\nsample in the window and the newest, minimum span 8 ms (research R4). Ring buffer, no allocation per add.",
+      "module": "gestures/engine/physics",
+      "kind": "function",
+      "signature": "(windowMs?: number | undefined): VelocityTracker"
+    },
+    {
+      "name": "drag",
+      "description": "",
+      "module": "gestures/drag",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<DragOptions, ResolvedDrag>>"
+    },
+    {
+      "name": "dragSnap",
+      "description": "",
+      "module": "gestures/drag",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<DragSnapOptions, ResolvedDrag>>"
+    },
+    {
+      "name": "elasticEdge",
+      "description": "",
+      "module": "gestures/scroller",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<ElasticEdgeOptions, ResolvedElastic>>"
+    },
+    {
+      "name": "fling",
+      "description": "",
+      "module": "gestures/drag",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<FlingOptions, ResolvedDrag>>"
+    },
+    {
+      "name": "gestureEffects",
+      "description": "Every physics & gesture definition in catalogue order (G01–G11), for explicit registries.",
+      "module": "gestures/index",
+      "kind": "const",
+      "type": "readonly AnyEffectDefinition[]"
+    },
+    {
+      "name": "getGestureDebugInfo",
+      "description": "",
+      "module": "gestures/engine/debug",
+      "kind": "function",
+      "signature": "(): GestureDebugInfo"
+    },
+    {
+      "name": "nearestSnap",
+      "description": "The point of `points` nearest to `value` (`value` itself when the list is empty).",
+      "module": "gestures/engine/physics",
+      "kind": "function",
+      "signature": "(value: number, points: readonly number[]): number"
+    },
+    {
+      "name": "pinchZoom",
+      "description": "",
+      "module": "gestures/transform",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<PinchZoomOptions, ResolvedPinch>>"
+    },
+    {
+      "name": "projectDecay",
+      "description": "Rest position of an exponential decay started from `value` with release `velocity` (px/s):\n`value + power · velocity · τ` (research R5). Lets snap points be chosen before animating.",
+      "module": "gestures/engine/physics",
+      "kind": "function",
+      "signature": "(value: number, velocity: number, options?: DecayOptions | undefined): number"
+    },
+    {
+      "name": "pullToRefresh",
+      "description": "",
+      "module": "gestures/scroller",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<PullToRefreshOptions, ResolvedPull>>"
+    },
+    {
+      "name": "reorder",
+      "description": "",
+      "module": "gestures/reorder",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<ReorderOptions, ResolvedReorder>>"
+    },
+    {
+      "name": "reorderMove",
+      "description": "Move `item` of a list with an attached `reorder` effect by `step` positions (move up/down buttons): asks the\nconsumer through `onReorder`, announces the result and settles the items. No-op without the effect.",
+      "module": "gestures/reorder",
+      "kind": "function",
+      "signature": "(list: Element, item: HTMLElement, step: number): void"
+    },
+    {
+      "name": "rotateGesture",
+      "description": "",
+      "module": "gestures/transform",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<RotateGestureOptions, ResolvedRotate>>"
+    },
+    {
+      "name": "rubberband",
+      "description": "Rubber band: displacement `overshoot` beyond a bound, over `dimension` px, maps to\n`(1 − 1 / (|x|·c/d + 1)) · d` with the sign of `overshoot` (research R6). Continuous at 0, monotonic,\nasymptotic to `dimension`.",
+      "module": "gestures/engine/physics",
+      "kind": "function",
+      "signature": "(overshoot: number, dimension: number, constant?: number | undefined): number"
+    },
+    {
+      "name": "springFollow",
+      "description": "",
+      "module": "gestures/follow",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<SpringFollowOptions, ResolvedFollow>>"
+    },
+    {
+      "name": "squashStretch",
+      "description": "",
+      "module": "gestures/follow",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<SquashStretchOptions, ResolvedSquash>>"
+    },
+    {
+      "name": "stepDecay",
+      "description": "Advance a decay by `dt` seconds with the exact exponential solution (frame-rate independent). The state's\nvelocity is the CURRENT velocity (start it at `power · releaseVelocity`). Returns `true` at rest, where the\nvalue lands on its exact projected end.",
+      "module": "gestures/engine/physics",
+      "kind": "function",
+      "signature": "(state: DecayState, options: DecayOptions, dt: number): boolean"
+    },
+    {
+      "name": "swipeDismiss",
+      "description": "",
+      "module": "gestures/drag",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<SwipeDismissOptions, ResolvedSwipe>>"
+    },
+    {
+      "name": "useGestureControls",
+      "description": "A stable controls object for buttons and commands (the non-gesture alternatives).",
+      "module": "gestures/react",
+      "kind": "function",
+      "signature": "(): GestureControls"
+    },
+    {
+      "name": "useReorderItem",
+      "description": "Move-up / move-down helpers for custom controls inside a `<ReorderItem>` (WCAG 2.5.7).",
+      "module": "gestures/react",
+      "kind": "function",
+      "signature": "(): { moveUp: () => void; moveDown: () => void; index: number | undefined; count: number; isFirst: boolean; isLast: boolean; }"
+    },
+    {
+      "name": "useSpringFollow",
+      "description": "G05 as a hook: a motion value that chases `source` with a spring (no React render per change). Reduced\nmotion jumps.",
+      "module": "gestures/react",
+      "kind": "function",
+      "signature": "(source: MotionValue, spring?: SpringOptions | \"gentle\" | \"snappy\" | \"bouncy\" | undefined, reducedMotion?: ReducedMotion | undefined): MotionValue"
+    }
+  ]
+}

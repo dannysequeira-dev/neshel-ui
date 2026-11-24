@@ -1,0 +1,1928 @@
+{
+  "package": "@neshel-ui/animations/svg",
+  "exports": [
+    {
+      "name": "ChartDrawOptions",
+      "description": "",
+      "module": "svg/draw",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–10000; default per effect)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "lines",
+          "type": "string | Element | Iterable<Element>",
+          "optional": false,
+          "description": "Line elements (or a selector inside the svg)."
+        },
+        {
+          "name": "onComplete",
+          "type": "(result: MotionResult) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "points",
+          "type": "string | Element | Iterable<Element>",
+          "optional": true,
+          "description": "Point markers revealed when the line passes them (selector or elements)."
+        },
+        {
+          "name": "progress",
+          "type": "ProgressSource",
+          "optional": true,
+          "description": "Drive from a 0–1 source instead of the own clock."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "stagger",
+          "type": "number",
+          "optional": true,
+          "description": "ms between lines (default 150).",
+          "default": "150"
+        },
+        {
+          "name": "trigger",
+          "type": "ProgressTrigger",
+          "optional": true,
+          "description": "Default `\"visible\"` (once); ignored with `progress`.",
+          "default": "\"visible\""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "CheckmarkOptions",
+      "description": "",
+      "module": "svg/draw",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "checkElement",
+          "type": "Element",
+          "optional": true,
+          "description": "Check element (default: the last `path`/`polyline` in the svg)."
+        },
+        {
+          "name": "circle",
+          "type": "boolean",
+          "optional": true,
+          "description": "Draw the circle first (default true).",
+          "default": "true"
+        },
+        {
+          "name": "circleElement",
+          "type": "Element",
+          "optional": true,
+          "description": "Circle element (default: the first `circle`/`path` in the svg when `circle` is true)."
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–10000; default per effect)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onComplete",
+          "type": "(result: MotionResult) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "type": "ProgressSource",
+          "optional": true,
+          "description": "Drive from a 0–1 source instead of the own clock."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "trigger",
+          "type": "ProgressTrigger",
+          "optional": true,
+          "description": "Default `\"visible\"` (once); ignored with `progress`.",
+          "default": "\"visible\""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "DashFlowOptions",
+      "description": "",
+      "module": "svg/loops",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "dash",
+          "type": "number",
+          "optional": true,
+          "description": "Dash length (user units, default 6)."
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "One cycle, ms."
+        },
+        {
+          "name": "gap",
+          "type": "number",
+          "optional": true,
+          "description": "Gap length (user units, default 4)."
+        },
+        {
+          "name": "onComplete",
+          "type": "() => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "repeat",
+          "type": "number",
+          "optional": true,
+          "description": "Extra cycles (0–1000 or `Infinity`, explicit)."
+        },
+        {
+          "name": "speed",
+          "type": "number",
+          "optional": true,
+          "description": "Units per second, negative reverses (−400–400; default 40)."
+        },
+        {
+          "name": "trigger",
+          "type": "\"visible\" | \"mount\" | \"manual\"",
+          "optional": true,
+          "description": "`visible`/`mount` start on creation (default); `manual` waits for `play()`."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "GradientStop",
+      "description": "",
+      "module": "svg/loops",
+      "kind": "interface",
+      "definition": "GradientStop",
+      "props": [
+        {
+          "name": "color",
+          "type": "readonly [string, string]",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "offset",
+          "type": "readonly [number, number]",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "opacity",
+          "type": "readonly [number, number]",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "GradientStopsOptions",
+      "description": "",
+      "module": "svg/loops",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "One cycle, ms."
+        },
+        {
+          "name": "onComplete",
+          "type": "() => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "repeat",
+          "type": "number",
+          "optional": true,
+          "description": "Extra cycles (0–1000 or `Infinity`, explicit)."
+        },
+        {
+          "name": "stops",
+          "type": "readonly (GradientStop | undefined)[]",
+          "optional": false,
+          "description": "Per stop (by index among the gradient's `<stop>` children)."
+        },
+        {
+          "name": "trigger",
+          "type": "\"visible\" | \"mount\" | \"manual\"",
+          "optional": true,
+          "description": "`visible`/`mount` start on creation (default); `manual` waits for `play()`."
+        },
+        {
+          "name": "yoyo",
+          "type": "boolean",
+          "optional": true,
+          "description": "Alternate back and forth inside a cycle (default true).",
+          "default": "true"
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "IconMorphControl",
+      "description": "",
+      "module": "svg/morph",
+      "kind": "interface",
+      "definition": "IconMorphControl",
+      "props": [
+        {
+          "name": "cancel",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": "Idempotent: stops, releases and restores."
+        },
+        {
+          "name": "drive",
+          "type": "(source: ProgressSource) => () => void",
+          "optional": false,
+          "description": "Follow a 0–1 source instead of the own clock; returns the unsubscribe."
+        },
+        {
+          "name": "finish",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "finished",
+          "type": "Promise<MotionResult>",
+          "optional": false,
+          "description": "Promise of the current (or next) run."
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": false,
+          "description": "The current (target) state name."
+        },
+        {
+          "name": "pause",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "play",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "type": "number",
+          "optional": false,
+          "description": "Rendered progress 0–1."
+        },
+        {
+          "name": "reverse",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "seek",
+          "type": "(progress: number) => void",
+          "optional": false,
+          "description": "Render the effect at a time fraction 0–1 of its run (eased)."
+        },
+        {
+          "name": "set",
+          "type": "(name: string) => Promise<unknown>",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "state",
+          "type": "PathMorphControl[\"state\"]",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "track",
+          "type": "(options?: ProgressTrackOptions) => ProgressTrack",
+          "optional": false,
+          "description": "A value track for `createTimeline().add(…)`: the timeline clock drives this effect."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "IconMorphOptions",
+      "description": "",
+      "module": "svg/morph",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–10000; default per effect)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "incompatible",
+          "type": "\"error\" | \"swap\"",
+          "optional": true,
+          "description": "`\"error\"` (default) or `\"swap\"`."
+        },
+        {
+          "name": "normalize",
+          "type": "\"exact\" | \"cubic\"",
+          "optional": true,
+          "description": "`\"exact\"` (default) or `\"cubic\"` (lines and quadratics promoted to cubics)."
+        },
+        {
+          "name": "onComplete",
+          "type": "(result: MotionResult) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "precision",
+          "type": "number",
+          "optional": true,
+          "description": "Output decimals 0–6 (default 3).",
+          "default": "3"
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "shapes",
+          "type": "Readonly<Record<string, string>>",
+          "optional": false,
+          "description": "Named compatible shapes (e.g. `menuCloseShapes`)."
+        },
+        {
+          "name": "state",
+          "type": "string",
+          "optional": true,
+          "description": "Initial state name (default: the first key)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "LogoRevealOptions",
+      "description": "",
+      "module": "svg/logo",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–10000; default per effect)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onComplete",
+          "type": "(result: MotionResult) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "outline",
+          "type": "Element | Iterable<Element>",
+          "optional": true,
+          "description": "Decorative outline paths drawn before the mask opens."
+        },
+        {
+          "name": "pattern",
+          "type": "LogoRevealPattern",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "type": "ProgressSource",
+          "optional": true,
+          "description": "Drive from a 0–1 source instead of the own clock."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "softness",
+          "type": "number",
+          "optional": true,
+          "description": "Edge softness 0–0.5 (default 0.15).",
+          "default": "0.15"
+        },
+        {
+          "name": "trigger",
+          "type": "ProgressTrigger",
+          "optional": true,
+          "description": "Default `\"visible\"` (once); ignored with `progress`.",
+          "default": "\"visible\""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "LogoRevealPattern",
+      "description": "",
+      "module": "svg/logo",
+      "kind": "type",
+      "definition": "\"wipe-right\" | \"wipe-left\" | \"wipe-up\" | \"wipe-down\" | \"circle\""
+    },
+    {
+      "name": "LoopEffectControl",
+      "description": "Control of a continuous effect (loop) — also seekable, timeline- and source-driven.",
+      "module": "core/loop",
+      "kind": "interface",
+      "definition": "LoopEffectControl",
+      "props": [
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "drive",
+          "type": "(source: ProgressSource) => () => void",
+          "optional": false,
+          "description": "Follow a 0–1 source (own clock paused); returns the unsubscribe."
+        },
+        {
+          "name": "pause",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "play",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "type": "number",
+          "optional": false,
+          "description": "Progress 0–1 of the whole run (of one cycle when `repeat` is `Infinity`)."
+        },
+        {
+          "name": "seek",
+          "type": "(progress: number) => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "state",
+          "type": "LoopState",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "stop",
+          "type": "() => void",
+          "optional": false,
+          "description": "Stop and show the rest state."
+        },
+        {
+          "name": "track",
+          "type": "(options?: ProgressTrackOptions) => ProgressTrack",
+          "optional": false,
+          "description": "A value track for `createTimeline().add(…)` (finite runs; one cycle when infinite)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "LoopSvgOptions",
+      "description": "",
+      "module": "svg/loops",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "One cycle, ms."
+        },
+        {
+          "name": "onComplete",
+          "type": "() => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "repeat",
+          "type": "number",
+          "optional": true,
+          "description": "Extra cycles (0–1000 or `Infinity`, explicit)."
+        },
+        {
+          "name": "trigger",
+          "type": "\"visible\" | \"mount\" | \"manual\"",
+          "optional": true,
+          "description": "`visible`/`mount` start on creation (default); `manual` waits for `play()`."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "MorphCompatibility",
+      "description": "",
+      "module": "svg/engine/morph",
+      "kind": "type",
+      "definition": "{ compatible: true; } | { compatible: false; reason: string; index: number; }",
+      "props": [
+        {
+          "name": "compatible",
+          "type": "boolean",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "index",
+          "type": "number",
+          "optional": false,
+          "description": "",
+          "variantOnly": true
+        },
+        {
+          "name": "reason",
+          "type": "string",
+          "optional": false,
+          "description": "",
+          "variantOnly": true
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "MorphIcon",
+      "description": "S04 — a decorative stroked icon morphing between named states.",
+      "module": "svg/react",
+      "kind": "component",
+      "signature": "({ shapes, state, duration, title, controlRef, ...rest }: MorphIconProps): Element",
+      "props": "MorphIconProps",
+      "client": true
+    },
+    {
+      "name": "MorphIconProps",
+      "description": "",
+      "module": "svg/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "controlRef",
+          "type": "RefObject<IconMorphControl | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "shapes",
+          "type": "Readonly<Record<string, string>>",
+          "optional": false,
+          "description": "Named compatible shapes in a 24×24 viewBox (e.g. `menuCloseShapes`)."
+        },
+        {
+          "name": "state",
+          "type": "string",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "optional": true,
+          "description": "Accessible title: omitted → decorative (`aria-hidden`); name the button instead."
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "MorphOptions",
+      "description": "",
+      "module": "svg/engine/morph",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "normalize",
+          "type": "\"exact\" | \"cubic\"",
+          "optional": true,
+          "description": "`\"exact\"` (default) or `\"cubic\"` (lines and quadratics promoted to cubics)."
+        },
+        {
+          "name": "precision",
+          "type": "number",
+          "optional": true,
+          "description": "Output decimals 0–6 (default 3).",
+          "default": "3"
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "MotionPathControl",
+      "description": "",
+      "module": "svg/motion-path",
+      "kind": "interface",
+      "definition": "MotionPathControl",
+      "props": [
+        {
+          "name": "cancel",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": "Idempotent: stops, releases and restores."
+        },
+        {
+          "name": "drive",
+          "type": "(source: ProgressSource) => () => void",
+          "optional": false,
+          "description": "Follow a 0–1 source instead of the own clock; returns the unsubscribe."
+        },
+        {
+          "name": "finish",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "finished",
+          "type": "Promise<MotionResult>",
+          "optional": false,
+          "description": "Promise of the current (or next) run."
+        },
+        {
+          "name": "mode",
+          "type": "\"native\" | \"js\"",
+          "optional": false,
+          "description": "`\"native\"` or `\"js\"` — the mechanism actually used."
+        },
+        {
+          "name": "pause",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "play",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "type": "number",
+          "optional": false,
+          "description": "Rendered progress 0–1."
+        },
+        {
+          "name": "reverse",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "seek",
+          "type": "(progress: number) => void",
+          "optional": false,
+          "description": "Render the effect at a time fraction 0–1 of its run (eased)."
+        },
+        {
+          "name": "state",
+          "type": "MotionState",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "track",
+          "type": "(options?: ProgressTrackOptions) => ProgressTrack",
+          "optional": false,
+          "description": "A value track for `createTimeline().add(…)`: the timeline clock drives this effect."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "MotionPathOptions",
+      "description": "",
+      "module": "svg/motion-path",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–10000; default per effect)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "mode",
+          "type": "\"auto\" | \"native\" | \"js\"",
+          "optional": true,
+          "description": "`\"auto\"` (native when supported; default), `\"native\"` or `\"js\"`."
+        },
+        {
+          "name": "onComplete",
+          "type": "(result: MotionResult) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "path",
+          "type": "string | Element",
+          "optional": false,
+          "description": "Path data in CSS px (element-relative), or a `<path>` whose `d` is used as is."
+        },
+        {
+          "name": "progress",
+          "type": "ProgressSource",
+          "optional": true,
+          "description": "Drive from a 0–1 source instead of the own clock."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "repeat",
+          "type": "number",
+          "optional": true,
+          "description": "Extra runs (0–1000 or `Infinity`, explicit)."
+        },
+        {
+          "name": "rotate",
+          "type": "\"auto\" | \"reverse\" | number",
+          "optional": true,
+          "description": "`\"auto\"` (tangent; default), `\"reverse\"`, or a fixed angle in degrees."
+        },
+        {
+          "name": "trigger",
+          "type": "ProgressTrigger",
+          "optional": true,
+          "description": "Default `\"visible\"` (once); ignored with `progress`.",
+          "default": "\"visible\""
+        },
+        {
+          "name": "yoyo",
+          "type": "boolean",
+          "optional": true,
+          "description": "Alternate direction on repeats."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "PathCommand",
+      "description": "",
+      "module": "svg/engine/path-data",
+      "kind": "type",
+      "definition": "{ type: \"M\" | \"L\"; x: number; y: number; } | { type: \"C\"; x1: number; y1: number; x2: number; y2: number; x: number; y: number; } | { type: \"Q\"; x1: number; y1: number; x: number; y: number; } | { type: \"A\"; rx: number; ry: number; angle: number; large: boolean; sweep: boolean; x: number; y: number; } | { type: \"Z\"; }",
+      "props": [
+        {
+          "name": "angle",
+          "type": "number",
+          "optional": false,
+          "description": "",
+          "variantOnly": true
+        },
+        {
+          "name": "large",
+          "type": "boolean",
+          "optional": false,
+          "description": "",
+          "variantOnly": true
+        },
+        {
+          "name": "rx",
+          "type": "number",
+          "optional": false,
+          "description": "",
+          "variantOnly": true
+        },
+        {
+          "name": "ry",
+          "type": "number",
+          "optional": false,
+          "description": "",
+          "variantOnly": true
+        },
+        {
+          "name": "sweep",
+          "type": "boolean",
+          "optional": false,
+          "description": "",
+          "variantOnly": true
+        },
+        {
+          "name": "type",
+          "type": "\"M\" | \"L\" | \"C\" | \"Q\" | \"A\" | \"Z\"",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "x",
+          "type": "number",
+          "optional": false,
+          "description": "",
+          "variantOnly": true
+        },
+        {
+          "name": "x1",
+          "type": "number",
+          "optional": false,
+          "description": "",
+          "variantOnly": true
+        },
+        {
+          "name": "x2",
+          "type": "number",
+          "optional": false,
+          "description": "",
+          "variantOnly": true
+        },
+        {
+          "name": "y",
+          "type": "number",
+          "optional": false,
+          "description": "",
+          "variantOnly": true
+        },
+        {
+          "name": "y1",
+          "type": "number",
+          "optional": false,
+          "description": "",
+          "variantOnly": true
+        },
+        {
+          "name": "y2",
+          "type": "number",
+          "optional": false,
+          "description": "",
+          "variantOnly": true
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "PathDraw",
+      "description": "S01 — draw the single SVG geometry child.",
+      "module": "svg/react",
+      "kind": "component",
+      "signature": "({ children, controlRef, ...options }: PathDrawProps): Element",
+      "props": "PathDrawProps",
+      "client": true
+    },
+    {
+      "name": "PathDrawOptions",
+      "description": "",
+      "module": "svg/draw",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–10000; default per effect)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onComplete",
+          "type": "(result: MotionResult) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "type": "ProgressSource",
+          "optional": true,
+          "description": "Drive from a 0–1 source instead of the own clock."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "release",
+          "type": "boolean",
+          "optional": true,
+          "description": "Restore the consumer's dash styles when the draw completes forwards (default true).",
+          "default": "true"
+        },
+        {
+          "name": "reverse",
+          "type": "boolean",
+          "optional": true,
+          "description": "Draw from the end towards the start (default false).",
+          "default": "false"
+        },
+        {
+          "name": "stagger",
+          "type": "number",
+          "optional": true,
+          "description": "ms between consecutive paths (0–5000; default 0)."
+        },
+        {
+          "name": "trigger",
+          "type": "ProgressTrigger",
+          "optional": true,
+          "description": "Default `\"visible\"` (once); ignored with `progress`.",
+          "default": "\"visible\""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "PathDrawProps",
+      "description": "",
+      "module": "svg/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactElement",
+          "optional": false,
+          "description": "One SVG geometry element (`<path>`, `<circle>`, …)."
+        },
+        {
+          "name": "controlRef",
+          "type": "RefObject<ProgressControl | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–10000; default per effect)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onComplete",
+          "type": "(result: MotionResult) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "type": "ProgressSource",
+          "optional": true,
+          "description": "Drive from a 0–1 source instead of the own clock."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "release",
+          "type": "boolean",
+          "optional": true,
+          "description": "Restore the consumer's dash styles when the draw completes forwards (default true).",
+          "default": "true"
+        },
+        {
+          "name": "reverse",
+          "type": "boolean",
+          "optional": true,
+          "description": "Draw from the end towards the start (default false).",
+          "default": "false"
+        },
+        {
+          "name": "stagger",
+          "type": "number",
+          "optional": true,
+          "description": "ms between consecutive paths (0–5000; default 0)."
+        },
+        {
+          "name": "trigger",
+          "type": "ProgressTrigger",
+          "optional": true,
+          "description": "Default `\"visible\"` (once); ignored with `progress`.",
+          "default": "\"visible\""
+        }
+      ],
+      "inherits": [],
+      "definition": "PathDrawOptions & { /** One SVG geometry element (`<path>`, `<circle>`, …). */ children: ReactElement; controlRef?: RefObject<ProgressControl | null>; }"
+    },
+    {
+      "name": "PathGeometry",
+      "description": "",
+      "module": "svg/engine/geometry",
+      "kind": "interface",
+      "definition": "PathGeometry",
+      "props": [
+        {
+          "name": "bounds",
+          "type": "() => { x: number; y: number; width: number; height: number; }",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "length",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "pointAt",
+          "type": "(distance: number) => PathPoint",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "subpaths",
+          "type": "readonly { start: number; length: number; closed: boolean; }[]",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "PathMorphControl",
+      "description": "",
+      "module": "svg/morph",
+      "kind": "interface",
+      "definition": "PathMorphControl",
+      "props": [
+        {
+          "name": "cancel",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": "Idempotent: stops, releases and restores."
+        },
+        {
+          "name": "drive",
+          "type": "(source: ProgressSource) => () => void",
+          "optional": false,
+          "description": "Follow a 0–1 source instead of the own clock; returns the unsubscribe."
+        },
+        {
+          "name": "finish",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "finished",
+          "type": "Promise<MotionResult>",
+          "optional": false,
+          "description": "Promise of the current (or next) run."
+        },
+        {
+          "name": "index",
+          "type": "number",
+          "optional": false,
+          "description": "Index of the target shape."
+        },
+        {
+          "name": "pause",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "play",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "type": "number",
+          "optional": false,
+          "description": "Rendered progress 0–1."
+        },
+        {
+          "name": "reverse",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "seek",
+          "type": "(progress: number) => void",
+          "optional": false,
+          "description": "Render the effect at a time fraction 0–1 of its run (eased)."
+        },
+        {
+          "name": "state",
+          "type": "MotionState",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "to",
+          "type": "(index: number) => Promise<unknown>",
+          "optional": false,
+          "description": "Morph to a shape."
+        },
+        {
+          "name": "track",
+          "type": "(options?: ProgressTrackOptions) => ProgressTrack",
+          "optional": false,
+          "description": "A value track for `createTimeline().add(…)`: the timeline clock drives this effect."
+        },
+        {
+          "name": "trackTo",
+          "type": "(index: number, options?: { id?: string; duration?: number; }) => ReturnType<ProgressControl[\"track\"]>",
+          "optional": false,
+          "description": "Value track morphing from the current shape to `index` inside a C01 timeline."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "PathMorphOptions",
+      "description": "",
+      "module": "svg/morph",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–10000; default per effect)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "incompatible",
+          "type": "\"error\" | \"swap\"",
+          "optional": true,
+          "description": "`\"error\"` (default) or `\"swap\"`."
+        },
+        {
+          "name": "initial",
+          "type": "number",
+          "optional": true,
+          "description": "Index shown at creation (default 0; the path's `d` is not changed until a morph starts)."
+        },
+        {
+          "name": "normalize",
+          "type": "\"exact\" | \"cubic\"",
+          "optional": true,
+          "description": "`\"exact\"` (default) or `\"cubic\"` (lines and quadratics promoted to cubics)."
+        },
+        {
+          "name": "onComplete",
+          "type": "(result: MotionResult) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "precision",
+          "type": "number",
+          "optional": true,
+          "description": "Output decimals 0–6 (default 3).",
+          "default": "3"
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "shapes",
+          "type": "readonly string[]",
+          "optional": false,
+          "description": "The shapes (path data), all compatible with each other."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "PathPoint",
+      "description": "",
+      "module": "svg/engine/geometry",
+      "kind": "interface",
+      "definition": "PathPoint",
+      "props": [
+        {
+          "name": "angle",
+          "type": "number",
+          "optional": false,
+          "description": "Tangent direction in degrees."
+        },
+        {
+          "name": "x",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "y",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ProgressControl",
+      "description": "",
+      "module": "core/progress-driver",
+      "kind": "interface",
+      "definition": "ProgressControl",
+      "props": [
+        {
+          "name": "cancel",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": "Idempotent: stops, releases and restores."
+        },
+        {
+          "name": "drive",
+          "type": "(source: ProgressSource) => () => void",
+          "optional": false,
+          "description": "Follow a 0–1 source instead of the own clock; returns the unsubscribe."
+        },
+        {
+          "name": "finish",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "finished",
+          "type": "Promise<MotionResult>",
+          "optional": false,
+          "description": "Promise of the current (or next) run."
+        },
+        {
+          "name": "pause",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "play",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "type": "number",
+          "optional": false,
+          "description": "Rendered progress 0–1."
+        },
+        {
+          "name": "reverse",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "seek",
+          "type": "(progress: number) => void",
+          "optional": false,
+          "description": "Render the effect at a time fraction 0–1 of its run (eased)."
+        },
+        {
+          "name": "state",
+          "type": "MotionState",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "track",
+          "type": "(options?: ProgressTrackOptions) => ProgressTrack",
+          "optional": false,
+          "description": "A value track for `createTimeline().add(…)`: the timeline clock drives this effect."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ProgressSource",
+      "description": "Any 0–1 progress source (the 011 `ScrollProgress` and motion values fit).",
+      "module": "core/progress-driver",
+      "kind": "interface",
+      "definition": "ProgressSource",
+      "props": [
+        {
+          "name": "get",
+          "type": "() => number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "subscribe",
+          "type": "(listener: (progress: number) => void) => () => void",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "SuccessCheck",
+      "description": "S10 — success checkmark (decorative by default; no role or live region is added).",
+      "module": "svg/react",
+      "kind": "component",
+      "signature": "(props: SuccessCheckProps): Element",
+      "props": "SuccessCheckProps",
+      "client": true
+    },
+    {
+      "name": "SuccessCheckProps",
+      "description": "",
+      "module": "svg/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "circle",
+          "type": "boolean",
+          "optional": true,
+          "description": "Draw the circle first (default true).",
+          "default": "true"
+        },
+        {
+          "name": "controlRef",
+          "type": "RefObject<ProgressControl | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–10000; default per effect)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onComplete",
+          "type": "(result: MotionResult) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "type": "ProgressSource",
+          "optional": true,
+          "description": "Drive from a 0–1 source instead of the own clock."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "size",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "optional": true,
+          "description": "Accessible title: omitted → decorative (`aria-hidden`); announce success in your own status text."
+        },
+        {
+          "name": "trigger",
+          "type": "ProgressTrigger",
+          "optional": true,
+          "description": "Default `\"visible\"` (once); ignored with `progress`.",
+          "default": "\"visible\""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "SvgDebugInfo",
+      "description": "",
+      "module": "svg/engine/debug",
+      "kind": "interface",
+      "definition": "SvgDebugInfo",
+      "props": [
+        {
+          "name": "attributeWrites",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "effects",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "filters",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "measures",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "morphs",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "SvgEffectOptions",
+      "description": "",
+      "module": "svg/engine/effect",
+      "kind": "type",
+      "props": [
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–10000; default per effect)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onComplete",
+          "type": "(result: MotionResult) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "type": "ProgressSource",
+          "optional": true,
+          "description": "Drive from a 0–1 source instead of the own clock."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "trigger",
+          "type": "ProgressTrigger",
+          "optional": true,
+          "description": "Default `\"visible\"` (once); ignored with `progress`.",
+          "default": "\"visible\""
+        }
+      ],
+      "inherits": [],
+      "definition": "ProgressEffectOptions"
+    },
+    {
+      "name": "SvgSupport",
+      "description": "",
+      "module": "svg/engine/debug",
+      "kind": "interface",
+      "definition": "SvgSupport",
+      "props": [
+        {
+          "name": "colorMix",
+          "type": "boolean",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "cssD",
+          "type": "boolean",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "mask",
+          "type": "boolean",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "offsetPath",
+          "type": "boolean",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "SvgTrigger",
+      "description": "",
+      "module": "svg/engine/effect",
+      "kind": "type",
+      "definition": "ProgressTrigger"
+    },
+    {
+      "name": "TurbulenceOptions",
+      "description": "",
+      "module": "svg/loops",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "amplitude",
+          "type": "number",
+          "optional": true,
+          "description": "Displacement in px 0–24 (default 6).",
+          "default": "6"
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "One cycle, ms."
+        },
+        {
+          "name": "frequency",
+          "type": "number",
+          "optional": true,
+          "description": "Base frequency 0.001–0.2 (default 0.02).",
+          "default": "0.02"
+        },
+        {
+          "name": "octaves",
+          "type": "number",
+          "optional": true,
+          "description": "Octaves 1–3 (default 1).",
+          "default": "1"
+        },
+        {
+          "name": "onComplete",
+          "type": "() => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "rate",
+          "type": "number",
+          "optional": true,
+          "description": "Filter updates per second 1–30 (default 20).",
+          "default": "20"
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "region",
+          "type": "number",
+          "optional": true,
+          "description": "Filter region padding 0–0.25 (default 0.1).",
+          "default": "0.1"
+        },
+        {
+          "name": "repeat",
+          "type": "number",
+          "optional": true,
+          "description": "Extra cycles (0–1000 or `Infinity`, explicit)."
+        },
+        {
+          "name": "speed",
+          "type": "number",
+          "optional": true,
+          "description": "Frequency oscillation, cycles per second 0–2 (default 0.5).",
+          "default": "0.5"
+        },
+        {
+          "name": "trigger",
+          "type": "\"visible\" | \"mount\" | \"manual\"",
+          "optional": true,
+          "description": "`visible`/`mount` start on creation (default); `manual` waits for `play()`."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "createChartDraw",
+      "description": "S06 — draw the consumer's chart lines; reveal points as the line passes them (no charting engine).",
+      "module": "svg/draw",
+      "kind": "function",
+      "signature": "(svg: Element, options: ChartDrawOptions): ProgressControl"
+    },
+    {
+      "name": "createCheckmark",
+      "description": "S10 — draw a success checkmark (circle, then check). Adds no role or live region.",
+      "module": "svg/draw",
+      "kind": "function",
+      "signature": "(svg: Element, options?: CheckmarkOptions | undefined): ProgressControl"
+    },
+    {
+      "name": "createDashFlow",
+      "description": "S09 — marching ants: dashes flowing along paths while visible.",
+      "module": "svg/loops",
+      "kind": "function",
+      "signature": "(paths: Element | Iterable<Element>, options?: DashFlowOptions | undefined): LoopEffectControl"
+    },
+    {
+      "name": "createGradientStops",
+      "description": "S05 — animate the colours, opacities and offsets of a gradient's stops.",
+      "module": "svg/loops",
+      "kind": "function",
+      "signature": "(gradient: Element, options: GradientStopsOptions): LoopEffectControl"
+    },
+    {
+      "name": "createIconMorph",
+      "description": "S04 — morph an icon path between named states.",
+      "module": "svg/morph",
+      "kind": "function",
+      "signature": "(path: Element, options: IconMorphOptions): IconMorphControl"
+    },
+    {
+      "name": "createLogoReveal",
+      "description": "",
+      "module": "svg/logo",
+      "kind": "function",
+      "signature": "(element: Element, options?: LogoRevealOptions | undefined): ProgressControl"
+    },
+    {
+      "name": "createMotionPath",
+      "description": "",
+      "module": "svg/motion-path",
+      "kind": "function",
+      "signature": "(element: Element, options: MotionPathOptions): MotionPathControl"
+    },
+    {
+      "name": "createPathDraw",
+      "description": "S01 — draw one or more SVG geometry elements.",
+      "module": "svg/draw",
+      "kind": "function",
+      "signature": "(paths: Element | Iterable<Element>, options?: PathDrawOptions | undefined): ProgressControl"
+    },
+    {
+      "name": "createPathMorph",
+      "description": "S02 — morph a `<path>` between compatible shapes.",
+      "module": "svg/morph",
+      "kind": "function",
+      "signature": "(path: Element, options: PathMorphOptions): PathMorphControl"
+    },
+    {
+      "name": "createTurbulence",
+      "description": "S07 — turbulence wobble through a package SVG filter (bounded; off under reduced motion).",
+      "module": "svg/loops",
+      "kind": "function",
+      "signature": "(element: Element, options?: TurbulenceOptions | undefined): LoopEffectControl"
+    },
+    {
+      "name": "getPathGeometry",
+      "description": "Geometry of a path (`d` string or parsed commands).",
+      "module": "svg/engine/geometry",
+      "kind": "function",
+      "signature": "(path: string | readonly PathCommand[]): PathGeometry"
+    },
+    {
+      "name": "getPathMorphCompatibility",
+      "description": "Whether two paths can be morphed under the policy (parse errors propagate).",
+      "module": "svg/engine/morph",
+      "kind": "function",
+      "signature": "(from: string, to: string, options?: MorphOptions | undefined): MorphCompatibility"
+    },
+    {
+      "name": "getSvgDebugInfo",
+      "description": "",
+      "module": "svg/engine/debug",
+      "kind": "function",
+      "signature": "(): SvgDebugInfo"
+    },
+    {
+      "name": "getSvgSupport",
+      "description": "",
+      "module": "svg/engine/debug",
+      "kind": "function",
+      "signature": "(): SvgSupport"
+    },
+    {
+      "name": "interpolatePath",
+      "description": "`t ↦ d` between two compatible paths; throws `NeshelAnimationsError` naming the first mismatch.",
+      "module": "svg/engine/morph",
+      "kind": "function",
+      "signature": "(from: string, to: string, options?: MorphOptions | undefined): (t: number) => string"
+    },
+    {
+      "name": "measurePath",
+      "description": "Length in user units: native `getTotalLength()` when available and finite, else the JS geometry.",
+      "module": "svg/engine/geometry",
+      "kind": "function",
+      "signature": "(element: Element): number"
+    },
+    {
+      "name": "menuCloseShapes",
+      "description": "A compatible menu ↔ close pair (24×24 viewBox, three strokes each; the middle bar becomes a diagonal).",
+      "module": "svg/morph",
+      "kind": "const",
+      "type": "Readonly<{ menu: \"M4 6L20 6M4 12L20 12M4 18L20 18\"; close: \"M6 6L18 18M6 6L18 18M6 18L18 6\"; }>"
+    },
+    {
+      "name": "parsePathData",
+      "description": "Parse path data into the exact normal form (contracts/svg-geometry.md §1).",
+      "module": "svg/engine/path-data",
+      "kind": "function",
+      "signature": "(d: string): PathCommand[]"
+    },
+    {
+      "name": "serializePathData",
+      "description": "Serialise commands (absolute) rounded to `precision` decimals (0–6, default 3).",
+      "module": "svg/engine/path-data",
+      "kind": "function",
+      "signature": "(commands: readonly PathCommand[], precision?: number | undefined): string"
+    },
+    {
+      "name": "useChartDraw",
+      "description": "S06",
+      "module": "svg/react",
+      "kind": "function",
+      "signature": "(ref: RefObject<Element | null>, options: ChartDrawOptions): RefObject<ProgressControl | null>"
+    },
+    {
+      "name": "useDashFlow",
+      "description": "S09",
+      "module": "svg/react",
+      "kind": "function",
+      "signature": "(ref: RefObject<Element | null>, options?: DashFlowOptions | undefined): RefObject<LoopEffectControl | null>"
+    },
+    {
+      "name": "useGradientStops",
+      "description": "S05",
+      "module": "svg/react",
+      "kind": "function",
+      "signature": "(ref: RefObject<Element | null>, options: GradientStopsOptions): RefObject<LoopEffectControl | null>"
+    },
+    {
+      "name": "useLogoReveal",
+      "description": "S08",
+      "module": "svg/react",
+      "kind": "function",
+      "signature": "(ref: RefObject<Element | null>, options?: LogoRevealOptions | undefined): RefObject<ProgressControl | null>"
+    },
+    {
+      "name": "useMotionPath",
+      "description": "S03",
+      "module": "svg/react",
+      "kind": "function",
+      "signature": "(ref: RefObject<Element | null>, options: MotionPathOptions): RefObject<MotionPathControl | null>"
+    },
+    {
+      "name": "usePathDraw",
+      "description": "S01",
+      "module": "svg/react",
+      "kind": "function",
+      "signature": "(ref: RefObject<Element | null>, options?: PathDrawOptions | undefined): RefObject<ProgressControl | null>"
+    },
+    {
+      "name": "usePathMorph",
+      "description": "S02",
+      "module": "svg/react",
+      "kind": "function",
+      "signature": "(ref: RefObject<Element | null>, options: PathMorphOptions): RefObject<PathMorphControl | null>"
+    },
+    {
+      "name": "useTurbulence",
+      "description": "S07",
+      "module": "svg/react",
+      "kind": "function",
+      "signature": "(ref: RefObject<Element | null>, options?: TurbulenceOptions | undefined): RefObject<LoopEffectControl | null>"
+    }
+  ]
+}

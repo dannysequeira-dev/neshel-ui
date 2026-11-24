@@ -1,0 +1,681 @@
+{
+  "package": "@neshel-ui/animations/page-transitions",
+  "exports": [
+    {
+      "name": "CrossDocumentOptions",
+      "description": "",
+      "module": "page-transitions/engine/mpa",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "effect",
+          "type": "PageEffect",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "DIRECTION_ATTRIBUTE",
+      "description": "",
+      "module": "page-transitions/engine/direction",
+      "kind": "const",
+      "type": "\"data-neshel-pt-direction\""
+    },
+    {
+      "name": "DirectionTracker",
+      "description": "",
+      "module": "page-transitions/engine/direction",
+      "kind": "interface",
+      "definition": "DirectionTracker",
+      "props": [
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "direction",
+          "type": "NavigationDirection",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "set",
+          "type": "(direction: NavigationDirection, type?: NavigationType) => void",
+          "optional": false,
+          "description": "Router-provided direction (when the Navigation API is unavailable or the router knows better)."
+        },
+        {
+          "name": "type",
+          "type": "NavigationType",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "EFFECT_ATTRIBUTE",
+      "description": "",
+      "module": "page-transitions/engine/controller",
+      "kind": "const",
+      "type": "\"data-neshel-pt-effect\""
+    },
+    {
+      "name": "NavigationDirection",
+      "description": "PT04 — Navigation direction (contracts/page-transitions.md §4, research R3).\n\nWith the Navigation API, every `navigate` event decides the direction from history entry indexes (never\nfrom URLs): push → forward, replace/reload → replace, traverse → back or forward by comparing\n`destination.index` with `currentEntry.index`. The tracker writes `data-neshel-pt-direction` on `<html>`\nsynchronously in the event — before any router updates the DOM — so CSS and React's own view transitions\nsee it. A `replace` to the current URL is router state bookkeeping and leaves the direction alone. Without the API, routers may call `set()`; otherwise the direction stays `\"unknown\"` and\ndirection-aware effects use their neutral variant. One shared listener, reference-counted.",
+      "module": "page-transitions/engine/direction",
+      "kind": "type",
+      "definition": "\"forward\" | \"back\" | \"replace\" | \"unknown\""
+    },
+    {
+      "name": "NavigationType",
+      "description": "",
+      "module": "page-transitions/engine/direction",
+      "kind": "type",
+      "definition": "\"push\" | \"replace\" | \"traverse\" | \"reload\" | \"unknown\""
+    },
+    {
+      "name": "PAGE_EFFECTS",
+      "description": "",
+      "module": "page-transitions/engine/controller",
+      "kind": "const",
+      "type": "readonly PageEffect[]"
+    },
+    {
+      "name": "PageEffect",
+      "description": "",
+      "module": "page-transitions/engine/controller",
+      "kind": "type",
+      "definition": "\"fade\" | \"slide\" | \"scale\" | \"wipe\" | \"none\""
+    },
+    {
+      "name": "PageTransition",
+      "description": "Boundary around route content: React `<ViewTransition>` with `neshel-pt-<effect>` (PT01, PT03–PT06).",
+      "module": "page-transitions/react",
+      "kind": "component",
+      "signature": "({ effect, asChild, children, ...rest }: PageTransitionProps): Element",
+      "props": "PageTransitionProps",
+      "client": true
+    },
+    {
+      "name": "PageTransitionControl",
+      "description": "",
+      "module": "page-transitions/engine/controller",
+      "kind": "interface",
+      "definition": "PageTransition",
+      "props": [
+        {
+          "name": "direction",
+          "type": "NavigationDirection",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "finished",
+          "type": "Promise<PageTransitionResult>",
+          "optional": false,
+          "description": "Resolves when everything is cleaned up; rejects only when the update failed."
+        },
+        {
+          "name": "native",
+          "type": "boolean",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "skip",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "state",
+          "type": "PageTransitionState",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "updated",
+          "type": "Promise<void>",
+          "optional": false,
+          "description": "Resolves when the update ran (rejects with its error)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "PageTransitionOptions",
+      "description": "",
+      "module": "page-transitions/engine/controller",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "direction",
+          "type": "NavigationDirection | \"auto\"",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "effect",
+          "type": "PageEffect",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "fallback",
+          "type": "\"none\" | \"flip\"",
+          "optional": true,
+          "description": "Shared elements without the API: FLIP from the old box (default `\"none\"`).",
+          "default": "\"none\""
+        },
+        {
+          "name": "maxWait",
+          "type": "number",
+          "optional": true,
+          "description": "ms the browser may hold rendering for the update (0–10000, default 1500)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "scope",
+          "type": "Element",
+          "optional": true,
+          "description": "Element whose content changes (default: the document root)."
+        },
+        {
+          "name": "types",
+          "type": "readonly string[]",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "PageTransitionProps",
+      "description": "",
+      "module": "page-transitions/react",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "asChild",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "effect",
+          "type": "PageEffect",
+          "optional": true,
+          "description": "Effect of the route content (default `\"fade\"`).",
+          "default": "\"fade\""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "PageTransitionResult",
+      "description": "",
+      "module": "page-transitions/engine/controller",
+      "kind": "interface",
+      "definition": "PageTransitionResult",
+      "props": [
+        {
+          "name": "direction",
+          "type": "NavigationDirection",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "native",
+          "type": "boolean",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "status",
+          "type": "\"completed\" | \"skipped\" | \"interrupted\"",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "PageTransitionState",
+      "description": "",
+      "module": "page-transitions/engine/controller",
+      "kind": "type",
+      "definition": "\"pending\" | \"updating\" | \"animating\" | \"completed\" | \"skipped\" | \"interrupted\" | \"failed\""
+    },
+    {
+      "name": "PersistentElement",
+      "description": "PT08: an element that stays in place (no motion, no cross-fade) while the page changes.",
+      "module": "page-transitions/react",
+      "kind": "component",
+      "signature": "(props: NamedProps): Element",
+      "props": "NamedProps",
+      "client": true
+    },
+    {
+      "name": "RouteProgress",
+      "description": "PT07: indeterminate, accessible navigation progress (never a fake percentage).",
+      "module": "page-transitions/react",
+      "kind": "component",
+      "signature": "({ pending, failed, navigation, onTimeout, delay, minVisible, timeout, announce, labels, className, ref, ...rest }: RouteProgressProps): Element",
+      "props": "RouteProgressProps",
+      "client": true
+    },
+    {
+      "name": "RouteProgressControl",
+      "description": "",
+      "module": "page-transitions/engine/progress",
+      "kind": "interface",
+      "definition": "RouteProgress",
+      "props": [
+        {
+          "name": "cancel",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "done",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "fail",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "start",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "state",
+          "type": "RouteProgressState",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "RouteProgressOptions",
+      "description": "",
+      "module": "page-transitions/engine/progress",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "announce",
+          "type": "boolean",
+          "optional": true,
+          "description": "Announce completion/failure once in a status region (default false).",
+          "default": "false"
+        },
+        {
+          "name": "delay",
+          "type": "number",
+          "optional": true,
+          "description": "ms before the bar appears (0–2000, default 120)."
+        },
+        {
+          "name": "labels",
+          "type": "Partial<Record<\"loading\" | \"loaded\" | \"failed\", string>>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "minVisible",
+          "type": "number",
+          "optional": true,
+          "description": "ms the completed/failed state stays visible (0–3000, default 300)."
+        },
+        {
+          "name": "onTimeout",
+          "type": "() => void",
+          "optional": true,
+          "description": "Called when the watchdog cancels a navigation that never settled (the owner should clear its state)."
+        },
+        {
+          "name": "timeout",
+          "type": "number",
+          "optional": true,
+          "description": "ms after which a pending navigation is cancelled (1000–120000, default 15000)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "RouteProgressProps",
+      "description": "",
+      "module": "page-transitions/react",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "announce",
+          "type": "boolean",
+          "optional": true,
+          "description": "Announce completion/failure once in a status region (default false).",
+          "default": "false"
+        },
+        {
+          "name": "delay",
+          "type": "number",
+          "optional": true,
+          "description": "ms before the bar appears (0–2000, default 120)."
+        },
+        {
+          "name": "failed",
+          "type": "boolean",
+          "optional": true,
+          "description": "The last navigation failed (shown when `pending` turns false)."
+        },
+        {
+          "name": "labels",
+          "type": "Partial<Record<\"loading\" | \"loaded\" | \"failed\", string>>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "minVisible",
+          "type": "number",
+          "optional": true,
+          "description": "ms the completed/failed state stays visible (0–3000, default 300)."
+        },
+        {
+          "name": "navigation",
+          "type": "string | number",
+          "optional": true,
+          "description": "Identity of the current navigation: a new value while still pending restarts the indicator."
+        },
+        {
+          "name": "onTimeout",
+          "type": "() => void",
+          "optional": true,
+          "description": "Called when the watchdog cancels a navigation that never settled (the owner should clear its state)."
+        },
+        {
+          "name": "pending",
+          "type": "boolean",
+          "optional": false,
+          "description": "The router's real pending state."
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "timeout",
+          "type": "number",
+          "optional": true,
+          "description": "ms after which a pending navigation is cancelled (1000–120000, default 15000)."
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "RouteProgressState",
+      "description": "",
+      "module": "page-transitions/engine/progress",
+      "kind": "type",
+      "definition": "\"idle\" | \"pending\" | \"complete\" | \"failed\""
+    },
+    {
+      "name": "RouteTransitionInput",
+      "description": "",
+      "module": "page-transitions/react",
+      "kind": "interface",
+      "definition": "RouteTransitionInput",
+      "props": [
+        {
+          "name": "failed",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "focus",
+          "type": "\"auto\" | \"none\"",
+          "optional": true,
+          "description": "After a committed push/replace, focus `[data-neshel-route-focus]` (default `\"auto\"`).",
+          "default": "\"auto\""
+        },
+        {
+          "name": "location",
+          "type": "string",
+          "optional": false,
+          "description": "Committed location (pathname + search, or a router key)."
+        },
+        {
+          "name": "pending",
+          "type": "boolean",
+          "optional": true,
+          "description": "The router's real navigation state."
+        },
+        {
+          "name": "type",
+          "type": "NavigationType",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "SharedElement",
+      "description": "PT02: an element that morphs into the element with the same name on the next route.",
+      "module": "page-transitions/react",
+      "kind": "component",
+      "signature": "(props: NamedProps): Element",
+      "props": "NamedProps",
+      "client": true
+    },
+    {
+      "name": "StartOptions",
+      "description": "",
+      "module": "page-transitions/react",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "direction",
+          "type": "NavigationDirection | \"auto\"",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "effect",
+          "type": "PageEffect",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "fallback",
+          "type": "\"none\" | \"flip\"",
+          "optional": true,
+          "description": "Shared elements without the API: FLIP from the old box (default `\"none\"`).",
+          "default": "\"none\""
+        },
+        {
+          "name": "maxWait",
+          "type": "number",
+          "optional": true,
+          "description": "ms the browser may hold rendering for the update (0–10000, default 1500)."
+        },
+        {
+          "name": "native",
+          "type": "boolean",
+          "optional": true,
+          "description": "Force the framework-free controller even when React manages view transitions."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "scope",
+          "type": "Element",
+          "optional": true,
+          "description": "Element whose content changes (default: the document root)."
+        },
+        {
+          "name": "types",
+          "type": "readonly string[]",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ViewTransitionSupport",
+      "description": "View Transition capability detection (Phase 013; contracts/page-transitions.md §2, research R1–R3).\nBehavioural checks per capability, never user-agent sniffing; all `false` on the server.",
+      "module": "page-transitions/engine/support",
+      "kind": "interface",
+      "definition": "ViewTransitionSupport",
+      "props": [
+        {
+          "name": "classes",
+          "type": "boolean",
+          "optional": false,
+          "description": "`view-transition-class`."
+        },
+        {
+          "name": "crossDocument",
+          "type": "boolean",
+          "optional": false,
+          "description": "Cross-document transitions (`@view-transition`, `pagereveal`)."
+        },
+        {
+          "name": "navigationApi",
+          "type": "boolean",
+          "optional": false,
+          "description": "Navigation API with history entry indexes (direction detection)."
+        },
+        {
+          "name": "sameDocument",
+          "type": "boolean",
+          "optional": false,
+          "description": "`document.startViewTransition` (same-document transitions)."
+        },
+        {
+          "name": "types",
+          "type": "boolean",
+          "optional": false,
+          "description": "Transition types (`:active-view-transition-type()`, `{ types }`)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "createRouteProgress",
+      "description": "",
+      "module": "page-transitions/engine/progress",
+      "kind": "function",
+      "signature": "(element: HTMLElement, options?: RouteProgressOptions | undefined): RouteProgress"
+    },
+    {
+      "name": "enableCrossDocumentTransitions",
+      "description": "Returns the disposer; a no-op where cross-document transitions are unsupported.",
+      "module": "page-transitions/engine/mpa",
+      "kind": "function",
+      "signature": "(options?: CrossDocumentOptions | undefined): () => void"
+    },
+    {
+      "name": "getReactViewTransition",
+      "description": "React's `ViewTransition` when this React exports it (19.3+), else `undefined`.",
+      "module": "page-transitions/react",
+      "kind": "function",
+      "signature": "(): ViewTransitionComponent | undefined"
+    },
+    {
+      "name": "getViewTransitionSupport",
+      "description": "Current capabilities (computed on every call: cheap, and test/polyfill friendly).",
+      "module": "page-transitions/engine/support",
+      "kind": "function",
+      "signature": "(): ViewTransitionSupport"
+    },
+    {
+      "name": "registerSharedElement",
+      "description": "Register an element under a shared name; returns the unregister function.",
+      "module": "page-transitions/engine/names",
+      "kind": "function",
+      "signature": "(element: Element, name: string, options?: { persist?: boolean | undefined; } | undefined): () => void"
+    },
+    {
+      "name": "startPageTransition",
+      "description": "",
+      "module": "page-transitions/engine/controller",
+      "kind": "function",
+      "signature": "(update: () => void | Promise<void>, options?: PageTransitionOptions | undefined): PageTransition"
+    },
+    {
+      "name": "trackNavigationDirection",
+      "description": "",
+      "module": "page-transitions/engine/direction",
+      "kind": "function",
+      "signature": "(options?: { onChange?(direction: NavigationDirection, type: NavigationType): void; } | undefined): DirectionTracker"
+    },
+    {
+      "name": "useNavigationDirection",
+      "description": "PT04: the last navigation's direction (state changes only on navigation).",
+      "module": "page-transitions/react",
+      "kind": "function",
+      "signature": "(): { direction: NavigationDirection; type: NavigationType; }"
+    },
+    {
+      "name": "usePageTransition",
+      "description": "Router-free page transitions: `start(update, options)` runs `update` (a state change) inside a React\nTransition with transition types when React manages view transitions, so React captures the real commit;\notherwise inside `startPageTransition`, whose update resolves at the next commit of the component that\ncalled this hook (its layout effect) — or after `maxWait`, when the browser stops holding rendering.",
+      "module": "page-transitions/react",
+      "kind": "function",
+      "signature": "(): { start(update: () => void, options?: StartOptions | undefined): void; }"
+    },
+    {
+      "name": "useRouteTransition",
+      "description": "Router-independent contract (PT10): coordinates with the COMMITTED location (a layout effect after React\ncommitted the new route, never a click), moves focus only after a push/replace commit to an element the\napplication marked, and reports the direction. Never intercepts links or history events.",
+      "module": "page-transitions/react",
+      "kind": "function",
+      "signature": "({ location, type, focus }: RouteTransitionInput): { direction: NavigationDirection; }"
+    }
+  ]
+}

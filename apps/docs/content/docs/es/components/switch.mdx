@@ -7,6 +7,8 @@ exports: [Switch, SwitchProps]
 
 <ComponentKind package="components" name="Switch" />
 
+<Unreleased />
+
 ## Propósito
 
 `Switch` activa o desactiva un ajuste. Úsalo para ajustes binarios inmediatos; usa una casilla de
@@ -30,7 +32,15 @@ import { Label, Switch } from "@neshel-ui/components";
 
 `checked` con `onCheckedChange`, o `defaultChecked`. En un formulario envía `name=value` (`value` es
 `"on"` por defecto) solo mientras está activado; `required` impide el envío mientras está
-desactivado; al restablecer el formulario vuelve a `defaultChecked`.
+desactivado; al restablecer el formulario vuelve a `defaultChecked` y, como los campos nativos, no llama
+a `onCheckedChange`.
+
+<Preview demo="components/switch-controlled" />
+
+## Tamaños y estados
+
+`uiSize` es `sm`, `md` (predeterminado) o `lg`, como los demás campos. `readOnly` conserva el valor y el
+foco; `disabled` lo quita del orden de tabulación y de los datos del formulario.
 
 ## Accesibilidad
 
@@ -46,3 +56,10 @@ desactivado; al restablecer el formulario vuelve a `defaultChecked`.
 | --------------- | ------------- |
 | Espacio / Enter | Alterna       |
 | Tab             | Mueve el foco |
+
+## Errores comunes
+
+- Un interruptor sin etiqueta, o con una etiqueta que cambia según el estado: mantén el nombre y deja que
+  `aria-checked` comunique el estado.
+- Un interruptor que solo surte efecto al pulsar Guardar: usa una casilla de verificación.
+- Esperar `false` en los datos del formulario: apagado no aparece, como una casilla sin marcar.

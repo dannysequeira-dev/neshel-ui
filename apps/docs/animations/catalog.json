@@ -1,0 +1,2177 @@
+{
+  "$comment": "Documentation catalogue of @neshel-ui/animations (feature 018). Ids, reduced-motion behaviour and count must match specs/008-animations/contracts/catalog.md; exports, options, stylesheets and definitions must match the built package (pnpm check:docs, check \"catalogue\").",
+  "families": [
+    {
+      "prefix": "E",
+      "slug": "entrance",
+      "name": {
+        "en": "Entrance & Reveal",
+        "es": "Entrada y revelado"
+      }
+    },
+    {
+      "prefix": "H",
+      "slug": "hover",
+      "name": {
+        "en": "Hover & Pointer",
+        "es": "Hover y puntero"
+      }
+    },
+    {
+      "prefix": "P",
+      "slug": "press",
+      "name": {
+        "en": "Press & Microinteractions",
+        "es": "Pulsación y microinteracciones"
+      }
+    },
+    {
+      "prefix": "G",
+      "slug": "gestures",
+      "name": {
+        "en": "Physics & Gestures",
+        "es": "Física y gestos"
+      }
+    },
+    {
+      "prefix": "ST",
+      "slug": "scroll-triggers",
+      "name": {
+        "en": "Scroll Triggers",
+        "es": "Activadores de scroll"
+      }
+    },
+    {
+      "prefix": "SP",
+      "slug": "scroll-parallax",
+      "name": {
+        "en": "Scroll & Parallax",
+        "es": "Scroll y parallax"
+      }
+    },
+    {
+      "prefix": "C",
+      "slug": "cinematic",
+      "name": {
+        "en": "Cinematic & Scenes",
+        "es": "Cine y escenas"
+      }
+    },
+    {
+      "prefix": "PT",
+      "slug": "page-transitions",
+      "name": {
+        "en": "Page Transitions",
+        "es": "Transiciones de página"
+      }
+    },
+    {
+      "prefix": "L",
+      "slug": "layout",
+      "name": {
+        "en": "Layout Animations",
+        "es": "Animaciones de layout"
+      }
+    },
+    {
+      "prefix": "T",
+      "slug": "text",
+      "name": {
+        "en": "Typography & Text",
+        "es": "Tipografía y texto"
+      }
+    },
+    {
+      "prefix": "S",
+      "slug": "svg",
+      "name": {
+        "en": "SVG & Paths",
+        "es": "SVG y rutas"
+      }
+    },
+    {
+      "prefix": "M",
+      "slug": "media",
+      "name": {
+        "en": "Images & Media",
+        "es": "Imágenes y medios"
+      }
+    },
+    {
+      "prefix": "B",
+      "slug": "ambient",
+      "name": {
+        "en": "Background & Ambient",
+        "es": "Fondo y ambiente"
+      }
+    },
+    {
+      "prefix": "F",
+      "slug": "feedback",
+      "name": {
+        "en": "Loading & Feedback",
+        "es": "Carga y respuesta"
+      }
+    },
+    {
+      "prefix": "D",
+      "slug": "advanced",
+      "name": {
+        "en": "Advanced 3D & Distortion",
+        "es": "3D avanzado y distorsión"
+      }
+    }
+  ],
+  "effects": [
+    {
+      "id": "E01",
+      "name": {
+        "en": "Fade in",
+        "es": "Aparición gradual"
+      },
+      "entry": "entrance",
+      "api": ["fadeIn", "Reveal"],
+      "options": "FadeInOptions",
+      "definition": "fadeIn",
+      "cost": "frame",
+      "reduced": "instant"
+    },
+    {
+      "id": "E02",
+      "name": {
+        "en": "Fade and slide",
+        "es": "Aparición con desplazamiento"
+      },
+      "entry": "entrance",
+      "api": ["fadeSlide", "fadeUp", "fadeDown", "fadeLeft", "fadeRight", "Reveal"],
+      "options": "FadeSlideOptions",
+      "definition": "fadeSlide",
+      "cost": "frame",
+      "reduced": "fade"
+    },
+    {
+      "id": "E03",
+      "name": {
+        "en": "Scale in",
+        "es": "Entrada con escala"
+      },
+      "entry": "entrance",
+      "api": ["scaleIn", "Reveal"],
+      "options": "ScaleInOptions",
+      "definition": "scaleIn",
+      "cost": "frame",
+      "reduced": "fade"
+    },
+    {
+      "id": "E04",
+      "name": {
+        "en": "Zoom in",
+        "es": "Entrada con zoom"
+      },
+      "entry": "entrance",
+      "api": ["zoomIn", "Reveal"],
+      "options": "ZoomInOptions",
+      "definition": "zoomIn",
+      "cost": "frame",
+      "reduced": "fade"
+    },
+    {
+      "id": "E05",
+      "name": {
+        "en": "Blur in",
+        "es": "Entrada con desenfoque"
+      },
+      "entry": "entrance",
+      "api": ["blurIn", "Reveal"],
+      "options": "BlurInOptions",
+      "definition": "blurIn",
+      "cost": "paint",
+      "reduced": "fade"
+    },
+    {
+      "id": "E06",
+      "name": {
+        "en": "Clip reveal",
+        "es": "Revelado por recorte"
+      },
+      "entry": "entrance",
+      "api": ["clipReveal", "clipCircle", "Reveal"],
+      "options": "ClipRevealOptions",
+      "definition": "clipReveal",
+      "cost": "paint",
+      "reduced": "instant"
+    },
+    {
+      "id": "E07",
+      "name": {
+        "en": "Gradient-mask wipe",
+        "es": "Barrido con máscara degradada"
+      },
+      "entry": "entrance",
+      "api": ["maskWipe", "Reveal"],
+      "options": "MaskWipeOptions",
+      "definition": "maskWipe",
+      "cost": "paint",
+      "reduced": "instant"
+    },
+    {
+      "id": "E08",
+      "name": {
+        "en": "Rotate in",
+        "es": "Entrada con rotación"
+      },
+      "entry": "entrance",
+      "api": ["rotateIn", "Reveal"],
+      "options": "RotateInOptions",
+      "definition": "rotateIn",
+      "cost": "frame",
+      "reduced": "fade"
+    },
+    {
+      "id": "E09",
+      "name": {
+        "en": "Flip in",
+        "es": "Entrada con giro 3D"
+      },
+      "entry": "entrance",
+      "api": ["flipIn", "flipX", "flipY", "Reveal"],
+      "options": "FlipInOptions",
+      "definition": "flipIn",
+      "cost": "frame",
+      "reduced": "fade"
+    },
+    {
+      "id": "E10",
+      "name": {
+        "en": "Staggered children",
+        "es": "Hijos escalonados"
+      },
+      "entry": "entrance",
+      "api": ["stagger", "Stagger"],
+      "options": "StaggerOptions",
+      "definition": "stagger",
+      "cost": "frame",
+      "reduced": "fade"
+    },
+    {
+      "id": "E11",
+      "name": {
+        "en": "Spring entrance",
+        "es": "Entrada con resorte"
+      },
+      "entry": "entrance",
+      "api": ["springIn", "Reveal"],
+      "options": "SpringInOptions",
+      "definition": "springIn",
+      "cost": "frame",
+      "reduced": "fade"
+    },
+    {
+      "id": "H01",
+      "name": {
+        "en": "Lift",
+        "es": "Elevación"
+      },
+      "entry": "hover",
+      "api": ["lift", "Hover"],
+      "options": "LiftOptions",
+      "css": "hover.css",
+      "definition": "lift",
+      "cost": "frame",
+      "reduced": "static"
+    },
+    {
+      "id": "H02",
+      "name": {
+        "en": "Glow",
+        "es": "Resplandor"
+      },
+      "entry": "hover",
+      "api": ["glow", "Hover"],
+      "options": "GlowOptions",
+      "css": "hover.css",
+      "definition": "glow",
+      "cost": "paint",
+      "reduced": "static"
+    },
+    {
+      "id": "H03",
+      "name": {
+        "en": "Tilt 3D",
+        "es": "Inclinación 3D"
+      },
+      "entry": "hover",
+      "api": ["Tilt3D", "useTilt3D", "createTilt3D", "tilt3D"],
+      "options": "Tilt3DOptions",
+      "css": "hover.css",
+      "definition": "tilt3D",
+      "cost": "frame",
+      "reduced": "off"
+    },
+    {
+      "id": "H04",
+      "name": {
+        "en": "Magnetic pull",
+        "es": "Atracción magnética"
+      },
+      "entry": "hover",
+      "api": ["magnetic", "Hover"],
+      "options": "MagneticOptions",
+      "definition": "magnetic",
+      "cost": "frame",
+      "reduced": "off"
+    },
+    {
+      "id": "H05",
+      "name": {
+        "en": "Spotlight",
+        "es": "Foco de luz"
+      },
+      "entry": "hover",
+      "api": ["spotlight", "Hover"],
+      "options": "SpotlightOptions",
+      "css": "hover.css",
+      "definition": "spotlight",
+      "cost": "paint",
+      "reduced": "static"
+    },
+    {
+      "id": "H06",
+      "name": {
+        "en": "Border sweep",
+        "es": "Barrido de borde"
+      },
+      "entry": "hover",
+      "api": ["borderSweep", "Hover"],
+      "options": "BorderSweepOptions",
+      "css": "hover.css",
+      "definition": "borderSweep",
+      "cost": "layer",
+      "reduced": "static"
+    },
+    {
+      "id": "H07",
+      "name": {
+        "en": "Underline grow",
+        "es": "Subrayado creciente"
+      },
+      "entry": "hover",
+      "api": ["underline", "Hover"],
+      "options": "UnderlineOptions",
+      "css": "hover.css",
+      "definition": "underline",
+      "cost": "layer",
+      "reduced": "instant"
+    },
+    {
+      "id": "H08",
+      "name": {
+        "en": "Media zoom",
+        "es": "Zoom de imagen"
+      },
+      "entry": "hover",
+      "api": ["mediaZoom", "Hover"],
+      "options": "MediaZoomOptions",
+      "css": "hover.css",
+      "definition": "mediaZoom",
+      "cost": "frame",
+      "reduced": "static"
+    },
+    {
+      "id": "H09",
+      "name": {
+        "en": "Pointer parallax",
+        "es": "Parallax del puntero"
+      },
+      "entry": "hover",
+      "api": ["parallax", "Hover"],
+      "options": "ParallaxOptions",
+      "definition": "parallax",
+      "cost": "frame",
+      "reduced": "off"
+    },
+    {
+      "id": "H10",
+      "name": {
+        "en": "Shine sweep",
+        "es": "Barrido de brillo"
+      },
+      "entry": "hover",
+      "api": ["shine", "Hover"],
+      "options": "ShineOptions",
+      "css": "hover.css",
+      "definition": "shine",
+      "cost": "layer",
+      "reduced": "static"
+    },
+    {
+      "id": "H11",
+      "name": {
+        "en": "Cursor follower",
+        "es": "Seguidor del cursor"
+      },
+      "entry": "hover",
+      "api": ["cursorFollower", "CursorFollower"],
+      "options": "CursorFollowerOptions",
+      "css": "hover.css",
+      "definition": "cursorFollower",
+      "cost": "frame",
+      "reduced": "off"
+    },
+    {
+      "id": "P01",
+      "name": {
+        "en": "Press scale",
+        "es": "Escala al pulsar"
+      },
+      "entry": "press",
+      "api": ["pressScale", "Press"],
+      "options": "PressScaleOptions",
+      "definition": "pressScale",
+      "cost": "frame",
+      "reduced": "reduced"
+    },
+    {
+      "id": "P02",
+      "name": {
+        "en": "Ripple",
+        "es": "Onda al pulsar"
+      },
+      "entry": "press",
+      "api": ["ripple", "Press"],
+      "options": "RippleOptions",
+      "css": "press.css",
+      "definition": "ripple",
+      "cost": "waapi",
+      "reduced": "fade"
+    },
+    {
+      "id": "P03",
+      "name": {
+        "en": "Tap bounce",
+        "es": "Rebote al tocar"
+      },
+      "entry": "press",
+      "api": ["tapBounce", "Press"],
+      "options": "TapBounceOptions",
+      "definition": "tapBounce",
+      "cost": "frame",
+      "reduced": "off"
+    },
+    {
+      "id": "P04",
+      "name": {
+        "en": "Toggle morph",
+        "es": "Transformación de interruptor"
+      },
+      "entry": "press",
+      "api": ["ToggleMorph", "toggleMorph"],
+      "options": "ToggleMorphOptions",
+      "css": "press.css",
+      "definition": "toggleMorph",
+      "cost": "layer",
+      "reduced": "instant"
+    },
+    {
+      "id": "P05",
+      "name": {
+        "en": "Checkbox draw",
+        "es": "Trazo de casilla"
+      },
+      "entry": "press",
+      "api": ["CheckboxDraw", "checkboxDraw"],
+      "options": "CheckboxDrawOptions",
+      "css": "press.css",
+      "definition": "checkboxDraw",
+      "cost": "layer",
+      "reduced": "instant"
+    },
+    {
+      "id": "P06",
+      "name": {
+        "en": "Burst",
+        "es": "Estallido"
+      },
+      "entry": "press",
+      "api": ["burst", "Press"],
+      "options": "BurstOptions",
+      "css": "press.css",
+      "definition": "burst",
+      "cost": "waapi",
+      "reduced": "static"
+    },
+    {
+      "id": "P07",
+      "name": {
+        "en": "Shake",
+        "es": "Sacudida"
+      },
+      "entry": "press",
+      "api": ["shake", "Press"],
+      "options": "ShakeOptions",
+      "definition": "shake",
+      "cost": "frame",
+      "reduced": "reduced"
+    },
+    {
+      "id": "P08",
+      "name": {
+        "en": "Nudge",
+        "es": "Llamada de atención"
+      },
+      "entry": "press",
+      "api": ["nudge", "Press"],
+      "options": "NudgeOptions",
+      "definition": "nudge",
+      "cost": "frame",
+      "reduced": "off"
+    },
+    {
+      "id": "P09",
+      "name": {
+        "en": "Number tick",
+        "es": "Contador numérico"
+      },
+      "entry": "press",
+      "api": ["NumberTick", "numberTick"],
+      "options": "NumberTickOptions",
+      "definition": "numberTick",
+      "cost": "text",
+      "reduced": "instant"
+    },
+    {
+      "id": "P10",
+      "name": {
+        "en": "Content swap",
+        "es": "Intercambio de contenido"
+      },
+      "entry": "press",
+      "api": ["ContentSwap", "contentSwap"],
+      "options": "ContentSwapOptions",
+      "css": "press.css",
+      "definition": "contentSwap",
+      "cost": "layer",
+      "reduced": "fade"
+    },
+    {
+      "id": "P11",
+      "name": {
+        "en": "Long press",
+        "es": "Pulsación prolongada"
+      },
+      "entry": "press",
+      "api": ["LongPress", "longPress"],
+      "options": "LongPressOptions",
+      "css": "press.css",
+      "definition": "longPress",
+      "cost": "waapi",
+      "reduced": "reduced"
+    },
+    {
+      "id": "G01",
+      "name": {
+        "en": "Drag with inertia",
+        "es": "Arrastre con inercia"
+      },
+      "entry": "gestures",
+      "api": ["drag", "Gesture"],
+      "options": "DragOptions",
+      "definition": "drag",
+      "cost": "frame",
+      "reduced": "instant"
+    },
+    {
+      "id": "G02",
+      "name": {
+        "en": "Drag and snap",
+        "es": "Arrastre con anclajes"
+      },
+      "entry": "gestures",
+      "api": ["dragSnap", "Gesture"],
+      "options": "DragSnapOptions",
+      "definition": "dragSnap",
+      "cost": "frame",
+      "reduced": "instant"
+    },
+    {
+      "id": "G03",
+      "name": {
+        "en": "Swipe to dismiss",
+        "es": "Deslizar para descartar"
+      },
+      "entry": "gestures",
+      "api": ["SwipeDismiss", "swipeDismiss"],
+      "options": "SwipeDismissOptions",
+      "css": "gestures.css",
+      "definition": "swipeDismiss",
+      "cost": "frame",
+      "reduced": "instant"
+    },
+    {
+      "id": "G04",
+      "name": {
+        "en": "Pull to refresh",
+        "es": "Tirar para actualizar"
+      },
+      "entry": "gestures",
+      "api": ["PullToRefresh", "pullToRefresh"],
+      "options": "PullToRefreshOptions",
+      "css": "gestures.css",
+      "definition": "pullToRefresh",
+      "cost": "frame",
+      "reduced": "reduced"
+    },
+    {
+      "id": "G05",
+      "name": {
+        "en": "Spring follow",
+        "es": "Seguimiento con resorte"
+      },
+      "entry": "gestures",
+      "api": ["springFollow", "useSpringFollow", "Gesture"],
+      "options": "SpringFollowOptions",
+      "definition": "springFollow",
+      "cost": "frame",
+      "reduced": "instant"
+    },
+    {
+      "id": "G06",
+      "name": {
+        "en": "Elastic edge",
+        "es": "Borde elástico"
+      },
+      "entry": "gestures",
+      "api": ["ElasticScroll", "elasticEdge"],
+      "options": "ElasticEdgeOptions",
+      "css": "gestures.css",
+      "definition": "elasticEdge",
+      "cost": "frame",
+      "reduced": "off"
+    },
+    {
+      "id": "G07",
+      "name": {
+        "en": "Fling",
+        "es": "Lanzamiento"
+      },
+      "entry": "gestures",
+      "api": ["fling", "Gesture"],
+      "options": "FlingOptions",
+      "definition": "fling",
+      "cost": "frame",
+      "reduced": "instant"
+    },
+    {
+      "id": "G08",
+      "name": {
+        "en": "Pinch zoom",
+        "es": "Zoom con pellizco"
+      },
+      "entry": "gestures",
+      "api": ["PinchZoom", "pinchZoom"],
+      "options": "PinchZoomOptions",
+      "css": "gestures.css",
+      "definition": "pinchZoom",
+      "cost": "frame",
+      "reduced": "instant"
+    },
+    {
+      "id": "G09",
+      "name": {
+        "en": "Rotate gesture",
+        "es": "Gesto de rotación"
+      },
+      "entry": "gestures",
+      "api": ["rotateGesture", "Gesture"],
+      "options": "RotateGestureOptions",
+      "definition": "rotateGesture",
+      "cost": "frame",
+      "reduced": "instant"
+    },
+    {
+      "id": "G10",
+      "name": {
+        "en": "Drag to reorder",
+        "es": "Arrastrar para reordenar"
+      },
+      "entry": "gestures",
+      "api": ["Reorder", "ReorderItem", "ReorderHandle", "useReorderItem", "reorder"],
+      "options": "ReorderOptions",
+      "css": "gestures.css",
+      "definition": "reorder",
+      "cost": "frame",
+      "reduced": "instant"
+    },
+    {
+      "id": "G11",
+      "name": {
+        "en": "Squash and stretch",
+        "es": "Aplastar y estirar"
+      },
+      "entry": "gestures",
+      "api": ["squashStretch", "Gesture"],
+      "options": "SquashStretchOptions",
+      "definition": "squashStretch",
+      "cost": "frame",
+      "reduced": "off"
+    },
+    {
+      "id": "ST01",
+      "name": {
+        "en": "Reveal on enter",
+        "es": "Revelar al entrar"
+      },
+      "entry": "scroll",
+      "api": ["RevealOnScroll", "revealOnEnter"],
+      "options": "RevealOnEnterOptions",
+      "definition": "revealOnEnter",
+      "cost": "frame",
+      "reduced": "instant"
+    },
+    {
+      "id": "ST02",
+      "name": {
+        "en": "Stagger on enter",
+        "es": "Escalonado al entrar"
+      },
+      "entry": "scroll",
+      "api": ["StaggerOnScroll", "staggerOnEnter"],
+      "options": "RevealOnEnterOptions",
+      "definition": "staggerOnEnter",
+      "cost": "frame",
+      "reduced": "instant"
+    },
+    {
+      "id": "ST03",
+      "name": {
+        "en": "Once, repeat, reverse",
+        "es": "Una vez, repetir, revertir"
+      },
+      "entry": "scroll",
+      "api": ["RevealOnScroll", "createScrollTrigger"],
+      "options": "ScrollTriggerOptions",
+      "cost": "frame",
+      "reduced": "instant"
+    },
+    {
+      "id": "ST04",
+      "name": {
+        "en": "Enter and leave callbacks",
+        "es": "Callbacks de entrada y salida"
+      },
+      "entry": "scroll",
+      "api": ["useInView", "useScrollTrigger", "createScrollTrigger"],
+      "options": "ScrollTriggerOptions",
+      "cost": "observer",
+      "reduced": "n/a"
+    },
+    {
+      "id": "ST05",
+      "name": {
+        "en": "In-view progress",
+        "es": "Progreso en pantalla"
+      },
+      "entry": "scroll",
+      "api": ["inViewProgress", "ScrollEffect"],
+      "options": "InViewProgressOptions",
+      "css": "scroll.css",
+      "definition": "inViewProgress",
+      "cost": "scrollvar",
+      "reduced": "static"
+    },
+    {
+      "id": "ST06",
+      "name": {
+        "en": "Direction-aware header",
+        "es": "Cabecera según la dirección"
+      },
+      "entry": "scroll",
+      "api": ["directionHeader", "ScrollEffect"],
+      "options": "DirectionHeaderOptions",
+      "definition": "directionHeader",
+      "cost": "frame",
+      "reduced": "instant"
+    },
+    {
+      "id": "ST07",
+      "name": {
+        "en": "Stuck state",
+        "es": "Estado fijado"
+      },
+      "entry": "scroll",
+      "api": ["stuckState", "ScrollEffect"],
+      "options": "StuckStateOptions",
+      "definition": "stuckState",
+      "cost": "observer",
+      "reduced": "n/a"
+    },
+    {
+      "id": "ST08",
+      "name": {
+        "en": "Section spy",
+        "es": "Seguimiento de secciones"
+      },
+      "entry": "scroll",
+      "api": ["useSectionSpy", "createSectionSpy"],
+      "options": "SectionSpyOptions",
+      "cost": "observer",
+      "reduced": "n/a"
+    },
+    {
+      "id": "ST09",
+      "name": {
+        "en": "Lazy activation",
+        "es": "Activación diferida"
+      },
+      "entry": "scroll",
+      "api": ["lazyEffect", "ScrollEffect"],
+      "options": "LazyEffectOptions",
+      "definition": "lazyEffect",
+      "cost": "observer",
+      "reduced": "n/a"
+    },
+    {
+      "id": "ST10",
+      "name": {
+        "en": "Trigger presets",
+        "es": "Ajustes de activación"
+      },
+      "entry": "scroll",
+      "api": ["inViewPresets", "resolveInView"],
+      "options": "InViewOptions",
+      "cost": "observer",
+      "reduced": "n/a"
+    },
+    {
+      "id": "SP01",
+      "name": {
+        "en": "Depth parallax",
+        "es": "Parallax de profundidad"
+      },
+      "entry": "scroll",
+      "api": ["depthParallax", "ScrollLayer", "ScrollScene"],
+      "options": "DepthParallaxOptions",
+      "css": "scroll.css",
+      "definition": "depthParallax",
+      "cost": "frame",
+      "reduced": "static"
+    },
+    {
+      "id": "SP02",
+      "name": {
+        "en": "Scrubbed transform",
+        "es": "Transformación ligada al scroll"
+      },
+      "entry": "scroll",
+      "api": ["scrubTransform", "ScrollEffect"],
+      "options": "ScrubTransformOptions",
+      "definition": "scrubTransform",
+      "cost": "frame",
+      "reduced": "static"
+    },
+    {
+      "id": "SP03",
+      "name": {
+        "en": "Scroll progress bar",
+        "es": "Barra de progreso del scroll"
+      },
+      "entry": "scroll",
+      "api": ["ScrollProgressBar", "scrollProgress"],
+      "options": "ScrollProgressEffectOptions",
+      "css": "scroll.css",
+      "definition": "scrollProgress",
+      "cost": "scrollvar",
+      "reduced": "reduced"
+    },
+    {
+      "id": "SP04",
+      "name": {
+        "en": "Horizontal section",
+        "es": "Sección horizontal"
+      },
+      "entry": "scroll",
+      "api": ["HorizontalScroll"],
+      "css": "scroll.css",
+      "cost": "frame",
+      "reduced": "static"
+    },
+    {
+      "id": "SP05",
+      "name": {
+        "en": "Pinned scene",
+        "es": "Escena fijada"
+      },
+      "entry": "scroll",
+      "api": ["ScrollScene", "pinnedScene"],
+      "options": "PinnedSceneOptions",
+      "css": "scroll.css",
+      "definition": "pinnedScene",
+      "cost": "scrollvar",
+      "reduced": "static"
+    },
+    {
+      "id": "SP06",
+      "name": {
+        "en": "Image parallax",
+        "es": "Parallax de imagen"
+      },
+      "entry": "scroll",
+      "api": ["ParallaxImage", "imageParallax"],
+      "options": "ImageParallaxOptions",
+      "css": "scroll.css",
+      "definition": "imageParallax",
+      "cost": "frame",
+      "reduced": "static"
+    },
+    {
+      "id": "SP07",
+      "name": {
+        "en": "Zoom on scroll",
+        "es": "Zoom con el scroll"
+      },
+      "entry": "scroll",
+      "api": ["zoomOnScroll", "ScrollEffect"],
+      "options": "ZoomOnScrollOptions",
+      "definition": "zoomOnScroll",
+      "cost": "frame",
+      "reduced": "static"
+    },
+    {
+      "id": "SP08",
+      "name": {
+        "en": "Scroll colour shift",
+        "es": "Cambio de color con el scroll"
+      },
+      "entry": "scroll",
+      "api": ["scrollColorShift", "ScrollEffect"],
+      "options": "ScrollColorShiftOptions",
+      "definition": "scrollColorShift",
+      "cost": "paint",
+      "reduced": "instant"
+    },
+    {
+      "id": "SP09",
+      "name": {
+        "en": "Sticky stack",
+        "es": "Pila de tarjetas fijas"
+      },
+      "entry": "scroll",
+      "api": ["StickyStack", "stickyStack"],
+      "options": "StickyStackOptions",
+      "css": "scroll.css",
+      "definition": "stickyStack",
+      "cost": "frame",
+      "reduced": "static"
+    },
+    {
+      "id": "SP10",
+      "name": {
+        "en": "Smooth scrub",
+        "es": "Scroll suavizado"
+      },
+      "entry": "scroll",
+      "api": ["createScrollProgress", "useScrollProgress", "ScrollScene"],
+      "options": "ScrollProgressOptions",
+      "cost": "frame",
+      "reduced": "off"
+    },
+    {
+      "id": "SP11",
+      "name": {
+        "en": "Velocity skew",
+        "es": "Inclinación por velocidad"
+      },
+      "entry": "scroll",
+      "api": ["velocitySkew", "ScrollEffect"],
+      "options": "VelocitySkewOptions",
+      "definition": "velocitySkew",
+      "cost": "frame",
+      "reduced": "off"
+    },
+    {
+      "id": "C01",
+      "name": {
+        "en": "Timeline",
+        "es": "Línea de tiempo"
+      },
+      "entry": "cinematic",
+      "api": ["createTimeline", "useTimeline"],
+      "options": "TimelineOptions",
+      "cost": "frame",
+      "reduced": "instant"
+    },
+    {
+      "id": "C02",
+      "name": {
+        "en": "Scene chapters",
+        "es": "Capítulos de escena"
+      },
+      "entry": "cinematic",
+      "api": ["SceneChapters", "Chapter", "SceneSegment", "createSceneChapters"],
+      "options": "SceneChaptersOptions",
+      "css": "cinematic.css",
+      "cost": "frame",
+      "reduced": "static"
+    },
+    {
+      "id": "C03",
+      "name": {
+        "en": "Camera",
+        "es": "Cámara"
+      },
+      "entry": "cinematic",
+      "api": ["CameraStage", "useCamera", "createCamera"],
+      "options": "CameraOptions",
+      "css": "cinematic.css",
+      "cost": "frame",
+      "reduced": "static"
+    },
+    {
+      "id": "C04",
+      "name": {
+        "en": "Split reveal",
+        "es": "Revelado dividido"
+      },
+      "entry": "cinematic",
+      "api": ["SplitReveal", "createCover"],
+      "options": "CoverOptions",
+      "css": "cinematic.css",
+      "cost": "frame",
+      "reduced": "instant"
+    },
+    {
+      "id": "C05",
+      "name": {
+        "en": "Curtain and shutter",
+        "es": "Telón y persiana"
+      },
+      "entry": "cinematic",
+      "api": ["CurtainReveal", "createCover"],
+      "options": "CoverOptions",
+      "css": "cinematic.css",
+      "cost": "frame",
+      "reduced": "instant"
+    },
+    {
+      "id": "C06",
+      "name": {
+        "en": "Title sequence",
+        "es": "Secuencia de títulos"
+      },
+      "entry": "cinematic",
+      "api": ["TitleSequence", "titleSequence"],
+      "options": "TitleSequenceOptions",
+      "css": "cinematic.css",
+      "cost": "frame",
+      "reduced": "fade"
+    },
+    {
+      "id": "C07",
+      "name": {
+        "en": "Spotlight and vignette",
+        "es": "Foco y viñeta"
+      },
+      "entry": "cinematic",
+      "api": ["Spotlight", "createSpotlight"],
+      "options": "SpotlightOptions",
+      "css": "cinematic.css",
+      "cost": "frame",
+      "reduced": "static"
+    },
+    {
+      "id": "C08",
+      "name": {
+        "en": "Depth of field",
+        "es": "Profundidad de campo"
+      },
+      "entry": "cinematic",
+      "api": ["DepthOfField", "createDepthOfField"],
+      "options": "DepthOfFieldOptions",
+      "css": "cinematic.css",
+      "cost": "paint",
+      "reduced": "static"
+    },
+    {
+      "id": "C09",
+      "name": {
+        "en": "Storyboard",
+        "es": "Guion gráfico"
+      },
+      "entry": "cinematic",
+      "api": ["Storyboard", "StoryboardFrame", "createStoryboard"],
+      "options": "StoryboardOptions",
+      "css": "cinematic.css",
+      "cost": "frame",
+      "reduced": "off"
+    },
+    {
+      "id": "C10",
+      "name": {
+        "en": "Letterbox",
+        "es": "Bandas de cine"
+      },
+      "entry": "cinematic",
+      "api": ["Letterbox", "createLetterbox"],
+      "options": "LetterboxOptions",
+      "css": "cinematic.css",
+      "cost": "frame",
+      "reduced": "instant"
+    },
+    {
+      "id": "PT01",
+      "name": {
+        "en": "Cross-fade",
+        "es": "Fundido cruzado"
+      },
+      "entry": "page-transitions",
+      "api": ["startPageTransition", "usePageTransition", "PageTransition"],
+      "options": "PageTransitionOptions",
+      "css": "page-transitions.css",
+      "cost": "vt",
+      "reduced": "instant"
+    },
+    {
+      "id": "PT02",
+      "name": {
+        "en": "Shared element",
+        "es": "Elemento compartido"
+      },
+      "entry": "page-transitions",
+      "api": ["SharedElement", "registerSharedElement"],
+      "options": "PageTransitionOptions",
+      "css": "page-transitions.css",
+      "cost": "vt",
+      "reduced": "instant"
+    },
+    {
+      "id": "PT03",
+      "name": {
+        "en": "Slide",
+        "es": "Deslizamiento"
+      },
+      "entry": "page-transitions",
+      "api": ["startPageTransition", "usePageTransition", "PageTransition"],
+      "options": "PageTransitionOptions",
+      "css": "page-transitions.css",
+      "cost": "vt",
+      "reduced": "fade"
+    },
+    {
+      "id": "PT04",
+      "name": {
+        "en": "Navigation direction",
+        "es": "Dirección de navegación"
+      },
+      "entry": "page-transitions",
+      "api": ["trackNavigationDirection", "useNavigationDirection"],
+      "css": "page-transitions.css",
+      "cost": "vt",
+      "reduced": "fade"
+    },
+    {
+      "id": "PT05",
+      "name": {
+        "en": "Scale-through",
+        "es": "Transición con escala"
+      },
+      "entry": "page-transitions",
+      "api": ["startPageTransition", "usePageTransition", "PageTransition"],
+      "options": "PageTransitionOptions",
+      "css": "page-transitions.css",
+      "cost": "vt",
+      "reduced": "fade"
+    },
+    {
+      "id": "PT06",
+      "name": {
+        "en": "Curtain wipe",
+        "es": "Barrido de telón"
+      },
+      "entry": "page-transitions",
+      "api": ["startPageTransition", "usePageTransition", "PageTransition"],
+      "options": "PageTransitionOptions",
+      "css": "page-transitions.css",
+      "cost": "vt",
+      "reduced": "instant"
+    },
+    {
+      "id": "PT07",
+      "name": {
+        "en": "Route progress",
+        "es": "Progreso de ruta"
+      },
+      "entry": "page-transitions",
+      "api": ["RouteProgress", "createRouteProgress"],
+      "options": "RouteProgressOptions",
+      "css": "page-transitions.css",
+      "cost": "layer",
+      "reduced": "reduced"
+    },
+    {
+      "id": "PT08",
+      "name": {
+        "en": "Persistent element",
+        "es": "Elemento persistente"
+      },
+      "entry": "page-transitions",
+      "api": ["PersistentElement", "registerSharedElement"],
+      "css": "page-transitions.css",
+      "cost": "vt",
+      "reduced": "instant"
+    },
+    {
+      "id": "PT09",
+      "name": {
+        "en": "Cross-document transitions",
+        "es": "Transiciones entre documentos"
+      },
+      "entry": "page-transitions",
+      "api": ["enableCrossDocumentTransitions"],
+      "options": "CrossDocumentOptions",
+      "css": "page-transitions-mpa.css",
+      "cost": "vt",
+      "reduced": "instant",
+      "demo": "source"
+    },
+    {
+      "id": "PT10",
+      "name": {
+        "en": "Router adapters",
+        "es": "Adaptadores de router"
+      },
+      "entry": "page-transitions/next",
+      "api": ["NextPageTransitions", "TransitionLink"],
+      "options": "NextPageTransitionsProps",
+      "css": "page-transitions.css",
+      "cost": "vt",
+      "reduced": "n/a",
+      "demo": "source"
+    },
+    {
+      "id": "L01",
+      "name": {
+        "en": "FLIP move",
+        "es": "Movimiento FLIP"
+      },
+      "entry": "layout",
+      "api": ["LayoutGroup", "LayoutItem", "useLayoutItem", "flipMove", "createLayoutGroup"],
+      "options": "FlipMoveOptions",
+      "definition": "flipMove",
+      "cost": "layout",
+      "reduced": "instant"
+    },
+    {
+      "id": "L02",
+      "name": {
+        "en": "Auto height",
+        "es": "Altura automática"
+      },
+      "entry": "layout",
+      "api": ["AutoHeight", "autoHeight"],
+      "options": "AutoHeightOptions",
+      "css": "layout.css",
+      "definition": "autoHeight",
+      "cost": "size",
+      "reduced": "instant"
+    },
+    {
+      "id": "L03",
+      "name": {
+        "en": "List enter and exit",
+        "es": "Entrada y salida de listas"
+      },
+      "entry": "layout",
+      "api": ["AnimatedList", "listItem"],
+      "options": "ListItemOptions",
+      "definition": "listItem",
+      "cost": "layout",
+      "reduced": "fade"
+    },
+    {
+      "id": "L04",
+      "name": {
+        "en": "Shared layout",
+        "es": "Layout compartido"
+      },
+      "entry": "layout",
+      "api": ["LayoutItem", "sharedLayout"],
+      "options": "SharedLayoutOptions",
+      "definition": "sharedLayout",
+      "cost": "layout",
+      "reduced": "instant"
+    },
+    {
+      "id": "L05",
+      "name": {
+        "en": "Grid reflow",
+        "es": "Reflujo de cuadrícula"
+      },
+      "entry": "layout",
+      "api": ["Reflow", "gridReflow"],
+      "options": "GridReflowOptions",
+      "definition": "gridReflow",
+      "cost": "layout",
+      "reduced": "instant"
+    },
+    {
+      "id": "L06",
+      "name": {
+        "en": "Accordion height",
+        "es": "Altura de acordeón"
+      },
+      "entry": "layout",
+      "api": ["Collapse", "collapse"],
+      "options": "CollapseOptions",
+      "css": "layout.css",
+      "definition": "collapse",
+      "cost": "size",
+      "reduced": "instant"
+    },
+    {
+      "id": "L07",
+      "name": {
+        "en": "Tab indicator",
+        "es": "Indicador de pestaña"
+      },
+      "entry": "layout",
+      "api": ["TabIndicator", "tabIndicator"],
+      "options": "TabIndicatorOptions",
+      "css": "layout.css",
+      "definition": "tabIndicator",
+      "cost": "layer",
+      "reduced": "instant"
+    },
+    {
+      "id": "L08",
+      "name": {
+        "en": "Presence",
+        "es": "Presencia"
+      },
+      "entry": "layout",
+      "api": ["Presence", "usePresence", "useIsPresent", "createPresence"],
+      "options": "PresenceProps",
+      "cost": "frame",
+      "reduced": "instant"
+    },
+    {
+      "id": "L09",
+      "name": {
+        "en": "Content cross-fade",
+        "es": "Fundido de contenido"
+      },
+      "entry": "layout",
+      "api": ["CrossFade", "crossFade"],
+      "options": "CrossFadeOptions",
+      "css": "layout.css",
+      "definition": "crossFade",
+      "cost": "size",
+      "reduced": "instant"
+    },
+    {
+      "id": "L10",
+      "name": {
+        "en": "Masonry reflow",
+        "es": "Reflujo de mampostería"
+      },
+      "entry": "layout",
+      "api": ["Masonry", "masonry"],
+      "options": "MasonryOptions",
+      "css": "layout.css",
+      "definition": "masonry",
+      "cost": "layout",
+      "reduced": "instant"
+    },
+    {
+      "id": "T01",
+      "name": {
+        "en": "Split reveal",
+        "es": "Revelado por partes"
+      },
+      "entry": "text",
+      "api": ["TextReveal", "createTextReveal"],
+      "options": "TextRevealOptions",
+      "css": "text.css",
+      "cost": "split",
+      "reduced": "instant"
+    },
+    {
+      "id": "T02",
+      "name": {
+        "en": "Typewriter",
+        "es": "Máquina de escribir"
+      },
+      "entry": "text",
+      "api": ["Typewriter", "createTypewriter"],
+      "options": "TypewriterOptions",
+      "css": "text.css",
+      "cost": "split",
+      "reduced": "instant"
+    },
+    {
+      "id": "T03",
+      "name": {
+        "en": "Scramble",
+        "es": "Texto descifrado"
+      },
+      "entry": "text",
+      "api": ["ScrambleText", "createScramble"],
+      "options": "ScrambleOptions",
+      "css": "text.css",
+      "cost": "split",
+      "reduced": "instant"
+    },
+    {
+      "id": "T04",
+      "name": {
+        "en": "Gradient sweep",
+        "es": "Barrido de degradado"
+      },
+      "entry": "text",
+      "api": ["GradientText", "createGradientSweep"],
+      "options": "GradientSweepOptions",
+      "css": "text.css",
+      "cost": "paint",
+      "reduced": "static"
+    },
+    {
+      "id": "T05",
+      "name": {
+        "en": "Number roll",
+        "es": "Números rodantes"
+      },
+      "entry": "text",
+      "api": ["NumberRoll", "createNumberRoll"],
+      "options": "NumberRollOptions",
+      "css": "text.css",
+      "cost": "split",
+      "reduced": "instant"
+    },
+    {
+      "id": "T06",
+      "name": {
+        "en": "Rotating words",
+        "es": "Palabras rotatorias"
+      },
+      "entry": "text",
+      "api": ["RotatingWords", "createRotatingWords"],
+      "options": "RotatingWordsOptions",
+      "css": "text.css",
+      "cost": "split",
+      "reduced": "static"
+    },
+    {
+      "id": "T07",
+      "name": {
+        "en": "Kinetic wave",
+        "es": "Onda cinética"
+      },
+      "entry": "text",
+      "api": ["WaveText", "createTextWave"],
+      "options": "TextWaveOptions",
+      "css": "text.css",
+      "cost": "split",
+      "reduced": "off"
+    },
+    {
+      "id": "T08",
+      "name": {
+        "en": "Highlighter",
+        "es": "Resaltador"
+      },
+      "entry": "text",
+      "api": ["Highlight", "createHighlighter"],
+      "options": "HighlighterOptions",
+      "css": "text.css",
+      "cost": "paint",
+      "reduced": "instant"
+    },
+    {
+      "id": "T09",
+      "name": {
+        "en": "Text mask",
+        "es": "Máscara de texto"
+      },
+      "entry": "text",
+      "api": ["TextMask", "createTextMask"],
+      "options": "TextMaskOptions",
+      "css": "text.css",
+      "cost": "split",
+      "reduced": "instant"
+    },
+    {
+      "id": "T10",
+      "name": {
+        "en": "Variable-font axes",
+        "es": "Ejes de fuente variable"
+      },
+      "entry": "text",
+      "api": ["FontAxes", "createFontAxes"],
+      "options": "FontAxesOptions",
+      "cost": "textlayout",
+      "reduced": "static"
+    },
+    {
+      "id": "T11",
+      "name": {
+        "en": "Line reveal on scroll",
+        "es": "Revelado de líneas con scroll"
+      },
+      "entry": "text",
+      "api": ["LineReveal", "createLineReveal"],
+      "options": "LineRevealOptions",
+      "css": "text.css",
+      "cost": "split",
+      "reduced": "instant"
+    },
+    {
+      "id": "S01",
+      "name": {
+        "en": "Path draw",
+        "es": "Trazo de ruta"
+      },
+      "entry": "svg",
+      "api": ["PathDraw", "usePathDraw", "createPathDraw"],
+      "options": "PathDrawOptions",
+      "cost": "paint",
+      "reduced": "instant"
+    },
+    {
+      "id": "S02",
+      "name": {
+        "en": "Path morph",
+        "es": "Transformación de ruta"
+      },
+      "entry": "svg",
+      "api": ["usePathMorph", "createPathMorph"],
+      "options": "PathMorphOptions",
+      "cost": "attribute",
+      "reduced": "instant"
+    },
+    {
+      "id": "S03",
+      "name": {
+        "en": "Motion path",
+        "es": "Movimiento por una ruta"
+      },
+      "entry": "svg",
+      "api": ["useMotionPath", "createMotionPath"],
+      "options": "MotionPathOptions",
+      "cost": "frame",
+      "reduced": "static"
+    },
+    {
+      "id": "S04",
+      "name": {
+        "en": "Icon morph",
+        "es": "Transformación de icono"
+      },
+      "entry": "svg",
+      "api": ["MorphIcon", "createIconMorph", "menuCloseShapes"],
+      "options": "IconMorphOptions",
+      "css": "svg.css",
+      "cost": "attribute",
+      "reduced": "instant"
+    },
+    {
+      "id": "S05",
+      "name": {
+        "en": "Gradient stops",
+        "es": "Paradas de degradado"
+      },
+      "entry": "svg",
+      "api": ["useGradientStops", "createGradientStops"],
+      "options": "GradientStopsOptions",
+      "cost": "paint",
+      "reduced": "static"
+    },
+    {
+      "id": "S06",
+      "name": {
+        "en": "Chart draw",
+        "es": "Trazo de gráfica"
+      },
+      "entry": "svg",
+      "api": ["useChartDraw", "createChartDraw"],
+      "options": "ChartDrawOptions",
+      "cost": "paint",
+      "reduced": "instant"
+    },
+    {
+      "id": "S07",
+      "name": {
+        "en": "Turbulence",
+        "es": "Turbulencia"
+      },
+      "entry": "svg",
+      "api": ["useTurbulence", "createTurbulence"],
+      "options": "TurbulenceOptions",
+      "css": "svg.css",
+      "cost": "filter",
+      "reduced": "off"
+    },
+    {
+      "id": "S08",
+      "name": {
+        "en": "Logo reveal",
+        "es": "Revelado de logotipo"
+      },
+      "entry": "svg",
+      "api": ["useLogoReveal", "createLogoReveal"],
+      "options": "LogoRevealOptions",
+      "cost": "paint",
+      "reduced": "instant"
+    },
+    {
+      "id": "S09",
+      "name": {
+        "en": "Dash flow",
+        "es": "Flujo de guiones"
+      },
+      "entry": "svg",
+      "api": ["useDashFlow", "createDashFlow"],
+      "options": "DashFlowOptions",
+      "cost": "paint",
+      "reduced": "static"
+    },
+    {
+      "id": "S10",
+      "name": {
+        "en": "Success checkmark",
+        "es": "Marca de éxito"
+      },
+      "entry": "svg",
+      "api": ["SuccessCheck", "createCheckmark"],
+      "options": "CheckmarkOptions",
+      "css": "svg.css",
+      "cost": "paint",
+      "reduced": "instant"
+    },
+    {
+      "id": "M01",
+      "name": {
+        "en": "Ken Burns",
+        "es": "Ken Burns"
+      },
+      "entry": "media",
+      "api": ["KenBurns", "useKenBurns", "createKenBurns"],
+      "options": "KenBurnsOptions",
+      "css": "media.css",
+      "cost": "frame",
+      "reduced": "static"
+    },
+    {
+      "id": "M02",
+      "name": {
+        "en": "Blur-up loading",
+        "es": "Carga con desenfoque"
+      },
+      "entry": "media",
+      "api": ["BlurUpImage", "createBlurUp"],
+      "options": "BlurUpOptions",
+      "css": "media.css",
+      "cost": "paint",
+      "reduced": "instant"
+    },
+    {
+      "id": "M03",
+      "name": {
+        "en": "Reveal on load",
+        "es": "Revelado al cargar"
+      },
+      "entry": "media",
+      "api": ["LoadReveal", "createLoadReveal"],
+      "options": "LoadRevealOptions",
+      "cost": "paint",
+      "reduced": "instant"
+    },
+    {
+      "id": "M04",
+      "name": {
+        "en": "Compare slider",
+        "es": "Comparador"
+      },
+      "entry": "media",
+      "api": ["CompareSlider", "createCompareSlider"],
+      "options": "CompareSliderOptions",
+      "css": "media.css",
+      "cost": "paint",
+      "reduced": "n/a"
+    },
+    {
+      "id": "M05",
+      "name": {
+        "en": "Duotone",
+        "es": "Duotono"
+      },
+      "entry": "media",
+      "api": ["Duotone", "createDuotone"],
+      "options": "DuotoneOptions",
+      "cost": "filter",
+      "reduced": "instant"
+    },
+    {
+      "id": "M06",
+      "name": {
+        "en": "Video scrub",
+        "es": "Vídeo por progreso"
+      },
+      "entry": "media",
+      "api": ["useVideoScrub", "createVideoScrub"],
+      "options": "VideoScrubOptions",
+      "cost": "seek",
+      "reduced": "static"
+    },
+    {
+      "id": "M07",
+      "name": {
+        "en": "Lightbox zoom",
+        "es": "Ampliación en lightbox"
+      },
+      "entry": "media",
+      "api": ["Lightbox", "createLightboxZoom"],
+      "options": "LightboxZoomOptions",
+      "css": "media.css",
+      "cost": "layout",
+      "reduced": "fade"
+    },
+    {
+      "id": "M08",
+      "name": {
+        "en": "Gallery cross-fade",
+        "es": "Fundido de galería"
+      },
+      "entry": "media",
+      "api": ["Crossfade", "createCrossfade"],
+      "options": "CrossfadeOptions",
+      "css": "media.css",
+      "cost": "frame",
+      "reduced": "fade"
+    },
+    {
+      "id": "M09",
+      "name": {
+        "en": "Pixel dissolve",
+        "es": "Disolución en píxeles"
+      },
+      "entry": "media",
+      "api": ["PixelDissolve", "createPixelDissolve"],
+      "options": "PixelDissolveOptions",
+      "css": "media.css",
+      "cost": "canvas",
+      "reduced": "fade"
+    },
+    {
+      "id": "M10",
+      "name": {
+        "en": "Hover pan",
+        "es": "Paneo al pasar el puntero"
+      },
+      "entry": "media",
+      "api": ["HoverPan", "createHoverPan"],
+      "options": "HoverPanOptions",
+      "css": "media.css",
+      "cost": "frame",
+      "reduced": "static"
+    },
+    {
+      "id": "B01",
+      "name": {
+        "en": "Gradient shift",
+        "es": "Degradado en movimiento"
+      },
+      "entry": "ambient",
+      "api": ["GradientShift", "createGradientShift"],
+      "options": "GradientShiftOptions",
+      "css": "ambient.css",
+      "cost": "layer",
+      "reduced": "static"
+    },
+    {
+      "id": "B02",
+      "name": {
+        "en": "Aurora",
+        "es": "Aurora"
+      },
+      "entry": "ambient",
+      "api": ["Aurora", "createAurora"],
+      "options": "AuroraOptions",
+      "css": "ambient.css",
+      "cost": "layer",
+      "reduced": "static"
+    },
+    {
+      "id": "B03",
+      "name": {
+        "en": "Grain",
+        "es": "Grano"
+      },
+      "entry": "ambient",
+      "api": ["Grain", "createGrain"],
+      "options": "GrainOptions",
+      "css": "ambient.css",
+      "cost": "layer",
+      "reduced": "static"
+    },
+    {
+      "id": "B04",
+      "name": {
+        "en": "Particles",
+        "es": "Partículas"
+      },
+      "entry": "ambient",
+      "api": ["Particles", "createParticles"],
+      "options": "ParticlesOptions",
+      "css": "ambient.css",
+      "cost": "canvas",
+      "reduced": "static"
+    },
+    {
+      "id": "B05",
+      "name": {
+        "en": "Starfield",
+        "es": "Campo de estrellas"
+      },
+      "entry": "ambient",
+      "api": ["Starfield", "createStarfield"],
+      "options": "StarfieldOptions",
+      "css": "ambient.css",
+      "cost": "canvas",
+      "reduced": "static"
+    },
+    {
+      "id": "B06",
+      "name": {
+        "en": "Grid and dots",
+        "es": "Cuadrícula y puntos"
+      },
+      "entry": "ambient",
+      "api": ["GridPattern", "createGridPattern"],
+      "options": "GridPatternOptions",
+      "css": "ambient.css",
+      "cost": "layer",
+      "reduced": "static"
+    },
+    {
+      "id": "B07",
+      "name": {
+        "en": "Mesh gradient",
+        "es": "Degradado de malla"
+      },
+      "entry": "ambient",
+      "api": ["MeshGradient", "createMeshGradient"],
+      "options": "MeshGradientOptions",
+      "css": "ambient.css",
+      "cost": "layer",
+      "reduced": "static"
+    },
+    {
+      "id": "B08",
+      "name": {
+        "en": "Floating shapes",
+        "es": "Formas flotantes"
+      },
+      "entry": "ambient",
+      "api": ["FloatingShapes", "createFloatingShapes"],
+      "options": "FloatingShapesOptions",
+      "css": "ambient.css",
+      "cost": "frame",
+      "reduced": "static"
+    },
+    {
+      "id": "B09",
+      "name": {
+        "en": "Pointer glow",
+        "es": "Resplandor del puntero"
+      },
+      "entry": "ambient",
+      "api": ["PointerGlow", "createPointerGlow"],
+      "options": "PointerGlowOptions",
+      "css": "ambient.css",
+      "cost": "paint",
+      "reduced": "static"
+    },
+    {
+      "id": "B10",
+      "name": {
+        "en": "Waves",
+        "es": "Ondas"
+      },
+      "entry": "ambient",
+      "api": ["Waves", "createWaves"],
+      "options": "WavesOptions",
+      "css": "ambient.css",
+      "cost": "layer",
+      "reduced": "static"
+    },
+    {
+      "id": "F01",
+      "name": {
+        "en": "Spinner",
+        "es": "Indicador giratorio"
+      },
+      "entry": "feedback",
+      "api": ["Spinner"],
+      "css": "feedback.css",
+      "cost": "layer",
+      "reduced": "reduced"
+    },
+    {
+      "id": "F02",
+      "name": {
+        "en": "Skeleton shimmer",
+        "es": "Brillo de esqueleto"
+      },
+      "entry": "feedback",
+      "api": ["Shimmer", "SkeletonShimmer"],
+      "options": "SkeletonShimmerProps",
+      "css": "feedback.css",
+      "cost": "layer",
+      "reduced": "static"
+    },
+    {
+      "id": "F03",
+      "name": {
+        "en": "Progress bar",
+        "es": "Barra de progreso"
+      },
+      "entry": "feedback",
+      "api": ["ProgressBar"],
+      "options": "ProgressBarProps",
+      "css": "feedback.css",
+      "cost": "layer",
+      "reduced": "reduced"
+    },
+    {
+      "id": "F04",
+      "name": {
+        "en": "Dots pulse",
+        "es": "Puntos pulsantes"
+      },
+      "entry": "feedback",
+      "api": ["DotsPulse"],
+      "css": "feedback.css",
+      "cost": "layer",
+      "reduced": "reduced"
+    },
+    {
+      "id": "F05",
+      "name": {
+        "en": "Success mark",
+        "es": "Marca de confirmación"
+      },
+      "entry": "feedback",
+      "api": ["SuccessMark"],
+      "options": "SuccessMarkProps",
+      "css": "feedback.css",
+      "cost": "paint",
+      "reduced": "instant"
+    },
+    {
+      "id": "F06",
+      "name": {
+        "en": "Enter and exit",
+        "es": "Entrada y salida"
+      },
+      "entry": "feedback",
+      "api": ["EnterExit", "createEnterExit"],
+      "options": "EnterExitOptions",
+      "cost": "frame",
+      "reduced": "fade"
+    },
+    {
+      "id": "F07",
+      "name": {
+        "en": "Loading button",
+        "es": "Botón de carga"
+      },
+      "entry": "feedback",
+      "api": ["LoadingButton", "createLoadingButton"],
+      "options": "LoadingButtonOptions",
+      "css": "feedback.css",
+      "cost": "layer",
+      "reduced": "instant"
+    },
+    {
+      "id": "F08",
+      "name": {
+        "en": "Optimistic pulse",
+        "es": "Pulso optimista"
+      },
+      "entry": "feedback",
+      "api": ["OptimisticPulse", "createOptimisticPulse"],
+      "options": "OptimisticPulseOptions",
+      "css": "feedback.css",
+      "cost": "layer",
+      "reduced": "static"
+    },
+    {
+      "id": "F09",
+      "name": {
+        "en": "Progress ring",
+        "es": "Anillo de progreso"
+      },
+      "entry": "feedback",
+      "api": ["ProgressRing"],
+      "options": "ProgressRingProps",
+      "css": "feedback.css",
+      "cost": "paint",
+      "reduced": "instant"
+    },
+    {
+      "id": "F10",
+      "name": {
+        "en": "Pending text",
+        "es": "Texto pendiente"
+      },
+      "entry": "feedback",
+      "api": ["PendingText"],
+      "options": "PendingTextProps",
+      "css": "feedback.css",
+      "cost": "layer",
+      "reduced": "static"
+    },
+    {
+      "id": "D01",
+      "name": {
+        "en": "Card flip",
+        "es": "Giro de tarjeta"
+      },
+      "entry": "advanced",
+      "api": ["CardFlip", "createCardFlip"],
+      "options": "CardFlipOptions",
+      "css": "advanced.css",
+      "cost": "frame",
+      "reduced": "fade"
+    },
+    {
+      "id": "D02",
+      "name": {
+        "en": "Cube rotation",
+        "es": "Rotación de cubo"
+      },
+      "entry": "advanced",
+      "api": ["CubeRotate", "createCubeRotate"],
+      "options": "CubeRotateOptions",
+      "css": "advanced.css",
+      "cost": "frame",
+      "reduced": "fade"
+    },
+    {
+      "id": "D03",
+      "name": {
+        "en": "Ring carousel",
+        "es": "Carrusel en anillo"
+      },
+      "entry": "advanced",
+      "api": ["RingCarousel", "createRingCarousel"],
+      "options": "RingCarouselOptions",
+      "css": "advanced.css",
+      "cost": "frame",
+      "reduced": "static"
+    },
+    {
+      "id": "D04",
+      "name": {
+        "en": "Page curl",
+        "es": "Pliegue de página"
+      },
+      "entry": "gpu",
+      "api": ["PageCurl", "createPageCurl"],
+      "options": "PageCurlOptions",
+      "css": "gpu.css",
+      "cost": "webgl",
+      "reduced": "instant"
+    },
+    {
+      "id": "D05",
+      "name": {
+        "en": "Corner recede",
+        "es": "Esquina plegable"
+      },
+      "entry": "advanced",
+      "api": ["CornerRecede", "createCornerRecede"],
+      "options": "CornerRecedeOptions",
+      "css": "advanced.css",
+      "cost": "paint",
+      "reduced": "instant"
+    },
+    {
+      "id": "D06",
+      "name": {
+        "en": "Liquid ripple",
+        "es": "Onda líquida"
+      },
+      "entry": "gpu",
+      "api": ["Ripple", "createRipple"],
+      "options": "RippleOptions",
+      "css": "gpu.css",
+      "cost": "webgl",
+      "reduced": "off"
+    },
+    {
+      "id": "D07",
+      "name": {
+        "en": "Glitch",
+        "es": "Interferencia"
+      },
+      "entry": "advanced",
+      "api": ["Glitch", "createGlitch"],
+      "options": "GlitchOptions",
+      "css": "advanced.css",
+      "cost": "paint",
+      "reduced": "off"
+    },
+    {
+      "id": "D08",
+      "name": {
+        "en": "Displacement hover",
+        "es": "Desplazamiento por mapa"
+      },
+      "entry": "gpu",
+      "api": ["DisplacementHover", "createDisplacementHover"],
+      "options": "DisplacementHoverOptions",
+      "css": "gpu.css",
+      "cost": "webgl",
+      "reduced": "static"
+    },
+    {
+      "id": "D09",
+      "name": {
+        "en": "Perspective grid",
+        "es": "Cuadrícula en perspectiva"
+      },
+      "entry": "advanced",
+      "api": ["PerspectiveGrid", "createPerspectiveGrid"],
+      "options": "PerspectiveGridOptions",
+      "css": "advanced.css",
+      "cost": "layer",
+      "reduced": "static"
+    },
+    {
+      "id": "D10",
+      "name": {
+        "en": "Depth parallax",
+        "es": "Parallax con mapa de profundidad"
+      },
+      "entry": "gpu",
+      "api": ["DepthParallax", "createDepthParallax"],
+      "options": "DepthParallaxOptions",
+      "css": "gpu.css",
+      "cost": "webgl",
+      "reduced": "static"
+    },
+    {
+      "id": "D11",
+      "name": {
+        "en": "Tilt shift",
+        "es": "Tilt-shift"
+      },
+      "entry": "advanced",
+      "api": ["TiltShift", "createTiltShift"],
+      "options": "TiltShiftOptions",
+      "css": "advanced.css",
+      "cost": "filter",
+      "reduced": "static"
+    }
+  ]
+}

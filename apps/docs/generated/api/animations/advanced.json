@@ -1,0 +1,1854 @@
+{
+  "package": "@neshel-ui/animations/advanced",
+  "exports": [
+    {
+      "name": "AdvancedDebugInfo",
+      "description": "",
+      "module": "advanced/engine/debug",
+      "kind": "interface",
+      "definition": "AdvancedDebugInfo",
+      "props": [
+        {
+          "name": "attributeEntries",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "effects",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "flaps",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "gateElements",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "gateObservers",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "glitchLayers",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "glitchSteps",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "layers",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "listeners",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "observers",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "CardFlip",
+      "description": "D01 — a card with two faces that flips in 3D (`div.neshel-flip`).",
+      "module": "advanced/react",
+      "kind": "component",
+      "signature": "(props: CardFlipProps): Element",
+      "props": "CardFlipProps",
+      "client": true
+    },
+    {
+      "name": "CardFlipControl",
+      "description": "",
+      "module": "advanced/flip",
+      "kind": "interface",
+      "definition": "CardFlipControl",
+      "props": [
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "drive",
+          "type": "(source: ProgressSource) => () => void",
+          "optional": false,
+          "description": "Follow a 0–1 source; returns the unsubscribe."
+        },
+        {
+          "name": "flip",
+          "type": "(side?: FlipSide) => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "mode",
+          "type": "\"3d\" | \"fade\"",
+          "optional": false,
+          "description": "`\"3d\"` or `\"fade\"` (reduced motion with `reducedEffect: \"fade\"`, or no `preserve-3d`)."
+        },
+        {
+          "name": "progress",
+          "type": "number",
+          "optional": false,
+          "description": "0 front … 1 back."
+        },
+        {
+          "name": "seek",
+          "type": "(progress: number) => void",
+          "optional": false,
+          "description": "Render an exact pose (no animation)."
+        },
+        {
+          "name": "side",
+          "type": "FlipSide",
+          "optional": false,
+          "description": "The face currently facing the viewer."
+        },
+        {
+          "name": "target",
+          "type": "FlipSide",
+          "optional": false,
+          "description": "The side the card is moving to (or resting on)."
+        },
+        {
+          "name": "toggle",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "track",
+          "type": "(options?: ProgressTrackOptions) => ProgressTrack",
+          "optional": false,
+          "description": "A value track for a C01 timeline."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "CardFlipOptions",
+      "description": "",
+      "module": "advanced/flip",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "axis",
+          "type": "\"y\" | \"x\"",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "back",
+          "type": "HTMLElement",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "direction",
+          "type": "1 | -1",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "flipped",
+          "type": "boolean",
+          "optional": true,
+          "description": "Start on the back (default false).",
+          "default": "false"
+        },
+        {
+          "name": "front",
+          "type": "HTMLElement",
+          "optional": true,
+          "description": "Faces (default: the inner element's first two element children)."
+        },
+        {
+          "name": "inner",
+          "type": "HTMLElement",
+          "optional": true,
+          "description": "The rotating element (default: the root's first element child)."
+        },
+        {
+          "name": "onFlip",
+          "type": "(side: FlipSide) => void",
+          "optional": true,
+          "description": "The visible face changed (the rotation crossed 90°)."
+        },
+        {
+          "name": "onToggle",
+          "type": "(side: FlipSide) => void",
+          "optional": true,
+          "description": "A toggle (in-face control or `toggle()`) changed the intended side — the user's intent, before any motion."
+        },
+        {
+          "name": "perspective",
+          "type": "number",
+          "optional": true,
+          "description": "px 200–4000 (default 1200).",
+          "default": "1200"
+        },
+        {
+          "name": "reducedEffect",
+          "type": "\"fade\" | \"instant\"",
+          "optional": true,
+          "description": "Under reduced motion: cross-fade (default) or jump."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "spring",
+          "type": "SpringOptions",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "toggleSelector",
+          "type": "string | false",
+          "optional": true,
+          "description": "Elements inside the faces that toggle on click (native buttons); `false` disables."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "CardFlipProps",
+      "description": "",
+      "module": "advanced/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "axis",
+          "type": "\"y\" | \"x\"",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "back",
+          "type": "ReactNode",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "controlRef",
+          "type": "RefObject<C | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "defaultFlipped",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "direction",
+          "type": "1 | -1",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "flipped",
+          "type": "boolean",
+          "optional": true,
+          "description": "Controlled side (`true` = back)."
+        },
+        {
+          "name": "front",
+          "type": "ReactNode",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "onFlip",
+          "type": "(side: FlipSide) => void",
+          "optional": true,
+          "description": "The visible face changed (the rotation crossed 90°)."
+        },
+        {
+          "name": "onFlippedChange",
+          "type": "(flipped: boolean) => void",
+          "optional": true,
+          "description": "The user asked for the other side (in-face toggle): the intent, reported before any motion."
+        },
+        {
+          "name": "perspective",
+          "type": "number",
+          "optional": true,
+          "description": "px 200–4000 (default 1200).",
+          "default": "1200"
+        },
+        {
+          "name": "reducedEffect",
+          "type": "\"fade\" | \"instant\"",
+          "optional": true,
+          "description": "Under reduced motion: cross-fade (default) or jump."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "spring",
+          "type": "SpringOptions",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "toggleSelector",
+          "type": "string | false",
+          "optional": true,
+          "description": "Elements inside the faces that toggle on click (native buttons); `false` disables."
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "Corner",
+      "description": "",
+      "module": "core/geometry-3d",
+      "kind": "type",
+      "definition": "\"top-left\" | \"top-right\" | \"bottom-left\" | \"bottom-right\""
+    },
+    {
+      "name": "CornerRecede",
+      "description": "D05 — the corner under the pointer recedes like a folded page (`div.neshel-corner`).",
+      "module": "advanced/react",
+      "kind": "component",
+      "signature": "(props: CornerRecedeProps): Element",
+      "props": "CornerRecedeProps",
+      "client": true
+    },
+    {
+      "name": "CornerRecedeControl",
+      "description": "",
+      "module": "advanced/corner",
+      "kind": "interface",
+      "definition": "CornerRecedeControl",
+      "props": [
+        {
+          "name": "amount",
+          "type": "number",
+          "optional": false,
+          "description": "Rendered fold amount 0–1."
+        },
+        {
+          "name": "corner",
+          "type": "Corner",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "reset",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "seek",
+          "type": "(corner: Corner, amount: number) => void",
+          "optional": false,
+          "description": "Render a pose exactly (no animation)."
+        },
+        {
+          "name": "set",
+          "type": "(corner: Corner, amount: number) => void",
+          "optional": false,
+          "description": "Animate to a pose (programmatic or external progress)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "CornerRecedeOptions",
+      "description": "",
+      "module": "advanced/corner",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "angle",
+          "type": "number",
+          "optional": true,
+          "description": "Maximum fold angle, deg 10–85 (default 60).",
+          "default": "60"
+        },
+        {
+          "name": "corners",
+          "type": "readonly Corner[]",
+          "optional": true,
+          "description": "Corners that may fold (default all four)."
+        },
+        {
+          "name": "flap",
+          "type": "\"clone\" | \"plain\"",
+          "optional": true,
+          "description": "`\"clone\"`: inert ID-free copy of the surface; `\"plain\"`: a surface-coloured triangle (default \"clone\").",
+          "default": "\"clone\""
+        },
+        {
+          "name": "focusCorner",
+          "type": "Corner | false",
+          "optional": true,
+          "description": "Corner folded at 35 % while focus inside is `:focus-visible`; `false` disables (default \"top-right\").",
+          "default": "\"top-right\""
+        },
+        {
+          "name": "perspective",
+          "type": "number",
+          "optional": true,
+          "description": "px 300–3000 perspective of the flap (default 900).",
+          "default": "900"
+        },
+        {
+          "name": "pointerTypes",
+          "type": "readonly (\"mouse\" | \"pen\" | \"touch\")[]",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reverse",
+          "type": "boolean",
+          "optional": true,
+          "description": "Lift the corner toward the viewer instead of receding (default false).",
+          "default": "false"
+        },
+        {
+          "name": "shade",
+          "type": "number",
+          "optional": true,
+          "description": "Flap darkening 0–0.6 (default 0.3).",
+          "default": "0.3"
+        },
+        {
+          "name": "size",
+          "type": "number",
+          "optional": true,
+          "description": "Fold leg as a fraction of the shorter side 0.1–0.6 (default 0.35).",
+          "default": "0.35"
+        },
+        {
+          "name": "spring",
+          "type": "SpringOptions",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "surface",
+          "type": "HTMLElement",
+          "optional": true,
+          "description": "The live content element that is clipped (default: the root's first element child)."
+        },
+        {
+          "name": "threshold",
+          "type": "number",
+          "optional": true,
+          "description": "Neutral zone around the centre 0–0.9 (default 0.3).",
+          "default": "0.3"
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "CornerRecedeProps",
+      "description": "",
+      "module": "advanced/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "angle",
+          "type": "number",
+          "optional": true,
+          "description": "Maximum fold angle, deg 10–85 (default 60).",
+          "default": "60"
+        },
+        {
+          "name": "children",
+          "type": "ReactElement",
+          "optional": false,
+          "description": "One element: the live surface whose corner recedes."
+        },
+        {
+          "name": "controlRef",
+          "type": "RefObject<C | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "corners",
+          "type": "readonly Corner[]",
+          "optional": true,
+          "description": "Corners that may fold (default all four)."
+        },
+        {
+          "name": "flap",
+          "type": "\"clone\" | \"plain\"",
+          "optional": true,
+          "description": "`\"clone\"`: inert ID-free copy of the surface; `\"plain\"`: a surface-coloured triangle (default \"clone\").",
+          "default": "\"clone\""
+        },
+        {
+          "name": "focusCorner",
+          "type": "Corner | false",
+          "optional": true,
+          "description": "Corner folded at 35 % while focus inside is `:focus-visible`; `false` disables (default \"top-right\").",
+          "default": "\"top-right\""
+        },
+        {
+          "name": "perspective",
+          "type": "number",
+          "optional": true,
+          "description": "px 300–3000 perspective of the flap (default 900).",
+          "default": "900"
+        },
+        {
+          "name": "pointerTypes",
+          "type": "readonly (\"mouse\" | \"pen\" | \"touch\")[]",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reverse",
+          "type": "boolean",
+          "optional": true,
+          "description": "Lift the corner toward the viewer instead of receding (default false).",
+          "default": "false"
+        },
+        {
+          "name": "shade",
+          "type": "number",
+          "optional": true,
+          "description": "Flap darkening 0–0.6 (default 0.3).",
+          "default": "0.3"
+        },
+        {
+          "name": "size",
+          "type": "number",
+          "optional": true,
+          "description": "Fold leg as a fraction of the shorter side 0.1–0.6 (default 0.35).",
+          "default": "0.35"
+        },
+        {
+          "name": "spring",
+          "type": "SpringOptions",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "threshold",
+          "type": "number",
+          "optional": true,
+          "description": "Neutral zone around the centre 0–0.9 (default 0.3).",
+          "default": "0.3"
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ],
+      "definition": "Omit<ComponentPropsWithoutRef<\"div\">, \"children\"> & Omit<CornerRecedeOptions, \"surface\"> & WithControl<CornerRecedeControl> & { /** One element: the live surface whose corner recedes. */ children: ReactElement; }"
+    },
+    {
+      "name": "CubeControl",
+      "description": "",
+      "module": "advanced/cube",
+      "kind": "interface",
+      "definition": "CubeControl",
+      "props": [
+        {
+          "name": "cancel",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "count",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "drive",
+          "type": "(source: ProgressSource) => () => void",
+          "optional": false,
+          "description": "Follow a 0–1 source instead of the own clock; returns the unsubscribe."
+        },
+        {
+          "name": "finish",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "finished",
+          "type": "Promise<MotionResult>",
+          "optional": false,
+          "description": "Promise of the current (or next) run."
+        },
+        {
+          "name": "go",
+          "type": "(index: number, options?: { direction?: 1 | -1; }) => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "index",
+          "type": "number",
+          "optional": false,
+          "description": "Logical active panel."
+        },
+        {
+          "name": "mode",
+          "type": "\"3d\" | \"fade\"",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "next",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "pause",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "play",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "previous",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "type": "number",
+          "optional": false,
+          "description": "Rendered progress 0–1."
+        },
+        {
+          "name": "refresh",
+          "type": "() => void",
+          "optional": false,
+          "description": "Re-read the panels (children changed)."
+        },
+        {
+          "name": "reverse",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "seek",
+          "type": "(progress: number) => void",
+          "optional": false,
+          "description": "Render the effect at a time fraction 0–1 of its run (eased)."
+        },
+        {
+          "name": "state",
+          "type": "MotionState",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "track",
+          "type": "(options?: ProgressTrackOptions) => ProgressTrack",
+          "optional": false,
+          "description": "A value track for `createTimeline().add(…)`: the timeline clock drives this effect."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "CubeRotate",
+      "description": "D02 — panels (children) that change through a cube rotation (`div.neshel-cube`).",
+      "module": "advanced/react",
+      "kind": "component",
+      "signature": "(props: CubeRotateProps): Element",
+      "props": "CubeRotateProps",
+      "client": true
+    },
+    {
+      "name": "CubeRotateOptions",
+      "description": "",
+      "module": "advanced/cube",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "axis",
+          "type": "Axis3D",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms 0–10000 (default 700).",
+          "default": "700"
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "index",
+          "type": "number",
+          "optional": true,
+          "description": "Initial panel (default 0).",
+          "default": "0"
+        },
+        {
+          "name": "loop",
+          "type": "boolean",
+          "optional": true,
+          "description": "Wrap around at the ends (default true).",
+          "default": "true"
+        },
+        {
+          "name": "onChange",
+          "type": "(index: number) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "perspective",
+          "type": "number",
+          "optional": true,
+          "description": "px 200–6000 (default 1600).",
+          "default": "1600"
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "CubeRotateProps",
+      "description": "",
+      "module": "advanced/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "axis",
+          "type": "Axis3D",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "controlRef",
+          "type": "RefObject<C | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "defaultIndex",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms 0–10000 (default 700).",
+          "default": "700"
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "index",
+          "type": "number",
+          "optional": true,
+          "description": "Controlled panel index."
+        },
+        {
+          "name": "loop",
+          "type": "boolean",
+          "optional": true,
+          "description": "Wrap around at the ends (default true).",
+          "default": "true"
+        },
+        {
+          "name": "onIndexChange",
+          "type": "(index: number) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "perspective",
+          "type": "number",
+          "optional": true,
+          "description": "px 200–6000 (default 1600).",
+          "default": "1600"
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ],
+      "definition": "Omit<ComponentPropsWithoutRef<\"div\">, \"onChange\"> & Omit<CubeRotateOptions, \"index\" | \"onChange\"> & WithControl<CubeControl> & { /** Controlled panel index. */ index?: number; defaultIndex?: number; onIndexChange?(index: number): void; }"
+    },
+    {
+      "name": "FlipSide",
+      "description": "",
+      "module": "advanced/flip",
+      "kind": "type",
+      "definition": "\"front\" | \"back\""
+    },
+    {
+      "name": "GLITCH_MAX_RATE",
+      "description": "Maximum slice changes per second (WCAG 2.3.1 general flash threshold).",
+      "module": "advanced/glitch",
+      "kind": "const",
+      "type": "3"
+    },
+    {
+      "name": "Glitch",
+      "description": "D07 — RGB split / glitch bursts on text (`span.neshel-glitch`); the text exists once.",
+      "module": "advanced/react",
+      "kind": "component",
+      "signature": "(props: GlitchProps): Element",
+      "props": "GlitchProps",
+      "client": true
+    },
+    {
+      "name": "GlitchControl",
+      "description": "",
+      "module": "advanced/glitch",
+      "kind": "interface",
+      "definition": "GlitchControl",
+      "props": [
+        {
+          "name": "active",
+          "type": "boolean",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "play",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "stop",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "GlitchOptions",
+      "description": "",
+      "module": "advanced/glitch",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "colors",
+          "type": "readonly [string, string]",
+          "optional": true,
+          "description": "Two CSS colours of the channel layers."
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "Burst length ms 100–2000 (default 600).",
+          "default": "600"
+        },
+        {
+          "name": "intensity",
+          "type": "number",
+          "optional": true,
+          "description": "0–1 (offset ≤ 6 px; default 0.4)."
+        },
+        {
+          "name": "rate",
+          "type": "number",
+          "optional": true,
+          "description": "Slice changes per second 1–3 (hard cap 3; default 3)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "seed",
+          "type": "number",
+          "optional": true,
+          "description": "Integer seed of the slice pattern (default 1).",
+          "default": "1"
+        },
+        {
+          "name": "trigger",
+          "type": "GlitchTrigger",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "GlitchProps",
+      "description": "",
+      "module": "advanced/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "colors",
+          "type": "readonly [string, string]",
+          "optional": true,
+          "description": "Two CSS colours of the channel layers."
+        },
+        {
+          "name": "controlRef",
+          "type": "RefObject<C | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "Burst length ms 100–2000 (default 600).",
+          "default": "600"
+        },
+        {
+          "name": "intensity",
+          "type": "number",
+          "optional": true,
+          "description": "0–1 (offset ≤ 6 px; default 0.4)."
+        },
+        {
+          "name": "rate",
+          "type": "number",
+          "optional": true,
+          "description": "Slice changes per second 1–3 (hard cap 3; default 3)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "seed",
+          "type": "number",
+          "optional": true,
+          "description": "Integer seed of the slice pattern (default 1).",
+          "default": "1"
+        },
+        {
+          "name": "trigger",
+          "type": "GlitchTrigger",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ],
+      "definition": "ComponentPropsWithoutRef<\"span\"> & GlitchOptions & WithControl<GlitchControl>"
+    },
+    {
+      "name": "GlitchTrigger",
+      "description": "",
+      "module": "advanced/glitch",
+      "kind": "type",
+      "definition": "\"hover-focus\" | \"hover\" | \"focus\" | \"visible\" | \"manual\""
+    },
+    {
+      "name": "GridControl",
+      "description": "",
+      "module": "advanced/grid",
+      "kind": "interface",
+      "definition": "GridControl",
+      "props": [
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "pause",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "play",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "state",
+          "type": "GridState",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "GridState",
+      "description": "",
+      "module": "advanced/grid",
+      "kind": "type",
+      "definition": "\"running\" | \"paused\" | \"completed\" | \"reduced\" | \"static\""
+    },
+    {
+      "name": "PerspectiveGrid",
+      "description": "D09 — a decorative perspective grid floor behind the children (`div.neshel-grid-host`).",
+      "module": "advanced/react",
+      "kind": "component",
+      "signature": "(props: PerspectiveGridProps): Element",
+      "props": "PerspectiveGridProps",
+      "client": true
+    },
+    {
+      "name": "PerspectiveGridOptions",
+      "description": "",
+      "module": "advanced/grid",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "angle",
+          "type": "number",
+          "optional": true,
+          "description": "Plane tilt, deg 45–85 (default 72).",
+          "default": "72"
+        },
+        {
+          "name": "cell",
+          "type": "number",
+          "optional": true,
+          "description": "Cell size px 8–256 (default 48).",
+          "default": "48"
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "optional": true,
+          "description": "Line colour (default `currentColor`).",
+          "default": "currentColor"
+        },
+        {
+          "name": "drift",
+          "type": "number",
+          "optional": true,
+          "description": "Lateral cells per second −4–4 (default 0).",
+          "default": "0"
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "Running time ms 0–600000 or `Infinity` (default 5000).",
+          "default": "5000"
+        },
+        {
+          "name": "fade",
+          "type": "boolean",
+          "optional": true,
+          "description": "Fade toward the horizon (default true).",
+          "default": "true"
+        },
+        {
+          "name": "horizon",
+          "type": "number",
+          "optional": true,
+          "description": "Horizon as a fraction of the height 0–0.9 (default 0.45).",
+          "default": "0.45"
+        },
+        {
+          "name": "line",
+          "type": "number",
+          "optional": true,
+          "description": "Line width px 1–6 (default 2).",
+          "default": "2"
+        },
+        {
+          "name": "opacity",
+          "type": "number",
+          "optional": true,
+          "description": "Opacity 0.05–1 (default 0.8).",
+          "default": "0.8"
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "speed",
+          "type": "number",
+          "optional": true,
+          "description": "Cells per second toward the viewer 0–8 (default 1).",
+          "default": "1"
+        },
+        {
+          "name": "vanishing",
+          "type": "number",
+          "optional": true,
+          "description": "Horizontal vanishing point 0–1 (default 0.5).",
+          "default": "0.5"
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "PerspectiveGridProps",
+      "description": "",
+      "module": "advanced/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "angle",
+          "type": "number",
+          "optional": true,
+          "description": "Plane tilt, deg 45–85 (default 72).",
+          "default": "72"
+        },
+        {
+          "name": "cell",
+          "type": "number",
+          "optional": true,
+          "description": "Cell size px 8–256 (default 48).",
+          "default": "48"
+        },
+        {
+          "name": "color",
+          "type": "string",
+          "optional": true,
+          "description": "Line colour (default `currentColor`).",
+          "default": "currentColor"
+        },
+        {
+          "name": "controlRef",
+          "type": "RefObject<C | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "drift",
+          "type": "number",
+          "optional": true,
+          "description": "Lateral cells per second −4–4 (default 0).",
+          "default": "0"
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "Running time ms 0–600000 or `Infinity` (default 5000).",
+          "default": "5000"
+        },
+        {
+          "name": "fade",
+          "type": "boolean",
+          "optional": true,
+          "description": "Fade toward the horizon (default true).",
+          "default": "true"
+        },
+        {
+          "name": "horizon",
+          "type": "number",
+          "optional": true,
+          "description": "Horizon as a fraction of the height 0–0.9 (default 0.45).",
+          "default": "0.45"
+        },
+        {
+          "name": "line",
+          "type": "number",
+          "optional": true,
+          "description": "Line width px 1–6 (default 2).",
+          "default": "2"
+        },
+        {
+          "name": "opacity",
+          "type": "number",
+          "optional": true,
+          "description": "Opacity 0.05–1 (default 0.8).",
+          "default": "0.8"
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "speed",
+          "type": "number",
+          "optional": true,
+          "description": "Cells per second toward the viewer 0–8 (default 1).",
+          "default": "1"
+        },
+        {
+          "name": "vanishing",
+          "type": "number",
+          "optional": true,
+          "description": "Horizontal vanishing point 0–1 (default 0.5).",
+          "default": "0.5"
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ],
+      "definition": "ComponentPropsWithoutRef<\"div\"> & PerspectiveGridOptions & WithControl<GridControl>"
+    },
+    {
+      "name": "ProgressSource",
+      "description": "Any 0–1 progress source (the 011 `ScrollProgress` and motion values fit).",
+      "module": "core/progress-driver",
+      "kind": "interface",
+      "definition": "ProgressSource",
+      "props": [
+        {
+          "name": "get",
+          "type": "() => number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "subscribe",
+          "type": "(listener: (progress: number) => void) => () => void",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ProgressTrack",
+      "description": "A C01 value track (`timeline.add(effect.track())`).",
+      "module": "core/progress-driver",
+      "kind": "interface",
+      "definition": "ProgressTrack",
+      "props": [
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "from",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "to",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "value",
+          "type": "MotionValue",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "RingCarousel",
+      "description": "D03 — items (children) on a rotating 3D ring (`div.neshel-ring`).",
+      "module": "advanced/react",
+      "kind": "component",
+      "signature": "(props: RingCarouselProps): Element",
+      "props": "RingCarouselProps",
+      "client": true
+    },
+    {
+      "name": "RingCarouselOptions",
+      "description": "",
+      "module": "advanced/ring",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "announce",
+          "type": "(index: number, count: number) => string",
+          "optional": true,
+          "description": "Text of the live announcement (default \"Slide n of N\").",
+          "default": "\"Slide n of N\""
+        },
+        {
+          "name": "drag",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "gap",
+          "type": "number",
+          "optional": true,
+          "description": "px 0–400 between items (auto radius; default 24)."
+        },
+        {
+          "name": "index",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "keyboard",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "description": "Accessible name of the carousel (required unless the root is labelled)."
+        },
+        {
+          "name": "onChange",
+          "type": "(index: number) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "perspective",
+          "type": "number",
+          "optional": true,
+          "description": "px 200–6000 (default 1400).",
+          "default": "1400"
+        },
+        {
+          "name": "radius",
+          "type": "\"auto\" | number",
+          "optional": true,
+          "description": "`\"auto\"` (from the item width) or px 50–4000."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "spring",
+          "type": "SpringOptions",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "RingCarouselProps",
+      "description": "",
+      "module": "advanced/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "announce",
+          "type": "(index: number, count: number) => string",
+          "optional": true,
+          "description": "Text of the live announcement (default \"Slide n of N\").",
+          "default": "\"Slide n of N\""
+        },
+        {
+          "name": "controlRef",
+          "type": "RefObject<C | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "defaultIndex",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "drag",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "gap",
+          "type": "number",
+          "optional": true,
+          "description": "px 0–400 between items (auto radius; default 24)."
+        },
+        {
+          "name": "index",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "keyboard",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": false,
+          "description": "Accessible name of the carousel."
+        },
+        {
+          "name": "onIndexChange",
+          "type": "(index: number) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "perspective",
+          "type": "number",
+          "optional": true,
+          "description": "px 200–6000 (default 1400).",
+          "default": "1400"
+        },
+        {
+          "name": "radius",
+          "type": "\"auto\" | number",
+          "optional": true,
+          "description": "`\"auto\"` (from the item width) or px 50–4000."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "spring",
+          "type": "SpringOptions",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "RingControl",
+      "description": "",
+      "module": "advanced/ring",
+      "kind": "interface",
+      "definition": "RingControl",
+      "props": [
+        {
+          "name": "angle",
+          "type": "number",
+          "optional": false,
+          "description": "Current ring angle (deg)."
+        },
+        {
+          "name": "count",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "go",
+          "type": "(index: number) => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "index",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "next",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "previous",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "refresh",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "TiltShift",
+      "description": "D11 — tilt-shift depth of field over the children (`div.neshel-tiltshift-host`).",
+      "module": "advanced/react",
+      "kind": "component",
+      "signature": "(props: TiltShiftProps): Element",
+      "props": "TiltShiftProps",
+      "client": true
+    },
+    {
+      "name": "TiltShiftControl",
+      "description": "",
+      "module": "advanced/tilt-shift",
+      "kind": "interface",
+      "definition": "TiltShiftControl",
+      "props": [
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "drive",
+          "type": "(source: ProgressSource) => () => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "focus",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "mode",
+          "type": "\"backdrop\" | \"tint\" | \"none\"",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "setFocus",
+          "type": "(center: number) => void",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "TiltShiftOptions",
+      "description": "",
+      "module": "advanced/tilt-shift",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "bands",
+          "type": "number",
+          "optional": true,
+          "description": "Bands per side 1–2 (default 2).",
+          "default": "2"
+        },
+        {
+          "name": "blur",
+          "type": "number",
+          "optional": true,
+          "description": "Maximum blur px 0–12 (default 6).",
+          "default": "6"
+        },
+        {
+          "name": "fallback",
+          "type": "\"tint\" | \"none\"",
+          "optional": true,
+          "description": "Without `backdrop-filter`: a tint gradient (default) or nothing."
+        },
+        {
+          "name": "focus",
+          "type": "number",
+          "optional": true,
+          "description": "Focal centre 0–1 (default 0.5).",
+          "default": "0.5"
+        },
+        {
+          "name": "orientation",
+          "type": "\"horizontal\" | \"vertical\" | \"radial\"",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "type": "ProgressSource",
+          "optional": true,
+          "description": "0–1 source moving the focal centre."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "size",
+          "type": "number",
+          "optional": true,
+          "description": "Focal band 0.1–0.9 (default 0.35).",
+          "default": "0.35"
+        },
+        {
+          "name": "spring",
+          "type": "SpringOptions",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "tint",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "TiltShiftProps",
+      "description": "",
+      "module": "advanced/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "bands",
+          "type": "number",
+          "optional": true,
+          "description": "Bands per side 1–2 (default 2).",
+          "default": "2"
+        },
+        {
+          "name": "blur",
+          "type": "number",
+          "optional": true,
+          "description": "Maximum blur px 0–12 (default 6).",
+          "default": "6"
+        },
+        {
+          "name": "controlRef",
+          "type": "RefObject<C | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "fallback",
+          "type": "\"tint\" | \"none\"",
+          "optional": true,
+          "description": "Without `backdrop-filter`: a tint gradient (default) or nothing."
+        },
+        {
+          "name": "focus",
+          "type": "number",
+          "optional": true,
+          "description": "Focal centre 0–1 (default 0.5).",
+          "default": "0.5"
+        },
+        {
+          "name": "orientation",
+          "type": "\"horizontal\" | \"vertical\" | \"radial\"",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "type": "ProgressSource",
+          "optional": true,
+          "description": "0–1 source moving the focal centre."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "size",
+          "type": "number",
+          "optional": true,
+          "description": "Focal band 0.1–0.9 (default 0.35).",
+          "default": "0.35"
+        },
+        {
+          "name": "spring",
+          "type": "SpringOptions",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "tint",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ],
+      "definition": "ComponentPropsWithoutRef<\"div\"> & TiltShiftOptions & WithControl<TiltShiftControl>"
+    },
+    {
+      "name": "createCardFlip",
+      "description": "",
+      "module": "advanced/flip",
+      "kind": "function",
+      "signature": "(root: HTMLElement, options?: CardFlipOptions | undefined): CardFlipControl"
+    },
+    {
+      "name": "createCornerRecede",
+      "description": "",
+      "module": "advanced/corner",
+      "kind": "function",
+      "signature": "(root: HTMLElement, options?: CornerRecedeOptions | undefined): CornerRecedeControl"
+    },
+    {
+      "name": "createCubeRotate",
+      "description": "",
+      "module": "advanced/cube",
+      "kind": "function",
+      "signature": "(root: HTMLElement, options?: CubeRotateOptions | undefined): CubeControl"
+    },
+    {
+      "name": "createGlitch",
+      "description": "",
+      "module": "advanced/glitch",
+      "kind": "function",
+      "signature": "(element: HTMLElement, options?: GlitchOptions | undefined): GlitchControl"
+    },
+    {
+      "name": "createPerspectiveGrid",
+      "description": "",
+      "module": "advanced/grid",
+      "kind": "function",
+      "signature": "(root: HTMLElement, options?: PerspectiveGridOptions | undefined): GridControl"
+    },
+    {
+      "name": "createRingCarousel",
+      "description": "",
+      "module": "advanced/ring",
+      "kind": "function",
+      "signature": "(root: HTMLElement, options?: RingCarouselOptions | undefined): RingControl"
+    },
+    {
+      "name": "createTiltShift",
+      "description": "",
+      "module": "advanced/tilt-shift",
+      "kind": "function",
+      "signature": "(root: HTMLElement, options?: TiltShiftOptions | undefined): TiltShiftControl"
+    },
+    {
+      "name": "getAdvancedDebugInfo",
+      "description": "",
+      "module": "advanced/engine/debug",
+      "kind": "function",
+      "signature": "(): AdvancedDebugInfo"
+    }
+  ]
+}

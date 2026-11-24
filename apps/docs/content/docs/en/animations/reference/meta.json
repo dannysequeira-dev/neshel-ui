@@ -1,0 +1,24 @@
+{
+  "title": "Reference",
+  "pages": [
+    "root",
+    "core",
+    "entrance",
+    "hover",
+    "press",
+    "gestures",
+    "scroll",
+    "layout",
+    "cinematic",
+    "page-transitions",
+    "page-transitions-next",
+    "page-transitions-react-router",
+    "text",
+    "svg",
+    "media",
+    "ambient",
+    "feedback",
+    "advanced",
+    "gpu"
+  ]
+}

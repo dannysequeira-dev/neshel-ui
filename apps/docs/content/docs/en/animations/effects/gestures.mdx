@@ -1,0 +1,74 @@
+---
+title: Physics & Gestures
+description: "The 11 effects G01–G11: purpose, API, options, examples, reduced motion and cost."
+---
+
+<AnimationsStatus />
+
+Gestures follow the finger, mouse or pen directly; only what happens by itself afterwards (inertia, springs) is removed under reduced motion. Every functional gesture has a keyboard path, installed when the element is focusable, and a non-drag alternative: built-in buttons, or commands from `useGestureControls()`. `touch-action` is set only on the gesture area, so the page keeps scrolling elsewhere. Callbacks fire on start, end and commits; do not set React state per frame.
+
+## G01 · Drag with inertia [#g01]
+
+`drag` moves the element with inertia. `constraints` limits it to the parent, an element or a rectangle, `elastic` (0.35) is the rubber band at the edges, and arrow keys move by `keyboardStep` (10 px, five times more with Shift).
+
+<Effect id="G01" />
+
+## G02 · Drag and snap [#g02]
+
+`dragSnap` releases to the nearest of `snap`: points, or `{ grid }`. Arrow keys step through the points, `controls.snapTo(index)` jumps to one, and `onSnap` reports where it rested.
+
+<Effect id="G02" />
+
+## G03 · Swipe to dismiss [#g03]
+
+`<SwipeDismiss>` flings its content away past `distance` (half the width) or `velocity` (800 px/s) and then calls `onDismiss`; you remove the item. It renders a dismiss button, and Delete or Backspace work on focus.
+
+<Effect id="G03" />
+
+## G04 · Pull to refresh [#g04]
+
+`<PullToRefresh>` renders a scroll container. Pulling at the top beyond `threshold` (72 px), or pressing its refresh button, calls `onRefresh` once and marks the region `aria-busy` until the promise settles.
+
+<Effect id="G04" />
+
+## G05 · Spring follow [#g05]
+
+`springFollow` chases motion values (`x`, `y`, `scale`, `rotate`) with one spring, without React renders. `useSpringFollow` returns the following value when you want to bind it yourself.
+
+<Effect id="G05" />
+
+## G06 · Elastic edge [#g06]
+
+`<ElasticScroll>` adds a decorative rubber band at the start and the end of a scroll container, for wheel and touch. Listeners are passive and scrolling is never blocked; give the region a `label`.
+
+<Effect id="G06" />
+
+## G07 · Fling [#g07]
+
+`fling` is a free throw: the release velocity decays and bounces on `constraints` (the parent by default) with `bounce` (0.5). `onRest` reports the final position and `controls.reset()` brings it back.
+
+<Effect id="G07" />
+
+## G08 · Pinch zoom [#g08]
+
+`<PinchZoom>` zooms an image between `minScale` and `maxScale` (1–4) with two fingers, pans while zoomed and toggles with a double tap. Zoom buttons and the keys `+`, `-` and `0` do the same; one-finger page scrolling stays available at scale 1.
+
+<Effect id="G08" />
+
+## G09 · Rotate gesture [#g09]
+
+`rotateGesture` rotates with two fingers, optionally in steps of `step` degrees, and reports `onRotateEnd`. The keys `[` and `]` and `controls.rotateBy` are the single-pointer alternative.
+
+<Effect id="G09" />
+
+## G10 · Drag to reorder [#g10]
+
+`<Reorder>` asks for a new order through `onReorder(from, to)`; you update your state and the items settle. The package never reorders the DOM. On `<ReorderHandle>`, Space grabs, arrows move, Escape cancels, and each move is announced once.
+
+<Effect id="G10" />
+
+## G11 · Squash and stretch [#g11]
+
+`squashStretch` deforms the element along its velocity while another gesture moves it: `intensity` (0.25). Combine it as `[drag, squashStretch]` on one `<Gesture>`; it is decorative and turns off under reduced motion.
+
+<Effect id="G11" />

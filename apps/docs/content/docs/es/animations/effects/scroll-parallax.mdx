@@ -1,0 +1,74 @@
+---
+title: Scroll y parallax
+description: "Los 11 efectos SP01–SP11: propósito, API, opciones, ejemplos, movimiento reducido y coste."
+---
+
+<AnimationsStatus />
+
+Estos efectos convierten la posición nativa del scroll en una propiedad. La geometría se guarda en caché y solo se vuelve a leer cuando cambia, el fijado es CSS `position: sticky` y nada secuestra el scroll. Los efectos dentro de un `<ScrollScene>` comparten su línea de tiempo; los demás crean la suya, para la página o para un contenedor `source`. Un ancestro con `overflow: hidden`, `auto` o `scroll` se convierte en el contenedor de sticky: usa `overflow: clip`.
+
+## SP01 · Parallax de profundidad [#sp01]
+
+`<ScrollLayer>` mueve una capa de la escena `distance` multiplicado por `depth`, en cualquiera de los ejes (`axis`). Deja el texto en capas con profundidad cercana a 1 para que se lea bien.
+
+<Effect id="SP01" />
+
+## SP02 · Transformación ligada al scroll [#sp02]
+
+`scrubTransform` interpola entre dos poses (`translateX`, `translateY`, `rotateZ`, `scale`, `opacity`) mientras el elemento cruza la pantalla, con un `easing`. Al retroceder se invierte exactamente.
+
+<Effect id="SP02" />
+
+## SP03 · Barra de progreso del scroll [#sp03]
+
+`<ScrollProgressBar>` es una barra decorativa con `aria-hidden` para la página o un `source`; `position` la sitúa arriba, abajo o en el flujo. `scrollProgress` escribe el mismo valor en `--neshel-scroll-progress`.
+
+<Effect id="SP03" />
+
+## SP04 · Sección horizontal [#sp04]
+
+`<HorizontalScroll>` convierte el scroll vertical en el recorrido horizontal de una pista fijada. `layout` puede ser `"pinned"`, `"stacked"` o `"scroll"` (scroll nativo, el del ejemplo). El foco mantiene visibles los elementos; con movimiento reducido se apila. Pon algo enfocable en los elementos: el scroll nativo no es por sí mismo una parada de tabulación.
+
+<Effect id="SP04" />
+
+## SP05 · Escena fijada [#sp05]
+
+`<ScrollScene>` fija un escenario durante `length` alturas de pantalla y expone `--neshel-scene-progress` a todo su contenido. `useScrollScene()` entrega la línea de tiempo a otros efectos, como los capítulos.
+
+<Effect id="SP05" />
+
+## SP06 · Parallax de imagen [#sp06]
+
+`<ParallaxImage>` mueve el primer hijo dentro de un marco con recorte ±`amount` píxeles y lo escala lo justo para cubrirlo. La imagen nativa conserva sus atributos.
+
+<Effect id="SP06" />
+
+## SP07 · Zoom con el scroll [#sp07]
+
+`zoomOnScroll` escala el elemento entre `from` (1) y `to` (1.2) a lo largo del rango elegido. Se compone con otras transformaciones del mismo elemento.
+
+<Effect id="SP07" />
+
+## SP08 · Cambio de color con el scroll [#sp08]
+
+`scrollColorShift` mezcla de 2 a 8 `stops` en `--neshel-scroll-color`, o fija `data-neshel-theme` en un destino con `themes`. Comprueba el contraste del texto en cada parada; con movimiento reducido el cambio es escalonado.
+
+<Effect id="SP08" />
+
+## SP09 · Pila de tarjetas fijas [#sp09]
+
+`<StickyStack>` convierte sus hijos en tarjetas fijas que se apilan; `top` y `offset` son longitudes CSS y `scale` reduce las cubiertas. Las tarjetas más altas que la pantalla no se pueden leer enteras.
+
+<Effect id="SP09" />
+
+## SP10 · Scroll suavizado [#sp10]
+
+La opción `smooth` de `<ScrollScene>`, `useScrollProgress` y `createScrollProgress` pasa el progreso por un resorte. El scroll de la página nunca se suaviza; solo lo que lo sigue.
+
+<Effect id="SP10" />
+
+## SP11 · Inclinación por velocidad [#sp11]
+
+`velocitySkew` inclina el elemento con la velocidad del scroll, hasta `max` grados, y vuelve a cero con un resorte. Úsalo con moderación: es decorativo y se desactiva con movimiento reducido.
+
+<Effect id="SP11" />

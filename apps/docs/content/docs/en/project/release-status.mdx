@@ -8,7 +8,19 @@ description: What is published, how the release was verified, and the known limi
 | npm publication       | **Published.** `@neshel-ui/config`, `layout`, `typography`, `components` and `cli` at `0.1.0` (2026-11-10). |
 | Provenance            | Every package has a signed SLSA v1 provenance statement linking it to tag `v0.1.0` and the GitHub Actions release run. |
 | Private packages      | `@neshel-ui/core` is internal and is not published; no public package depends on it.                     |
+| Experimental          | `@neshel-ui/animations` is private (`0.0.0`) and is not on npm — [Animations](/en/docs/animations/).      |
 | Documentation website | Live at https://neshel-ui.vercel.app (Vercel, deployed from `main`).                                     |
+
+## On main, not in 0.1.0
+
+This site documents the main branch. Pages with a "Not in 0.1.0 yet" notice describe API that the npm
+packages do not have:
+
+- [Accordion](/en/docs/components/accordion/), [Collapsible](/en/docs/components/collapsible/),
+  [Switch](/en/docs/components/switch/) and [Toast](/en/docs/components/toast/);
+- the [nested Escape rules](/en/docs/guides/overlays-portals/#nested-layers) of overlays.
+
+The list is checked against the exports of tag `v0.1.0`.
 
 ## How 0.1.0 was verified after publication
 

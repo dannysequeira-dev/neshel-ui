@@ -1,0 +1,68 @@
+---
+title: Carga y respuesta
+description: "Los 10 efectos F01–F10: propósito, API, opciones, ejemplos, movimiento reducido y coste."
+---
+
+<AnimationsStatus />
+
+Los componentes de respuesta declaran primero su significado a la tecnología de asistencia; el movimiento decora ese estado. El progreso solo tiene valor si lo conoces, los esqueletos quedan fuera del árbol de accesibilidad y una marca de éxito nunca se anuncia sola: lo hace tu mensaje de estado cuando de verdad ha terminado bien. Las notificaciones (`createToaster`, `<Toaster>`) pertenecen a `@neshel-ui/components`; F06 es solo movimiento genérico de entrada y salida para una lista que otro componente posee.
+
+## F01 · Indicador giratorio [#f01]
+
+`<Spinner>` es un `role="progressbar"` indeterminado con nombre `label` («Loading»). Usa `decorative` cuando el texto contiguo ya lo dice, como aquí. Con movimiento reducido la rotación pasa a un pulso lento.
+
+<Effect id="F01" />
+
+## F02 · Brillo de esqueleto [#f02]
+
+`<SkeletonShimmer>` es un marcador oculto (`width`, `height`, `shape`) y `<Shimmer>` añade el barrido a un elemento tuyo, como Skeleton de Components. Pon `aria-busy="true"` en la región que carga.
+
+<Effect id="F02" />
+
+## F03 · Barra de progreso [#f03]
+
+`<ProgressBar>` tiene `aria-valuenow` solo con un `value` real sobre `max`; sin él es indeterminada. `label` es obligatorio y `valueText` explica el número con palabras.
+
+<Effect id="F03" />
+
+## F04 · Puntos pulsantes [#f04]
+
+`<DotsPulse>` es un indicador indeterminado en línea con las mismas reglas de `label` y `decorative` que el spinner. Con movimiento reducido los puntos cambian de opacidad lentamente en vez de botar.
+
+<Effect id="F04" />
+
+## F05 · Marca de confirmación [#f05]
+
+`<SuccessMark>` traza una marca cuando `show` pasa a verdadero. Es decorativa por defecto; con `label` es una imagen con nombre. Nunca anuncia nada por sí sola.
+
+<Effect id="F05" />
+
+## F06 · Entrada y salida [#f06]
+
+`<EnterExit>` mueve los elementos de una lista que declara `data-state`: entran desde `from` y salen hacia `exitTo`. Aquí anima un `<Toaster motion="none">` de Components, que es dueño de los mensajes, temporizadores, foco y anuncios; sirve cualquier lista con el mismo contrato DOM.
+
+<Effect id="F06" />
+
+## F07 · Botón de carga [#f07]
+
+`<LoadingButton>` conserva el mismo botón, su nombre, su ancho y su foco mientras `loading`, pone `aria-disabled` y bloquea una segunda activación. Úsalo sobre un Button de Components sin su propia prop `loading`.
+
+<Effect id="F07" />
+
+## F08 · Pulso optimista [#f08]
+
+`<OptimisticPulse>` muestra el `status` de un cambio hecho antes de la respuesta del servidor: `pending` pulsa, `confirmed` se asienta y `failed` se ve distinto y llama a `onRollback`. Pendiente nunca se presenta como confirmado.
+
+<Effect id="F08" />
+
+## F09 · Anillo de progreso [#f09]
+
+`<ProgressRing>` acepta un `value`, o una fuente `progress` que actualiza el arco en cada fotograma mientras `aria-valuenow` cambia solo en porcentajes enteros. Sin ninguno es indeterminado.
+
+<Effect id="F09" />
+
+## F10 · Texto pendiente [#f10]
+
+`<PendingText>` pasa una banda clara sobre su texto mientras `pending`. Hay un solo texto accesible, con colores forzados se ve normal y con movimiento reducido queda quieto.
+
+<Effect id="F10" />

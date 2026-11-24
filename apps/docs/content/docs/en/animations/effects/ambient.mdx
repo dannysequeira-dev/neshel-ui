@@ -1,0 +1,68 @@
+---
+title: Background & Ambient
+description: "The 10 effects B01–B10: purpose, API, options, examples, reduced motion and cost."
+---
+
+<AnimationsStatus />
+
+Ambient effects are pure decoration: their layers are `aria-hidden`, ignore the pointer and never contain content. They move only while on screen, on a visible page, without reduced motion and while the page switch allows it. Motion stops after `duration` (5 s by default); `Infinity` is explicit and must come with `<AmbientMotionToggle>` or `ambientMotion.pause()` (WCAG 2.2.2). Check text contrast against the brightest part of the decoration.
+
+## B01 · Gradient shift [#b01]
+
+`<GradientShift>` slides an oversized gradient of two to six `colors` behind its children; `angle` and `speed` (the length of a cycle in ms) set the movement.
+
+<Effect id="B01" />
+
+## B02 · Aurora [#b02]
+
+`<Aurora>` drifts two to five soft `blobs` with `intensity` (0.6). They are radial gradients, not blurred elements, so they stay inexpensive on large areas.
+
+<Effect id="B02" />
+
+## B03 · Grain [#b03]
+
+`<Grain>` overlays one shared noise texture with `opacity` (0.08, up to 0.3), `scale` and `blend`. `jitter` moves it in steps at 8 Hz at most and is off by default.
+
+<Effect id="B03" />
+
+## B04 · Particles [#b04]
+
+`<Particles>` draws seeded particles whose number follows the area (`density`) up to `max` (120, never more than 400); `links` connects neighbours with at most 150 particles. Under reduced motion it draws one still frame. Put padding on an inner element: padding on the container itself stretches the drawing.
+
+<Effect id="B04" />
+
+## B05 · Starfield [#b05]
+
+`<Starfield>` draws depth layers of stars that drift or travel towards the viewer (`mode` `"drift"` or `"warp"`), with `twinkle` and `speed`. Prefer `drift`: warp fills the field of view. As with particles, put padding on an inner element.
+
+<Effect id="B05" />
+
+## B06 · Grid and dots [#b06]
+
+`<GridPattern>` loops a grid or dots `pattern` by exactly one `cell`, so it is seamless; `direction`, `speed` and `fade` adjust it.
+
+<Effect id="B06" />
+
+## B07 · Mesh gradient [#b07]
+
+`<MeshGradient>` moves radial colour points over a base: three to six `colors`, `amplitude` (0.12) and `speed`. It is made with CSS layers, without WebGL.
+
+<Effect id="B07" />
+
+## B08 · Floating shapes [#b08]
+
+`<FloatingShapes>` makes each of its children (at most 24) float by `amplitude` pixels and `rotate` degrees with a `period`. The children are the decoration, so keep real content elsewhere.
+
+<Effect id="B08" />
+
+## B09 · Pointer glow [#b09]
+
+`<PointerGlow>` follows the pointer with a soft light: `size` (360 px), `color`, `intensity` and `smoothing`. It works only with the configured `pointerTypes` and stays still under reduced motion.
+
+<Effect id="B09" />
+
+## B10 · Waves [#b10]
+
+`<Waves>` loops one to four SVG wave `layers` with `amplitude`, `wavelength` and `colors` at the top or the bottom (`position`). The paths are generated once. The example includes the page switch.
+
+<Effect id="B10" />
