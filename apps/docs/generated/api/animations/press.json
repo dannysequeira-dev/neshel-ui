@@ -1,0 +1,985 @@
+{
+  "package": "@neshel-ui/animations/press",
+  "exports": [
+    {
+      "name": "BurstOptions",
+      "description": "P06 — Burst: particles radiate from the centre on an owned layer when `trigger` changes.",
+      "module": "press/effects",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "colors",
+          "type": "readonly string[]",
+          "optional": true,
+          "description": "Particle colours, cycled (default theme-friendly warm colours)."
+        },
+        {
+          "name": "count",
+          "type": "number",
+          "optional": true,
+          "description": "Number of particles (3–24, default 10)."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": "Turn the effect off. Disabled elements (`:disabled`, `aria-disabled=\"true\"`) never react."
+        },
+        {
+          "name": "distance",
+          "type": "number",
+          "optional": true,
+          "description": "Travel distance in px (8–160, default 34)."
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "Duration in ms (200–3000, default 650)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy (default `\"user\"`).",
+          "default": "\"user\""
+        },
+        {
+          "name": "size",
+          "type": "number",
+          "optional": true,
+          "description": "Particle size in px (2–16, default 6)."
+        },
+        {
+          "name": "trigger",
+          "type": "string | number | boolean",
+          "optional": true,
+          "description": "Change this value (a counter, a timestamp) to play the effect. The initial value never plays."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "CheckboxDraw",
+      "description": "Decorative checkbox glyph (aria-hidden SVG) that draws its check mark. Mirror a native checkbox.",
+      "module": "press/components",
+      "kind": "component",
+      "signature": "({ checked, indeterminate, duration, easing, reducedMotion, className, ref, ...rest }: CheckboxDrawProps): Element",
+      "props": "CheckboxDrawProps",
+      "client": true
+    },
+    {
+      "name": "CheckboxDrawOptions",
+      "description": "",
+      "module": "press/controls",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "checked",
+          "type": "boolean | \"indeterminate\"",
+          "optional": false,
+          "description": "Current state (mirror your checkbox)."
+        },
+        {
+          "name": "duration",
+          "type": "number | \"fast\" | \"normal\" | \"slow\" | \"deliberate\"",
+          "optional": true,
+          "description": "Draw duration in ms or preset (default 240).",
+          "default": "240"
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "CheckboxDrawProps",
+      "description": "",
+      "module": "press/components",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "checked",
+          "type": "boolean",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number | \"fast\" | \"normal\" | \"slow\" | \"deliberate\"",
+          "optional": true,
+          "description": "Draw duration in ms or preset (default 240).",
+          "default": "240"
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "indeterminate",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<SVGSVGElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "ContentSwap",
+      "description": "Cross-fades two contents in place. The inactive one is `hidden` (correct without CSS or JavaScript);\nwith `press.css` the swap fades and slides (opacity only under reduced motion).",
+      "module": "press/components",
+      "kind": "component",
+      "signature": "({ active, children, confirm, live, reducedMotion, className, ref, ...rest }: ContentSwapProps): Element",
+      "props": "ContentSwapProps",
+      "client": true
+    },
+    {
+      "name": "ContentSwapOptions",
+      "description": "",
+      "module": "press/controls",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ContentSwapProps",
+      "description": "",
+      "module": "press/components",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "active",
+          "type": "boolean",
+          "optional": false,
+          "description": "Show `confirm` instead of `children` (e.g. `copied`)."
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": false,
+          "description": "Content while idle (e.g. \"Copy\")."
+        },
+        {
+          "name": "confirm",
+          "type": "ReactNode",
+          "optional": false,
+          "description": "Content while active (e.g. \"Copied ✓\")."
+        },
+        {
+          "name": "live",
+          "type": "\"off\" | \"polite\"",
+          "optional": true,
+          "description": "Announce the new content politely when it changes (default `\"off\"`).",
+          "default": "\"off\""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLSpanElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "LongPress",
+      "description": "P11 `<LongPress>`: hold to activate, with a progress layer (`press.css`). Usually `asChild` on your own\n`<button>`; describe the hold in its label or nearby text, and keep a non-timed path for destructive actions.",
+      "module": "press/components",
+      "kind": "component",
+      "signature": "(props: LongPressProps): Element",
+      "props": "LongPressProps",
+      "client": true
+    },
+    {
+      "name": "LongPressOptions",
+      "description": "",
+      "module": "press/long-press",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "Hold time in ms (200–5000, default 600)."
+        },
+        {
+          "name": "keyboard",
+          "type": "\"hold\" | \"press\"",
+          "optional": true,
+          "description": "Keyboard: hold Space/Enter for the duration (`\"hold\"`, default) or activate on one press (`\"press\"`)."
+        },
+        {
+          "name": "moveTolerance",
+          "type": "number",
+          "optional": true,
+          "description": "px of pointer movement that cancels (2–50, default 10)."
+        },
+        {
+          "name": "onCancel",
+          "type": "() => void",
+          "optional": true,
+          "description": "Called when a started press ends without completing."
+        },
+        {
+          "name": "onLongPress",
+          "type": "(source: \"pointer\" | \"keyboard\") => void",
+          "optional": true,
+          "description": "Called once per completed long press."
+        },
+        {
+          "name": "pointerTypes",
+          "type": "readonly (\"mouse\" | \"pen\" | \"touch\")[]",
+          "optional": true,
+          "description": "Pointer types that may long-press (default mouse, pen and touch)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced motion keeps a linear, non-vestibular fill (the progress conveys state). Default `\"user\"`.",
+          "default": "\"user\""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "LongPressProps",
+      "description": "",
+      "module": "press/components",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "asChild",
+          "type": "boolean",
+          "optional": true,
+          "description": "Apply the effects to the single child element instead of rendering a `<div>`."
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "conflicts",
+          "type": "ConflictPolicy",
+          "optional": true,
+          "description": "Conflict reporting for exclusive channels (default: warn in development)."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "Hold time in ms (200–5000, default 600)."
+        },
+        {
+          "name": "keyboard",
+          "type": "\"hold\" | \"press\"",
+          "optional": true,
+          "description": "Keyboard: hold Space/Enter for the duration (`\"hold\"`, default) or activate on one press (`\"press\"`)."
+        },
+        {
+          "name": "moveTolerance",
+          "type": "number",
+          "optional": true,
+          "description": "px of pointer movement that cancels (2–50, default 10)."
+        },
+        {
+          "name": "onCancel",
+          "type": "() => void",
+          "optional": true,
+          "description": "Called when a started press ends without completing."
+        },
+        {
+          "name": "onLongPress",
+          "type": "(source: \"pointer\" | \"keyboard\") => void",
+          "optional": true,
+          "description": "Called once per completed long press."
+        },
+        {
+          "name": "pointerTypes",
+          "type": "LongPressOptions[\"pointerTypes\"]",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced motion keeps a linear, non-vestibular fill (the progress conveys state). Default `\"user\"`.",
+          "default": "\"user\""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "NudgeOptions",
+      "description": "P08 — Nudge / attention jiggle: a short rotation wiggle, optionally repeated a few times.",
+      "module": "press/effects",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "angle",
+          "type": "number",
+          "optional": true,
+          "description": "Amplitude in degrees (1–20, default 6)."
+        },
+        {
+          "name": "cycles",
+          "type": "number",
+          "optional": true,
+          "description": "Oscillations (1–6, default 3)."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": "Turn the effect off. Disabled elements (`:disabled`, `aria-disabled=\"true\"`) never react."
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "Duration in ms (100–2000, default 600)."
+        },
+        {
+          "name": "interval",
+          "type": "number",
+          "optional": true,
+          "description": "Pause between plays in ms (1000–10000, default 2500)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy (default `\"user\"`).",
+          "default": "\"user\""
+        },
+        {
+          "name": "repeat",
+          "type": "number",
+          "optional": true,
+          "description": "Extra plays after the first (0–3, default 0); never more than 4 plays in total (WCAG 2.2.2)."
+        },
+        {
+          "name": "trigger",
+          "type": "string | number | boolean",
+          "optional": true,
+          "description": "Change this value (a counter, a timestamp) to play the effect. The initial value never plays."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "NumberTick",
+      "description": "A number that counts to each new value. The counting copy is aria-hidden and written without React\nrenders; assistive technologies read a visually hidden copy with the final value.",
+      "module": "press/components",
+      "kind": "component",
+      "signature": "({ value, format, locale, formatOptions, duration, easing, reducedMotion, live, className, ref, ...rest }: NumberTickProps): Element",
+      "props": "NumberTickProps",
+      "client": true
+    },
+    {
+      "name": "NumberTickOptions",
+      "description": "",
+      "module": "press/controls",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "duration",
+          "type": "number | \"fast\" | \"normal\" | \"slow\" | \"deliberate\"",
+          "optional": true,
+          "description": "Count duration in ms or preset (default 600).",
+          "default": "600"
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "format",
+          "type": "(value: number) => string",
+          "optional": true,
+          "description": "Formats the displayed number (default `Intl.NumberFormat(locale, formatOptions)`).",
+          "default": "Intl.NumberFormat(locale, formatOptions)"
+        },
+        {
+          "name": "formatOptions",
+          "type": "Intl.NumberFormatOptions",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "locale",
+          "type": "string",
+          "optional": true,
+          "description": "Locale of the default formatter (default `\"en-US\"`, explicit so server and client agree).",
+          "default": "\"en-US\""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "value",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "NumberTickProps",
+      "description": "",
+      "module": "press/components",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "duration",
+          "type": "number | \"fast\" | \"normal\" | \"slow\" | \"deliberate\"",
+          "optional": true,
+          "description": "Count duration in ms or preset (default 600).",
+          "default": "600"
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "format",
+          "type": "(value: number) => string",
+          "optional": true,
+          "description": "Formats the displayed number (default `Intl.NumberFormat(locale, formatOptions)`).",
+          "default": "Intl.NumberFormat(locale, formatOptions)"
+        },
+        {
+          "name": "formatOptions",
+          "type": "Intl.NumberFormatOptions",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "live",
+          "type": "\"off\" | \"polite\"",
+          "optional": true,
+          "description": "Announce changes politely (default `\"off\"`). Announcements carry the final value once per change,\nnever per frame.",
+          "default": "\"off\""
+        },
+        {
+          "name": "locale",
+          "type": "string",
+          "optional": true,
+          "description": "Locale of the default formatter (default `\"en-US\"`, explicit so server and client agree).",
+          "default": "\"en-US\""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLSpanElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "value",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "Press",
+      "description": "`<Press>`: press & microinteraction effects on a `<div>` or, with `asChild`, your own element.",
+      "module": "press/components",
+      "kind": "component",
+      "signature": "<Options, Resolved>(props: PressProps<Options, Resolved>): Element",
+      "props": "PressProps<Options, Resolved>",
+      "client": true
+    },
+    {
+      "name": "PressOptions",
+      "description": "Options shared by press effects.",
+      "module": "press/effects",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": "Turn the effect off. Disabled elements (`:disabled`, `aria-disabled=\"true\"`) never react."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy (default `\"user\"`).",
+          "default": "\"user\""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "PressProps",
+      "description": "",
+      "module": "press/components",
+      "kind": "type",
+      "props": [
+        {
+          "name": "asChild",
+          "type": "boolean",
+          "optional": true,
+          "description": "Apply the effects to the single child element instead of rendering a `<div>`."
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "conflicts",
+          "type": "ConflictPolicy",
+          "optional": true,
+          "description": "Conflict reporting for exclusive channels (default: warn in development)."
+        },
+        {
+          "name": "options",
+          "type": "undefined | NoInfer<Partial<Options>>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "preset",
+          "type": "readonly PresetInput<any, any>[] | PresetInput<Options, Resolved>",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ],
+      "definition": "EffectPrimitiveProps<Options, Resolved>"
+    },
+    {
+      "name": "PressScaleOptions",
+      "description": "P01 — Press scale: shrink while pressed, spring back on release (pointer, Space/Enter).",
+      "module": "press/effects",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": "Turn the effect off. Disabled elements (`:disabled`, `aria-disabled=\"true\"`) never react."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy (default `\"user\"`).",
+          "default": "\"user\""
+        },
+        {
+          "name": "scale",
+          "type": "number",
+          "optional": true,
+          "description": "Scale while pressed (0.5–1, default 0.96). Reduced motion keeps half the amplitude, without spring."
+        },
+        {
+          "name": "spring",
+          "type": "SpringOptions | SpringPreset",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "RippleOptions",
+      "description": "P02 — Ripple: an expanding circle from the press point on a clipped, owned layer.",
+      "module": "press/effects",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "color",
+          "type": "string",
+          "optional": true,
+          "description": "Ripple colour (default `currentColor`).",
+          "default": "currentColor"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": "Turn the effect off. Disabled elements (`:disabled`, `aria-disabled=\"true\"`) never react."
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "Expansion duration in ms (100–3000, default 550)."
+        },
+        {
+          "name": "opacity",
+          "type": "number",
+          "optional": true,
+          "description": "Ripple opacity (0–1, default 0.22)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy (default `\"user\"`).",
+          "default": "\"user\""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ShakeOptions",
+      "description": "P07 — Shake (error): a short damped horizontal shake. Never the only error signal.",
+      "module": "press/effects",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "cycles",
+          "type": "number",
+          "optional": true,
+          "description": "Oscillations (1–8, default 4)."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": "Turn the effect off. Disabled elements (`:disabled`, `aria-disabled=\"true\"`) never react."
+        },
+        {
+          "name": "distance",
+          "type": "number",
+          "optional": true,
+          "description": "Amplitude in px (1–30, default 8). Reduced motion: a third, fewer cycles."
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "Duration in ms (100–2000, default 420)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy (default `\"user\"`).",
+          "default": "\"user\""
+        },
+        {
+          "name": "trigger",
+          "type": "string | number | boolean",
+          "optional": true,
+          "description": "Change this value (a counter, a timestamp) to play the effect. The initial value never plays."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "TapBounceOptions",
+      "description": "P03 — Tap bounce: a springy squash after each activation (click, including keyboard).",
+      "module": "press/effects",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": "Turn the effect off. Disabled elements (`:disabled`, `aria-disabled=\"true\"`) never react."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": "Reduced-motion policy (default `\"user\"`).",
+          "default": "\"user\""
+        },
+        {
+          "name": "spring",
+          "type": "SpringOptions | SpringPreset",
+          "optional": true,
+          "description": "Spring (default `\"bouncy\"`).",
+          "default": "\"bouncy\""
+        },
+        {
+          "name": "strength",
+          "type": "number",
+          "optional": true,
+          "description": "Impulse strength (0–1, default 0.3)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ToggleMorph",
+      "description": "Decorative switch track and thumb (aria-hidden). Use inside a native control, e.g.\n`<button role=\"switch\" aria-checked={on}>` or a `<label>` with an `<input type=\"checkbox\" role=\"switch\">`.",
+      "module": "press/components",
+      "kind": "component",
+      "signature": "({ checked, spring, stretch, reducedMotion, className, ref, ...rest }: ToggleMorphProps): Element",
+      "props": "ToggleMorphProps",
+      "client": true
+    },
+    {
+      "name": "ToggleMorphOptions",
+      "description": "",
+      "module": "press/controls",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "checked",
+          "type": "boolean",
+          "optional": false,
+          "description": "Current state (mirror your switch's `checked` / `aria-checked`)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "spring",
+          "type": "SpringOptions | SpringPreset",
+          "optional": true,
+          "description": "Thumb spring (default `\"snappy\"`).",
+          "default": "\"snappy\""
+        },
+        {
+          "name": "stretch",
+          "type": "number",
+          "optional": true,
+          "description": "Peak stretch of the thumb mid-travel (0–0.6, default 0.3)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ToggleMorphProps",
+      "description": "",
+      "module": "press/components",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "checked",
+          "type": "boolean",
+          "optional": false,
+          "description": "Mirror of your switch's state."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLSpanElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "spring",
+          "type": "SpringOptions | \"gentle\" | \"snappy\" | \"bouncy\"",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "stretch",
+          "type": "number",
+          "optional": true,
+          "description": "Peak thumb stretch mid-travel (0–0.6, default 0.3)."
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "TriggerOptions",
+      "description": "`trigger` handling: plays when the value changes after attachment.",
+      "module": "press/effects",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "trigger",
+          "type": "string | number | boolean",
+          "optional": true,
+          "description": "Change this value (a counter, a timestamp) to play the effect. The initial value never plays."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "burst",
+      "description": "",
+      "module": "press/effects",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<BurstOptions, ResolvedBurst>>"
+    },
+    {
+      "name": "checkboxDraw",
+      "description": "",
+      "module": "press/controls",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<CheckboxDrawOptions, ResolvedCheckboxDraw>>"
+    },
+    {
+      "name": "contentSwap",
+      "description": "",
+      "module": "press/controls",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<ContentSwapOptions, { reducedMotion: ReducedMotion; }>>"
+    },
+    {
+      "name": "longPress",
+      "description": "",
+      "module": "press/long-press",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<LongPressOptions, ResolvedLongPress>>"
+    },
+    {
+      "name": "nudge",
+      "description": "",
+      "module": "press/effects",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<NudgeOptions, ResolvedNudge>>"
+    },
+    {
+      "name": "numberTick",
+      "description": "",
+      "module": "press/controls",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<NumberTickOptions, ResolvedNumberTick>>"
+    },
+    {
+      "name": "pressEffects",
+      "description": "Every press definition in catalogue order (P01–P11), for explicit registries.",
+      "module": "press/index",
+      "kind": "const",
+      "type": "readonly AnyEffectDefinition[]"
+    },
+    {
+      "name": "pressScale",
+      "description": "",
+      "module": "press/effects",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<PressScaleOptions, ResolvedPressScale>>"
+    },
+    {
+      "name": "ripple",
+      "description": "",
+      "module": "press/effects",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<RippleOptions, ResolvedRipple>>"
+    },
+    {
+      "name": "shake",
+      "description": "",
+      "module": "press/effects",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<ShakeOptions, ResolvedShake>>"
+    },
+    {
+      "name": "tapBounce",
+      "description": "",
+      "module": "press/effects",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<TapBounceOptions, ResolvedTapBounce>>"
+    },
+    {
+      "name": "toggleMorph",
+      "description": "",
+      "module": "press/controls",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<ToggleMorphOptions, ResolvedToggleMorph>>"
+    }
+  ]
+}

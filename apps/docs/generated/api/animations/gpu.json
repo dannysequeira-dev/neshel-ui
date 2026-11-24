@@ -1,0 +1,1430 @@
+{
+  "package": "@neshel-ui/animations/gpu",
+  "exports": [
+    {
+      "name": "DEPTH_ASPECT_TOLERANCE",
+      "description": "Aspect tolerance between the image and its depth map.",
+      "module": "gpu/depth-parallax",
+      "kind": "const",
+      "type": "0.02"
+    },
+    {
+      "name": "DepthParallax",
+      "description": "D10 — 2.5D parallax from an explicit depth map (`div.neshel-gpu-frame`).",
+      "module": "gpu/react",
+      "kind": "component",
+      "signature": "(props: DepthParallaxProps): Element",
+      "props": "DepthParallaxProps",
+      "client": true
+    },
+    {
+      "name": "DepthParallaxControl",
+      "description": "",
+      "module": "gpu/depth-parallax",
+      "kind": "interface",
+      "definition": "DepthParallaxControl",
+      "props": [
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "drive",
+          "type": "(source: ProgressSource) => () => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "mode",
+          "type": "GpuMode",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "pose",
+          "type": "{ x: number; y: number; }",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "probe",
+          "type": "(x: number, y: number) => number[] | undefined",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "reason",
+          "type": "GpuReason | undefined",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "seek",
+          "type": "(progress: number) => void",
+          "optional": false,
+          "description": "Render the pose at `progress` between `from` and `to` (exact)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "DepthParallaxOptions",
+      "description": "",
+      "module": "gpu/depth-parallax",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "crossOrigin",
+          "type": "\"anonymous\" | \"use-credentials\"",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "depth",
+          "type": "MapSource",
+          "optional": false,
+          "description": "Grayscale depth map (required): URL, `<img>`, `<canvas>` or `ImageBitmap`."
+        },
+        {
+          "name": "focus",
+          "type": "number",
+          "optional": true,
+          "description": "Depth that stays still 0–1 (default 0.5).",
+          "default": "0.5"
+        },
+        {
+          "name": "from",
+          "type": "ParallaxPose",
+          "optional": true,
+          "description": "Poses of `seek(0)` and `seek(1)` (default x −1 → 1)."
+        },
+        {
+          "name": "image",
+          "type": "HTMLImageElement | HTMLCanvasElement",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "intensity",
+          "type": "number",
+          "optional": true,
+          "description": "0–1 (≤ 0.06 UV; default 0.5)."
+        },
+        {
+          "name": "invert",
+          "type": "boolean",
+          "optional": true,
+          "description": "Black = near (default false: white = near)."
+        },
+        {
+          "name": "maxDpr",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "pointer",
+          "type": "boolean",
+          "optional": true,
+          "description": "Follow the pointer (default true).",
+          "default": "true"
+        },
+        {
+          "name": "pointerTypes",
+          "type": "readonly (\"mouse\" | \"pen\" | \"touch\")[]",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "spring",
+          "type": "SpringOptions",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "steps",
+          "type": "number",
+          "optional": true,
+          "description": "Refinement steps 1–16 (default 8).",
+          "default": "8"
+        },
+        {
+          "name": "to",
+          "type": "ParallaxPose",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "DepthParallaxProps",
+      "description": "",
+      "module": "gpu/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactElement",
+          "optional": false,
+          "description": "One native `<img>` (or `<canvas>`): the content that stays accessible."
+        },
+        {
+          "name": "controlRef",
+          "type": "RefObject<C | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "crossOrigin",
+          "type": "\"anonymous\" | \"use-credentials\"",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "depth",
+          "type": "MapSource",
+          "optional": false,
+          "description": "Grayscale depth map (required): URL, `<img>`, `<canvas>` or `ImageBitmap`."
+        },
+        {
+          "name": "focus",
+          "type": "number",
+          "optional": true,
+          "description": "Depth that stays still 0–1 (default 0.5).",
+          "default": "0.5"
+        },
+        {
+          "name": "from",
+          "type": "ParallaxPose",
+          "optional": true,
+          "description": "Poses of `seek(0)` and `seek(1)` (default x −1 → 1)."
+        },
+        {
+          "name": "intensity",
+          "type": "number",
+          "optional": true,
+          "description": "0–1 (≤ 0.06 UV; default 0.5)."
+        },
+        {
+          "name": "invert",
+          "type": "boolean",
+          "optional": true,
+          "description": "Black = near (default false: white = near)."
+        },
+        {
+          "name": "maxDpr",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "pointer",
+          "type": "boolean",
+          "optional": true,
+          "description": "Follow the pointer (default true).",
+          "default": "true"
+        },
+        {
+          "name": "pointerTypes",
+          "type": "readonly (\"mouse\" | \"pen\" | \"touch\")[]",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "spring",
+          "type": "SpringOptions",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "steps",
+          "type": "number",
+          "optional": true,
+          "description": "Refinement steps 1–16 (default 8).",
+          "default": "8"
+        },
+        {
+          "name": "to",
+          "type": "ParallaxPose",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ],
+      "definition": "FrameProps & Omit<DepthParallaxOptions, \"image\"> & WithControl<DepthParallaxControl>"
+    },
+    {
+      "name": "DisplacementControl",
+      "description": "",
+      "module": "gpu/displacement",
+      "kind": "interface",
+      "definition": "DisplacementControl",
+      "props": [
+        {
+          "name": "amount",
+          "type": "number",
+          "optional": false,
+          "description": "Rendered amount 0–1."
+        },
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "mode",
+          "type": "GpuMode",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "probe",
+          "type": "(x: number, y: number) => number[] | undefined",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "reason",
+          "type": "GpuReason | undefined",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "set",
+          "type": "(amount: number) => void",
+          "optional": false,
+          "description": "Animate the amount (programmatic or external progress)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "DisplacementHover",
+      "description": "D08 — displacement-map distortion on hover/focus (`div.neshel-gpu-frame`).",
+      "module": "gpu/react",
+      "kind": "component",
+      "signature": "(props: DisplacementHoverProps): Element",
+      "props": "DisplacementHoverProps",
+      "client": true
+    },
+    {
+      "name": "DisplacementHoverOptions",
+      "description": "",
+      "module": "gpu/displacement",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "channels",
+          "type": "\"rg\" | \"r\" | \"g\"",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "crossOrigin",
+          "type": "\"anonymous\" | \"use-credentials\"",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "edge",
+          "type": "\"clamp\" | \"mirror\" | \"fade\"",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "focus",
+          "type": "boolean",
+          "optional": true,
+          "description": "Also on `:focus-visible` within the frame (default true).",
+          "default": "true"
+        },
+        {
+          "name": "image",
+          "type": "HTMLImageElement | HTMLCanvasElement",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "map",
+          "type": "MapSource | \"noise\"",
+          "optional": true,
+          "description": "URL, `<img>`, `<canvas>`, `ImageBitmap` or `\"noise\"` (default)."
+        },
+        {
+          "name": "maxDpr",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "pointerTypes",
+          "type": "readonly (\"mouse\" | \"pen\" | \"touch\")[]",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "scale",
+          "type": "number",
+          "optional": true,
+          "description": "Map tiling 0.25–4 (default 1).",
+          "default": "1"
+        },
+        {
+          "name": "seed",
+          "type": "number",
+          "optional": true,
+          "description": "Seed of the built-in noise map (default 1).",
+          "default": "1"
+        },
+        {
+          "name": "spring",
+          "type": "SpringOptions",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "strength",
+          "type": "number",
+          "optional": true,
+          "description": "0–1 (≤ 0.08 UV; default 0.5)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "DisplacementHoverProps",
+      "description": "",
+      "module": "gpu/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "channels",
+          "type": "\"rg\" | \"r\" | \"g\"",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "children",
+          "type": "ReactElement",
+          "optional": false,
+          "description": "One native `<img>` (or `<canvas>`): the content that stays accessible."
+        },
+        {
+          "name": "controlRef",
+          "type": "RefObject<C | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "crossOrigin",
+          "type": "\"anonymous\" | \"use-credentials\"",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "edge",
+          "type": "\"clamp\" | \"mirror\" | \"fade\"",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "focus",
+          "type": "boolean",
+          "optional": true,
+          "description": "Also on `:focus-visible` within the frame (default true).",
+          "default": "true"
+        },
+        {
+          "name": "map",
+          "type": "MapSource | \"noise\"",
+          "optional": true,
+          "description": "URL, `<img>`, `<canvas>`, `ImageBitmap` or `\"noise\"` (default)."
+        },
+        {
+          "name": "maxDpr",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "pointerTypes",
+          "type": "readonly (\"mouse\" | \"pen\" | \"touch\")[]",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "scale",
+          "type": "number",
+          "optional": true,
+          "description": "Map tiling 0.25–4 (default 1).",
+          "default": "1"
+        },
+        {
+          "name": "seed",
+          "type": "number",
+          "optional": true,
+          "description": "Seed of the built-in noise map (default 1).",
+          "default": "1"
+        },
+        {
+          "name": "spring",
+          "type": "SpringOptions",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "strength",
+          "type": "number",
+          "optional": true,
+          "description": "0–1 (≤ 0.08 UV; default 0.5)."
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ],
+      "definition": "FrameProps & Omit<DisplacementHoverOptions, \"image\"> & WithControl<DisplacementControl>"
+    },
+    {
+      "name": "GpuConfig",
+      "description": "",
+      "module": "gpu/engine/config",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "maxContexts",
+          "type": "number",
+          "optional": true,
+          "description": "Simultaneous WebGL2 contexts 1–8 (default 6; browsers keep ~16 per page)."
+        },
+        {
+          "name": "maxDpr",
+          "type": "number",
+          "optional": true,
+          "description": "Device-pixel-ratio cap 1–3 (default 2).",
+          "default": "2"
+        },
+        {
+          "name": "maxTextureSize",
+          "type": "number",
+          "optional": true,
+          "description": "Largest texture side px 256–8192 (default 4096; also capped by the device)."
+        },
+        {
+          "name": "memoryBudget",
+          "type": "number",
+          "optional": true,
+          "description": "Estimated GPU memory budget in MB 16–512 (default 96).",
+          "default": "96"
+        },
+        {
+          "name": "simulate",
+          "type": "{ unsupported?: boolean; shaderFailure?: boolean; textureFailure?: boolean; }",
+          "optional": true,
+          "description": "Testing aid (package-only switches, never consumer GLSL): `unsupported` behaves as if WebGL2 were missing,\n`shaderFailure` makes the next program link fail, `textureFailure` makes uploads fail. Lets apps verify their\nfallbacks; off by default."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "GpuDebugInfo",
+      "description": "",
+      "module": "gpu/engine/debug",
+      "kind": "type",
+      "definition": "typeof gpuCounters",
+      "props": [
+        {
+          "name": "buffers",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "compileErrors",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "contexts",
+          "type": "number",
+          "optional": false,
+          "description": "WebGL2 contexts currently held."
+        },
+        {
+          "name": "drawingBufferBytes",
+          "type": "number",
+          "optional": false,
+          "description": "Estimated drawing-buffer bytes (w × h × 4 × (depth ? 2 : 1))."
+        },
+        {
+          "name": "draws",
+          "type": "number",
+          "optional": false,
+          "description": "Surface draws."
+        },
+        {
+          "name": "effects",
+          "type": "number",
+          "optional": false,
+          "description": "Live GPU effects."
+        },
+        {
+          "name": "evictions",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "fallbacks",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "frames",
+          "type": "number",
+          "optional": false,
+          "description": "Frames in which the shared draw task ran."
+        },
+        {
+          "name": "losses",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "lost",
+          "type": "number",
+          "optional": false,
+          "description": "Surfaces whose context is currently lost (waiting for a restore or a recreation)."
+        },
+        {
+          "name": "programs",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "restores",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "shaders",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "surfaces",
+          "type": "number",
+          "optional": false,
+          "description": "Surfaces created and not released."
+        },
+        {
+          "name": "textureBytes",
+          "type": "number",
+          "optional": false,
+          "description": "Estimated texture bytes (w × h × 4)."
+        },
+        {
+          "name": "textures",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "vertexArrays",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "waiting",
+          "type": "number",
+          "optional": false,
+          "description": "Surfaces waiting for a context (budget reached, nothing evictable)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "GpuMode",
+      "description": "",
+      "module": "gpu/engine/image-effect",
+      "kind": "type",
+      "definition": "\"gpu\" | \"static\" | \"fallback\""
+    },
+    {
+      "name": "GpuReason",
+      "description": "",
+      "module": "gpu/engine/surface",
+      "kind": "type",
+      "definition": "\"unsupported\" | \"shader\" | \"cors\" | \"texture\" | \"memory\" | \"budget\" | \"lost\""
+    },
+    {
+      "name": "GpuSupport",
+      "description": "",
+      "module": "gpu/engine/config",
+      "kind": "interface",
+      "definition": "GpuSupport",
+      "props": [
+        {
+          "name": "reason",
+          "type": "\"server\" | \"unsupported\"",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "webgl2",
+          "type": "boolean",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "MapSource",
+      "description": "",
+      "module": "gpu/engine/sources",
+      "kind": "type",
+      "definition": "string | HTMLImageElement | HTMLCanvasElement | ImageBitmap"
+    },
+    {
+      "name": "PageCurl",
+      "description": "D04 — page curl: the front page peels off and reveals the page underneath (`div.neshel-pagecurl`).",
+      "module": "gpu/react",
+      "kind": "component",
+      "signature": "(props: PageCurlProps): Element",
+      "props": "PageCurlProps",
+      "client": true
+    },
+    {
+      "name": "PageCurlControl",
+      "description": "",
+      "module": "gpu/page-curl",
+      "kind": "interface",
+      "definition": "PageCurlControl",
+      "props": [
+        {
+          "name": "cancel",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "drive",
+          "type": "(source: ProgressSource) => () => void",
+          "optional": false,
+          "description": "Follow a 0–1 source instead of the own clock; returns the unsubscribe."
+        },
+        {
+          "name": "finish",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "finished",
+          "type": "Promise<MotionResult>",
+          "optional": false,
+          "description": "Promise of the current (or next) run."
+        },
+        {
+          "name": "mode",
+          "type": "\"gpu\" | \"css\" | \"static\"",
+          "optional": false,
+          "description": "`\"gpu\"`: mesh deformation; `\"css\"`: rigid turn; `\"static\"`: instant swap (no driver available or reduced)."
+        },
+        {
+          "name": "pause",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "play",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "probe",
+          "type": "(x: number, y: number) => number[] | undefined",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "type": "number",
+          "optional": false,
+          "description": "Rendered progress 0–1."
+        },
+        {
+          "name": "reason",
+          "type": "GpuReason | undefined",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "reverse",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "seek",
+          "type": "(progress: number) => void",
+          "optional": false,
+          "description": "Render the effect at a time fraction 0–1 of its run (eased)."
+        },
+        {
+          "name": "state",
+          "type": "MotionState",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "track",
+          "type": "(options?: ProgressTrackOptions) => ProgressTrack",
+          "optional": false,
+          "description": "A value track for `createTimeline().add(…)`: the timeline clock drives this effect."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "PageCurlOptions",
+      "description": "",
+      "module": "gpu/page-curl",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "back",
+          "type": "string",
+          "optional": true,
+          "description": "CSS colour of the page's reverse (default `#f1f5f9`).",
+          "default": "#f1f5f9"
+        },
+        {
+          "name": "corner",
+          "type": "Corner",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "driver",
+          "type": "\"auto\" | \"gpu\" | \"css\"",
+          "optional": true,
+          "description": "`\"auto\"` (GPU, CSS fallback), `\"gpu\"` (static without WebGL2) or `\"css\"` (rigid turn; live HTML)."
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–10000; default per effect)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "front",
+          "type": "HTMLElement",
+          "optional": true,
+          "description": "The page that turns (GPU: `<img>`/`<canvas>`; CSS: any element; default: the frame's first child)."
+        },
+        {
+          "name": "maxDpr",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "mesh",
+          "type": "\"small\" | \"medium\" | \"large\" | { columns: number; rows: number; }",
+          "optional": true,
+          "description": "`\"small\"` 16×12, `\"medium\"` 32×24, `\"large\"` 64×48 or `{ columns, rows }` ≤ 128×96."
+        },
+        {
+          "name": "onComplete",
+          "type": "(result: MotionResult) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "type": "ProgressSource",
+          "optional": true,
+          "description": "Drive from a 0–1 source instead of the own clock."
+        },
+        {
+          "name": "radius",
+          "type": "number",
+          "optional": true,
+          "description": "Curl radius as a fraction of the diagonal 0.02–0.4 (default 0.1).",
+          "default": "0.1"
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "shading",
+          "type": "number",
+          "optional": true,
+          "description": "0–1 (default 0.6).",
+          "default": "0.6"
+        },
+        {
+          "name": "trigger",
+          "type": "\"manual\" | \"mount\"",
+          "optional": true,
+          "description": "`\"manual\"` (default) or `\"mount\"`."
+        },
+        {
+          "name": "under",
+          "type": "HTMLElement",
+          "optional": true,
+          "description": "The page revealed underneath (default: the frame's second child, optional)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "PageCurlProps",
+      "description": "",
+      "module": "gpu/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "back",
+          "type": "string",
+          "optional": true,
+          "description": "CSS colour of the page's reverse (default `#f1f5f9`).",
+          "default": "#f1f5f9"
+        },
+        {
+          "name": "controlRef",
+          "type": "RefObject<C | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "corner",
+          "type": "Corner",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "driver",
+          "type": "\"auto\" | \"gpu\" | \"css\"",
+          "optional": true,
+          "description": "`\"auto\"` (GPU, CSS fallback), `\"gpu\"` (static without WebGL2) or `\"css\"` (rigid turn; live HTML)."
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–10000; default per effect)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "front",
+          "type": "ReactNode",
+          "optional": false,
+          "description": "The page that turns (an `<img>` for the GPU driver, any element for `driver=\"css\"`)."
+        },
+        {
+          "name": "maxDpr",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "mesh",
+          "type": "\"small\" | \"medium\" | \"large\" | { columns: number; rows: number; }",
+          "optional": true,
+          "description": "`\"small\"` 16×12, `\"medium\"` 32×24, `\"large\"` 64×48 or `{ columns, rows }` ≤ 128×96."
+        },
+        {
+          "name": "onComplete",
+          "type": "(result: MotionResult) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "type": "ProgressSource",
+          "optional": true,
+          "description": "Drive from a 0–1 source instead of the own clock."
+        },
+        {
+          "name": "radius",
+          "type": "number",
+          "optional": true,
+          "description": "Curl radius as a fraction of the diagonal 0.02–0.4 (default 0.1).",
+          "default": "0.1"
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "shading",
+          "type": "number",
+          "optional": true,
+          "description": "0–1 (default 0.6).",
+          "default": "0.6"
+        },
+        {
+          "name": "trigger",
+          "type": "\"manual\" | \"mount\"",
+          "optional": true,
+          "description": "`\"manual\"` (default) or `\"mount\"`."
+        },
+        {
+          "name": "under",
+          "type": "ReactNode",
+          "optional": true,
+          "description": "The page underneath (any accessible content)."
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "ParallaxPose",
+      "description": "",
+      "module": "gpu/depth-parallax",
+      "kind": "interface",
+      "definition": "ParallaxPose",
+      "props": [
+        {
+          "name": "x",
+          "type": "number",
+          "optional": true,
+          "description": "−1 (left) … 1 (right)."
+        },
+        {
+          "name": "y",
+          "type": "number",
+          "optional": true,
+          "description": "−1 (top) … 1 (bottom)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ProgressSource",
+      "description": "Any 0–1 progress source (the 011 `ScrollProgress` and motion values fit).",
+      "module": "core/progress-driver",
+      "kind": "interface",
+      "definition": "ProgressSource",
+      "props": [
+        {
+          "name": "get",
+          "type": "() => number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "subscribe",
+          "type": "(listener: (progress: number) => void) => () => void",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ProgressTrack",
+      "description": "A C01 value track (`timeline.add(effect.track())`).",
+      "module": "core/progress-driver",
+      "kind": "interface",
+      "definition": "ProgressTrack",
+      "props": [
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "from",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "to",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "value",
+          "type": "MotionValue",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "Ripple",
+      "description": "D06 — liquid ripples on an image (`div.neshel-gpu-frame`).",
+      "module": "gpu/react",
+      "kind": "component",
+      "signature": "(props: RippleProps): Element",
+      "props": "RippleProps",
+      "client": true
+    },
+    {
+      "name": "RippleControl",
+      "description": "",
+      "module": "gpu/ripple",
+      "kind": "interface",
+      "definition": "RippleControl",
+      "props": [
+        {
+          "name": "active",
+          "type": "boolean",
+          "optional": false,
+          "description": "Whether waves are still moving (a clock task exists)."
+        },
+        {
+          "name": "clear",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "drive",
+          "type": "(source: ProgressSource) => () => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "impact",
+          "type": "(x?: number, y?: number, strength?: number) => void",
+          "optional": false,
+          "description": "Add an impact at (x, y) in 0–1 frame coordinates (default centre)."
+        },
+        {
+          "name": "mode",
+          "type": "GpuMode",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "probe",
+          "type": "(x: number, y: number) => number[] | undefined",
+          "optional": false,
+          "description": "Debug probe (lab/tests): RGBA at (x, y) after a synchronous draw."
+        },
+        {
+          "name": "reason",
+          "type": "GpuReason | undefined",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "seek",
+          "type": "(progress: number) => void",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "RippleOptions",
+      "description": "",
+      "module": "gpu/ripple",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "amplitude",
+          "type": "number",
+          "optional": true,
+          "description": "0–1 (≤ 0.03 UV; default 0.5)."
+        },
+        {
+          "name": "damping",
+          "type": "number",
+          "optional": true,
+          "description": "0.5–6 per second (default 2.5).",
+          "default": "2.5"
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms of the `seek`/`drive` timeline 200–10000 (default 2400).",
+          "default": "2400"
+        },
+        {
+          "name": "frequency",
+          "type": "number",
+          "optional": true,
+          "description": "0.5–4 (default 1).",
+          "default": "1"
+        },
+        {
+          "name": "image",
+          "type": "HTMLImageElement | HTMLCanvasElement",
+          "optional": true,
+          "description": "The raster source (default: the frame's first `img`/`canvas`)."
+        },
+        {
+          "name": "maxDpr",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "maxImpacts",
+          "type": "number",
+          "optional": true,
+          "description": "1–8 simultaneous impacts (default 4).",
+          "default": "4"
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "seed",
+          "type": "number",
+          "optional": true,
+          "description": "Integer seed of the `seek`/`drive` pattern (default 1).",
+          "default": "1"
+        },
+        {
+          "name": "speed",
+          "type": "number",
+          "optional": true,
+          "description": "0.1–1.5 UV per second (default 0.45).",
+          "default": "0.45"
+        },
+        {
+          "name": "trigger",
+          "type": "\"pointer\" | \"hover\" | \"manual\"",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "RippleProps",
+      "description": "",
+      "module": "gpu/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "amplitude",
+          "type": "number",
+          "optional": true,
+          "description": "0–1 (≤ 0.03 UV; default 0.5)."
+        },
+        {
+          "name": "children",
+          "type": "ReactElement",
+          "optional": false,
+          "description": "One native `<img>` (or `<canvas>`): the content that stays accessible."
+        },
+        {
+          "name": "controlRef",
+          "type": "RefObject<C | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "damping",
+          "type": "number",
+          "optional": true,
+          "description": "0.5–6 per second (default 2.5).",
+          "default": "2.5"
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms of the `seek`/`drive` timeline 200–10000 (default 2400).",
+          "default": "2400"
+        },
+        {
+          "name": "frequency",
+          "type": "number",
+          "optional": true,
+          "description": "0.5–4 (default 1).",
+          "default": "1"
+        },
+        {
+          "name": "maxDpr",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "maxImpacts",
+          "type": "number",
+          "optional": true,
+          "description": "1–8 simultaneous impacts (default 4).",
+          "default": "4"
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "seed",
+          "type": "number",
+          "optional": true,
+          "description": "Integer seed of the `seek`/`drive` pattern (default 1).",
+          "default": "1"
+        },
+        {
+          "name": "speed",
+          "type": "number",
+          "optional": true,
+          "description": "0.1–1.5 UV per second (default 0.45).",
+          "default": "0.45"
+        },
+        {
+          "name": "trigger",
+          "type": "\"pointer\" | \"hover\" | \"manual\"",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ],
+      "definition": "FrameProps & Omit<RippleOptions, \"image\"> & WithControl<RippleControl>"
+    },
+    {
+      "name": "configureGpu",
+      "description": "",
+      "module": "gpu/engine/config",
+      "kind": "function",
+      "signature": "(config?: GpuConfig | undefined): void"
+    },
+    {
+      "name": "createDepthParallax",
+      "description": "",
+      "module": "gpu/depth-parallax",
+      "kind": "function",
+      "signature": "(frame: HTMLElement, options: DepthParallaxOptions): DepthParallaxControl"
+    },
+    {
+      "name": "createDisplacementHover",
+      "description": "",
+      "module": "gpu/displacement",
+      "kind": "function",
+      "signature": "(frame: HTMLElement, options?: DisplacementHoverOptions | undefined): DisplacementControl"
+    },
+    {
+      "name": "createPageCurl",
+      "description": "",
+      "module": "gpu/page-curl",
+      "kind": "function",
+      "signature": "(frame: HTMLElement, options?: PageCurlOptions | undefined): PageCurlControl"
+    },
+    {
+      "name": "createRipple",
+      "description": "",
+      "module": "gpu/ripple",
+      "kind": "function",
+      "signature": "(frame: HTMLElement, options?: RippleOptions | undefined): RippleControl"
+    },
+    {
+      "name": "getGpuDebugInfo",
+      "description": "",
+      "module": "gpu/engine/debug",
+      "kind": "function",
+      "signature": "(): { surfaces: number; contexts: number; waiting: number; programs: number; shaders: number; buffers: number; textures: number; vertexArrays: number; textureBytes: number; drawingBufferBytes: number; frames: number; draws: number; compileErrors: number; losses: number; lost: number; restores: number; evictions: number; fallbacks: number; effects: number; }"
+    },
+    {
+      "name": "getGpuSupport",
+      "description": "",
+      "module": "gpu/engine/config",
+      "kind": "function",
+      "signature": "(): GpuSupport"
+    }
+  ]
+}

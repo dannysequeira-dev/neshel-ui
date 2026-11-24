@@ -7,7 +7,29 @@
       "@neshel-ui/config": ["../../packages/config/src/index.ts"],
       "@neshel-ui/layout": ["../../packages/layout/src/index.ts"],
       "@neshel-ui/typography": ["../../packages/typography/src/index.ts"],
-      "@neshel-ui/components": ["../../packages/components/src/index.ts"]
+      "@neshel-ui/components": ["../../packages/components/src/index.ts"],
+      "@neshel-ui/animations": ["../../packages/animations/src/index.ts"],
+      "@neshel-ui/animations/core": ["../../packages/animations/src/core/index.ts"],
+      "@neshel-ui/animations/entrance": ["../../packages/animations/src/entrance/index.ts"],
+      "@neshel-ui/animations/hover": ["../../packages/animations/src/hover/index.ts"],
+      "@neshel-ui/animations/press": ["../../packages/animations/src/press/index.ts"],
+      "@neshel-ui/animations/scroll": ["../../packages/animations/src/scroll/index.ts"],
+      "@neshel-ui/animations/gestures": ["../../packages/animations/src/gestures/index.ts"],
+      "@neshel-ui/animations/layout": ["../../packages/animations/src/layout/index.ts"],
+      "@neshel-ui/animations/cinematic": ["../../packages/animations/src/cinematic/index.ts"],
+      "@neshel-ui/animations/page-transitions": [
+        "../../packages/animations/src/page-transitions/index.ts"
+      ],
+      "@neshel-ui/animations/text": ["../../packages/animations/src/text/index.ts"],
+      "@neshel-ui/animations/svg": ["../../packages/animations/src/svg/index.ts"],
+      "@neshel-ui/animations/media": ["../../packages/animations/src/media/index.ts"],
+      "@neshel-ui/animations/ambient": ["../../packages/animations/src/ambient/index.ts"],
+      "@neshel-ui/animations/feedback": ["../../packages/animations/src/feedback/index.ts"],
+      "@neshel-ui/animations/advanced": ["../../packages/animations/src/advanced/index.ts"],
+      "@neshel-ui/animations/gpu": ["../../packages/animations/src/gpu/index.ts"],
+      "@neshel-ui/animations/page-transitions/next": [
+        "../../packages/animations/src/page-transitions/next.tsx"
+      ]
     }
   }
 }

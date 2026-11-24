@@ -22,6 +22,8 @@ const TYPES = {
   ".woff": "font/woff",
   ".zip": "application/zip",
   ".map": "application/json; charset=utf-8",
+  ".mp4": "video/mp4",
+  ".webm": "video/webm",
 };
 
 /** Map a URL path to a file inside root, or undefined (never escapes root). */
@@ -38,6 +40,15 @@ export function resolveRequest(root, basePath, urlPath) {
   return candidates.find((file) => existsSync(file) && statSync(file).isFile());
 }
 
+/** One `bytes=` range (video seeking needs it, like any real host), or undefined for the whole file. */
+export function parseRange(header, size) {
+  const match = /^bytes=(\d*)-(\d*)$/.exec(header ?? "");
+  if (!match || (!match[1] && !match[2])) return undefined;
+  const start = match[1] ? Number(match[1]) : Math.max(0, size - Number(match[2]));
+  const end = match[1] && match[2] ? Math.min(Number(match[2]), size - 1) : size - 1;
+  return start > end || start >= size ? "unsatisfiable" : { start, end };
+}
+
 export function startStaticServer(root, { basePath = "", port = 0 } = {}) {
   const server = createServer((request, response) => {
     const file = resolveRequest(root, basePath, request.url ?? "/");
@@ -49,8 +60,25 @@ export function startStaticServer(root, { basePath = "", port = 0 } = {}) {
       return;
     }
     const type = TYPES[extname(file).toLowerCase()] ?? "application/octet-stream";
-    response.writeHead(200, { "content-type": type, "cache-control": "no-store" });
-    createReadStream(file).pipe(response);
+    const { size } = statSync(file);
+    const range = parseRange(request.headers.range, size);
+    const headers = { "content-type": type, "cache-control": "no-store", "accept-ranges": "bytes" };
+    if (range === "unsatisfiable") {
+      response.writeHead(416, { ...headers, "content-range": `bytes */${size}` });
+      response.end();
+      return;
+    }
+    if (!range) {
+      response.writeHead(200, headers);
+      createReadStream(file).pipe(response);
+      return;
+    }
+    response.writeHead(206, {
+      ...headers,
+      "content-range": `bytes ${range.start}-${range.end}/${size}`,
+      "content-length": range.end - range.start + 1,
+    });
+    createReadStream(file, range).pipe(response);
   });
   return new Promise((resolvePromise) => {
     server.listen(port, "127.0.0.1", () => {

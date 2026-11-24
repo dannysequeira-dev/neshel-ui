@@ -13,6 +13,24 @@ const require = createRequire(import.meta.url);
 const ts = require("typescript");
 
 export const API_PACKAGES = ["config", "layout", "typography", "components"];
+
+/**
+ * Entries of the private, experimental animations package (feature 018), keyed by subpath ("." is the
+ * package root). Derived from the manifest so that a new subpath cannot be left undocumented.
+ */
+export function animationEntries() {
+  const manifest = JSON.parse(
+    readFileSync(join(repoRoot, "packages", "animations", "package.json"), "utf8"),
+  );
+  return Object.entries(manifest.exports)
+    .filter(([, target]) => typeof target === "object" && target.types)
+    .map(([key, target]) => ({
+      entry: key === "." ? "." : key.slice(2),
+      slug: key === "." ? "root" : key.slice(2).replaceAll("/", "-"),
+      specifier: `${manifest.name}${key.slice(1)}`,
+      types: target.types.replace(/^\.\/dist\//, ""),
+    }));
+}
 const OUT_DIR = join(repoRoot, "apps", "docs", "generated", "api");
 
 const toPosix = (path) => path.split(sep).join("/");
@@ -112,8 +130,8 @@ function isClientModule(decl) {
   return /^\s*["']use client["']/.test(readFileSync(js, "utf8"));
 }
 
-export function extractPackage(pkg) {
-  const entry = join(repoRoot, "packages", pkg, "dist", "index.d.ts");
+export function extractPackage(pkg, types = "index.d.ts") {
+  const entry = join(repoRoot, "packages", pkg, "dist", types);
   if (!existsSync(entry)) throw new Error(`${pkg}: ${entry} not found — run pnpm build:packages`);
   const program = ts.createProgram([entry], {
     module: ts.ModuleKind.NodeNext,
@@ -238,6 +256,8 @@ export function extractAll() {
   const result = {};
   for (const pkg of API_PACKAGES) result[pkg] = extractPackage(pkg);
   result.cli = extractCli();
+  for (const { slug, specifier, types } of animationEntries())
+    result[`animations/${slug}`] = { ...extractPackage("animations", types), package: specifier };
   return result;
 }
 
@@ -255,6 +275,7 @@ function main() {
       ? readFileSync(file, "utf8").replace(/\r\n/g, "\n")
       : undefined;
     if (current === content) continue;
+    mkdirSync(dirname(file), { recursive: true });
     if (check) stale.push(toPosix(relative(repoRoot, file)));
     else {
       mkdirSync(dirname(file), { recursive: true });

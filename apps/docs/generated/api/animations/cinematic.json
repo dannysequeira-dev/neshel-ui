@@ -1,0 +1,2638 @@
+{
+  "package": "@neshel-ui/animations/cinematic",
+  "exports": [
+    {
+      "name": "CallDirection",
+      "description": "",
+      "module": "cinematic/engine/timeline",
+      "kind": "type",
+      "definition": "\"forward\" | \"reverse\""
+    },
+    {
+      "name": "CallFn",
+      "description": "",
+      "module": "cinematic/engine/timeline",
+      "kind": "type",
+      "definition": "(direction: CallDirection) => unknown"
+    },
+    {
+      "name": "Camera",
+      "description": "",
+      "module": "cinematic/camera",
+      "kind": "interface",
+      "definition": "Camera",
+      "props": [
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "jump",
+          "type": "(target: CameraTarget) => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "pose",
+          "type": "Readonly<CameraPose>",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "refresh",
+          "type": "() => void",
+          "optional": false,
+          "description": "Re-measure stage and canvas (after changes no observer can see)."
+        },
+        {
+          "name": "to",
+          "type": "(target: CameraTarget, options?: MoveOptions) => Promise<unknown>",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "track",
+          "type": "(target: CameraTarget, options?: TrackOptions) => ValueTrackInput",
+          "optional": false,
+          "description": "A timeline track from the last planned pose to `target`."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "CameraHandle",
+      "description": "",
+      "module": "cinematic/react",
+      "kind": "interface",
+      "definition": "CameraHandle",
+      "props": [
+        {
+          "name": "current",
+          "type": "Camera | undefined",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "jump",
+          "type": "(target: CameraTarget) => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "to",
+          "type": "(target: CameraTarget, options?: { duration?: number; }) => Promise<unknown>",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "CameraOptions",
+      "description": "",
+      "module": "cinematic/camera",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "bounds",
+          "type": "\"contain\" | \"none\"",
+          "optional": true,
+          "description": "`\"contain\"` keeps the canvas covering the stage (default); `\"none\"` allows any pose."
+        },
+        {
+          "name": "followFocus",
+          "type": "boolean",
+          "optional": true,
+          "description": "Pan to elements that receive keyboard focus inside the canvas (default true).",
+          "default": "true"
+        },
+        {
+          "name": "initial",
+          "type": "Partial<CameraPose>",
+          "optional": true,
+          "description": "Initial pose (default: canvas centre at zoom 1)."
+        },
+        {
+          "name": "maxZoom",
+          "type": "number",
+          "optional": true,
+          "description": "1–10 (default 4).",
+          "default": "4"
+        },
+        {
+          "name": "minZoom",
+          "type": "number",
+          "optional": true,
+          "description": "0.1–1 (default 0.5).",
+          "default": "0.5"
+        },
+        {
+          "name": "onChange",
+          "type": "(pose: CameraPose) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "padding",
+          "type": "number",
+          "optional": true,
+          "description": "Space around a focused element (0–400, default 24)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "CameraPose",
+      "description": "",
+      "module": "cinematic/camera",
+      "kind": "interface",
+      "definition": "CameraPose",
+      "props": [
+        {
+          "name": "x",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "y",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "zoom",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "CameraStage",
+      "description": "C03: a stage (viewport) over a large canvas; the camera pans and zooms the canvas.",
+      "module": "cinematic/react",
+      "kind": "component",
+      "signature": "({ label, camera, minZoom, maxZoom, bounds, padding, followFocus, initial, reducedMotion, canvasClassName, canvasStyle, className, children, ref, ...rest }: CameraStageProps): Element",
+      "props": "CameraStageProps",
+      "client": true
+    },
+    {
+      "name": "CameraStageProps",
+      "description": "",
+      "module": "cinematic/react",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "bounds",
+          "type": "\"contain\" | \"none\"",
+          "optional": true,
+          "description": "`\"contain\"` keeps the canvas covering the stage (default); `\"none\"` allows any pose."
+        },
+        {
+          "name": "camera",
+          "type": "CameraHandle",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "canvasClassName",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "canvasStyle",
+          "type": "CSSProperties",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "followFocus",
+          "type": "boolean",
+          "optional": true,
+          "description": "Pan to elements that receive keyboard focus inside the canvas (default true).",
+          "default": "true"
+        },
+        {
+          "name": "initial",
+          "type": "Partial<CameraPose>",
+          "optional": true,
+          "description": "Initial pose (default: canvas centre at zoom 1)."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": false,
+          "description": "Accessible name of the stage region (required: it is a scrollable region without JS)."
+        },
+        {
+          "name": "maxZoom",
+          "type": "number",
+          "optional": true,
+          "description": "1–10 (default 4).",
+          "default": "4"
+        },
+        {
+          "name": "minZoom",
+          "type": "number",
+          "optional": true,
+          "description": "0.1–1 (default 0.5).",
+          "default": "0.5"
+        },
+        {
+          "name": "padding",
+          "type": "number",
+          "optional": true,
+          "description": "Space around a focused element (0–400, default 24)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "CameraTarget",
+      "description": "",
+      "module": "cinematic/camera",
+      "kind": "type",
+      "definition": "Partial<CameraPose> | { focus: Element; padding?: number; }",
+      "props": [
+        {
+          "name": "focus",
+          "type": "Element",
+          "optional": false,
+          "description": "",
+          "variantOnly": true
+        },
+        {
+          "name": "padding",
+          "type": "number",
+          "optional": true,
+          "description": "",
+          "variantOnly": true
+        },
+        {
+          "name": "x",
+          "type": "number",
+          "optional": true,
+          "description": "",
+          "variantOnly": true
+        },
+        {
+          "name": "y",
+          "type": "number",
+          "optional": true,
+          "description": "",
+          "variantOnly": true
+        },
+        {
+          "name": "zoom",
+          "type": "number",
+          "optional": true,
+          "description": "",
+          "variantOnly": true
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "Chapter",
+      "description": "A chapter of the nearest `<SceneChapters>`; marked `data-active` while active.",
+      "module": "cinematic/react",
+      "kind": "component",
+      "signature": "({ id, weight, children, ref, ...rest }: ChapterProps): Element",
+      "props": "ChapterProps",
+      "client": true
+    },
+    {
+      "name": "ChapterInput",
+      "description": "",
+      "module": "cinematic/scene",
+      "kind": "interface",
+      "definition": "ChapterInput",
+      "props": [
+        {
+          "name": "element",
+          "type": "Element | null",
+          "optional": true,
+          "description": "Element marked `data-active` while the chapter is active."
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "weight",
+          "type": "number",
+          "optional": true,
+          "description": "Relative length (0.1–10, default 1)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ChapterProps",
+      "description": "",
+      "module": "cinematic/react",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "weight",
+          "type": "number",
+          "optional": true,
+          "description": "Relative length (0.1–10, default 1)."
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "CinematicDebugInfo",
+      "description": "",
+      "module": "cinematic/engine/debug",
+      "kind": "interface",
+      "definition": "CinematicDebugInfo",
+      "props": [
+        {
+          "name": "clocks",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "detached",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "listeners",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "observers",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "reads",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "renders",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "timelines",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "waits",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "Cover",
+      "description": "",
+      "module": "cinematic/cover",
+      "kind": "interface",
+      "definition": "Cover",
+      "props": [
+        {
+          "name": "close",
+          "type": "(options?: MoveOptions) => Promise<unknown>",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "open",
+          "type": "(options?: MoveOptions) => Promise<unknown>",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "type": "number",
+          "optional": false,
+          "description": "0 covered … 1 open."
+        },
+        {
+          "name": "track",
+          "type": "(options?: TrackOptions & { to?: 0 | 1; }) => ValueTrackInput",
+          "optional": false,
+          "description": "A timeline track that opens (`to` 1, default) or closes the cover."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "CoverOptions",
+      "description": "",
+      "module": "cinematic/cover",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "covered",
+          "type": "boolean",
+          "optional": true,
+          "description": "Start covered (default true) or open.",
+          "default": "true"
+        },
+        {
+          "name": "pattern",
+          "type": "CoverPattern",
+          "optional": true,
+          "description": "Default `\"split-x\"`.",
+          "default": "\"split-x\""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "slats",
+          "type": "number",
+          "optional": true,
+          "description": "Shutter slats (2–12, default 6)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "CoverPattern",
+      "description": "",
+      "module": "cinematic/cover",
+      "kind": "type",
+      "definition": "\"split-x\" | \"split-y\" | \"curtain\" | \"shutter\""
+    },
+    {
+      "name": "CurtainReveal",
+      "description": "C05: a curtain (two drapes) or a shutter (slats) opens over the content.",
+      "module": "cinematic/react",
+      "kind": "component",
+      "signature": "({ pattern, slats, ...props }: CurtainRevealProps): Element",
+      "props": "CurtainRevealProps",
+      "client": true
+    },
+    {
+      "name": "CurtainRevealProps",
+      "description": "",
+      "module": "cinematic/react",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "appear",
+          "type": "\"client\" | \"always\"",
+          "optional": true,
+          "description": "Reveal on hydration of server markup too (default false: server content is never covered again)."
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onOpenChange",
+          "type": "(open: boolean) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "open",
+          "type": "boolean",
+          "optional": true,
+          "description": "Controlled: open (true) or covered (false). Omitted: reveals once when mounted on the client."
+        },
+        {
+          "name": "pattern",
+          "type": "\"curtain\" | \"shutter\"",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "slats",
+          "type": "number",
+          "optional": true,
+          "description": "Shutter slats (2–12, default 6)."
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "DepthOfField",
+      "description": "C08: its element children are depth layers; layers away from `focus` blur.",
+      "module": "cinematic/react",
+      "kind": "component",
+      "signature": "({ focus, maxBlur, falloff, duration, reducedMotion, className, children, ref, ...rest }: DepthOfFieldProps): Element",
+      "props": "DepthOfFieldProps",
+      "client": true
+    },
+    {
+      "name": "DepthOfFieldControl",
+      "description": "",
+      "module": "cinematic/depth",
+      "kind": "interface",
+      "definition": "DepthOfField",
+      "props": [
+        {
+          "name": "clear",
+          "type": "(options?: MoveOptions) => Promise<unknown>",
+          "optional": false,
+          "description": "Everything sharp."
+        },
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "focus",
+          "type": "(index: number, options?: MoveOptions) => Promise<unknown>",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "focused",
+          "type": "number",
+          "optional": false,
+          "description": "Focused layer, or `-1` when every layer is sharp."
+        },
+        {
+          "name": "track",
+          "type": "(index: number, options?: TrackOptions) => ValueTrackInput",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "DepthOfFieldOptions",
+      "description": "",
+      "module": "cinematic/depth",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "falloff",
+          "type": "number",
+          "optional": true,
+          "description": "Blur per layer of distance in px (0–12, default 4)."
+        },
+        {
+          "name": "focus",
+          "type": "number",
+          "optional": true,
+          "description": "Initially focused layer (default none: everything sharp)."
+        },
+        {
+          "name": "maxBlur",
+          "type": "number",
+          "optional": true,
+          "description": "Blur cap in px (0–12, default 8)."
+        },
+        {
+          "name": "priority",
+          "type": "number",
+          "optional": true,
+          "description": "Priority of the `filter` claims (default 0).",
+          "default": "0"
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "scale",
+          "type": "number",
+          "optional": true,
+          "description": "Scale reduction per layer of distance (0–0.1, default 0.02)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "DepthOfFieldProps",
+      "description": "",
+      "module": "cinematic/react",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "falloff",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "focus",
+          "type": "number",
+          "optional": true,
+          "description": "Focused layer (element child index), or -1/omitted for everything sharp."
+        },
+        {
+          "name": "maxBlur",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "EffectTrackInput",
+      "description": "",
+      "module": "cinematic/engine/timeline",
+      "kind": "interface",
+      "definition": "EffectTrackInput",
+      "props": [
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–60000)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "effect",
+          "type": "PresetInput<any, any>",
+          "optional": false,
+          "description": "An Entrance definition (E01–E09/E11) or a preset of one."
+        },
+        {
+          "name": "fill",
+          "type": "TrackFill",
+          "optional": true,
+          "description": "`\"both\"` (default) renders the from-state before the start; `\"forwards\"` writes nothing before it."
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "optional": true,
+          "description": "Stable id for `getTrack`/`retarget`."
+        },
+        {
+          "name": "mode",
+          "type": "\"scrub\" | \"trigger\"",
+          "optional": true,
+          "description": "`\"scrub\"` (default when the definition accepts an external `progress`): the definition follows the\ntimeline clock — seek, scrub, reverse, interruption. `\"trigger\"`: the definition plays with its OWN\nclock when the playhead crosses the start (in), or crosses back (out)."
+        },
+        {
+          "name": "options",
+          "type": "object",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "target",
+          "type": "Styled",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "Letterbox",
+      "description": "C10: cinematic bars slide in from the top and bottom while `active`.",
+      "module": "cinematic/react",
+      "kind": "component",
+      "signature": "({ active, ratio, size, duration, reducedMotion, className, style, children, ref, ...rest }: LetterboxProps): Element",
+      "props": "LetterboxProps",
+      "client": true
+    },
+    {
+      "name": "LetterboxControl",
+      "description": "",
+      "module": "cinematic/letterbox",
+      "kind": "interface",
+      "definition": "LetterboxControl",
+      "props": [
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "hide",
+          "type": "(options?: MoveOptions) => Promise<unknown>",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "type": "number",
+          "optional": false,
+          "description": "0 hidden … 1 shown."
+        },
+        {
+          "name": "show",
+          "type": "(options?: MoveOptions) => Promise<unknown>",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "track",
+          "type": "(show: boolean, options?: TrackOptions) => ValueTrackInput",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "LetterboxOptions",
+      "description": "",
+      "module": "cinematic/letterbox",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "shown",
+          "type": "boolean",
+          "optional": true,
+          "description": "Start with the bars shown (default false).",
+          "default": "false"
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "LetterboxProps",
+      "description": "",
+      "module": "cinematic/react",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "active",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ratio",
+          "type": "number",
+          "optional": true,
+          "description": "Visible aspect ratio between the bars (1–4, default 2.39)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "size",
+          "type": "string",
+          "optional": true,
+          "description": "Fixed bar size (CSS length) instead of `ratio`."
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "MoveOptions",
+      "description": "",
+      "module": "cinematic/engine/progress",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–10000; default per effect)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "Pose",
+      "description": "",
+      "module": "cinematic/engine/pose",
+      "kind": "interface",
+      "definition": "Pose",
+      "props": [
+        {
+          "name": "blur",
+          "type": "number",
+          "optional": true,
+          "description": "Gaussian blur in px (`filter` channel, arbitrated)."
+        },
+        {
+          "name": "opacity",
+          "type": "number",
+          "optional": true,
+          "description": "Opacity factor 0–1 (multiplies with the element's own opacity)."
+        },
+        {
+          "name": "rotate",
+          "type": "number",
+          "optional": true,
+          "description": "Rotation in degrees (z axis)."
+        },
+        {
+          "name": "scale",
+          "type": "number",
+          "optional": true,
+          "description": "Uniform scale."
+        },
+        {
+          "name": "scaleX",
+          "type": "number",
+          "optional": true,
+          "description": "Horizontal / vertical scale (multiply with `scale`)."
+        },
+        {
+          "name": "scaleY",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "x",
+          "type": "number",
+          "optional": true,
+          "description": "Translation in px."
+        },
+        {
+          "name": "y",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "PoseTrackInput",
+      "description": "",
+      "module": "cinematic/engine/timeline",
+      "kind": "interface",
+      "definition": "PoseTrackInput",
+      "props": [
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–60000)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "fill",
+          "type": "TrackFill",
+          "optional": true,
+          "description": "`\"both\"` (default) renders the from-state before the start; `\"forwards\"` writes nothing before it."
+        },
+        {
+          "name": "from",
+          "type": "Pose",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "optional": true,
+          "description": "Stable id for `getTrack`/`retarget`."
+        },
+        {
+          "name": "priority",
+          "type": "number",
+          "optional": true,
+          "description": "Priority of the `filter` claim when the pose blurs (default 0).",
+          "default": "0"
+        },
+        {
+          "name": "target",
+          "type": "Styled",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "to",
+          "type": "Pose",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ProgressSource",
+      "description": "Any 0–1 progress source (the 011 `ScrollProgress` fits).",
+      "module": "cinematic/scene",
+      "kind": "interface",
+      "definition": "ProgressSource",
+      "props": [
+        {
+          "name": "get",
+          "type": "() => number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "subscribe",
+          "type": "(listener: (progress: number) => void) => () => void",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "SceneChapter",
+      "description": "",
+      "module": "cinematic/scene",
+      "kind": "interface",
+      "definition": "SceneChapter",
+      "props": [
+        {
+          "name": "end",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "index",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "start",
+          "type": "number",
+          "optional": false,
+          "description": "Start and end as fractions of the scene (0–1)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "SceneChapters",
+      "description": "C02: chapters and segments scrubbed by a progress source (e.g. a scroll scene) or played on a clock.",
+      "module": "cinematic/react",
+      "kind": "component",
+      "signature": "({ source, progress, autoplay, unit, reducedMotion, onChapterChange, className, children, ...rest }: SceneChaptersProps): Element",
+      "props": "SceneChaptersProps",
+      "client": true
+    },
+    {
+      "name": "SceneChaptersControl",
+      "description": "",
+      "module": "cinematic/scene",
+      "kind": "interface",
+      "definition": "SceneChapters",
+      "props": [
+        {
+          "name": "active",
+          "type": "string",
+          "optional": false,
+          "description": "Active chapter id."
+        },
+        {
+          "name": "chapterAt",
+          "type": "(progress: number) => SceneChapter",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "chapters",
+          "type": "readonly SceneChapter[]",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "drive",
+          "type": "(source: ProgressSource) => () => void",
+          "optional": false,
+          "description": "Scrub from a progress source; returns the unsubscribe."
+        },
+        {
+          "name": "pause",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "play",
+          "type": "() => void",
+          "optional": false,
+          "description": "Play the scene on its own clock (no source)."
+        },
+        {
+          "name": "seek",
+          "type": "(progress: number) => void",
+          "optional": false,
+          "description": "Render the scene at a progress (0–1)."
+        },
+        {
+          "name": "seekChapter",
+          "type": "(id: string) => void",
+          "optional": false,
+          "description": "Clock mode: move to a chapter's start."
+        },
+        {
+          "name": "segment",
+          "type": "(chapterId: string, track: TrackInput, span?: readonly [number, number]) => this",
+          "optional": false,
+          "description": "Add a track inside a chapter: `span` is `[start, end]` as fractions of the chapter (default `[0, 1]`).",
+          "default": "[0, 1]"
+        },
+        {
+          "name": "timeline",
+          "type": "Timeline",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "SceneChaptersOptions",
+      "description": "",
+      "module": "cinematic/scene",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "chapters",
+          "type": "readonly ChapterInput[]",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "onChapterChange",
+          "type": "(id: string, index: number) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "unit",
+          "type": "number",
+          "optional": true,
+          "description": "Clock duration when played without a source, ms per weight unit (100–20000, default 1500)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "SceneChaptersProps",
+      "description": "",
+      "module": "cinematic/react",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "autoplay",
+          "type": "boolean",
+          "optional": true,
+          "description": "Clock mode: play the scene when mounted (no source, no `progress`)."
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onChapterChange",
+          "type": "(id: string, index: number) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "type": "number",
+          "optional": true,
+          "description": "Controlled progress 0–1 (used when there is no `source`)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "source",
+          "type": "ProgressSource",
+          "optional": true,
+          "description": "Scrub source: the `useScrollScene()` timeline of a `<ScrollScene>`, or any `{ get, subscribe }`."
+        },
+        {
+          "name": "unit",
+          "type": "number",
+          "optional": true,
+          "description": "ms per chapter weight unit in clock mode (default 1500).",
+          "default": "1500"
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "SceneSegment",
+      "description": "A segment of the enclosing `<Chapter>`: its element follows the chapter's progress.",
+      "module": "cinematic/react",
+      "kind": "component",
+      "signature": "({ effect, options, from, to, span, asChild, children, ref, ...rest }: SceneSegmentProps): Element",
+      "props": "SceneSegmentProps",
+      "client": true
+    },
+    {
+      "name": "SceneSegmentProps",
+      "description": "",
+      "module": "cinematic/react",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "asChild",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "effect",
+          "type": "AnyPreset",
+          "optional": true,
+          "description": "An Entrance definition or preset (triggered as the chapter crosses it)…"
+        },
+        {
+          "name": "from",
+          "type": "Pose",
+          "optional": true,
+          "description": "…or a pose transition (`from` → `to`; default `to` is the identity).",
+          "default": "to"
+        },
+        {
+          "name": "options",
+          "type": "object",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "span",
+          "type": "readonly [number, number]",
+          "optional": true,
+          "description": "`[start, end]` as fractions of the chapter (default `[0, 1]`).",
+          "default": "[0, 1]"
+        },
+        {
+          "name": "to",
+          "type": "Pose",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "SplitReveal",
+      "description": "C04: two package-rendered halves part to reveal the content.",
+      "module": "cinematic/react",
+      "kind": "component",
+      "signature": "({ direction, ...props }: SplitRevealProps): Element",
+      "props": "SplitRevealProps",
+      "client": true
+    },
+    {
+      "name": "SplitRevealProps",
+      "description": "",
+      "module": "cinematic/react",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "appear",
+          "type": "\"client\" | \"always\"",
+          "optional": true,
+          "description": "Reveal on hydration of server markup too (default false: server content is never covered again)."
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "direction",
+          "type": "\"x\" | \"y\"",
+          "optional": true,
+          "description": "`\"x\"`: halves part left/right (default); `\"y\"`: top/bottom."
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onOpenChange",
+          "type": "(open: boolean) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "open",
+          "type": "boolean",
+          "optional": true,
+          "description": "Controlled: open (true) or covered (false). Omitted: reveals once when mounted on the client."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "Spotlight",
+      "description": "C07: dims the stage except a lit circle around `target`.",
+      "module": "cinematic/react",
+      "kind": "component",
+      "signature": "({ target, radius, padding, duration, reducedMotion, className, children, ref, ...rest }: SpotlightProps): Element",
+      "props": "SpotlightProps",
+      "client": true
+    },
+    {
+      "name": "SpotlightControl",
+      "description": "",
+      "module": "cinematic/spotlight",
+      "kind": "interface",
+      "definition": "Spotlight",
+      "props": [
+        {
+          "name": "active",
+          "type": "boolean",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "clear",
+          "type": "(options?: MoveOptions) => Promise<unknown>",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "focus",
+          "type": "(target: Element | SpotlightTarget, options?: MoveOptions) => Promise<unknown>",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "track",
+          "type": "(target: Element | SpotlightTarget | null, options?: TrackOptions) => ValueTrackInput",
+          "optional": false,
+          "description": "A timeline track from the last planned pose to `target` (or to cleared with `null`)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "SpotlightOptions",
+      "description": "",
+      "module": "cinematic/spotlight",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "padding",
+          "type": "number",
+          "optional": true,
+          "description": "Extra space around a focused element's box (0–200, default 16)."
+        },
+        {
+          "name": "radius",
+          "type": "number",
+          "optional": true,
+          "description": "Default radius of the lit circle around a focused element (24–800, default 120)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "SpotlightProps",
+      "description": "",
+      "module": "cinematic/react",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "padding",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "radius",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "target",
+          "type": "{ current: Element | null; } | Element | null",
+          "optional": true,
+          "description": "Element to light (ref object or element); `null`/omitted clears the spotlight."
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "SpotlightTarget",
+      "description": "",
+      "module": "cinematic/spotlight",
+      "kind": "interface",
+      "definition": "SpotlightTarget",
+      "props": [
+        {
+          "name": "radius",
+          "type": "number",
+          "optional": true,
+          "description": "Radius of the lit circle in px (24–800)."
+        },
+        {
+          "name": "x",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "y",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "Storyboard",
+      "description": "C09: frames with an opt-in, pausable autoplay (APG carousel semantics).",
+      "module": "cinematic/react",
+      "kind": "component",
+      "signature": "({ label, autoplay, interval, loop, transition, duration, reducedMotion, labels, onChange, className, children, ref, ...rest }: StoryboardProps): Element",
+      "props": "StoryboardProps",
+      "client": true
+    },
+    {
+      "name": "StoryboardControl",
+      "description": "",
+      "module": "cinematic/storyboard",
+      "kind": "interface",
+      "definition": "Storyboard",
+      "props": [
+        {
+          "name": "count",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "goTo",
+          "type": "(index: number) => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "index",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "next",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "pause",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "play",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "playing",
+          "type": "boolean",
+          "optional": false,
+          "description": "The user's intent (not paused by hover/visibility)."
+        },
+        {
+          "name": "previous",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "rotating",
+          "type": "boolean",
+          "optional": false,
+          "description": "Whether the timer is actually running now."
+        },
+        {
+          "name": "stop",
+          "type": "() => void",
+          "optional": false,
+          "description": "Pause and return to the first frame."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "StoryboardFrame",
+      "description": "A frame of a `<Storyboard>` (its children are the frame content).",
+      "module": "cinematic/react",
+      "kind": "component",
+      "signature": "({ children }: StoryboardFrameProps): Element",
+      "props": "StoryboardFrameProps",
+      "client": true
+    },
+    {
+      "name": "StoryboardFrameProps",
+      "description": "",
+      "module": "cinematic/react",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "description": "Accessible label of the frame (default \"n of N\").",
+          "default": "\"n of N\""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "StoryboardOptions",
+      "description": "",
+      "module": "cinematic/storyboard",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "autoplay",
+          "type": "boolean",
+          "optional": true,
+          "description": "Start rotating automatically (default false; never under reduced motion)."
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms of a frame change (0–2000, default 450)."
+        },
+        {
+          "name": "interval",
+          "type": "number",
+          "optional": true,
+          "description": "ms per frame while autoplaying (2000–30000, default 5000)."
+        },
+        {
+          "name": "loop",
+          "type": "boolean",
+          "optional": true,
+          "description": "Wrap from the last frame to the first (default true).",
+          "default": "true"
+        },
+        {
+          "name": "onChange",
+          "type": "(index: number, cause: \"user\" | \"autoplay\") => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onPlayingChange",
+          "type": "(playing: boolean) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "start",
+          "type": "number",
+          "optional": true,
+          "description": "Initial frame (default 0).",
+          "default": "0"
+        },
+        {
+          "name": "transition",
+          "type": "\"fade\" | \"slide\"",
+          "optional": true,
+          "description": "Frame change (default `\"fade\"`).",
+          "default": "\"fade\""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "StoryboardProps",
+      "description": "",
+      "module": "cinematic/react",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "autoplay",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "interval",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": false,
+          "description": "Accessible name of the storyboard."
+        },
+        {
+          "name": "labels",
+          "type": "Partial<Record<\"play\" | \"pause\" | \"previous\" | \"next\" | \"stop\", string>>",
+          "optional": true,
+          "description": "Control labels (English defaults)."
+        },
+        {
+          "name": "loop",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onChange",
+          "type": "(index: number) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "transition",
+          "type": "\"fade\" | \"slide\"",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "Timeline",
+      "description": "",
+      "module": "cinematic/engine/timeline",
+      "kind": "interface",
+      "definition": "Timeline",
+      "props": [
+        {
+          "name": "add",
+          "type": "(track: TrackInput, at?: TimelinePosition) => this",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "call",
+          "type": "(fn: CallFn, at?: TimelinePosition, options?: { wait?: boolean; reverse?: CallFn; }) => this",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "cancel",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": "Idempotent: cancel, release every track (styles restored), drop listeners."
+        },
+        {
+          "name": "direction",
+          "type": "MotionDirection",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": false,
+          "description": "One iteration in ms."
+        },
+        {
+          "name": "finish",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "finished",
+          "type": "Promise<MotionResult>",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "getTrack",
+          "type": "(id: string) => TrackInfo | undefined",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "iteration",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "label",
+          "type": "(name: string, at?: TimelinePosition) => this",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "labels",
+          "type": "ReadonlyMap<string, number>",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "pause",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "play",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "retarget",
+          "type": "(trackId: string, to: Partial<Pose> | number) => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "reverse",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "seek",
+          "type": "(progress: number) => void",
+          "optional": false,
+          "description": "Progress 0–1 of the current iteration."
+        },
+        {
+          "name": "seekTo",
+          "type": "(at: number | string, options?: { fire?: boolean; }) => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "state",
+          "type": "MotionResult[\"status\"] | \"idle\" | \"running\" | \"paused\" | \"failed\"",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "time",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "timeScale",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "TimelineHandle",
+      "description": "",
+      "module": "cinematic/use-timeline",
+      "kind": "interface",
+      "definition": "TimelineHandle",
+      "props": [
+        {
+          "name": "cancel",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "current",
+          "type": "Timeline | undefined",
+          "optional": false,
+          "description": "The live timeline (`undefined` before mount, after unmount and on the server)."
+        },
+        {
+          "name": "finish",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "finished",
+          "type": "() => Promise<MotionResult | undefined>",
+          "optional": false,
+          "description": "Resolves with the live run's result (`undefined` when no timeline exists)."
+        },
+        {
+          "name": "pause",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "play",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "reverse",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "seek",
+          "type": "(progress: number) => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "seekTo",
+          "type": "(at: number | string, options?: { fire?: boolean; }) => void",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "TimelineOptions",
+      "description": "",
+      "module": "cinematic/engine/timeline",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "conflicts",
+          "type": "ConflictPolicy",
+          "optional": true,
+          "description": "Conflict reporting of exclusive channels (pose blur, effect tracks)."
+        },
+        {
+          "name": "onComplete",
+          "type": "(result: MotionResult) => void",
+          "optional": true,
+          "description": "Once per completed run."
+        },
+        {
+          "name": "onRepeat",
+          "type": "(iteration: number) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onStart",
+          "type": "() => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onUpdate",
+          "type": "(time: number, progress: number) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "repeat",
+          "type": "number",
+          "optional": true,
+          "description": "Extra iterations: 0 (default) … 1000, or `Infinity` (explicit only)."
+        },
+        {
+          "name": "timeScale",
+          "type": "number",
+          "optional": true,
+          "description": "0.1–10 (default 1).",
+          "default": "1"
+        },
+        {
+          "name": "whenHidden",
+          "type": "\"pause\" | \"finish\"",
+          "optional": true,
+          "description": "While the page is hidden: stop the clock (default) or finish."
+        },
+        {
+          "name": "yoyo",
+          "type": "boolean",
+          "optional": true,
+          "description": "Alternate the direction of every repeat (default false).",
+          "default": "false"
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "TimelinePosition",
+      "description": "Absolute ms, a label (`\"intro\"`, `\"intro+=200\"`), `\"<\"`/`\">\"` (± ms) or `\"+=ms\"`/`\"-=ms\"`.",
+      "module": "cinematic/engine/timeline",
+      "kind": "type",
+      "definition": "number | string"
+    },
+    {
+      "name": "TimelineTrackInput",
+      "description": "",
+      "module": "cinematic/engine/timeline",
+      "kind": "interface",
+      "definition": "TimelineTrackInput",
+      "props": [
+        {
+          "name": "id",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "timeline",
+          "type": "Timeline",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "TitleSequence",
+      "description": "C06: the element children (consumer lines) enter in sequence over a background.",
+      "module": "cinematic/react",
+      "kind": "component",
+      "signature": "({ effect, options, interval, background, replay, appear, reducedMotion, onComplete, className, children, ref, ...rest }: TitleSequenceProps): Element",
+      "props": "TitleSequenceProps",
+      "client": true
+    },
+    {
+      "name": "TitleSequenceOptions",
+      "description": "",
+      "module": "cinematic/title",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "at",
+          "type": "TimelinePosition",
+          "optional": true,
+          "description": "Where the sequence starts in the timeline (default its current end)."
+        },
+        {
+          "name": "background",
+          "type": "Element | null",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "backgroundDuration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–10000, default 1200)."
+        },
+        {
+          "name": "backgroundFrom",
+          "type": "Pose",
+          "optional": true,
+          "description": "Background start pose (default `{ opacity: 0, scale: 1.08 }`); it ends at identity.",
+          "default": "{ opacity: 0, scale: 1.08 }"
+        },
+        {
+          "name": "effect",
+          "type": "PresetInput<any, any>",
+          "optional": false,
+          "description": "Entrance (definition or preset) triggered for every line."
+        },
+        {
+          "name": "interval",
+          "type": "number",
+          "optional": true,
+          "description": "ms between line starts (0–1000, default 120)."
+        },
+        {
+          "name": "lines",
+          "type": "readonly Element[]",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "options",
+          "type": "object",
+          "optional": true,
+          "description": "Options merged into the effect's options for every line."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "TitleSequenceProps",
+      "description": "",
+      "module": "cinematic/react",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "appear",
+          "type": "\"client\" | \"always\" | \"manual\"",
+          "optional": true,
+          "description": "Play on hydration of server markup too (default `\"client\"`).",
+          "default": "\"client\""
+        },
+        {
+          "name": "background",
+          "type": "ReactNode",
+          "optional": true,
+          "description": "Decorative background (rendered `aria-hidden`)."
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "effect",
+          "type": "AnyPreset",
+          "optional": false,
+          "description": "Entrance (definition or preset) triggered for every line."
+        },
+        {
+          "name": "interval",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onComplete",
+          "type": "() => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "options",
+          "type": "object",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "replay",
+          "type": "string | number | boolean",
+          "optional": true,
+          "description": "Changing it replays the sequence."
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "TrackFill",
+      "description": "",
+      "module": "cinematic/engine/timeline",
+      "kind": "type",
+      "definition": "\"both\" | \"forwards\""
+    },
+    {
+      "name": "TrackInfo",
+      "description": "",
+      "module": "cinematic/engine/timeline",
+      "kind": "interface",
+      "definition": "TrackInfo",
+      "props": [
+        {
+          "name": "detached",
+          "type": "boolean",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "id",
+          "type": "string | undefined",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "kind",
+          "type": "\"pose\" | \"value\" | \"effect\" | \"timeline\"",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "type": "number",
+          "optional": false,
+          "description": "Last rendered local progress (`NaN` before the first render)."
+        },
+        {
+          "name": "start",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "TrackInput",
+      "description": "",
+      "module": "cinematic/engine/timeline",
+      "kind": "type",
+      "definition": "PoseTrackInput | ValueTrackInput | EffectTrackInput | TimelineTrackInput",
+      "props": [
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–60000).",
+          "variantOnly": true
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": "",
+          "variantOnly": true
+        },
+        {
+          "name": "effect",
+          "type": "PresetInput<any, any>",
+          "optional": false,
+          "description": "An Entrance definition (E01–E09/E11) or a preset of one.",
+          "variantOnly": true
+        },
+        {
+          "name": "fill",
+          "type": "TrackFill",
+          "optional": true,
+          "description": "`\"both\"` (default) renders the from-state before the start; `\"forwards\"` writes nothing before it.",
+          "variantOnly": true
+        },
+        {
+          "name": "from",
+          "type": "Pose | number",
+          "optional": true,
+          "description": "",
+          "variantOnly": true
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "optional": true,
+          "description": "Stable id for `getTrack`/`retarget`."
+        },
+        {
+          "name": "mode",
+          "type": "\"scrub\" | \"trigger\"",
+          "optional": true,
+          "description": "`\"scrub\"` (default when the definition accepts an external `progress`): the definition follows the\ntimeline clock — seek, scrub, reverse, interruption. `\"trigger\"`: the definition plays with its OWN\nclock when the playhead crosses the start (in), or crosses back (out).",
+          "variantOnly": true
+        },
+        {
+          "name": "options",
+          "type": "object",
+          "optional": true,
+          "description": "",
+          "variantOnly": true
+        },
+        {
+          "name": "priority",
+          "type": "number",
+          "optional": true,
+          "description": "Priority of the `filter` claim when the pose blurs (default 0).",
+          "default": "0",
+          "variantOnly": true
+        },
+        {
+          "name": "target",
+          "type": "Styled",
+          "optional": false,
+          "description": "",
+          "variantOnly": true
+        },
+        {
+          "name": "timeline",
+          "type": "Timeline",
+          "optional": false,
+          "description": "",
+          "variantOnly": true
+        },
+        {
+          "name": "to",
+          "type": "Pose | number",
+          "optional": false,
+          "description": "",
+          "variantOnly": true
+        },
+        {
+          "name": "value",
+          "type": "MotionValue",
+          "optional": false,
+          "description": "",
+          "variantOnly": true
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "TrackOptions",
+      "description": "",
+      "module": "cinematic/engine/progress",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–10000; default per effect)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ValueTrackInput",
+      "description": "",
+      "module": "cinematic/engine/timeline",
+      "kind": "interface",
+      "definition": "ValueTrackInput",
+      "props": [
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–60000)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "fill",
+          "type": "TrackFill",
+          "optional": true,
+          "description": "`\"both\"` (default) renders the from-state before the start; `\"forwards\"` writes nothing before it."
+        },
+        {
+          "name": "from",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "optional": true,
+          "description": "Stable id for `getTrack`/`retarget`."
+        },
+        {
+          "name": "to",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "value",
+          "type": "MotionValue",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "createCamera",
+      "description": "",
+      "module": "cinematic/camera",
+      "kind": "function",
+      "signature": "(stage: HTMLElement, canvas: HTMLElement, options?: CameraOptions | undefined): Camera"
+    },
+    {
+      "name": "createCover",
+      "description": "",
+      "module": "cinematic/cover",
+      "kind": "function",
+      "signature": "(container: HTMLElement, options?: CoverOptions | undefined): Cover"
+    },
+    {
+      "name": "createDepthOfField",
+      "description": "",
+      "module": "cinematic/depth",
+      "kind": "function",
+      "signature": "(container: HTMLElement, options?: DepthOfFieldOptions | undefined): DepthOfField"
+    },
+    {
+      "name": "createLetterbox",
+      "description": "",
+      "module": "cinematic/letterbox",
+      "kind": "function",
+      "signature": "(frame: HTMLElement, options?: LetterboxOptions | undefined): LetterboxControl"
+    },
+    {
+      "name": "createSceneChapters",
+      "description": "",
+      "module": "cinematic/scene",
+      "kind": "function",
+      "signature": "(options: SceneChaptersOptions): SceneChapters"
+    },
+    {
+      "name": "createSpotlight",
+      "description": "",
+      "module": "cinematic/spotlight",
+      "kind": "function",
+      "signature": "(stage: HTMLElement, options?: SpotlightOptions | undefined): Spotlight"
+    },
+    {
+      "name": "createStoryboard",
+      "description": "",
+      "module": "cinematic/storyboard",
+      "kind": "function",
+      "signature": "(root: HTMLElement, frames: readonly HTMLElement[], options?: StoryboardOptions | undefined): Storyboard"
+    },
+    {
+      "name": "createTimeline",
+      "description": "",
+      "module": "cinematic/engine/timeline",
+      "kind": "function",
+      "signature": "(options?: TimelineOptions | undefined): Timeline"
+    },
+    {
+      "name": "getCinematicDebugInfo",
+      "description": "Snapshot of the cinematic counters (development and tests).",
+      "module": "cinematic/engine/debug",
+      "kind": "function",
+      "signature": "(): CinematicDebugInfo"
+    },
+    {
+      "name": "titleSequence",
+      "description": "",
+      "module": "cinematic/title",
+      "kind": "function",
+      "signature": "(timeline: Timeline, options: TitleSequenceOptions): Timeline"
+    },
+    {
+      "name": "useCamera",
+      "description": "A stable handle for `<CameraStage camera={…}>`.",
+      "module": "cinematic/react",
+      "kind": "function",
+      "signature": "(): CameraHandle"
+    },
+    {
+      "name": "useTimeline",
+      "description": "",
+      "module": "cinematic/use-timeline",
+      "kind": "function",
+      "signature": "(build: (timeline: Timeline) => void, deps?: DependencyList | undefined, options?: (TimelineOptions & { autoplay?: boolean | undefined; }) | undefined): TimelineHandle"
+    }
+  ]
+}

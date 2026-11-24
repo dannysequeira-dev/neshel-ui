@@ -1,0 +1,2102 @@
+{
+  "package": "@neshel-ui/animations/media",
+  "exports": [
+    {
+      "name": "BlurUpImage",
+      "description": "M02 — a native `<img>` with a blurred placeholder until it is decoded (visible without JavaScript).",
+      "module": "media/react",
+      "kind": "component",
+      "signature": "(props: BlurUpImageProps): Element",
+      "props": "BlurUpImageProps",
+      "client": true
+    },
+    {
+      "name": "BlurUpImageProps",
+      "description": "",
+      "module": "media/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "blur",
+          "type": "number",
+          "optional": true,
+          "description": "Placeholder blur in px (0–40, default 16)."
+        },
+        {
+          "name": "controlRef",
+          "type": "RefObject<C | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–10000; default per effect)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "frameClassName",
+          "type": "string",
+          "optional": true,
+          "description": "Class of the wrapper `span.neshel-blurup`."
+        },
+        {
+          "name": "onRevealStateChange",
+          "type": "BlurUpOptions[\"onStateChange\"]",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "optional": true,
+          "description": "Placeholder: a tiny image URL/data URI, a CSS gradient or a colour (default a neutral tint)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "replay",
+          "type": "boolean",
+          "optional": true,
+          "description": "Animate an image that is already loaded at attach time (default false: shown at once)."
+        },
+        {
+          "name": "revealTimeout",
+          "type": "number",
+          "optional": true,
+          "description": "ms after which a still-loading image is revealed anyway (500–60000, default 8000)."
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "BlurUpOptions",
+      "description": "",
+      "module": "media/reveal",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "blur",
+          "type": "number",
+          "optional": true,
+          "description": "Placeholder blur in px (0–40, default 16)."
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–10000; default per effect)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "image",
+          "type": "HTMLImageElement",
+          "optional": true,
+          "description": "The image (default: the frame's first `img`)."
+        },
+        {
+          "name": "onStateChange",
+          "type": "(state: MediaRevealState) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "placeholder",
+          "type": "string",
+          "optional": true,
+          "description": "Placeholder: a tiny image URL/data URI, a CSS gradient or a colour (default a neutral tint)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "replay",
+          "type": "boolean",
+          "optional": true,
+          "description": "Animate an image that is already loaded at attach time (default false: shown at once)."
+        },
+        {
+          "name": "revealTimeout",
+          "type": "number",
+          "optional": true,
+          "description": "ms after which a still-loading image is revealed anyway (500–60000, default 8000)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "CameraPose",
+      "description": "",
+      "module": "media/camera",
+      "kind": "interface",
+      "definition": "CameraPose",
+      "props": [
+        {
+          "name": "scale",
+          "type": "number",
+          "optional": true,
+          "description": "Uniform zoom 1–3."
+        },
+        {
+          "name": "x",
+          "type": "number",
+          "optional": true,
+          "description": "−1 (left) … 1 (right) of the pan allowance."
+        },
+        {
+          "name": "y",
+          "type": "number",
+          "optional": true,
+          "description": "−1 (top) … 1 (bottom) of the pan allowance."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "CompareControl",
+      "description": "",
+      "module": "media/compare",
+      "kind": "interface",
+      "definition": "CompareControl",
+      "props": [
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "set",
+          "type": "(value: number) => void",
+          "optional": false,
+          "description": "Set the value (0–100) without animation."
+        },
+        {
+          "name": "value",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "CompareSlider",
+      "description": "M04 — before/after comparison with a native range input (keyboard, touch, pointer, value text).",
+      "module": "media/react",
+      "kind": "component",
+      "signature": "(props: CompareSliderProps): Element",
+      "props": "CompareSliderProps",
+      "client": true
+    },
+    {
+      "name": "CompareSliderOptions",
+      "description": "",
+      "module": "media/compare",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "onValueChange",
+          "type": "(value: number) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "orientation",
+          "type": "\"horizontal\" | \"vertical\"",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "step",
+          "type": "number",
+          "optional": true,
+          "description": "Keyboard step (0.1–25, default 1)."
+        },
+        {
+          "name": "value",
+          "type": "number",
+          "optional": true,
+          "description": "0–100 (default 50): share of the before image.",
+          "default": "50"
+        },
+        {
+          "name": "valueText",
+          "type": "(value: number) => string",
+          "optional": true,
+          "description": "Value text for assistive technology (default \"N% before, M% after\").",
+          "default": "\"N% before, M% after\""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "CompareSliderProps",
+      "description": "",
+      "module": "media/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "after",
+          "type": "ReactNode",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "before",
+          "type": "ReactNode",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "controlRef",
+          "type": "RefObject<C | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "defaultValue",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "jumps",
+          "type": "{ before: string; after: string; }",
+          "optional": true,
+          "description": "Labels of optional \"show before\"/\"show after\" buttons (comparison without dragging)."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": false,
+          "description": "Accessible name of the slider (required)."
+        },
+        {
+          "name": "onValueChange",
+          "type": "(value: number) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "orientation",
+          "type": "\"horizontal\" | \"vertical\"",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "step",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "value",
+          "type": "number",
+          "optional": true,
+          "description": "Controlled value 0–100."
+        },
+        {
+          "name": "valueText",
+          "type": "(value: number) => string",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "Crossfade",
+      "description": "M08 — stacked slides cross-fading to `index` (inactive slides inert and hidden from AT).",
+      "module": "media/react",
+      "kind": "component",
+      "signature": "(props: CrossfadeProps): Element",
+      "props": "CrossfadeProps",
+      "client": true
+    },
+    {
+      "name": "CrossfadeControl",
+      "description": "",
+      "module": "media/gallery",
+      "kind": "interface",
+      "definition": "CrossfadeControl",
+      "props": [
+        {
+          "name": "count",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "index",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "next",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "pause",
+          "type": "() => void",
+          "optional": false,
+          "description": "Stop autoplay (WCAG 2.2.2)."
+        },
+        {
+          "name": "play",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "prev",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "show",
+          "type": "(index: number) => void",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "CrossfadeOptions",
+      "description": "",
+      "module": "media/gallery",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–10000; default per effect)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "index",
+          "type": "number",
+          "optional": true,
+          "description": "Initial slide (default 0).",
+          "default": "0"
+        },
+        {
+          "name": "interval",
+          "type": "number",
+          "optional": true,
+          "description": "Autoplay interval in ms (≥ 2000; none by default). Paused on hover, focus inside and hidden pages."
+        },
+        {
+          "name": "onIndexChange",
+          "type": "(index: number) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "CrossfadeProps",
+      "description": "",
+      "module": "media/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "controlRef",
+          "type": "RefObject<C | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–10000; default per effect)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "index",
+          "type": "number",
+          "optional": true,
+          "description": "Initial slide (default 0).",
+          "default": "0"
+        },
+        {
+          "name": "interval",
+          "type": "number",
+          "optional": true,
+          "description": "Autoplay interval in ms (≥ 2000; none by default). Paused on hover, focus inside and hidden pages."
+        },
+        {
+          "name": "onIndexChange",
+          "type": "(index: number) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ],
+      "definition": "Omit<CrossfadeOptions, \"onIndexChange\"> & WithControl<CrossfadeControl> & Omit<ComponentPropsWithoutRef<\"div\">, \"children\"> & { children: ReactNode; onIndexChange?(index: number): void; }"
+    },
+    {
+      "name": "DissolveControl",
+      "description": "",
+      "module": "media/gallery",
+      "kind": "interface",
+      "definition": "DissolveControl",
+      "props": [
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "index",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "mode",
+          "type": "\"dissolve\" | \"fade\" | \"none\"",
+          "optional": false,
+          "description": "`dissolve` (canvas) or `fade` (fallback) — of the last transition."
+        },
+        {
+          "name": "running",
+          "type": "boolean",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "show",
+          "type": "(index: number) => void",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "Duotone",
+      "description": "M05 — duotone transition on the single child (image untouched; filter restored on cleanup).",
+      "module": "media/react",
+      "kind": "component",
+      "signature": "({ children, controlRef, ...options }: DuotoneProps): Element",
+      "props": "DuotoneProps",
+      "client": true
+    },
+    {
+      "name": "DuotoneOptions",
+      "description": "",
+      "module": "media/duotone",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "amount",
+          "type": "number",
+          "optional": true,
+          "description": "Final amount of duotone 0–1 (default 1).",
+          "default": "1"
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–10000; default per effect)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "highlight",
+          "type": "string",
+          "optional": true,
+          "description": "Colour of the highlights (default `#f2c14e`).",
+          "default": "#f2c14e"
+        },
+        {
+          "name": "onComplete",
+          "type": "(result: MotionResult) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "type": "ProgressSource",
+          "optional": true,
+          "description": "Drive from a 0–1 source instead of the own clock."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "shadow",
+          "type": "string",
+          "optional": true,
+          "description": "Colour of the shadows (default `#1b1f3a`). Hex `#rgb`/`#rrggbb` or `rgb(r g b)`.",
+          "default": "#1b1f3a"
+        },
+        {
+          "name": "trigger",
+          "type": "ProgressTrigger",
+          "optional": true,
+          "description": "Default `\"visible\"` (once); ignored with `progress`.",
+          "default": "\"visible\""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "DuotoneProps",
+      "description": "",
+      "module": "media/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "amount",
+          "type": "number",
+          "optional": true,
+          "description": "Final amount of duotone 0–1 (default 1).",
+          "default": "1"
+        },
+        {
+          "name": "children",
+          "type": "ReactElement",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "controlRef",
+          "type": "RefObject<C | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–10000; default per effect)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "highlight",
+          "type": "string",
+          "optional": true,
+          "description": "Colour of the highlights (default `#f2c14e`).",
+          "default": "#f2c14e"
+        },
+        {
+          "name": "onComplete",
+          "type": "(result: MotionResult) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "type": "ProgressSource",
+          "optional": true,
+          "description": "Drive from a 0–1 source instead of the own clock."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "shadow",
+          "type": "string",
+          "optional": true,
+          "description": "Colour of the shadows (default `#1b1f3a`). Hex `#rgb`/`#rrggbb` or `rgb(r g b)`.",
+          "default": "#1b1f3a"
+        },
+        {
+          "name": "trigger",
+          "type": "ProgressTrigger",
+          "optional": true,
+          "description": "Default `\"visible\"` (once); ignored with `progress`.",
+          "default": "\"visible\""
+        }
+      ],
+      "inherits": [],
+      "definition": "DuotoneOptions & WithControl<ProgressControl> & { children: ReactElement; }"
+    },
+    {
+      "name": "GalleryOptions",
+      "description": "",
+      "module": "media/gallery",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–10000; default per effect)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "index",
+          "type": "number",
+          "optional": true,
+          "description": "Initial slide (default 0).",
+          "default": "0"
+        },
+        {
+          "name": "onIndexChange",
+          "type": "(index: number) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "HoverPan",
+      "description": "M10 — the single media child follows the pointer inside a clipping frame.",
+      "module": "media/react",
+      "kind": "component",
+      "signature": "(props: HoverPanProps): Element",
+      "props": "HoverPanProps",
+      "client": true
+    },
+    {
+      "name": "HoverPanControl",
+      "description": "",
+      "module": "media/camera",
+      "kind": "interface",
+      "definition": "HoverPanControl",
+      "props": [
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "reset",
+          "type": "() => void",
+          "optional": false,
+          "description": "Back to the rest pose."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "HoverPanOptions",
+      "description": "",
+      "module": "media/camera",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "keyboard",
+          "type": "boolean",
+          "optional": true,
+          "description": "Focusable frame with arrow-key panning (for images whose detail is information; needs a name)."
+        },
+        {
+          "name": "media",
+          "type": "Element",
+          "optional": true,
+          "description": "The element that moves (default: the frame's first element child)."
+        },
+        {
+          "name": "pointerTypes",
+          "type": "readonly (\"mouse\" | \"pen\" | \"touch\")[]",
+          "optional": true,
+          "description": "Pointer types that pan (default mouse and pen; touch scrolls the page)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "scale",
+          "type": "number",
+          "optional": true,
+          "description": "Zoom while hovering 1.05–3 (default 1.4).",
+          "default": "1.4"
+        },
+        {
+          "name": "spring",
+          "type": "SpringOptions",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "step",
+          "type": "number",
+          "optional": true,
+          "description": "Keyboard step as a fraction of the pan range (0.02–0.5, default 0.1)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "HoverPanProps",
+      "description": "",
+      "module": "media/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactElement",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "controlRef",
+          "type": "RefObject<C | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "keyboard",
+          "type": "boolean",
+          "optional": true,
+          "description": "Focusable frame with arrow-key panning (for images whose detail is information; needs a name)."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "description": "Accessible name of the focusable frame (required with `keyboard`)."
+        },
+        {
+          "name": "pointerTypes",
+          "type": "readonly (\"mouse\" | \"pen\" | \"touch\")[]",
+          "optional": true,
+          "description": "Pointer types that pan (default mouse and pen; touch scrolls the page)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "scale",
+          "type": "number",
+          "optional": true,
+          "description": "Zoom while hovering 1.05–3 (default 1.4).",
+          "default": "1.4"
+        },
+        {
+          "name": "spring",
+          "type": "SpringOptions",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "step",
+          "type": "number",
+          "optional": true,
+          "description": "Keyboard step as a fraction of the pan range (0.02–0.5, default 0.1)."
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ],
+      "definition": "Omit<HoverPanOptions, \"media\"> & WithControl<HoverPanControl> & Omit<ComponentPropsWithoutRef<\"div\">, \"children\"> & { children: ReactElement; /** Accessible name of the focusable frame (required with `keyboard`). */ label?: string; }"
+    },
+    {
+      "name": "ImageLoadState",
+      "description": "Image load watcher (Phase 015, internal; research R1, contracts/media-api.md §1). Reports `loading`, `loaded`\nor `error` for an `<img>` WITHOUT missing a `load` that happened before it was attached: the first report is\nsynchronous from `complete`/`naturalWidth`. `load` waits for `decode()` (rejection tolerated — the state is\nre-read) so a reveal never shows a half-decoded frame. A MutationObserver on `src`/`srcset`/`sizes`\nre-evaluates after an explicit source change; answers of an older generation are dropped. Native attributes\nare never written. A responsive `srcset` candidate swap (viewport/DPR) keeps the current image visible, so it\nonly reports `loaded` again.",
+      "module": "core/media-load",
+      "kind": "type",
+      "definition": "\"loading\" | \"loaded\" | \"error\""
+    },
+    {
+      "name": "KenBurns",
+      "description": "M01 — a clipping frame (`div.neshel-kenburns`) around one image or video.",
+      "module": "media/react",
+      "kind": "component",
+      "signature": "(props: KenBurnsProps): Element",
+      "props": "KenBurnsProps",
+      "client": true
+    },
+    {
+      "name": "KenBurnsOptions",
+      "description": "",
+      "module": "media/camera",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–10000; default per effect)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "from",
+          "type": "CameraPose",
+          "optional": true,
+          "description": "Start pose (default `{ scale: 1.05, x: 0, y: 0 }`).",
+          "default": "{ scale: 1.05, x: 0, y: 0 }"
+        },
+        {
+          "name": "onComplete",
+          "type": "(result: MotionResult) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "type": "ProgressSource",
+          "optional": true,
+          "description": "Drive from a 0–1 source instead of the own clock."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "repeat",
+          "type": "number",
+          "optional": true,
+          "description": "Extra runs (0–1000 or `Infinity`, explicit; default 0). Paused off-screen and on hidden pages."
+        },
+        {
+          "name": "to",
+          "type": "CameraPose",
+          "optional": true,
+          "description": "End pose (default `{ scale: 1.18, x: 0.4, y: -0.3 }`).",
+          "default": "{ scale: 1.18, x: 0.4, y: -0.3 }"
+        },
+        {
+          "name": "trigger",
+          "type": "ProgressTrigger",
+          "optional": true,
+          "description": "Default `\"visible\"` (once); ignored with `progress`.",
+          "default": "\"visible\""
+        },
+        {
+          "name": "yoyo",
+          "type": "boolean",
+          "optional": true,
+          "description": "Alternate direction between runs (default true).",
+          "default": "true"
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "KenBurnsProps",
+      "description": "",
+      "module": "media/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactElement",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "controlRef",
+          "type": "RefObject<C | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–10000; default per effect)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "from",
+          "type": "CameraPose",
+          "optional": true,
+          "description": "Start pose (default `{ scale: 1.05, x: 0, y: 0 }`).",
+          "default": "{ scale: 1.05, x: 0, y: 0 }"
+        },
+        {
+          "name": "onComplete",
+          "type": "(result: MotionResult) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "type": "ProgressSource",
+          "optional": true,
+          "description": "Drive from a 0–1 source instead of the own clock."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "repeat",
+          "type": "number",
+          "optional": true,
+          "description": "Extra runs (0–1000 or `Infinity`, explicit; default 0). Paused off-screen and on hidden pages."
+        },
+        {
+          "name": "to",
+          "type": "CameraPose",
+          "optional": true,
+          "description": "End pose (default `{ scale: 1.18, x: 0.4, y: -0.3 }`).",
+          "default": "{ scale: 1.18, x: 0.4, y: -0.3 }"
+        },
+        {
+          "name": "trigger",
+          "type": "ProgressTrigger",
+          "optional": true,
+          "description": "Default `\"visible\"` (once); ignored with `progress`.",
+          "default": "\"visible\""
+        },
+        {
+          "name": "yoyo",
+          "type": "boolean",
+          "optional": true,
+          "description": "Alternate direction between runs (default true).",
+          "default": "true"
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ],
+      "definition": "KenBurnsOptions & WithControl<ProgressControl> & Omit<ComponentPropsWithoutRef<\"div\">, \"children\"> & { children: ReactElement; }"
+    },
+    {
+      "name": "Lightbox",
+      "description": "M07 — thumbnail button + native modal `<dialog>` with a FLIP zoom (focus, Escape, scroll lock).",
+      "module": "media/react",
+      "kind": "component",
+      "signature": "(props: LightboxProps): Element",
+      "props": "LightboxProps",
+      "client": true
+    },
+    {
+      "name": "LightboxControl",
+      "description": "",
+      "module": "media/lightbox",
+      "kind": "interface",
+      "definition": "LightboxControl",
+      "props": [
+        {
+          "name": "close",
+          "type": "() => void",
+          "optional": false,
+          "description": "Animated close (immediate under reduced motion)."
+        },
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "open",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "state",
+          "type": "\"closed\" | \"open\" | \"closing\"",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "LightboxProps",
+      "description": "",
+      "module": "media/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": false,
+          "description": "Large content; its first element zooms from the thumbnail."
+        },
+        {
+          "name": "className",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "closeLabel",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "controlRef",
+          "type": "RefObject<C | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": false,
+          "description": "Accessible name of the dialog (required)."
+        },
+        {
+          "name": "onOpenChange",
+          "type": "(open: boolean) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "LightboxOptionsPolicy",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "thumbnail",
+          "type": "ReactElement",
+          "optional": false,
+          "description": "The thumbnail (usually an `<img>`); rendered inside the trigger button."
+        },
+        {
+          "name": "triggerLabel",
+          "type": "string",
+          "optional": true,
+          "description": "Accessible name of the trigger (default: the thumbnail's alt text)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "LightboxZoomOptions",
+      "description": "",
+      "module": "media/lightbox",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "dialog",
+          "type": "HTMLDialogElement",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms of the zoom (0–2000, default 380)."
+        },
+        {
+          "name": "getThumbnail",
+          "type": "() => Element | null",
+          "optional": false,
+          "description": "The thumbnail to zoom from/to (measured at open and close)."
+        },
+        {
+          "name": "image",
+          "type": "HTMLElement",
+          "optional": false,
+          "description": "The large image (or any element) that zooms."
+        },
+        {
+          "name": "onOpenChange",
+          "type": "(open: boolean) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "LoadReveal",
+      "description": "M03 — reveal the single `<img>` child when (and only if) it finishes loading.",
+      "module": "media/react",
+      "kind": "component",
+      "signature": "({ children, controlRef, ...options }: LoadRevealProps): Element",
+      "props": "LoadRevealProps",
+      "client": true
+    },
+    {
+      "name": "LoadRevealOptions",
+      "description": "",
+      "module": "media/reveal",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "direction",
+          "type": "\"up\" | \"down\" | \"left\" | \"right\"",
+          "optional": true,
+          "description": "Edge the reveal travels toward (default `up` for inset, `right` for wipe).",
+          "default": "up"
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–10000; default per effect)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onStateChange",
+          "type": "(state: MediaRevealState) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "replay",
+          "type": "boolean",
+          "optional": true,
+          "description": "Animate an image that is already loaded at attach time (default false: shown at once)."
+        },
+        {
+          "name": "revealTimeout",
+          "type": "number",
+          "optional": true,
+          "description": "ms after which a still-loading image is revealed anyway (500–60000, default 8000)."
+        },
+        {
+          "name": "shape",
+          "type": "\"inset\" | \"circle\" | \"wipe\"",
+          "optional": true,
+          "description": "`inset` (edge wipe, default), `circle` (from the centre) or `wipe` (horizontal)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "LoadRevealProps",
+      "description": "",
+      "module": "media/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactElement",
+          "optional": false,
+          "description": "One native `<img>`."
+        },
+        {
+          "name": "controlRef",
+          "type": "RefObject<C | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "direction",
+          "type": "\"up\" | \"down\" | \"left\" | \"right\"",
+          "optional": true,
+          "description": "Edge the reveal travels toward (default `up` for inset, `right` for wipe).",
+          "default": "up"
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–10000; default per effect)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onStateChange",
+          "type": "(state: MediaRevealState) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "replay",
+          "type": "boolean",
+          "optional": true,
+          "description": "Animate an image that is already loaded at attach time (default false: shown at once)."
+        },
+        {
+          "name": "revealTimeout",
+          "type": "number",
+          "optional": true,
+          "description": "ms after which a still-loading image is revealed anyway (500–60000, default 8000)."
+        },
+        {
+          "name": "shape",
+          "type": "\"inset\" | \"circle\" | \"wipe\"",
+          "optional": true,
+          "description": "`inset` (edge wipe, default), `circle` (from the centre) or `wipe` (horizontal)."
+        }
+      ],
+      "inherits": [],
+      "definition": "LoadRevealOptions & WithControl<MediaRevealControl> & { /** One native `<img>`. */ children: ReactElement; }"
+    },
+    {
+      "name": "MediaDebugInfo",
+      "description": "",
+      "module": "media/engine/debug",
+      "kind": "interface",
+      "definition": "MediaDebugInfo",
+      "props": [
+        {
+          "name": "cells",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "effects",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "filters",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "framesPresented",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "hidden",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "scrollLocks",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "seeksCoalesced",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "seeksIssued",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "seeksRequested",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "surfaces",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "watchers",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "MediaRevealControl",
+      "description": "",
+      "module": "media/reveal",
+      "kind": "interface",
+      "definition": "MediaRevealControl",
+      "props": [
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "reveal",
+          "type": "() => void",
+          "optional": false,
+          "description": "Show the image now (no animation)."
+        },
+        {
+          "name": "state",
+          "type": "MediaRevealState",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "MediaRevealOptions",
+      "description": "",
+      "module": "media/reveal",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–10000; default per effect)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onStateChange",
+          "type": "(state: MediaRevealState) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "replay",
+          "type": "boolean",
+          "optional": true,
+          "description": "Animate an image that is already loaded at attach time (default false: shown at once)."
+        },
+        {
+          "name": "revealTimeout",
+          "type": "number",
+          "optional": true,
+          "description": "ms after which a still-loading image is revealed anyway (500–60000, default 8000)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "MediaRevealState",
+      "description": "",
+      "module": "media/reveal",
+      "kind": "type",
+      "definition": "\"loading\" | \"revealing\" | \"shown\" | \"error\""
+    },
+    {
+      "name": "MediaSupport",
+      "description": "",
+      "module": "media/engine/debug",
+      "kind": "interface",
+      "definition": "MediaSupport",
+      "props": [
+        {
+          "name": "canvas2d",
+          "type": "boolean",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "clipPath",
+          "type": "boolean",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "decode",
+          "type": "boolean",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "dialog",
+          "type": "boolean",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "fastSeek",
+          "type": "boolean",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "inert",
+          "type": "boolean",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "videoFrameCallback",
+          "type": "boolean",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "PixelDissolve",
+      "description": "M09 — block dissolve between stacked images on a decorative canvas (cross-fade fallback).",
+      "module": "media/react",
+      "kind": "component",
+      "signature": "(props: PixelDissolveProps): Element",
+      "props": "PixelDissolveProps",
+      "client": true
+    },
+    {
+      "name": "PixelDissolveOptions",
+      "description": "",
+      "module": "media/gallery",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "cell",
+          "type": "number",
+          "optional": true,
+          "description": "Cell size in CSS px (4–64, default 16); enlarged when the grid would exceed `maxCells`."
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–10000; default per effect)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "index",
+          "type": "number",
+          "optional": true,
+          "description": "Initial slide (default 0).",
+          "default": "0"
+        },
+        {
+          "name": "maxCells",
+          "type": "number",
+          "optional": true,
+          "description": "Upper bound of cells (64–4096, default 4096)."
+        },
+        {
+          "name": "maxDpr",
+          "type": "number",
+          "optional": true,
+          "description": "Canvas DPR cap (1–3, default 2)."
+        },
+        {
+          "name": "onIndexChange",
+          "type": "(index: number) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "seed",
+          "type": "number",
+          "optional": true,
+          "description": "Order seed (default 1).",
+          "default": "1"
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "PixelDissolveProps",
+      "description": "",
+      "module": "media/react",
+      "kind": "type",
+      "props": [
+        {
+          "name": "cell",
+          "type": "number",
+          "optional": true,
+          "description": "Cell size in CSS px (4–64, default 16); enlarged when the grid would exceed `maxCells`."
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "controlRef",
+          "type": "RefObject<C | null>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–10000; default per effect)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "index",
+          "type": "number",
+          "optional": true,
+          "description": "Initial slide (default 0).",
+          "default": "0"
+        },
+        {
+          "name": "maxCells",
+          "type": "number",
+          "optional": true,
+          "description": "Upper bound of cells (64–4096, default 4096)."
+        },
+        {
+          "name": "maxDpr",
+          "type": "number",
+          "optional": true,
+          "description": "Canvas DPR cap (1–3, default 2)."
+        },
+        {
+          "name": "onIndexChange",
+          "type": "(index: number) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "seed",
+          "type": "number",
+          "optional": true,
+          "description": "Order seed (default 1).",
+          "default": "1"
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ],
+      "definition": "Omit<PixelDissolveOptions, \"onIndexChange\"> & WithControl<DissolveControl> & Omit<ComponentPropsWithoutRef<\"div\">, \"children\"> & { children: ReactNode; onIndexChange?(index: number): void; }"
+    },
+    {
+      "name": "ProgressControl",
+      "description": "",
+      "module": "core/progress-driver",
+      "kind": "interface",
+      "definition": "ProgressControl",
+      "props": [
+        {
+          "name": "cancel",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": "Idempotent: stops, releases and restores."
+        },
+        {
+          "name": "drive",
+          "type": "(source: ProgressSource) => () => void",
+          "optional": false,
+          "description": "Follow a 0–1 source instead of the own clock; returns the unsubscribe."
+        },
+        {
+          "name": "finish",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "finished",
+          "type": "Promise<MotionResult>",
+          "optional": false,
+          "description": "Promise of the current (or next) run."
+        },
+        {
+          "name": "pause",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "play",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "type": "number",
+          "optional": false,
+          "description": "Rendered progress 0–1."
+        },
+        {
+          "name": "reverse",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "seek",
+          "type": "(progress: number) => void",
+          "optional": false,
+          "description": "Render the effect at a time fraction 0–1 of its run (eased)."
+        },
+        {
+          "name": "state",
+          "type": "MotionState",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "track",
+          "type": "(options?: ProgressTrackOptions) => ProgressTrack",
+          "optional": false,
+          "description": "A value track for `createTimeline().add(…)`: the timeline clock drives this effect."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ProgressEffectOptions",
+      "description": "",
+      "module": "core/progress-effect",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (0–10000; default per effect)."
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onComplete",
+          "type": "(result: MotionResult) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "progress",
+          "type": "ProgressSource",
+          "optional": true,
+          "description": "Drive from a 0–1 source instead of the own clock."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "trigger",
+          "type": "ProgressTrigger",
+          "optional": true,
+          "description": "Default `\"visible\"` (once); ignored with `progress`.",
+          "default": "\"visible\""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ProgressSource",
+      "description": "Any 0–1 progress source (the 011 `ScrollProgress` and motion values fit).",
+      "module": "core/progress-driver",
+      "kind": "interface",
+      "definition": "ProgressSource",
+      "props": [
+        {
+          "name": "get",
+          "type": "() => number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "subscribe",
+          "type": "(listener: (progress: number) => void) => () => void",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ProgressTrigger",
+      "description": "",
+      "module": "core/progress-effect",
+      "kind": "type",
+      "definition": "\"visible\" | \"mount\" | \"manual\""
+    },
+    {
+      "name": "VideoScrubControl",
+      "description": "",
+      "module": "media/video",
+      "kind": "interface",
+      "definition": "VideoScrubControl",
+      "props": [
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "drive",
+          "type": "(source: ProgressSource) => () => void",
+          "optional": false,
+          "description": "Follow another source; returns the unsubscribe."
+        },
+        {
+          "name": "seek",
+          "type": "(progress: number) => void",
+          "optional": false,
+          "description": "Request a progress 0–1 directly."
+        },
+        {
+          "name": "state",
+          "type": "\"waiting\" | \"ready\" | \"reduced\"",
+          "optional": false,
+          "description": "`waiting` (no metadata yet), `ready`, `reduced`."
+        },
+        {
+          "name": "target",
+          "type": "number",
+          "optional": false,
+          "description": "Newest requested time (s) or NaN."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "VideoScrubOptions",
+      "description": "",
+      "module": "media/video",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "precision",
+          "type": "\"exact\" | \"fast\"",
+          "optional": true,
+          "description": "`exact` (default) or `fast` (keyframe seeks via `fastSeek` where available)."
+        },
+        {
+          "name": "progress",
+          "type": "ProgressSource",
+          "optional": true,
+          "description": "0–1 source (required unless you call `drive()` later)."
+        },
+        {
+          "name": "range",
+          "type": "readonly [number, number]",
+          "optional": true,
+          "description": "Time range in s mapped to 0–1 (default the whole duration)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "restTime",
+          "type": "number",
+          "optional": true,
+          "description": "s shown under reduced motion (default: the current time)."
+        },
+        {
+          "name": "restore",
+          "type": "boolean",
+          "optional": true,
+          "description": "Restore the original `currentTime` on destroy (default false).",
+          "default": "false"
+        },
+        {
+          "name": "tolerance",
+          "type": "number",
+          "optional": true,
+          "description": "s; smaller differences are not sought (0–1, default 1/60)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "WatchImageOptions",
+      "description": "",
+      "module": "core/media-load",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "decode",
+          "type": "boolean",
+          "optional": true,
+          "description": "Await `img.decode()` after `load` (default true).",
+          "default": "true"
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "cameraValues",
+      "description": "Bounded pose → channel values (`translate` in % of the media box).",
+      "module": "media/camera",
+      "kind": "function",
+      "signature": "(scale: number, x: number, y: number): { scale: string; translate: string; }"
+    },
+    {
+      "name": "createBlurUp",
+      "description": "M02 — a blurred placeholder layer fades out as the decoded image fades in.",
+      "module": "media/reveal",
+      "kind": "function",
+      "signature": "(frame: HTMLElement, options?: BlurUpOptions | undefined): MediaRevealControl"
+    },
+    {
+      "name": "createCompareSlider",
+      "description": "",
+      "module": "media/compare",
+      "kind": "function",
+      "signature": "(root: HTMLElement, options?: CompareSliderOptions | undefined): CompareControl"
+    },
+    {
+      "name": "createCrossfade",
+      "description": "M08 — cross-fade between slides; interruptible from the current opacities.",
+      "module": "media/gallery",
+      "kind": "function",
+      "signature": "(container: HTMLElement, options?: CrossfadeOptions | undefined): CrossfadeControl"
+    },
+    {
+      "name": "createDuotone",
+      "description": "",
+      "module": "media/duotone",
+      "kind": "function",
+      "signature": "(element: Element, options?: DuotoneOptions | undefined): ProgressControl"
+    },
+    {
+      "name": "createHoverPan",
+      "description": "M10 — the media follows the pointer inside its frame (bounded, springy, restored on leave).",
+      "module": "media/camera",
+      "kind": "function",
+      "signature": "(frame: HTMLElement, options?: HoverPanOptions | undefined): HoverPanControl"
+    },
+    {
+      "name": "createKenBurns",
+      "description": "M01 — slow bounded camera move over an image or video inside a clipping frame.",
+      "module": "media/camera",
+      "kind": "function",
+      "signature": "(media: Element, options?: KenBurnsOptions | undefined): ProgressControl"
+    },
+    {
+      "name": "createLightboxZoom",
+      "description": "",
+      "module": "media/lightbox",
+      "kind": "function",
+      "signature": "(options: LightboxZoomOptions): LightboxControl"
+    },
+    {
+      "name": "createLoadReveal",
+      "description": "M03 — the image is revealed by a clip when (and only if) it finishes loading.",
+      "module": "media/reveal",
+      "kind": "function",
+      "signature": "(img: HTMLImageElement, options?: LoadRevealOptions | undefined): MediaRevealControl"
+    },
+    {
+      "name": "createPixelDissolve",
+      "description": "M09 — block dissolve between images on a Canvas 2D surface; cross-fade fallback.",
+      "module": "media/gallery",
+      "kind": "function",
+      "signature": "(container: HTMLElement, options?: PixelDissolveOptions | undefined): DissolveControl"
+    },
+    {
+      "name": "createVideoScrub",
+      "description": "",
+      "module": "media/video",
+      "kind": "function",
+      "signature": "(video: HTMLVideoElement, options?: VideoScrubOptions | undefined): VideoScrubControl"
+    },
+    {
+      "name": "getMediaDebugInfo",
+      "description": "",
+      "module": "media/engine/debug",
+      "kind": "function",
+      "signature": "(): MediaDebugInfo"
+    },
+    {
+      "name": "getMediaSupport",
+      "description": "",
+      "module": "media/engine/debug",
+      "kind": "function",
+      "signature": "(): MediaSupport"
+    },
+    {
+      "name": "useKenBurns",
+      "description": "M01 — Ken Burns on a media element you render inside a clipping frame.",
+      "module": "media/react",
+      "kind": "function",
+      "signature": "(ref: RefObject<Element | null>, options?: KenBurnsOptions | undefined): RefObject<ProgressControl | null>"
+    },
+    {
+      "name": "useVideoScrub",
+      "description": "M06 — scrub a `<video>` you render from a 0–1 progress source (never plays it).",
+      "module": "media/react",
+      "kind": "function",
+      "signature": "(ref: RefObject<HTMLVideoElement | null>, options: VideoScrubOptions): RefObject<VideoScrubControl | null>"
+    },
+    {
+      "name": "watchImage",
+      "description": "",
+      "module": "core/media-load",
+      "kind": "function",
+      "signature": "(img: HTMLImageElement, onChange: (state: ImageLoadState) => void, options?: WatchImageOptions | undefined): () => void"
+    }
+  ]
+}

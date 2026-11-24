@@ -1,0 +1,1334 @@
+{
+  "package": "@neshel-ui/animations/layout",
+  "exports": [
+    {
+      "name": "AnimatedList",
+      "description": "A list whose items enter and exit (L03) while the remaining items FLIP into place (L01).",
+      "module": "layout/react",
+      "kind": "component",
+      "signature": "(props: AnimatedListProps): Element",
+      "props": "AnimatedListProps",
+      "client": true
+    },
+    {
+      "name": "AnimatedListProps",
+      "description": "",
+      "module": "layout/react",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "as",
+          "type": "\"ul\" | \"ol\" | \"div\"",
+          "optional": true,
+          "description": "List element (default `\"ul\"`).",
+          "default": "\"ul\""
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": "Keyed items, each accepting a ref."
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "Item enter/exit duration in ms (default 240).",
+          "default": "240"
+        },
+        {
+          "name": "initial",
+          "type": "boolean",
+          "optional": true,
+          "description": "Animate the first render's items (default false).",
+          "default": "false"
+        },
+        {
+          "name": "onExitComplete",
+          "type": "(key: string) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "transition",
+          "type": "LayoutTransition",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "AutoHeight",
+      "description": "A wrapper whose height follows its content smoothly (async content, text growing).",
+      "module": "layout/react",
+      "kind": "component",
+      "signature": "(props: AutoHeightProps): Element",
+      "props": "AutoHeightProps",
+      "client": true
+    },
+    {
+      "name": "AutoHeightOptions",
+      "description": "L02 — Auto-height: the element's height follows its content's observed height.",
+      "module": "layout/effects",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "duration",
+          "type": "number | DurationPreset",
+          "optional": true,
+          "description": "ms or preset (default 280).",
+          "default": "280"
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "AutoHeightProps",
+      "description": "",
+      "module": "layout/react",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number | DurationPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "Box",
+      "description": "A layout box in document coordinates (transforms ignored).",
+      "module": "core/layout-box",
+      "kind": "interface",
+      "definition": "Box",
+      "props": [
+        {
+          "name": "height",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "width",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "x",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "y",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "Collapse",
+      "description": "An expanding/collapsing panel (L06). Wire your trigger with `aria-expanded` and `aria-controls={id}`; the\nclosed content stays in the DOM (`hidden=\"until-found\"` where supported). Needs `layout.css`.",
+      "module": "layout/react",
+      "kind": "component",
+      "signature": "(props: CollapseProps): Element",
+      "props": "CollapseProps",
+      "client": true
+    },
+    {
+      "name": "CollapseOptions",
+      "description": "L06 — Accordion height (collapse / expand a package-rendered panel).",
+      "module": "layout/effects",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "driver",
+          "type": "\"auto\" | \"css\" | \"js\"",
+          "optional": true,
+          "description": "`\"auto\"` (default): CSS `interpolate-size` where supported, measured WAAPI otherwise."
+        },
+        {
+          "name": "duration",
+          "type": "number | DurationPreset",
+          "optional": true,
+          "description": "ms or preset (default 280).",
+          "default": "280"
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onRequestOpen",
+          "type": "() => void",
+          "optional": true,
+          "description": "Find-in-page matched hidden content: ask the consumer to open the panel."
+        },
+        {
+          "name": "open",
+          "type": "boolean",
+          "optional": true,
+          "description": "Expanded state (controlled by the consumer)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "CollapseProps",
+      "description": "",
+      "module": "layout/react",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "driver",
+          "type": "\"auto\" | \"css\" | \"js\"",
+          "optional": true,
+          "description": "`\"auto\"` (default): CSS `interpolate-size` where supported, measured WAAPI otherwise."
+        },
+        {
+          "name": "duration",
+          "type": "number | DurationPreset",
+          "optional": true,
+          "description": "ms or preset (default 280).",
+          "default": "280"
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onRequestOpen",
+          "type": "() => void",
+          "optional": true,
+          "description": "Find-in-page matched hidden content: ask the consumer to open the panel."
+        },
+        {
+          "name": "open",
+          "type": "boolean",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "CrossFade",
+      "description": "Content cross-fade swap (L09): old and new content overlap in one grid cell; the height follows (L02).",
+      "module": "layout/react",
+      "kind": "component",
+      "signature": "(props: CrossFadeProps): Element",
+      "props": "CrossFadeProps",
+      "client": true
+    },
+    {
+      "name": "CrossFadeOptions",
+      "description": "L09 — Content cross-fade swap (one layer of a swap; `<CrossFade>` stacks two).",
+      "module": "layout/effects",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "appear",
+          "type": "boolean",
+          "optional": true,
+          "description": "Fade in when attached visible (default false: SSR content stays visible)."
+        },
+        {
+          "name": "duration",
+          "type": "number | DurationPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onHidden",
+          "type": "() => void",
+          "optional": true,
+          "description": "Called once each time the layer has faded out."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "visible",
+          "type": "boolean",
+          "optional": true,
+          "description": "Shown (fades in) or hidden (fades out). Default true."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "CrossFadeProps",
+      "description": "",
+      "module": "layout/react",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "swapKey",
+          "type": "string | number",
+          "optional": false,
+          "description": "Change it to swap the content (old and new cross-fade while the height follows)."
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "FlipMoveOptions",
+      "description": "L01 — FLIP move / reorder (and L04 shared layout with a `layoutId`).",
+      "module": "layout/effects",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "group",
+          "type": "LayoutGroup",
+          "optional": true,
+          "description": "The group whose snapshot/play cycle animates this element (`createLayoutGroup()`; `<LayoutGroup>`)."
+        },
+        {
+          "name": "layout",
+          "type": "LayoutMode",
+          "optional": true,
+          "description": "What is animated (default `\"position\"`; `\"size\"`/`\"both\"` add a non-uniform scale).",
+          "default": "\"position\""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "transition",
+          "type": "LayoutTransition",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "GridReflowOptions",
+      "description": "L05 — Grid reflow.",
+      "module": "layout/effects",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "transition",
+          "type": "LayoutTransition",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "LayoutDebugInfo",
+      "description": "",
+      "module": "layout/engine/debug",
+      "kind": "interface",
+      "definition": "LayoutDebugInfo",
+      "props": [
+        {
+          "name": "observers",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "plays",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "reads",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "reflows",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "snapshots",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "watchdog",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "LayoutEntry",
+      "description": "",
+      "module": "layout/engine/group",
+      "kind": "interface",
+      "definition": "LayoutEntry",
+      "props": [
+        {
+          "name": "animate",
+          "type": "() => boolean",
+          "optional": false,
+          "description": "`false` while motion is reduced: changes are applied without animation."
+        },
+        {
+          "name": "animator",
+          "type": "FlipAnimator",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "layout",
+          "type": "LayoutMode",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "layoutId",
+          "type": "string | undefined",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "LayoutGroup",
+      "description": "Owns a layout group for the items rendered inside it (L01, L03, L04).",
+      "module": "layout/react",
+      "kind": "class"
+    },
+    {
+      "name": "LayoutGroupHandle",
+      "description": "",
+      "module": "layout/engine/group",
+      "kind": "interface",
+      "definition": "LayoutGroup",
+      "props": [
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "play",
+          "type": "() => void",
+          "optional": false,
+          "description": "Measure the new boxes in the next read phase and animate the changes."
+        },
+        {
+          "name": "register",
+          "type": "(element: Element, entry: LayoutEntry) => () => void",
+          "optional": false,
+          "description": "Register an element; returns the unregister function."
+        },
+        {
+          "name": "size",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "snapshot",
+          "type": "() => void",
+          "optional": false,
+          "description": "Read every registered box (once per pending change; further calls are no-ops until `play`)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "LayoutItem",
+      "description": "An element that FLIPs to its new layout box whenever an update of its group moves or resizes it.",
+      "module": "layout/react",
+      "kind": "component",
+      "signature": "(props: LayoutItemProps): Element",
+      "props": "LayoutItemProps",
+      "client": true
+    },
+    {
+      "name": "LayoutItemOptions",
+      "description": "",
+      "module": "layout/react",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "layout",
+          "type": "LayoutMode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "layoutId",
+          "type": "string",
+          "optional": true,
+          "description": "Shared-layout id (L04): a new element with the same id animates from the old one's box."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "transition",
+          "type": "LayoutTransition",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "LayoutItemProps",
+      "description": "",
+      "module": "layout/react",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "asChild",
+          "type": "boolean",
+          "optional": true,
+          "description": "Apply to the single child element instead of rendering a `<div>`."
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "layout",
+          "type": "LayoutMode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "layoutId",
+          "type": "string",
+          "optional": true,
+          "description": "Shared-layout id (L04): a new element with the same id animates from the old one's box."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "transition",
+          "type": "LayoutTransition",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "LayoutMode",
+      "description": "",
+      "module": "core/flip",
+      "kind": "type",
+      "definition": "\"position\" | \"size\" | \"both\""
+    },
+    {
+      "name": "LayoutTransition",
+      "description": "Transition of layout animations: a spring (default) or a tween.",
+      "module": "layout/effects",
+      "kind": "type",
+      "definition": "{ type: \"spring\"; spring?: SpringOptions | SpringPreset; } | { type: \"tween\"; duration?: number | DurationPreset; easing?: Easing | EasingPreset; }",
+      "props": [
+        {
+          "name": "duration",
+          "type": "number | DurationPreset",
+          "optional": true,
+          "description": "",
+          "variantOnly": true
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": "",
+          "variantOnly": true
+        },
+        {
+          "name": "spring",
+          "type": "SpringOptions | SpringPreset",
+          "optional": true,
+          "description": "",
+          "variantOnly": true
+        },
+        {
+          "name": "type",
+          "type": "\"spring\" | \"tween\"",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ListItemOptions",
+      "description": "L03 — List item enter / exit (opacity, 4 % scale and 8 px offset; siblings FLIP in a group).",
+      "module": "layout/effects",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "appear",
+          "type": "boolean",
+          "optional": true,
+          "description": "Animate the first appearance (default true; `<AnimatedList>` sets false for initial items)."
+        },
+        {
+          "name": "duration",
+          "type": "number | DurationPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "onExited",
+          "type": "() => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "present",
+          "type": "boolean",
+          "optional": true,
+          "description": "Present (enters) or leaving (exits, then `onExited`). Default true."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "Masonry",
+      "description": "A masonry grid (row spans from observed heights) whose reflows animate (L10). Needs `layout.css`.",
+      "module": "layout/react",
+      "kind": "component",
+      "signature": "(props: MasonryProps): Element",
+      "props": "MasonryProps",
+      "client": true
+    },
+    {
+      "name": "MasonryOptions",
+      "description": "L10 — Masonry reflow.",
+      "module": "layout/effects",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "columns",
+          "type": "number",
+          "optional": true,
+          "description": "Fixed column count (1–12); omitted: as many columns of `minColumnWidth` as fit."
+        },
+        {
+          "name": "gap",
+          "type": "number",
+          "optional": true,
+          "description": "Gap in px (0–96, default 16)."
+        },
+        {
+          "name": "minColumnWidth",
+          "type": "number",
+          "optional": true,
+          "description": "Minimum column width in px when `columns` is omitted (80–800, default 220)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "transition",
+          "type": "LayoutTransition",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "unit",
+          "type": "number",
+          "optional": true,
+          "description": "Row unit in px used for spans (1–32, default 4)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "MasonryProps",
+      "description": "",
+      "module": "layout/react",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "columns",
+          "type": "number",
+          "optional": true,
+          "description": "Fixed column count (1–12); omitted: as many columns of `minColumnWidth` as fit."
+        },
+        {
+          "name": "gap",
+          "type": "number",
+          "optional": true,
+          "description": "Gap in px (0–96, default 16)."
+        },
+        {
+          "name": "minColumnWidth",
+          "type": "number",
+          "optional": true,
+          "description": "Minimum column width in px when `columns` is omitted (80–800, default 220)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "transition",
+          "type": "LayoutTransition",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "unit",
+          "type": "number",
+          "optional": true,
+          "description": "Row unit in px used for spans (1–32, default 4)."
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "Presence",
+      "description": "",
+      "module": "layout/presence",
+      "kind": "component",
+      "signature": "(props: PresenceProps): Element",
+      "props": "PresenceProps",
+      "client": true
+    },
+    {
+      "name": "PresenceEntry",
+      "description": "",
+      "module": "core/presence",
+      "kind": "interface",
+      "definition": "PresenceEntry<T>",
+      "props": [
+        {
+          "name": "generation",
+          "type": "number",
+          "optional": false,
+          "description": "Increments on every status change; `remove` only acts on the generation it was given."
+        },
+        {
+          "name": "key",
+          "type": "string",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "status",
+          "type": "PresenceStatus",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "value",
+          "type": "T",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "PresenceProps",
+      "description": "",
+      "module": "layout/presence",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": "Keyed elements rendered without a wrapper. Each must accept a ref that reaches its DOM element (host\nelements do; components must forward `ref`), so exiting content can be made inert and lose focus."
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "Built-in fade duration in ms (default 220).",
+          "default": "220"
+        },
+        {
+          "name": "enter",
+          "type": "AnyPreset",
+          "optional": true,
+          "description": "Entrance definition or preset for entering children (default: the built-in fade)."
+        },
+        {
+          "name": "exit",
+          "type": "AnyPreset",
+          "optional": true,
+          "description": "Entrance definition or preset for exiting children (default: the built-in fade)."
+        },
+        {
+          "name": "focusFallback",
+          "type": "RefObject<HTMLElement | null>",
+          "optional": true,
+          "description": "Focus target when focus was inside an exiting child and no present sibling can take it."
+        },
+        {
+          "name": "initial",
+          "type": "boolean",
+          "optional": true,
+          "description": "Animate the children of the first render too (default false: server/hydrated content stays visible)."
+        },
+        {
+          "name": "onExitComplete",
+          "type": "(key: string) => void",
+          "optional": true,
+          "description": "Called once per removed key, after its exit."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "PresenceState",
+      "description": "",
+      "module": "core/presence",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "entries",
+          "type": "readonly PresenceEntry<T>[]",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "flush",
+          "type": "() => boolean",
+          "optional": false,
+          "description": "Remove every exiting entry at once (container unmount, hidden page)."
+        },
+        {
+          "name": "remove",
+          "type": "(key: string, generation: number) => boolean",
+          "optional": false,
+          "description": "An exit finished: remove the key if it is still exiting in `generation`."
+        },
+        {
+          "name": "update",
+          "type": "(next: ReadonlyArray<{ key: string; value: T; }>) => boolean",
+          "optional": false,
+          "description": "Merge the next ordered children; returns whether anything changed."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "PresenceStatus",
+      "description": "Presence state machine (Phase 012, shared from `src/core` since Phase 015 by `./layout` L08 and `./feedback` F06;\ncontracts/layout-engine.md §7, research R8). Framework-free and pure: it\nmerges successive keyed child lists, keeping removed keys in place as `exiting` until `remove(key,\ngeneration)` confirms their exit, and turning re-added keys back to `present`. Timers, animations and focus\nlive in the caller (the React `<Presence>` item); every transition is idempotent, so a repeated `update`\nwith the same list (StrictMode double render) changes nothing.",
+      "module": "core/presence",
+      "kind": "type",
+      "definition": "\"present\" | \"exiting\""
+    },
+    {
+      "name": "Reflow",
+      "description": "Children animate whenever the container reflows (resize, column change, size change) — no renders.",
+      "module": "layout/react",
+      "kind": "component",
+      "signature": "(props: ReflowProps): Element",
+      "props": "ReflowProps",
+      "client": true
+    },
+    {
+      "name": "ReflowProps",
+      "description": "",
+      "module": "layout/react",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "asChild",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "transition",
+          "type": "LayoutTransition",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "SharedLayoutOptions",
+      "description": "L04 — Shared layout: the same logical item rendered by a new element animates from the old one.",
+      "module": "layout/effects",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "group",
+          "type": "LayoutGroup",
+          "optional": true,
+          "description": "The group whose snapshot/play cycle animates this element (`createLayoutGroup()`; `<LayoutGroup>`)."
+        },
+        {
+          "name": "layout",
+          "type": "LayoutMode",
+          "optional": true,
+          "description": "What is animated (default `\"position\"`; `\"size\"`/`\"both\"` add a non-uniform scale).",
+          "default": "\"position\""
+        },
+        {
+          "name": "layoutId",
+          "type": "string",
+          "optional": true,
+          "description": "Stable id shared by the old and the new element (required)."
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "transition",
+          "type": "LayoutTransition",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "TabIndicator",
+      "description": "A sliding indicator under the active tab (package-rendered layer; CSS transition on it only).",
+      "module": "layout/react",
+      "kind": "component",
+      "signature": "(props: TabIndicatorProps): Element",
+      "props": "TabIndicatorProps",
+      "client": true
+    },
+    {
+      "name": "TabIndicatorOptions",
+      "description": "L07 — Tab indicator slide (a package-rendered indicator inside the tab list).",
+      "module": "layout/effects",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "active",
+          "type": "Element | number | null",
+          "optional": true,
+          "description": "The active tab: an element, its index among the tabs (`[role=\"tab\"]`, else children), or null."
+        },
+        {
+          "name": "duration",
+          "type": "number | DurationPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "orientation",
+          "type": "\"horizontal\" | \"vertical\"",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "TabIndicatorProps",
+      "description": "",
+      "module": "layout/react",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "active",
+          "type": "Element | number | null",
+          "optional": true,
+          "description": "The active tab: an element, its index among the tabs (`[role=\"tab\"]`, else children), or null."
+        },
+        {
+          "name": "asChild",
+          "type": "boolean",
+          "optional": true,
+          "description": "Apply to your tab list element instead of rendering a `<div>`."
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number | DurationPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "easing",
+          "type": "Easing | EasingPreset",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "orientation",
+          "type": "\"horizontal\" | \"vertical\"",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "reducedMotion",
+          "type": "ReducedMotion",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "autoHeight",
+      "description": "",
+      "module": "layout/effects",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<AutoHeightOptions, ResolvedHeight>>"
+    },
+    {
+      "name": "collapse",
+      "description": "",
+      "module": "layout/effects",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<CollapseOptions, ResolvedCollapse>>"
+    },
+    {
+      "name": "createLayoutGroup",
+      "description": "",
+      "module": "layout/engine/group",
+      "kind": "function",
+      "signature": "(): LayoutGroup"
+    },
+    {
+      "name": "createPresence",
+      "description": "",
+      "module": "core/presence",
+      "kind": "function",
+      "signature": "<T>(): Presence<T>"
+    },
+    {
+      "name": "crossFade",
+      "description": "",
+      "module": "layout/effects",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<CrossFadeOptions, ResolvedCrossFade>>"
+    },
+    {
+      "name": "flipMove",
+      "description": "",
+      "module": "layout/effects",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<FlipMoveOptions, ResolvedFlip>>"
+    },
+    {
+      "name": "getLayoutDebugInfo",
+      "description": "",
+      "module": "layout/engine/debug",
+      "kind": "function",
+      "signature": "(): LayoutDebugInfo"
+    },
+    {
+      "name": "gridReflow",
+      "description": "",
+      "module": "layout/effects",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<GridReflowOptions, ResolvedReflow>>"
+    },
+    {
+      "name": "layoutEffects",
+      "description": "Every layout definition in catalogue order (L01–L07, L09, L10; L08 is `<Presence>`), for registries.",
+      "module": "layout/index",
+      "kind": "const",
+      "type": "readonly AnyEffectDefinition[]"
+    },
+    {
+      "name": "listItem",
+      "description": "",
+      "module": "layout/effects",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<ListItemOptions, ResolvedListItem>>"
+    },
+    {
+      "name": "masonry",
+      "description": "",
+      "module": "layout/effects",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<MasonryOptions, ResolvedMasonry>>"
+    },
+    {
+      "name": "measureBox",
+      "description": "Layout box of an element (offset chain + `offsetWidth/Height`), or the bounding box plus scroll for\nnon-HTML elements (their transforms are then included — documented).",
+      "module": "core/layout-box",
+      "kind": "function",
+      "signature": "(element: Element): Box"
+    },
+    {
+      "name": "sharedLayout",
+      "description": "",
+      "module": "layout/effects",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<SharedLayoutOptions, ResolvedFlip>>"
+    },
+    {
+      "name": "tabIndicator",
+      "description": "",
+      "module": "layout/effects",
+      "kind": "const",
+      "type": "Readonly<EffectDefinition<TabIndicatorOptions, ResolvedIndicator>>"
+    },
+    {
+      "name": "useIsPresent",
+      "description": "Whether this component is present (`false` while it exits).",
+      "module": "layout/presence",
+      "kind": "function",
+      "signature": "(): boolean"
+    },
+    {
+      "name": "useLayoutGroup",
+      "description": "The nearest `<LayoutGroup>`'s group (`null` outside one): `snapshot()` / `play()` for imperative changes.",
+      "module": "layout/react",
+      "kind": "function",
+      "signature": "(): LayoutGroup | null"
+    },
+    {
+      "name": "useLayoutItem",
+      "description": "Attach the FLIP effect of the nearest group to `ref` (for custom components; see `<LayoutItem>`).",
+      "module": "layout/react",
+      "kind": "function",
+      "signature": "(ref: RefObject<Element | null>, options?: LayoutItemOptions | undefined): void"
+    },
+    {
+      "name": "usePresence",
+      "description": "`[isPresent, safeToRemove]` for a custom child of `<Presence>`; `[true, noop]` outside one.",
+      "module": "layout/presence",
+      "kind": "function",
+      "signature": "(): [boolean, () => void]"
+    }
+  ]
+}

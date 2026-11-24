@@ -1,0 +1,48 @@
+{
+  "package": "@neshel-ui/animations/page-transitions/react-router",
+  "exports": [
+    {
+      "name": "RouterPageTransitions",
+      "description": "Inside a router: progress, direction and focus around navigations.",
+      "module": "page-transitions/react-router",
+      "kind": "component",
+      "signature": "({ focus, progress, failed, children, }: RouterPageTransitionsProps): Element",
+      "props": "RouterPageTransitionsProps",
+      "client": true
+    },
+    {
+      "name": "RouterPageTransitionsProps",
+      "description": "",
+      "module": "page-transitions/react-router",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "failed",
+          "type": "boolean",
+          "optional": true,
+          "description": "Set by the application when it knows the last navigation failed (error boundary shown)."
+        },
+        {
+          "name": "focus",
+          "type": "\"auto\" | \"none\"",
+          "optional": true,
+          "description": "Focus `[data-neshel-route-focus]` after a committed push/replace (default `\"auto\"`).",
+          "default": "\"auto\""
+        },
+        {
+          "name": "progress",
+          "type": "RouteProgressOptions | false",
+          "optional": true,
+          "description": "Route progress options, or `false` to render none."
+        }
+      ],
+      "inherits": []
+    }
+  ]
+}
