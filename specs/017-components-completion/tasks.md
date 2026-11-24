@@ -21,7 +21,7 @@ Legend: `[x]` done and verified locally; `[~]` done, awaiting CI; `[ ]` open. Ev
   defaultOpen on both, AlertDialog/Sheet/Popover nested, unmount while nested open
 - [x] T014 `check:browsers`: no grace delay, failure trace, `nested-overlays-rapid-escape`
 - [x] T015 `pnpm stress:overlays` (30× per engine, both cases) — local Windows: before 181/360, after 360/360
-- [~] T016 Stress in CI: Windows (validate job), Ubuntu and macOS (browsers job)
+- [x] T016 Stress in CI: Windows (validate job), Ubuntu and macOS (browsers job)
 - [x] T017 `tests/ts-paths.test.mjs` guard (audit A2) with negative control
 
 ## 017.2 Toast migration
@@ -52,7 +52,7 @@ Legend: `[x]` done and verified locally; `[~]` done, awaiting CI; `[ ]` open. Ev
 
 ## 017.7 Final validation
 
-- [~] T050 Full local gates (`pnpm check`, Storybook, docs, Next, starters, release simulation)
-- [ ] T051 PR opened; CI 14/14 on the first attempt on the final SHA
-- [ ] T052 Extra independent runs (`workflow_dispatch`) on the same SHA; every run recorded
+- [x] T050 Full local gates (`pnpm check`, Storybook, docs, Next, starters, release simulation)
+- [x] T051 PR #18 opened; CI 14/14 on the first attempt (run 45297051951, `d946298`)
+- [x] T052 Extra independent runs on the same SHA: 45299935827 and 45299961886, both 14/14; earlier failed runs recorded (ci-audit B1–B4)
 - [ ] T053 Owner review and merge (owner only); main CI first attempt after merge
