@@ -4,6 +4,7 @@ import {
   depthParallax,
   directionHeader,
   HorizontalScroll,
+  inViewPresets,
   inViewProgress,
   ParallaxImage,
   RevealOnScroll,
@@ -16,12 +17,13 @@ import {
   scrollColorShift,
   scrubTransform,
   stuckState,
+  useInView,
   useSectionSpy,
   velocitySkew,
   zoomOnScroll,
 } from "@neshel-ui/animations/scroll";
 import type { Meta, StoryObj } from "@storybook/react-vite";
-import type { CSSProperties, ReactNode } from "react";
+import { type CSSProperties, type ReactNode, useRef } from "react";
 
 const meta = {
   title: "Animations (experimental)/Scroll & Parallax",
@@ -111,6 +113,28 @@ export const Triggers: Story = {
       </StaggerOnScroll>
     </Page>
   ),
+};
+
+/** ST04 in-view state with the ST10 trigger presets. */
+export const InViewState: Story = {
+  render: function Render() {
+    const half = useRef<HTMLDivElement>(null);
+    const full = useRef<HTMLDivElement>(null);
+    const halfVisible = useInView(half, "half");
+    const fullyVisible = useInView(full, inViewPresets.full);
+    return (
+      <Page>
+        {spacer("80vh")}
+        <div ref={half} style={tile}>
+          ST04 half preset: {halfVisible ? "in view" : "out of view"}
+        </div>
+        {spacer("40vh")}
+        <div ref={full} style={tile}>
+          ST10 full preset: {fullyVisible ? "in view" : "out of view"}
+        </div>
+      </Page>
+    );
+  },
 };
 
 /** ST06 header, ST07 stuck state and ST08 section spy. */
