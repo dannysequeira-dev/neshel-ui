@@ -30,6 +30,13 @@ pnpm docs:preview    # serve the export locally
 - **Coverage.** Reference pages list the exports they document in the `exports` frontmatter; every
   public export must appear exactly once per language.
 
+- **Unreleased API is marked.** A page that documents an export missing from `apps/docs/published-api.json`
+  (the exports of the last release) must contain `<Unreleased />`, and no other page may.
+- **Animations.** `apps/docs/animations/catalog.json` is checked against the specification, the built package,
+  the examples (`demos/animations/<id>.tsx`) and both languages. Each effect is a `## E01 · Name [#e01]`
+  section with prose and `<Effect id="E01" />`; each import path has one `<EntryReference>` page. The package
+  is private, so no page may offer to install it.
+
 ## Translations
 
 English is the canonical source; Spanish mirrors it file for file.
@@ -37,7 +44,9 @@ English is the canonical source; Spanish mirrors it file for file.
 1. Change the English page.
 2. Make the same change in the Spanish page in the same pull request. `check:docs` compares the page
    sets, `exports`, previews and API tables of both languages.
-3. Translate new API descriptions in `apps/docs/i18n/api.es.json` (the check lists missing ones).
+3. Translate new API descriptions in `apps/docs/i18n/api.es.json` (the check lists missing ones). The
+   options shown on the effect pages are translated in `api.animations.es.json`; the complete generated
+   references of the private animations package stay in English, marked with `lang="en"`.
 4. If a translation genuinely cannot be done in the same change, declare the page in
    `apps/docs/translations.json` with a reason. The site then shows the English page under `/es/` with a
    visible "not translated yet" notice — it is never presented as translated.

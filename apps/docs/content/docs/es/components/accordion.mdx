@@ -7,6 +7,8 @@ exports: [Accordion, AccordionItem, AccordionTrigger, AccordionContent, Accordio
 
 <ComponentKind package="components" name="Accordion" />
 
+<Unreleased />
+
 ## Propósito
 
 `Accordion` agrupa secciones relacionadas (preguntas frecuentes, grupos de ajustes) tras
@@ -46,6 +48,23 @@ import {
 - `type="multiple"`: `value` / `defaultValue` son arrays de strings; `onValueChange` recibe la
   lista.
 
+<Preview demo="components/accordion-multiple" />
+
+## Composición
+
+`AccordionTrigger` acepta `asChild` con un hijo que renderice un botón. Los acordeones se pueden anidar:
+las flechas de cada uno recorren solo sus propios encabezados.
+
+## Estilos
+
+Las reglas leen `--neshel-border`, `--neshel-foreground`, `--neshel-primary` y `--neshel-focus`. La
+transición de altura (200 ms) es CSS opcional del panel y se elimina con movimiento reducido.
+
+## Errores de uso
+
+Un `type` desconocido, un `headingLevel` fuera de 2–6, un `value` vacío o un hijo de `asChild` no válido
+lanzan `NeshelComponentsError` en el servidor y en el cliente.
+
 ## Accesibilidad
 
 - Los encabezados son headings (`headingLevel`, 3 por defecto) con un botón nativo con
@@ -69,3 +88,14 @@ import {
 - Dejar la única copia de contenido esencial en una sección cerrada: mantén visible la información
   crítica.
 - Elegir un nivel de encabezado que rompe la estructura de la página: ajusta `headingLevel`.
+
+## Limitaciones
+
+- El contenido cerrado no está en el DOM por defecto: la búsqueda en la página y los enlaces internos no
+  llegan a él salvo con `keepMounted` o `hiddenUntilFound`.
+- No hay orientación horizontal.
+
+## Relacionado
+
+Una sola divulgación sin encabezado: [Collapsible](/es/docs/components/collapsible/). Consulta también
+[cómo elegir componentes](/es/docs/guides/choosing-components/#accordion-frente-a-collapsible).

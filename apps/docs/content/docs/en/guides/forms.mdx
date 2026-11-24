@@ -73,6 +73,10 @@ export function SignupForm() {
 `MultiSelect` and `Combobox` use `value`/`defaultValue`/`onValueChange` with **string** values
 (`string | null` for single selection, `string[]` for multiple).
 
+`Switch` uses `checked`/`defaultChecked`/`onCheckedChange`. Like a checkbox, it adds `name=value` to the
+form data only while it is on (`value` defaults to `"on"`), and a form reset restores `defaultChecked`.
+[Switch](/en/docs/components/switch/) is not in 0.1.0 yet.
+
 ## Validation
 
 - Use native constraints (`required`, `type`, `pattern`) for browser validation.

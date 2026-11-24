@@ -40,9 +40,9 @@ import {
 - Foundation: Button, Card, Badge, Input, Label, Separator, Skeleton, VisuallyHidden.
 - Overlays (Radix): Dialog, AlertDialog, Sheet, Popover, Tooltip — themes survive portals.
 - Selection (Base UI): Select, MultiSelect, Combobox (single and multiple) — string values, forms.
-- Disclosure and forms (Base UI): Accordion (single/multiple, headings, arrow keys), Collapsible, Switch
+- Not in 0.1.0 yet — disclosure and forms (Base UI): Accordion (single/multiple, headings, arrow keys), Collapsible, Switch
   (`role="switch"`, native forms, reset).
-- Feedback: `createToaster()` + `<Toaster>` — a framework-free store (no provider), one announcement per toast,
+- Not in 0.1.0 yet — feedback: `createToaster()` + `<Toaster>` — a framework-free store (no provider), one announcement per toast,
   timers paused on hover/focus/hidden page, F8 and Escape. Nested overlays close one layer per Escape.
 - Navigation: Navbar, NavigationMenu, DropdownMenu, MobileMenu.
 - Shell: AppShell, Sidebar, SidebarTrigger — breakpoint-driven desktop rail and mobile drawer.

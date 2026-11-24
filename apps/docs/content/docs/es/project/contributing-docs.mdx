@@ -31,6 +31,14 @@ pnpm docs:preview    # serve the export locally
 - **Cobertura.** Las páginas de referencia indican en el frontmatter `exports` qué exports documentan;
   cada export público debe aparecer exactamente una vez por idioma.
 
+- **La API sin publicar se señala.** Una página que documenta una exportación ausente de
+  `apps/docs/published-api.json` (las exportaciones de la última versión) debe contener `<Unreleased />`, y
+  ninguna otra puede tenerlo.
+- **Animaciones.** `apps/docs/animations/catalog.json` se comprueba con la especificación, el paquete
+  compilado, los ejemplos (`demos/animations/<id>.tsx`) y ambos idiomas. Cada efecto es una sección
+  `## E01 · Nombre [#e01]` con texto y `<Effect id="E01" />`; cada ruta de importación tiene una página con
+  `<EntryReference>`. El paquete es privado, así que ninguna página puede ofrecer instalarlo.
+
 ## Traducciones
 
 El inglés es la fuente canónica; el español lo refleja archivo por archivo.
@@ -40,6 +48,8 @@ El inglés es la fuente canónica; el español lo refleja archivo por archivo.
    ambos idiomas el conjunto de páginas, los `exports`, las vistas previas y las tablas de API.
 3. Traduce las descripciones de API nuevas en `apps/docs/i18n/api.es.json` (la comprobación lista las
    que faltan).
+   Las opciones de las páginas de efectos se traducen en `api.animations.es.json`; las referencias completas
+   del paquete privado de animaciones quedan en inglés, marcadas con `lang="en"`.
 4. Si una traducción de verdad no puede hacerse en el mismo cambio, declara la página en
    `apps/docs/translations.json` con un motivo. El sitio muestra entonces la página inglesa bajo
    `/es/` con un aviso visible de «aún no traducida»; nunca se presenta como traducida.

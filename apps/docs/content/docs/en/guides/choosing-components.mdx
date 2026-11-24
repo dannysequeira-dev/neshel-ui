@@ -69,3 +69,27 @@ lifetime. See [Forms](/en/docs/guides/forms/).
 `collapsible="icon"` (default) collapses to an icon rail on desktop: labels stay as accessible names
 and appear as tooltips on hover and focus. `collapsible="offcanvas"` hides the sidebar completely when
 collapsed. `collapsible="none"` keeps it expanded. On mobile, the sidebar is always a drawer.
+
+## Accordion vs Collapsible
+
+| | Accordion | Collapsible |
+| --- | --- | --- |
+| Sections | Several related ones | One |
+| Trigger | A heading that contains a button | A button |
+| Keyboard | Arrow keys, Home and End between headers | Enter and Space |
+| State | `value` (string or list) | `open` (boolean) |
+
+## Switch vs checkbox
+
+A **Switch** takes effect immediately. A **checkbox** is a choice that waits for a submit button, or one
+of several that can be selected together; use the native `<input type="checkbox">`.
+
+## Toast vs Dialog vs inline message
+
+| | Toast | AlertDialog | Inline message |
+| --- | --- | --- | --- |
+| Use for | Confirming something that already happened | A decision before continuing | Errors about a field or the page |
+| Interrupts | No | Yes | No |
+| Disappears by itself | Usually | No | No |
+
+Never put the only copy of important information in a toast.

@@ -7,6 +7,8 @@ exports: [Collapsible, CollapsibleTrigger, CollapsibleContent, CollapsibleProps,
 
 <ComponentKind package="components" name="Collapsible" />
 
+<Unreleased />
+
 ## Propósito
 
 `Collapsible` revela detalle opcional ("Ver más", filtros avanzados). Es una única divulgación, no
@@ -33,6 +35,8 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@neshel-ui/
 `open`, `defaultOpen` y `onOpenChange`, como Dialog. El contenido cerrado se desmonta salvo que se
 use `keepMounted` (oculto) o `hiddenUntilFound`.
 
+<Preview demo="components/collapsible-controlled" />
+
 ## Accesibilidad
 
 - El disparador es un botón nativo con `aria-expanded` y `aria-controls`; con `asChild` el hijo
@@ -46,3 +50,14 @@ use `keepMounted` (oculto) o `hiddenUntilFound`.
 | --------------- | ----------------------- |
 | Enter / Espacio | Alterna el contenido    |
 | Tab             | Mueve el foco como siempre |
+
+## Limitaciones
+
+El contenido que se desmonta al cerrar pierde su estado (borradores, posición de scroll). Usa `keepMounted`
+cuando deba conservarse.
+
+## Errores comunes
+
+- Varios Collapsible como preguntas frecuentes: usa [Accordion](/es/docs/components/accordion/), que añade
+  encabezados y flechas.
+- Un disparador cuyo texto no dice qué abre.

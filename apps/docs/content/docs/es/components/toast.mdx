@@ -7,6 +7,8 @@ exports: [createToaster, Toaster, Toast, ToastAction, ToastInput, ToastTone, Toa
 
 <ComponentKind package="components" name="Toaster" />
 
+<Unreleased />
+
 ## Propósito
 
 Un toast confirma el resultado de una acción ("Borrador guardado") o informa de un problema sin
@@ -43,9 +45,23 @@ import { createToaster, Toaster } from "@neshel-ui/components";
 - Con más de `max` toasts se descarta el más antiguo sin foco o, con `overflow: "queue"`, los nuevos
   esperan un hueco libre.
 - `destroy()` lo limpia todo y es idempotente; un store destruido ignora las llamadas posteriores.
+- Mostrar otra vez un `id` existente sustituye su contenido y reinicia su temporizador: «Subiendo…» pasa a
+  «Subido» en el mismo toast.
+- `pause(reason)` y `resume(reason)` añaden tus propios motivos; los temporizadores avanzan solo cuando no
+  hay ninguno activo y continúan con el tiempo restante.
 - Varios `<Toaster>` pueden renderizar un mismo store; cada toast se anuncia una vez.
 - `motion="none"` desactiva las transiciones integradas, por ejemplo para que el efecto F06 de
   `@neshel-ui/animations` anime los toasts.
+
+<Preview demo="components/toast-queue" />
+
+## Posición y ciclo de vida
+
+Crea el store una vez por aplicación (en el módulo) y renderiza un `<Toaster>` cerca de la raíz. Si lo
+creas dentro de un componente, llama a `destroy()` al desmontar; `<Toaster>` nunca lo destruye. En un
+servidor no compartas un store de módulo entre peticiones: muestra toasts solo desde el navegador.
+`placement` usa esquinas lógicas, así que `bottom-end` queda a la izquierda en páginas de derecha a
+izquierda.
 
 ## Accesibilidad
 
@@ -62,3 +78,21 @@ import { createToaster, Toaster } from "@neshel-ui/components";
 | F8     | Lleva el foco a los toasts (`hotkey`)    |
 | Escape | Cierra el toast enfocado                 |
 | Tab    | Recorre los botones del toast            |
+
+## Estilos y movimiento
+
+`motion="css"` usa las transiciones integradas (solo opacidad con movimiento reducido). Con
+`motion="none"` otra capa puede animar los elementos: cada uno expone `data-state` (`entering`, `open`,
+`closing`) y emite un evento `neshel-exit` cuyo `detail.waitUntil(promise)` lo mantiene montado un segundo
+como máximo.
+
+## Limitaciones
+
+No hay proveedor, ni singleton global, ni deslizamiento para descartar, ni ayudante de promesas.
+
+## Errores comunes
+
+- Información esencial o una decisión obligatoria en un toast: usa un mensaje en la página o un
+  [AlertDialog](/es/docs/components/alert-dialog/).
+- Añadir tu propia región en vivo para el mismo mensaje: se anunciaría dos veces.
+- Una acción que solo existe en el toast: ofrécela también en otro lugar.

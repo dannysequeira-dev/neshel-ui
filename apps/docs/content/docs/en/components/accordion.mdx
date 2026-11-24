@@ -7,6 +7,8 @@ exports: [Accordion, AccordionItem, AccordionTrigger, AccordionContent, Accordio
 
 <ComponentKind package="components" name="Accordion" />
 
+<Unreleased />
+
 ## Purpose
 
 `Accordion` groups related sections (an FAQ, settings groups) behind headers. Each header is a real
@@ -44,6 +46,23 @@ import {
   open.
 - `type="multiple"`: `value` / `defaultValue` are string arrays; `onValueChange` receives the list.
 
+<Preview demo="components/accordion-multiple" />
+
+## Composition
+
+`AccordionTrigger` accepts `asChild` with a child that renders a button. Accordions can be nested: the
+arrow keys of each one move only among its own headers.
+
+## Styling
+
+Rules read `--neshel-border`, `--neshel-foreground`, `--neshel-primary` and `--neshel-focus`. The height
+transition (200 ms) is optional CSS on the panel; it is removed under reduced motion.
+
+## Errors
+
+An unknown `type`, a `headingLevel` outside 2–6, an empty item `value` or an invalid `asChild` child
+throws `NeshelComponentsError` on the server and the client.
+
 ## Accessibility
 
 - Headers are headings (`headingLevel`, default 3) containing a native button with
@@ -67,3 +86,14 @@ import {
 - Putting the only copy of essential content in a closed section — keep critical information
   visible.
 - Choosing a heading level that skips the page outline — set `headingLevel`.
+
+## Limitations
+
+- Closed content is not in the DOM by default: in-page search and anchors cannot reach it unless you use
+  `keepMounted` or `hiddenUntilFound`.
+- There is no horizontal orientation.
+
+## Related
+
+One disclosure without a heading: [Collapsible](/en/docs/components/collapsible/). See also
+[choosing components](/en/docs/guides/choosing-components/#accordion-vs-collapsible).
