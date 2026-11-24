@@ -1,11 +1,14 @@
 // Registry of live demos used by <Preview demo="…" />. Each entry's file is shown as the source.
 // check:docs verifies that every <Preview> refers to an entry and every entry has its file.
+
+import ComponentsAccordionBasic from "./components/accordion-basic";
 import ComponentsAlertDialogBasic from "./components/alert-dialog-basic";
 import ComponentsAppShellBasic from "./components/app-shell-basic";
 import ComponentsBadgeVariants from "./components/badge-variants";
 import ComponentsButtonSizes from "./components/button-sizes";
 import ComponentsButtonVariants from "./components/button-variants";
 import ComponentsCardBasic from "./components/card-basic";
+import ComponentsCollapsibleBasic from "./components/collapsible-basic";
 import ComponentsComboboxAsync from "./components/combobox-async";
 import ComponentsComboboxMultiple from "./components/combobox-multiple";
 import ComponentsComboboxSingle from "./components/combobox-single";
@@ -26,6 +29,8 @@ import ComponentsSeparatorBasic from "./components/separator-basic";
 import ComponentsSheetSides from "./components/sheet-sides";
 import ComponentsSidebarStatic from "./components/sidebar-static";
 import ComponentsSkeletonLoading from "./components/skeleton-loading";
+import ComponentsSwitchForm from "./components/switch-form";
+import ComponentsToastBasic from "./components/toast-basic";
 import ComponentsTooltipBasic from "./components/tooltip-basic";
 import ComponentsVisuallyHiddenIcon from "./components/visually-hidden-icon";
 import LayoutBoxDisplay from "./layout/box-display";
@@ -51,6 +56,10 @@ import TypographyTypographyResponsive from "./typography/typography-responsive";
 
 export const demos = {
   "components/alert-dialog-basic": ComponentsAlertDialogBasic,
+  "components/toast-basic": ComponentsToastBasic,
+  "components/switch-form": ComponentsSwitchForm,
+  "components/collapsible-basic": ComponentsCollapsibleBasic,
+  "components/accordion-basic": ComponentsAccordionBasic,
   "components/app-shell-basic": ComponentsAppShellBasic,
   "components/badge-variants": ComponentsBadgeVariants,
   "components/button-sizes": ComponentsButtonSizes,

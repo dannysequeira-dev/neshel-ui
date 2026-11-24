@@ -179,7 +179,10 @@ export function RouteProgress({
   }, [delay, minVisible, timeout, announce]);
   const wasPending = useRef(pending);
   const lastNavigation = useRef(navigation);
-  useEffect(() => {
+  // A layout effect, not a passive one (feature 017): when the pending state is committed inside a React view
+  // transition (data routers update navigation state in `startTransition`), React runs passive effects only after
+  // the transition animation finishes, which showed the indicator ~0.4–0.7 s after the navigation started.
+  useClientLayoutEffect(() => {
     const progress = control.current;
     if (!progress) return;
     const restarted = pending && wasPending.current && navigation !== lastNavigation.current;

@@ -556,12 +556,21 @@ export async function runMediaSuite(): Promise<Case[]> {
       },
     ],
     [
-      "F06 toasts: regions exist before content; announced once; enter/exit; close button removes",
+      "F06 enter/exit on a Components Toaster: F06 moves it (Motion Host), the toaster announces once and removes after the exit",
       async () => {
         const region = byId("f06").querySelector("section.neshel-toaster") as HTMLElement;
         const polite = region.querySelector('[role="status"]') as HTMLElement;
         check(polite && region.querySelector('[role="alert"]'), "live regions present");
+        check(region.getAttribute("data-motion") === "none", "Components motion off under F06");
         byId("f06-show").click();
+        await until(
+          "F06 enter visible",
+          () => {
+            const item = region.querySelector(".neshel-toast") as HTMLElement | null;
+            return !!item && item.style.opacity !== "" && Number(item.style.opacity) < 1;
+          },
+          () => region.innerHTML.slice(0, 200),
+        );
         await until(
           "open",
           () => region.querySelector('.neshel-toast[data-state="open"]') !== null,
@@ -777,12 +786,20 @@ export async function benchMediaAmbient(config: {
   };
   dissolve.destroy();
   host.replaceChildren();
-  // P9: six toasts (store only, motion is CSS) — store cost per show.
-  const toaster = feedback.createToaster({ max: 6 });
+  // P9 (feature 017: the toaster store moved to Components): F06 enter/exit attached to six list items.
+  const list = document.createElement("ol");
+  host.appendChild(list);
+  const enterExit = feedback.createEnterExit(list);
   const s0 = performance.now();
-  for (let i = 0; i < 6; i++) toaster.show({ title: `Toast ${i}` });
-  results.P9_toaster_store_6_shows_ms = Math.round((performance.now() - s0) * 1000) / 1000;
-  toaster.destroy();
+  for (let i = 0; i < 6; i++) {
+    const item = document.createElement("li");
+    item.dataset.state = "entering";
+    item.textContent = `Item ${i}`;
+    list.appendChild(item);
+  }
+  await frame();
+  results.P9_enter_exit_6_items_ms = Math.round((performance.now() - s0) * 1000) / 1000;
+  enterExit.destroy();
   host.remove();
   results.afterCleanup = { ...getAmbientDebugInfo(), media: getMediaDebugInfo() };
   return results;

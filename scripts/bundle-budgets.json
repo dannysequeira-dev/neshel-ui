@@ -17,10 +17,14 @@
     "components: DropdownMenu": 39936,
     "components: MobileMenu": 25088,
     "components: AppShell + Sidebar": 41984,
-    "components (entire library)": 132096,
+    "components: Accordion": 15360,
+    "components: Collapsible": 11776,
+    "components: Switch": 10240,
+    "components: Toaster + createToaster": 10240,
+    "components (entire library)": 145408,
     "config/tokens.css": 1536,
     "layout/styles.css": 4096,
     "typography/styles.css": 2048,
-    "components/styles.css": 6144
+    "components/styles.css": 7168
   }
 }

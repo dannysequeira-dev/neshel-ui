@@ -1,0 +1,64 @@
+---
+title: Toast
+description: Notificaciones breves que no bloquean, desde un store que creas una vez; se anuncian una sola vez a los lectores de pantalla.
+package: components
+exports: [createToaster, Toaster, Toast, ToastAction, ToastInput, ToastTone, ToasterOptions, ToasterStore, ToasterPlacement, ToasterProps]
+---
+
+<ComponentKind package="components" name="Toaster" />
+
+## Propósito
+
+Un toast confirma el resultado de una acción ("Borrador guardado") o informa de un problema sin
+interrumpir. `createToaster()` devuelve un store con los toasts, sus temporizadores y la cola;
+`<Toaster>` lo renderiza. No necesita provider.
+
+## Importación
+
+```tsx title="import.tsx"
+import { createToaster, Toaster } from "@neshel-ui/components";
+```
+
+## Uso
+
+<Preview demo="components/toast-basic" />
+
+## API
+
+<ApiTable package="components" name="ToasterOptions" />
+<ApiTable package="components" name="ToastInput" />
+<ApiTable package="components" name="ToasterProps" />
+<ApiTable package="components" name="ToasterStore" />
+
+`Toast` es el registro almacenado (con `version`), `ToastAction` la acción opcional, `ToastTone` es
+`"neutral" | "success" | "warning" | "error"` y `ToasterPlacement` las cuatro esquinas lógicas.
+
+## Comportamiento
+
+- Duración automática: 6 s más 60 ms por carácter (como máximo 20 s); los toasts con acción
+  permanecen hasta cerrarse salvo que se indique `duration`; `Infinity` hace persistente cualquier
+  toast.
+- Los temporizadores se pausan mientras un toast tiene el puntero encima o el foco, y mientras la
+  página está oculta.
+- Con más de `max` toasts se descarta el más antiguo sin foco o, con `overflow: "queue"`, los nuevos
+  esperan un hueco libre.
+- `destroy()` lo limpia todo y es idempotente; un store destruido ignora las llamadas posteriores.
+- Varios `<Toaster>` pueden renderizar un mismo store; cada toast se anuncia una vez.
+- `motion="none"` desactiva las transiciones integradas, por ejemplo para que el efecto F06 de
+  `@neshel-ui/animations` anime los toasts.
+
+## Accesibilidad
+
+- Existen dos regiones vivas antes de cualquier toast: educada (`role="status"`) y, para
+  `tone: "error"`, asertiva (`role="alert"`). Cada toast se anuncia una vez.
+- La aparición de un toast nunca mueve el foco. El atajo (`F8` por defecto) lleva el foco a los
+  toasts; Escape cierra el toast enfocado y el foco pasa al siguiente o vuelve a donde estaba.
+- Cada toast tiene un botón de cierre etiquetado (`closeLabel`).
+
+## Teclado
+
+| Tecla  | Acción                                   |
+| ------ | ---------------------------------------- |
+| F8     | Lleva el foco a los toasts (`hotkey`)    |
+| Escape | Cierra el toast enfocado                 |
+| Tab    | Recorre los botones del toast            |

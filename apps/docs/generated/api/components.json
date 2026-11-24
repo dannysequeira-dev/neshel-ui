@@ -2,11 +2,375 @@
   "package": "@neshel-ui/components",
   "exports": [
     {
+      "name": "Accordion",
+      "description": "",
+      "module": "accordion",
+      "kind": "component",
+      "signature": "(props: AccordionProps): Element",
+      "props": "AccordionProps",
+      "client": true
+    },
+    {
+      "name": "AccordionContent",
+      "description": "",
+      "module": "accordion",
+      "kind": "component",
+      "signature": "({ keepMounted, hiddenUntilFound, className, ref, children, ...rest }: AccordionContentProps): Element",
+      "props": "AccordionContentProps",
+      "client": true
+    },
+    {
+      "name": "AccordionContentProps",
+      "description": "",
+      "module": "accordion",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "hiddenUntilFound",
+          "type": "boolean",
+          "optional": true,
+          "description": "Overrides the accordion's `hiddenUntilFound` for this panel."
+        },
+        {
+          "name": "keepMounted",
+          "type": "boolean",
+          "optional": true,
+          "description": "Overrides the accordion's `keepMounted` for this panel."
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "AccordionItem",
+      "description": "",
+      "module": "accordion",
+      "kind": "component",
+      "signature": "({ value, disabled, className, ref, children, ...rest }: AccordionItemProps): Element",
+      "props": "AccordionItemProps",
+      "client": true
+    },
+    {
+      "name": "AccordionItemProps",
+      "description": "",
+      "module": "accordion",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "optional": false,
+          "description": "Unique value of the item within its accordion."
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "AccordionMultipleProps",
+      "description": "",
+      "module": "accordion",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "defaultValue",
+          "type": "readonly string[]",
+          "optional": true,
+          "description": "Initially open items when uncontrolled."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": "Disable every item."
+        },
+        {
+          "name": "headingLevel",
+          "type": "2 | 3 | 4 | 5 | 6",
+          "optional": true,
+          "description": "Heading level of the item headers (2–6, default 3)."
+        },
+        {
+          "name": "hiddenUntilFound",
+          "type": "boolean",
+          "optional": true,
+          "description": "Closed panels use `hidden=\"until-found\"` so in-page search can open them (implies keepMounted)."
+        },
+        {
+          "name": "keepMounted",
+          "type": "boolean",
+          "optional": true,
+          "description": "Keep closed panels in the DOM (hidden)."
+        },
+        {
+          "name": "onValueChange",
+          "type": "(value: string[]) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "type",
+          "type": "\"multiple\"",
+          "optional": false,
+          "description": "Any number of open items."
+        },
+        {
+          "name": "value",
+          "type": "readonly string[]",
+          "optional": true,
+          "description": "Controlled open items."
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "AccordionProps",
+      "description": "",
+      "module": "accordion",
+      "kind": "type",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "collapsible",
+          "type": "boolean",
+          "optional": true,
+          "description": "Whether the open item can be closed again (default false).",
+          "default": "false",
+          "variantOnly": true
+        },
+        {
+          "name": "defaultValue",
+          "type": "string | null | readonly string[]",
+          "optional": true,
+          "description": "Initially open item when uncontrolled."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": "Disable every item."
+        },
+        {
+          "name": "headingLevel",
+          "type": "2 | 3 | 4 | 5 | 6",
+          "optional": true,
+          "description": "Heading level of the item headers (2–6, default 3)."
+        },
+        {
+          "name": "hiddenUntilFound",
+          "type": "boolean",
+          "optional": true,
+          "description": "Closed panels use `hidden=\"until-found\"` so in-page search can open them (implies keepMounted)."
+        },
+        {
+          "name": "keepMounted",
+          "type": "boolean",
+          "optional": true,
+          "description": "Keep closed panels in the DOM (hidden)."
+        },
+        {
+          "name": "onValueChange",
+          "type": "(value: string | null) => void | (value: string[]) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "type",
+          "type": "\"single\" | \"multiple\"",
+          "optional": true,
+          "description": "One open item at most (default)."
+        },
+        {
+          "name": "value",
+          "type": "string | null | readonly string[]",
+          "optional": true,
+          "description": "Controlled open item (`null` = none)."
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ],
+      "definition": "AccordionSingleProps | AccordionMultipleProps"
+    },
+    {
+      "name": "AccordionSingleProps",
+      "description": "",
+      "module": "accordion",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "collapsible",
+          "type": "boolean",
+          "optional": true,
+          "description": "Whether the open item can be closed again (default false).",
+          "default": "false"
+        },
+        {
+          "name": "defaultValue",
+          "type": "string | null",
+          "optional": true,
+          "description": "Initially open item when uncontrolled."
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": "Disable every item."
+        },
+        {
+          "name": "headingLevel",
+          "type": "2 | 3 | 4 | 5 | 6",
+          "optional": true,
+          "description": "Heading level of the item headers (2–6, default 3)."
+        },
+        {
+          "name": "hiddenUntilFound",
+          "type": "boolean",
+          "optional": true,
+          "description": "Closed panels use `hidden=\"until-found\"` so in-page search can open them (implies keepMounted)."
+        },
+        {
+          "name": "keepMounted",
+          "type": "boolean",
+          "optional": true,
+          "description": "Keep closed panels in the DOM (hidden)."
+        },
+        {
+          "name": "onValueChange",
+          "type": "(value: string | null) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "type",
+          "type": "\"single\"",
+          "optional": true,
+          "description": "One open item at most (default)."
+        },
+        {
+          "name": "value",
+          "type": "string | null",
+          "optional": true,
+          "description": "Controlled open item (`null` = none)."
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "AccordionTrigger",
+      "description": "",
+      "module": "accordion",
+      "kind": "component",
+      "signature": "({ asChild, className, ref, children, ...rest }: AccordionTriggerProps): Element",
+      "props": "AccordionTriggerProps",
+      "client": true
+    },
+    {
+      "name": "AccordionTriggerProps",
+      "description": "",
+      "module": "accordion",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "asChild",
+          "type": "boolean",
+          "optional": true,
+          "description": "Render the single child element as the trigger (it must render a `<button>`)."
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLButtonElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
       "name": "AlertDialog",
       "description": "",
       "module": "alert-dialog",
       "kind": "component",
-      "signature": "(props: AlertDialogProps): Element",
+      "signature": "({ open, defaultOpen, onOpenChange, ...props }: AlertDialogProps): Element",
       "props": "AlertDialogProps",
       "client": true
     },
@@ -753,6 +1117,145 @@
       "module": "card",
       "kind": "type",
       "definition": "\"default\" | \"outline\" | \"muted\""
+    },
+    {
+      "name": "Collapsible",
+      "description": "",
+      "module": "collapsible",
+      "kind": "component",
+      "signature": "({ open, defaultOpen, onOpenChange, disabled, className, ref, children, ...rest }: CollapsibleProps): Element",
+      "props": "CollapsibleProps",
+      "client": true
+    },
+    {
+      "name": "CollapsibleContent",
+      "description": "",
+      "module": "collapsible",
+      "kind": "component",
+      "signature": "({ keepMounted, hiddenUntilFound, className, ref, children, ...rest }: CollapsibleContentProps): Element",
+      "props": "CollapsibleContentProps",
+      "client": true
+    },
+    {
+      "name": "CollapsibleContentProps",
+      "description": "",
+      "module": "collapsible",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "hiddenUntilFound",
+          "type": "boolean",
+          "optional": true,
+          "description": "Closed panel uses `hidden=\"until-found\"` so in-page search can open it (implies keepMounted)."
+        },
+        {
+          "name": "keepMounted",
+          "type": "boolean",
+          "optional": true,
+          "description": "Keep the closed panel in the DOM (hidden). Default false: unmounted when closed."
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "CollapsibleProps",
+      "description": "",
+      "module": "collapsible",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "defaultOpen",
+          "type": "boolean",
+          "optional": true,
+          "description": "Initial open state when uncontrolled (default false).",
+          "default": "false"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": "Ignore user interaction (the trigger is disabled)."
+        },
+        {
+          "name": "onOpenChange",
+          "type": "(open: boolean) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "open",
+          "type": "boolean",
+          "optional": true,
+          "description": "Controlled open state."
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLDivElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "CollapsibleTrigger",
+      "description": "",
+      "module": "collapsible",
+      "kind": "component",
+      "signature": "({ asChild, className, ref, children, ...rest }: CollapsibleTriggerProps): Element",
+      "props": "CollapsibleTriggerProps",
+      "client": true
+    },
+    {
+      "name": "CollapsibleTriggerProps",
+      "description": "",
+      "module": "collapsible",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "asChild",
+          "type": "boolean",
+          "optional": true,
+          "description": "Render the single child element as the trigger (it must render a `<button>`)."
+        },
+        {
+          "name": "children",
+          "type": "ReactNode",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLButtonElement>",
+          "optional": true,
+          "description": ""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
     },
     {
       "name": "Combobox",
@@ -2946,7 +3449,7 @@
       "description": "",
       "module": "popover",
       "kind": "component",
-      "signature": "(props: PopoverProps): Element",
+      "signature": "({ open, defaultOpen, onOpenChange, ...props }: PopoverProps): Element",
       "props": "PopoverProps",
       "client": true
     },
@@ -4018,6 +4521,404 @@
       ]
     },
     {
+      "name": "Switch",
+      "description": "",
+      "module": "switch",
+      "kind": "component",
+      "signature": "({ id, checked, defaultChecked, onCheckedChange, disabled, required, readOnly, name, value, form, invalid, uiSize, className, ref, ...rest }: SwitchProps): Element",
+      "props": "SwitchProps",
+      "client": true
+    },
+    {
+      "name": "SwitchProps",
+      "description": "",
+      "module": "switch",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "checked",
+          "type": "boolean",
+          "optional": true,
+          "description": "Controlled state."
+        },
+        {
+          "name": "defaultChecked",
+          "type": "boolean",
+          "optional": true,
+          "description": "Initial state when uncontrolled (default false).",
+          "default": "false"
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "form",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "optional": true,
+          "description": "Id of the switch button; associate a `<Label htmlFor>` with it."
+        },
+        {
+          "name": "invalid",
+          "type": "boolean",
+          "optional": true,
+          "description": "Marks the switch `aria-invalid`. Describe the error with `aria-describedby`."
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "optional": true,
+          "description": "Form field name; submitted only while the switch is on."
+        },
+        {
+          "name": "onCheckedChange",
+          "type": "(checked: boolean) => void",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "readOnly",
+          "type": "boolean",
+          "optional": true,
+          "description": "Keeps focus and announcements but ignores toggling."
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLButtonElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "required",
+          "type": "boolean",
+          "optional": true,
+          "description": "The form cannot be submitted while the switch is off."
+        },
+        {
+          "name": "uiSize",
+          "type": "FieldSize",
+          "optional": true,
+          "description": "Size (default `\"md\"`), consistent with Input and Select.",
+          "default": "\"md\""
+        },
+        {
+          "name": "value",
+          "type": "string",
+          "optional": true,
+          "description": "Submitted value while on (default `\"on\"`, like a checkbox).",
+          "default": "\"on\""
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "Toast",
+      "description": "",
+      "module": "toast-store",
+      "kind": "interface",
+      "definition": "Toast",
+      "props": [
+        {
+          "name": "action",
+          "type": "ToastAction",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "tone",
+          "type": "ToastTone",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "version",
+          "type": "number",
+          "optional": false,
+          "description": "Increments when the same id is shown again (announced again, once)."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ToastAction",
+      "description": "",
+      "module": "toast-store",
+      "kind": "interface",
+      "definition": "ToastAction",
+      "props": [
+        {
+          "name": "label",
+          "type": "string",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "onAction",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ToastInput",
+      "description": "",
+      "module": "toast-store",
+      "kind": "interface",
+      "definition": "ToastInput",
+      "props": [
+        {
+          "name": "action",
+          "type": "ToastAction",
+          "optional": true,
+          "description": "One optional action; it makes the toast persistent unless `duration` is given."
+        },
+        {
+          "name": "description",
+          "type": "string",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "duration",
+          "type": "number",
+          "optional": true,
+          "description": "ms (clamped to 1000–60000), `Infinity` (persistent), or omitted for the automatic duration."
+        },
+        {
+          "name": "id",
+          "type": "string",
+          "optional": true,
+          "description": "Stable id (default generated). Showing an existing id replaces its content and restarts its timer."
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "tone",
+          "type": "ToastTone",
+          "optional": true,
+          "description": "Default `\"neutral\"`. `\"error\"` is announced assertively.",
+          "default": "\"neutral\""
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ToastTone",
+      "description": "",
+      "module": "toast-store",
+      "kind": "type",
+      "definition": "\"neutral\" | \"success\" | \"warning\" | \"error\""
+    },
+    {
+      "name": "Toaster",
+      "description": "",
+      "module": "toast",
+      "kind": "component",
+      "signature": "(props: ToasterProps): Element",
+      "props": "ToasterProps",
+      "client": true
+    },
+    {
+      "name": "ToasterOptions",
+      "description": "",
+      "module": "toast-store",
+      "kind": "interface",
+      "props": [
+        {
+          "name": "max",
+          "type": "number",
+          "optional": true,
+          "description": "Visible toasts at most (1–10, default 3)."
+        },
+        {
+          "name": "overflow",
+          "type": "\"evict\" | \"queue\"",
+          "optional": true,
+          "description": "What happens beyond `max`: `\"evict\"` (default) dismisses the oldest unprotected toast; `\"queue\"` keeps the new\ntoast waiting (no timer, not rendered, not announced) until a visible one is dismissed."
+        }
+      ],
+      "inherits": []
+    },
+    {
+      "name": "ToasterPlacement",
+      "description": "",
+      "module": "toast",
+      "kind": "type",
+      "definition": "\"bottom-end\" | \"bottom-start\" | \"top-end\" | \"top-start\""
+    },
+    {
+      "name": "ToasterProps",
+      "description": "",
+      "module": "toast",
+      "kind": "type",
+      "props": [
+        {
+          "name": "closeLabel",
+          "type": "string",
+          "optional": true,
+          "description": "Accessible name of each close button (default \"Close\").",
+          "default": "\"Close\""
+        },
+        {
+          "name": "hotkey",
+          "type": "string | null",
+          "optional": true,
+          "description": "Key that moves focus to the toasts (default \"F8\"; `null` disables)."
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "description": "Accessible name of the notifications region (default \"Notifications\").",
+          "default": "\"Notifications\""
+        },
+        {
+          "name": "motion",
+          "type": "\"css\" | \"none\"",
+          "optional": true,
+          "description": "`\"css\"` (default): Components' enter/exit transitions. `\"none\"`: no package motion (e.g. Animations F06)."
+        },
+        {
+          "name": "placement",
+          "type": "ToasterPlacement",
+          "optional": true,
+          "description": "Viewport corner (logical; default \"bottom-end\")."
+        },
+        {
+          "name": "ref",
+          "type": "Ref<HTMLElement>",
+          "optional": true,
+          "description": ""
+        },
+        {
+          "name": "toaster",
+          "type": "ToasterStore",
+          "optional": false,
+          "description": "The store from `createToaster()`. The consumer owns it; `<Toaster>` never destroys it."
+        }
+      ],
+      "inherits": [
+        "React DOM attributes"
+      ]
+    },
+    {
+      "name": "ToasterStore",
+      "description": "",
+      "module": "toast-store",
+      "kind": "interface",
+      "definition": "ToasterStore",
+      "props": [
+        {
+          "name": "destroy",
+          "type": "() => void",
+          "optional": false,
+          "description": "Clears every toast, timer, pause reason and listener (idempotent); subscribers are notified once of the final,\nempty state. A destroyed store is inert: `show()` still\nvalidates its input but returns `\"\"` and creates nothing, `subscribe()` registers nothing, the rest do nothing."
+        },
+        {
+          "name": "dismiss",
+          "type": "(id: string) => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "dismissAll",
+          "type": "() => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "pause",
+          "type": "(reason?: string) => void",
+          "optional": false,
+          "description": "Pause every timer for `reason` (default `\"manual\"`).",
+          "default": "\"manual\""
+        },
+        {
+          "name": "paused",
+          "type": "boolean",
+          "optional": false,
+          "description": "Whether any pause reason is active."
+        },
+        {
+          "name": "protect",
+          "type": "(id: string | undefined) => void",
+          "optional": false,
+          "description": "A toast that must not be evicted by overflow (the focused one), or `undefined`."
+        },
+        {
+          "name": "queued",
+          "type": "readonly Toast[]",
+          "optional": false,
+          "description": "Toasts waiting for a free slot (`overflow: \"queue\"`), oldest first."
+        },
+        {
+          "name": "resume",
+          "type": "(reason?: string) => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "show",
+          "type": "(input: ToastInput) => string",
+          "optional": false,
+          "description": "Shows (or replaces) a toast; returns its id (`\"\"` once destroyed). Invalid input throws."
+        },
+        {
+          "name": "subscribe",
+          "type": "(listener: () => void) => () => void",
+          "optional": false,
+          "description": ""
+        },
+        {
+          "name": "toasts",
+          "type": "readonly Toast[]",
+          "optional": false,
+          "description": "Visible toasts, oldest first."
+        }
+      ],
+      "inherits": []
+    },
+    {
       "name": "Tooltip",
       "description": "Supplementary text on hover and focus; never the only accessible name. No Provider needed.",
       "module": "popover",
@@ -4141,6 +5042,13 @@
       "inherits": [
         "React DOM attributes"
       ]
+    },
+    {
+      "name": "createToaster",
+      "description": "Creates a toaster store. The consumer owns it: `<Toaster>` never destroys it.",
+      "module": "toast-store",
+      "kind": "function",
+      "signature": "(options?: ToasterOptions | undefined): ToasterStore"
     },
     {
       "name": "useAppShell",

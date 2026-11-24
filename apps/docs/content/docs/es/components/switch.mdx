@@ -1,0 +1,48 @@
+---
+title: Switch
+description: Un control de encendido/apagado que surte efecto al instante y funciona en formularios nativos.
+package: components
+exports: [Switch, SwitchProps]
+---
+
+<ComponentKind package="components" name="Switch" />
+
+## Propósito
+
+`Switch` activa o desactiva un ajuste. Úsalo para ajustes binarios inmediatos; usa una casilla de
+verificación para opciones que se confirman con un botón de envío en formularios largos.
+
+## Importación
+
+```tsx title="import.tsx"
+import { Label, Switch } from "@neshel-ui/components";
+```
+
+## Uso
+
+<Preview demo="components/switch-form" />
+
+## API
+
+<ApiTable package="components" name="SwitchProps" />
+
+## Controlado y no controlado
+
+`checked` con `onCheckedChange`, o `defaultChecked`. En un formulario envía `name=value` (`value` es
+`"on"` por defecto) solo mientras está activado; `required` impide el envío mientras está
+desactivado; al restablecer el formulario vuelve a `defaultChecked`.
+
+## Accesibilidad
+
+- Un `<button role="switch">` nativo con `aria-checked`; asocia un `<Label htmlFor>` con su `id`
+  (hacer clic en la etiqueta lo alterna).
+- `invalid` establece `aria-invalid`; describe el error con `aria-describedby`.
+- Anillo de foco visible con teclado, colores del sistema en modo de colores forzados y sin
+  transición del pulgar con movimiento reducido.
+
+## Teclado
+
+| Tecla           | Acción        |
+| --------------- | ------------- |
+| Espacio / Enter | Alterna       |
+| Tab             | Mueve el foco |

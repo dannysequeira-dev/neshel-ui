@@ -5,6 +5,7 @@
     "paths": {
       "@neshel-ui/config": ["../../packages/config/src/index.ts"],
       "@neshel-ui/typography": ["../../packages/typography/src/index.ts"],
+      "@neshel-ui/components": ["../../packages/components/src/index.ts"],
       "@neshel-ui/animations": ["../../packages/animations/src/index.ts"],
       "@neshel-ui/animations/hover": ["../../packages/animations/src/hover/index.ts"],
       "@neshel-ui/animations/entrance": ["../../packages/animations/src/entrance/index.ts"],

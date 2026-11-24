@@ -2,13 +2,12 @@
 /**
  * React components of the Loading & Feedback family (Phase 015; contracts/feedback-api.md). Semantics first:
  * indicators are ARIA progressbars (no invented value), skeletons are hidden from assistive technology, the
- * success mark never announces, toasts announce once through regions that exist before content. Motion is CSS on
+ * success mark never announces; F06 only animates the enter/exit of a list another component owns. Motion is CSS on
  * package-rendered elements or token layers (`feedback.css`); reduced motion keeps a slow non-vestibular signal.
  */
 import { Slot } from "@radix-ui/react-slot";
 import {
   type ComponentPropsWithoutRef,
-  type KeyboardEvent,
   type ReactElement,
   type ReactNode,
   type RefObject,
@@ -16,14 +15,14 @@ import {
   useLayoutEffect,
   useRef,
   useState,
-  useSyncExternalStore,
 } from "react";
+import { devWarnOnce } from "../core/dev.js";
 import { CHECK_CIRCLE, CHECK_PATH, CHECK_VIEWBOX } from "../core/marks.js";
-import { createPresence, type PresenceEntry } from "../core/presence.js";
 import type { ProgressSource } from "../core/progress-driver.js";
 import { getFrameScheduler } from "../core/scheduler.js";
 import { addToken, FX_ATTRIBUTE } from "../core/tokens.js";
 import { useEngine } from "../react/use-engine.js";
+import { createEnterExit, type EnterExitControl, type EnterExitOptions } from "./enter-exit.js";
 import {
   createLoadingButton,
   createOptimisticPulse,
@@ -31,7 +30,6 @@ import {
   type OptimisticPulseControl,
   type OptimisticStatus,
 } from "./states.js";
-import type { Toast, Toaster as ToasterStore } from "./toaster.js";
 
 const useClientLayoutEffect = typeof window === "undefined" ? () => {} : useLayoutEffect;
 const cx = (...names: Array<string | undefined | false>) => names.filter(Boolean).join(" ");
@@ -385,214 +383,45 @@ export function OptimisticPulse({
 
 // --- F06 ---------------------------------------------------------------------------------------------------
 
-export type ToasterProps = Omit<ComponentPropsWithoutRef<"section">, "children"> & {
-  toaster: ToasterStore;
-  /** Accessible name of the notifications region (default "Notifications"). */
-  label?: string;
-  /** Key that moves focus to the toasts (default "F8"; `null` disables). */
-  hotkey?: string | null;
-  /** Accessible name of each close button (default "Close"). */
-  closeLabel?: string;
+export type EnterExitProps = EnterExitOptions & {
+  /** One element: the list container (e.g. a Components `<Toaster motion="none">`). */
+  children: ReactElement;
 };
 
-const EXIT_FALLBACK_MS = 600;
-
-/** F06 — notifications region: Presence-driven enter/exit, timers paused on hover/focus/hidden, keyboard close. */
-export function Toaster(props: ToasterProps) {
-  const {
-    toaster,
-    label = "Notifications",
-    hotkey = "F8",
-    closeLabel = "Close",
-    className,
-    ...rest
-  } = props;
-  const toasts = useSyncExternalStore(
-    (fn) => toaster.subscribe(fn),
-    () => toaster.toasts,
-    () => toaster.toasts,
-  );
-  const presence = useRef(createPresence<Toast>());
-  presence.current.update(toasts.map((toast) => ({ key: toast.id, value: toast })));
-  const entries = presence.current.entries;
-  const [, rerender] = useState(0);
-  const region = useRef<HTMLElement | null>(null);
-  const politeRef = useRef<HTMLDivElement | null>(null);
-  const alertRef = useRef<HTMLDivElement | null>(null);
-  const returnFocus = useRef<HTMLElement | null>(null);
-  const announced = useRef(new Map<string, number>());
-
-  // Announce each toast (and each re-show of an id) exactly once, by inserting text into a region that already
-  // exists — never re-rendered per frame.
+/**
+ * F06 — enter/exit motion for the items of a list another component owns (`data-state` + `neshel-exit`, see
+ * `createEnterExit`). Renders no element of its own; content, roles, timers and focus stay with the owner.
+ */
+export function EnterExit({
+  children,
+  from,
+  exitTo,
+  distance,
+  duration,
+  selector,
+  reducedMotion,
+}: EnterExitProps) {
+  const ref = useRef<HTMLElement | null>(null);
+  const control = useRef<EnterExitControl | null>(null);
+  const options: EnterExitOptions = { from, exitTo, distance, duration, selector, reducedMotion };
+  // biome-ignore lint/correctness/useExhaustiveDependencies: created once per mount; options flow through update().
   useEffect(() => {
-    for (const toast of toasts) {
-      if (announced.current.get(toast.id) === toast.version) continue;
-      announced.current.set(toast.id, toast.version);
-      const target = toast.tone === "error" ? alertRef.current : politeRef.current;
-      if (!target) continue;
-      const line = target.ownerDocument.createElement("p");
-      line.textContent = toast.description ? `${toast.title}. ${toast.description}` : toast.title;
-      target.appendChild(line);
-      setTimeout(() => line.remove(), 7000);
+    if (!ref.current) {
+      devWarnOnce(
+        "enter-exit-ref",
+        "<EnterExit>: its child did not receive the ref (wrap an element, or a component that forwards `ref` to its list container).",
+      );
+      return;
     }
-    for (const id of [...announced.current.keys()])
-      if (!toasts.some((toast) => toast.id === id)) announced.current.delete(id);
-  }, [toasts]);
-
-  // Hidden page pauses the timers; the hotkey moves focus into the region.
-  useEffect(() => {
-    const onVisibility = () =>
-      document.hidden ? toaster.pause("hidden") : toaster.resume("hidden");
-    onVisibility();
-    document.addEventListener("visibilitychange", onVisibility);
-    const onKey = (event: globalThis.KeyboardEvent) => {
-      if (!hotkey || event.key !== hotkey || toaster.toasts.length === 0) return;
-      event.preventDefault();
-      returnFocus.current = document.activeElement as HTMLElement | null;
-      region.current?.querySelector<HTMLElement>(".neshel-toast")?.focus();
-    };
-    window.addEventListener("keydown", onKey);
+    const created = createEnterExit(ref.current, options);
+    control.current = created;
     return () => {
-      document.removeEventListener("visibilitychange", onVisibility);
-      window.removeEventListener("keydown", onKey);
-      toaster.resume("hidden");
-      toaster.resume("hover");
-      toaster.resume("focus");
+      created.destroy();
+      control.current = null;
     };
-  }, [toaster, hotkey]);
-
-  const finishExit = (entry: PresenceEntry<Toast>) => {
-    if (presence.current.remove(entry.key, entry.generation)) rerender((n) => n + 1);
-  };
-
-  function close(id: string, from: HTMLElement | null): void {
-    // Keep keyboard users in place: next toast, or where they came from.
-    if (from && region.current?.contains(document.activeElement)) {
-      const items = [
-        ...(region.current.querySelectorAll<HTMLElement>(".neshel-toast[data-state='open']") ?? []),
-      ];
-      const next = items[items.indexOf(from) + 1] ?? items[items.indexOf(from) - 1];
-      if (next && next !== from) next.focus();
-      else (returnFocus.current?.isConnected ? returnFocus.current : null)?.focus();
-    }
-    toaster.dismiss(id);
-  }
-
-  return (
-    <section
-      ref={region}
-      className={cx("neshel-toaster", className)}
-      aria-label={label}
-      onPointerEnter={() => toaster.pause("hover")}
-      onPointerLeave={() => toaster.resume("hover")}
-      onFocus={(event) => {
-        toaster.pause("focus");
-        const item = (event.target as HTMLElement).closest?.(".neshel-toast");
-        toaster.protect(item?.getAttribute("data-id") ?? undefined);
-      }}
-      onBlur={(event) => {
-        if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
-          toaster.resume("focus");
-          toaster.protect(undefined);
-        }
-      }}
-      {...rest}
-    >
-      <div ref={politeRef} role="status" aria-live="polite" className="neshel-toaster-announcer" />
-      <div ref={alertRef} role="alert" className="neshel-toaster-announcer" />
-      <ol className="neshel-toast-list">
-        {entries.map((entry) => (
-          <ToastItem
-            key={entry.key}
-            entry={entry}
-            closeLabel={closeLabel}
-            onClose={close}
-            onExited={() => finishExit(entry)}
-          />
-        ))}
-      </ol>
-    </section>
-  );
-}
-
-function ToastItem(props: {
-  entry: PresenceEntry<Toast>;
-  closeLabel: string;
-  onClose(id: string, from: HTMLElement | null): void;
-  onExited(): void;
-}) {
-  const { entry, closeLabel, onClose, onExited } = props;
-  const toast = entry.value;
-  const ref = useRef<HTMLLIElement | null>(null);
-  const [entered, setEntered] = useState(false);
-  const exiting = entry.status === "exiting";
-  // Enter on the next frame so the CSS transition runs from the `entering` state.
-  useEffect(() => {
-    const cancel = getFrameScheduler().schedule(() => setEntered(true), "write");
-    return cancel;
   }, []);
-  // biome-ignore lint/correctness/useExhaustiveDependencies: one exit per generation; `onExited` identity changes every render.
   useEffect(() => {
-    if (!exiting) return;
-    const el = ref.current;
-    let done = false;
-    const finish = () => {
-      if (done) return;
-      done = true;
-      onExited();
-    };
-    const onEnd = (event: TransitionEvent) => {
-      if (event.target === el) finish();
-    };
-    el?.addEventListener("transitionend", onEnd);
-    const timer = setTimeout(finish, EXIT_FALLBACK_MS);
-    return () => {
-      el?.removeEventListener("transitionend", onEnd);
-      clearTimeout(timer);
-    };
-  }, [exiting, entry.generation]);
-  const state = exiting ? "closing" : entered ? "open" : "entering";
-  const onKeyDown = (event: KeyboardEvent<HTMLLIElement>) => {
-    if (event.key === "Escape" && !exiting) {
-      event.preventDefault();
-      onClose(toast.id, ref.current);
-    }
-  };
-  return (
-    <li
-      ref={ref}
-      className="neshel-toast"
-      data-id={toast.id}
-      data-tone={toast.tone}
-      data-state={state}
-      tabIndex={-1}
-      onKeyDown={onKeyDown}
-      inert={exiting || undefined}
-    >
-      <div className="neshel-toast-text">
-        <p className="neshel-toast-title">{toast.title}</p>
-        {toast.description ? <p className="neshel-toast-description">{toast.description}</p> : null}
-      </div>
-      {toast.action ? (
-        <button
-          type="button"
-          className="neshel-toast-action"
-          onClick={() => {
-            toast.action?.onAction();
-            onClose(toast.id, ref.current);
-          }}
-        >
-          {toast.action.label}
-        </button>
-      ) : null}
-      <button
-        type="button"
-        className="neshel-toast-close"
-        aria-label={closeLabel}
-        onClick={() => onClose(toast.id, ref.current)}
-      >
-        <span aria-hidden="true">×</span>
-      </button>
-    </li>
-  );
+    control.current?.update(options);
+  });
+  return <Slot ref={ref}>{children}</Slot>;
 }

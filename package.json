@@ -52,6 +52,7 @@
     "pack:local": "node scripts/pack-local.mjs",
     "check:next": "node scripts/check-next.mjs",
     "check:browsers": "node scripts/check-browsers.mjs",
+    "stress:overlays": "node scripts/stress-overlays.mjs",
     "check:docs-site": "node scripts/check-docs-site.mjs",
     "check:bundles": "node scripts/check-bundles.mjs",
     "release:simulate": "node scripts/release-simulate.mjs",

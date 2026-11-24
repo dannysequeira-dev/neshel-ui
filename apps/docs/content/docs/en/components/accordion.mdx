@@ -1,0 +1,69 @@
+---
+title: Accordion
+description: Stacked sections whose headers show and hide their content, one or several at a time.
+package: components
+exports: [Accordion, AccordionItem, AccordionTrigger, AccordionContent, AccordionProps, AccordionSingleProps, AccordionMultipleProps, AccordionItemProps, AccordionTriggerProps, AccordionContentProps]
+---
+
+<ComponentKind package="components" name="Accordion" />
+
+## Purpose
+
+`Accordion` groups related sections (an FAQ, settings groups) behind headers. Each header is a real
+heading that wraps a button; activating it shows or hides its section.
+
+## Import
+
+```tsx title="import.tsx"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@neshel-ui/components";
+```
+
+## Usage
+
+<Preview demo="components/accordion-basic" />
+
+## API
+
+<ApiTable package="components" name="AccordionSingleProps" />
+<ApiTable package="components" name="AccordionMultipleProps" />
+<ApiTable package="components" name="AccordionItemProps" />
+<ApiTable package="components" name="AccordionTriggerProps" />
+<ApiTable package="components" name="AccordionContentProps" />
+
+`AccordionProps` is the union of the single and multiple props.
+
+## Controlled and uncontrolled
+
+- `type="single"` (default): `value` / `defaultValue` are a string or `null`; `onValueChange`
+  receives the open value or `null`. Without `collapsible`, activating the open header keeps it
+  open.
+- `type="multiple"`: `value` / `defaultValue` are string arrays; `onValueChange` receives the list.
+
+## Accessibility
+
+- Headers are headings (`headingLevel`, default 3) containing a native button with
+  `aria-expanded` and `aria-controls`; panels are labelled by their header.
+- Disabled items cannot be toggled and are skipped by arrow navigation.
+- `keepMounted` keeps closed panels in the DOM (hidden); `hiddenUntilFound` lets the browser's
+  in-page search open them.
+- The optional height transition stops under `prefers-reduced-motion`.
+
+## Keyboard
+
+| Key                   | Action                                      |
+| --------------------- | ------------------------------------------- |
+| Enter / Space         | Toggle the focused section                  |
+| ArrowDown / ArrowUp   | Move to the next / previous header (wraps)  |
+| Home / End            | Move to the first / last header             |
+| Tab                   | Move to the next focusable element          |
+
+## Common mistakes
+
+- Putting the only copy of essential content in a closed section — keep critical information
+  visible.
+- Choosing a heading level that skips the page outline — set `headingLevel`.

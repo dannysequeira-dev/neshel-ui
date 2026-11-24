@@ -8,12 +8,15 @@ import type { HTMLAttributes, Ref } from "react";
 import { type ButtonSize, type ButtonVariant, buttonClassName } from "./button.js";
 import {
   composeRefs,
-  guardEscape,
+  EscapeLayerProvider,
   LayerContainerContext,
+  LayerRootContext,
   PortalTheme,
   TriggerContext,
+  useEscapeLayer,
   useFocusReturn,
   useLayerContainer,
+  useLayerOpenState,
   useTriggerRef,
   useTriggerRegistry,
 } from "./internal/layer.js";
@@ -51,11 +54,14 @@ export interface AlertDialogPartProps extends HTMLAttributes<HTMLDivElement> {
   ref?: Ref<HTMLDivElement>;
 }
 
-export function AlertDialog(props: AlertDialogProps) {
+export function AlertDialog({ open, defaultOpen, onOpenChange, ...props }: AlertDialogProps) {
   const registry = useTriggerRegistry();
+  const root = useLayerOpenState({ open, defaultOpen, onOpenChange });
   return (
     <TriggerContext.Provider value={registry}>
-      <RadixAlert.Root {...props} />
+      <LayerRootContext.Provider value={root}>
+        <RadixAlert.Root {...props} open={root.open} onOpenChange={root.setOpen} />
+      </LayerRootContext.Provider>
     </TriggerContext.Provider>
   );
 }
@@ -80,6 +86,7 @@ export function AlertDialogContent({
   const focus = useFocusReturn(onOpenAutoFocus, onCloseAutoFocus);
   const value = oneOf("AlertDialogContent", "size", size, ["sm", "md", "lg"] as const, "sm");
   const [node, setNode] = useLayerContainer();
+  const escapeLayer = useEscapeLayer(onEscapeKeyDown);
   return (
     <RadixAlert.Portal container={container ?? undefined}>
       <PortalTheme>
@@ -87,12 +94,14 @@ export function AlertDialogContent({
         <RadixAlert.Content
           {...rest}
           ref={composeRefs(ref, setNode)}
-          onEscapeKeyDown={guardEscape(onEscapeKeyDown)}
+          onEscapeKeyDown={escapeLayer.onEscapeKeyDown}
           onOpenAutoFocus={focus.onOpenAutoFocus}
           onCloseAutoFocus={focus.onCloseAutoFocus}
           className={cx("neshel-dialog-content", `neshel-dialog-size-${value}`, className)}
         >
-          <LayerContainerContext.Provider value={node}>{children}</LayerContainerContext.Provider>
+          <EscapeLayerProvider entry={escapeLayer.entry}>
+            <LayerContainerContext.Provider value={node}>{children}</LayerContainerContext.Provider>
+          </EscapeLayerProvider>
         </RadixAlert.Content>
       </PortalTheme>
     </RadixAlert.Portal>

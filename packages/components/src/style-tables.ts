@@ -1286,6 +1286,216 @@ rule([`${rail} .neshel-sidebar-header`, `${rail} .neshel-sidebar-footer`], {
 rule(".neshel-sidebar", { transition: "none" }, REDUCED_MOTION);
 
 // ---------------------------------------------------------------------------------------------
+// Accordion, Collapsible (feature 017, contracts/disclosure-api.md)
+// ---------------------------------------------------------------------------------------------
+
+rule(".neshel-accordion", { "font-family": role("font-body") });
+rule(".neshel-accordion-item", { "border-block-end": `1px solid ${role("border")}` });
+rule(".neshel-accordion-header", { margin: "0", font: "inherit" });
+rule(".neshel-accordion-trigger", {
+  display: "flex",
+  "align-items": "center",
+  "justify-content": "space-between",
+  gap: sp(3),
+  "inline-size": "100%",
+  "box-sizing": "border-box",
+  margin: "0",
+  padding: `${sp(4)} ${sp(1)}`,
+  border: "0",
+  "background-color": "transparent",
+  color: role("foreground"),
+  font: "inherit",
+  "font-weight": "500",
+  "text-align": "start",
+  cursor: "pointer",
+});
+rule(
+  [".neshel-accordion-trigger:focus-visible", ".neshel-collapsible-trigger:focus-visible"],
+  focusRing,
+);
+rule([".neshel-accordion-trigger[data-disabled]", ".neshel-collapsible-trigger[data-disabled]"], {
+  color: role("disabled-foreground"),
+  cursor: "not-allowed",
+});
+rule(".neshel-accordion-trigger[data-panel-open] .neshel-accordion-chevron", {
+  transform: "rotate(180deg)",
+});
+// Each panel reads only its own variable: custom properties inherit, so a Collapsible inside an open
+// Accordion panel must not pick up the accordion's height.
+rule([".neshel-accordion-content", ".neshel-collapsible-content"], {
+  overflow: "hidden",
+  transition: "block-size 200ms ease",
+});
+rule(".neshel-accordion-content", { "block-size": "var(--accordion-panel-height, auto)" });
+rule(".neshel-collapsible-content", { "block-size": "var(--collapsible-panel-height, auto)" });
+rule(
+  [
+    ".neshel-accordion-content[data-starting-style]",
+    ".neshel-accordion-content[data-ending-style]",
+    ".neshel-collapsible-content[data-starting-style]",
+    ".neshel-collapsible-content[data-ending-style]",
+  ],
+  { "block-size": "0" },
+);
+rule(".neshel-accordion-content-inner", {
+  padding: `0 ${sp(1)} ${sp(4)}`,
+  color: role("foreground"),
+});
+rule(".neshel-collapsible-trigger", {
+  display: "inline-flex",
+  "align-items": "center",
+  gap: sp(2),
+  margin: "0",
+  padding: `${sp(1)} ${sp(2)}`,
+  border: "0",
+  "border-radius": role("radius-md"),
+  "background-color": "transparent",
+  color: role("primary"),
+  font: "inherit",
+  "font-weight": "500",
+  cursor: "pointer",
+});
+rule(
+  [".neshel-accordion-content", ".neshel-collapsible-content"],
+  { transition: "none" },
+  REDUCED_MOTION,
+);
+
+// ---------------------------------------------------------------------------------------------
+// Switch (feature 017, contracts/switch-api.md)
+// ---------------------------------------------------------------------------------------------
+
+rule(".neshel-switch", {
+  "--neshel-switch-h": "1.5rem",
+  position: "relative",
+  display: "inline-flex",
+  "align-items": "center",
+  "flex-shrink": "0",
+  "box-sizing": "border-box",
+  "inline-size": "calc(var(--neshel-switch-h) * 1.75)",
+  "block-size": "var(--neshel-switch-h)",
+  margin: "0",
+  padding: "2px",
+  border: `1px solid ${role("input")}`,
+  "border-radius": "9999px",
+  "background-color": role("muted"),
+  cursor: "pointer",
+  transition: "background-color 150ms ease, border-color 150ms ease",
+});
+rule(".neshel-switch-size-sm", { "--neshel-switch-h": "1.25rem" });
+rule(".neshel-switch-size-lg", { "--neshel-switch-h": "1.75rem" });
+rule(".neshel-switch[data-checked]", {
+  "background-color": role("primary"),
+  "border-color": role("primary"),
+});
+rule(".neshel-switch:focus-visible", focusRing);
+rule('.neshel-switch[aria-invalid="true"]', { "border-color": role("destructive") });
+rule(".neshel-switch[data-disabled]", {
+  "background-color": role("disabled"),
+  "border-color": role("border"),
+  cursor: "not-allowed",
+});
+rule(".neshel-switch-thumb", {
+  display: "block",
+  "inline-size": "calc(var(--neshel-switch-h) - 6px)",
+  "block-size": "calc(var(--neshel-switch-h) - 6px)",
+  "border-radius": "9999px",
+  "background-color": role("background"),
+  "box-shadow": shadow(1, 2, 20),
+  transition: "transform 150ms ease",
+});
+rule(".neshel-switch[data-checked] .neshel-switch-thumb", {
+  transform: "translateX(calc(var(--neshel-switch-h) * 0.75))",
+});
+rule(".neshel-switch[data-checked]:dir(rtl) .neshel-switch-thumb", {
+  transform: "translateX(calc(var(--neshel-switch-h) * -0.75))",
+});
+rule([".neshel-switch", ".neshel-switch-thumb"], { transition: "none" }, REDUCED_MOTION);
+rule(".neshel-switch", { border: "1px solid ButtonText" }, "(forced-colors: active)");
+rule(".neshel-switch-thumb", { "background-color": "ButtonText" }, "(forced-colors: active)");
+rule(
+  ".neshel-switch[data-checked]",
+  { "background-color": "Highlight" },
+  "(forced-colors: active)",
+);
+
+// ---------------------------------------------------------------------------------------------
+// Toaster (feature 017, contracts/toast-api.md). Motion only on `data-motion="css"`.
+// ---------------------------------------------------------------------------------------------
+
+rule(".neshel-toaster", {
+  position: "fixed",
+  "z-index": "var(--neshel-z-toast, 70)",
+  "inline-size": `min(24rem, calc(100vw - ${sp(8)}))`,
+  "pointer-events": "none",
+  "font-family": role("font-body"),
+});
+rule('.neshel-toaster[data-placement$="-end"]', { "inset-inline-end": sp(4) });
+rule('.neshel-toaster[data-placement$="-start"]', { "inset-inline-start": sp(4) });
+rule('.neshel-toaster[data-placement^="bottom-"]', { "inset-block-end": sp(4) });
+rule('.neshel-toaster[data-placement^="top-"]', { "inset-block-start": sp(4) });
+rule(".neshel-toaster-announcer", visuallyHidden);
+rule(".neshel-toast-list", {
+  display: "grid",
+  gap: sp(2),
+  margin: "0",
+  padding: "0",
+  "list-style": "none",
+});
+rule(".neshel-toast", {
+  display: "flex",
+  gap: sp(3),
+  "align-items": "flex-start",
+  "box-sizing": "border-box",
+  padding: `${sp(3)} ${sp(3)} ${sp(3)} ${sp(4)}`,
+  border: `1px solid ${role("border")}`,
+  "border-inline-start-width": sp(1),
+  "border-radius": role("radius-md"),
+  "background-color": role("surface"),
+  color: role("surface-foreground"),
+  "box-shadow": shadow(8, 24, 14),
+  "font-size": "0.875rem",
+  "line-height": "1.4",
+  "pointer-events": "auto",
+});
+rule('.neshel-toast[data-tone="success"]', { "border-inline-start-color": role("success") });
+rule('.neshel-toast[data-tone="warning"]', { "border-inline-start-color": role("warning") });
+rule('.neshel-toast[data-tone="error"]', { "border-inline-start-color": role("destructive") });
+rule(".neshel-toast:focus-visible", focusRing);
+rule(".neshel-toast-text", { flex: "1", "min-inline-size": "0" });
+rule(".neshel-toast-title", { margin: "0", "font-weight": "600" });
+rule(".neshel-toast-description", {
+  margin: `${sp(0.5)} 0 0`,
+  color: role("muted-foreground"),
+});
+rule([".neshel-toast-action", ".neshel-toast-close"], { flex: "none" });
+rule('.neshel-toaster[data-motion="css"] .neshel-toast', {
+  transition: "opacity 200ms ease, transform 200ms ease",
+});
+rule('.neshel-toaster[data-motion="css"] .neshel-toast[data-state="entering"]', {
+  opacity: "0",
+  transform: `translateY(${sp(2)})`,
+});
+rule('.neshel-toaster[data-motion="css"] .neshel-toast[data-state="closing"]', {
+  opacity: "0",
+  transform: `translateX(${sp(4)})`,
+});
+rule(
+  '.neshel-toaster[data-motion="css"] .neshel-toast',
+  { transition: "opacity 120ms ease" },
+  REDUCED_MOTION,
+);
+rule(
+  [
+    '.neshel-toaster[data-motion="css"] .neshel-toast[data-state="entering"]',
+    '.neshel-toaster[data-motion="css"] .neshel-toast[data-state="closing"]',
+  ],
+  { transform: "none" },
+  REDUCED_MOTION,
+);
+rule(".neshel-toast", { "border-inline-start-color": "CanvasText" }, "(forced-colors: active)");
+
+// ---------------------------------------------------------------------------------------------
 // Reduced motion for overlays (Radix Presence unmounts immediately without an animation)
 // ---------------------------------------------------------------------------------------------
 

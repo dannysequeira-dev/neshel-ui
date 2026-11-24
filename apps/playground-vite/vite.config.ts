@@ -12,6 +12,8 @@ export default defineConfig({
       input: {
         main: "index.html",
         animations: "animations.html",
+        // Feature 017: Accordion, Collapsible, Switch, Toast and the nested-dialog scenario.
+        components: "components.html",
         // Phase 013 PT09: two same-origin documents for cross-document View Transitions.
         "mpa-a": "mpa-a.html",
         "mpa-b": "mpa-b.html",

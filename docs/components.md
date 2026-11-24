@@ -36,6 +36,9 @@ stylesheets (or instead of them); it contains the components rules for your brea
 | Foundation | Button, Card (+ Header, Title, Description, Content, Footer, Action), Badge, Input, Label, Separator, Skeleton, VisuallyHidden | native HTML    |
 | Overlays   | Dialog, AlertDialog, Sheet (drawer), Popover, Tooltip                                                                          | Radix          |
 | Selection  | Select, MultiSelect, Combobox (single and `multiple`)                                                                          | Base UI        |
+| Disclosure | Accordion (+ Item, Trigger, Content), Collapsible (+ Trigger, Content) — feature 017                                           | Base UI        |
+| Forms      | Switch — feature 017                                                                                                           | Base UI        |
+| Feedback   | `createToaster()` + Toaster (store without provider) — feature 017                                                             | native         |
 | Navigation | Navbar (+ Brand, Nav, Link, Actions), NavigationMenu, DropdownMenu, MobileMenu                                                 | native + Radix |
 | Shell      | AppShell (+ Main, Content), Sidebar (+ Header, Content, Footer, Group, Item, Sub, Separator), SidebarTrigger, `useAppShell`    | native + Radix |
 
@@ -114,6 +117,13 @@ spinner; announce progress yourself (e.g. a polite live region).
 - **Portals keep nested themes**: content copies the nearest `data-neshel-theme` of its trigger.
   For inline custom-property overrides on arbitrary elements, pass `container` to render the
   portal inside that element.
+
+### Nested overlays and Escape (feature 017, K-15)
+
+One Escape closes exactly one layer — the topmost open Dialog, Sheet, AlertDialog or Popover — and focus
+returns to its trigger, however fast the keys are pressed. Neshel decides the owner at event time from its own
+registry of open layers instead of relying on the deferred re-render Radix uses to move Escape to a new layer
+([contract](../specs/017-components-completion/contracts/overlay-escape.md)).
 
 ## Navigation and application shell
 

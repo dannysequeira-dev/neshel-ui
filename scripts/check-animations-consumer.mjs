@@ -37,7 +37,7 @@ import { TextReveal, NumberRoll, RotatingWords, Typewriter } from "@neshel-ui/an
 import { SuccessCheck, MorphIcon, menuCloseShapes, usePathDraw } from "@neshel-ui/animations/svg";
 import { BlurUpImage, CompareSlider, Lightbox, KenBurns } from "@neshel-ui/animations/media";
 import { Aurora, Particles, AmbientMotionToggle } from "@neshel-ui/animations/ambient";
-import { Spinner, ProgressBar, SuccessMark, Toaster, createToaster, LoadingButton } from "@neshel-ui/animations/feedback";
+import { Spinner, ProgressBar, SuccessMark, EnterExit, LoadingButton } from "@neshel-ui/animations/feedback";
 import { CardFlip, CubeRotate, RingCarousel, CornerRecede, Glitch, PerspectiveGrid, TiltShift } from "@neshel-ui/animations/advanced";
 import { PageCurl, Ripple, DisplacementHover, DepthParallax } from "@neshel-ui/animations/gpu";
 import { useRef, useState } from "react";
@@ -134,10 +134,10 @@ function Phase014() {
 }
 
 const PIXEL = "data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==";
-const toaster = createToaster();
-
 function Phase015() {
   const [loading, setLoading] = useState(false);
+  // Feature 017: F06 is enter/exit motion for a list another component owns (toasts live in Components).
+  const [items, setItems] = useState([]);
   return (
     <section id="p015">
       <BlurUpImage id="m-blur" src={PIXEL} alt="Packed pixel" width={40} height={40} />
@@ -151,8 +151,8 @@ function Phase015() {
       <ProgressBar id="f-bar" label="Packed progress" value={30} />
       <SuccessMark id="f-mark" show={false} />
       <LoadingButton loading={loading}><button type="button" id="f-pay" onClick={() => setLoading(true)}>Pay</button></LoadingButton>
-      <button type="button" id="f-toast" onClick={() => toaster.show({ title: "Packed toast" })}>Toast</button>
-      <Toaster toaster={toaster} />
+      <button type="button" id="f-toast" onClick={() => setItems((list) => [...list, list.length])}>Add item</button>
+      <EnterExit duration={2000}><ol id="f-list">{items.map((n) => <li key={n} data-state="entering">Packed item {n}</li>)}</ol></EnterExit>
     </section>
   );
 }
@@ -729,7 +729,7 @@ async function main() {
             open,
             closed: !dialog.open,
             pay: document.getElementById("f-pay").getAttribute("aria-disabled"),
-            toast: document.querySelector(".neshel-toaster [role=status]")?.textContent,
+            enter: Number(document.querySelector("#f-list li")?.style.opacity || 1) < 1,
             blur: document.getElementById("m-blur").style.opacity,
           };
         })()`);
@@ -739,7 +739,7 @@ async function main() {
             p015.open &&
             p015.closed &&
             p015.pay === "true" &&
-            p015.toast === "Packed toast" &&
+            p015.enter === true &&
             p015.blur === "",
           `015 media/ambient/feedback hydrate and work from the packed tarball (${JSON.stringify(p015)})`,
         );

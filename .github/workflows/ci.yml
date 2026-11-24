@@ -106,6 +106,22 @@ jobs:
       - name: Browser interaction and accessibility check (components)
         run: pnpm check:browser:components --consumers "${{ runner.temp }}/neshel-consumers"
 
+      # Feature 017 (K-15): nested-overlay Escape scenarios repeated 30 times per engine on Windows
+      # (the browsers job covers Ubuntu and macOS). Every repetition counts; no retries.
+      - name: Install Playwright engines (Windows, K-15 stress)
+        if: matrix.os == 'windows-latest'
+        run: pnpm exec playwright install chromium firefox webkit
+      - name: Nested-overlay Escape stress (Windows, three engines)
+        if: matrix.os == 'windows-latest'
+        run: pnpm stress:overlays --consumers "${{ runner.temp }}/neshel-consumers" --variant components-plain --variant components-replace --runs 30 --report "${{ runner.temp }}/overlay-stress-windows.json"
+      - name: Upload nested-overlay stress report (Windows)
+        if: always() && matrix.os == 'windows-latest'
+        uses: actions/upload-artifact@v7
+        with:
+          name: overlay-stress-windows-latest
+          path: ${{ runner.temp }}/overlay-stress-windows.json
+          if-no-files-found: ignore
+
       - name: Build Vite consumer
         run: pnpm --filter @neshel-ui/playground-vite build
 
@@ -244,6 +260,16 @@ jobs:
         run: pnpm check:consumer --no-build --artifacts "${{ runner.temp }}/neshel-consumers"
       - name: Chromium, Firefox and WebKit smoke flows + axe
         run: pnpm check:browsers --consumers "${{ runner.temp }}/neshel-consumers" --report "${{ runner.temp }}/browsers-report.json"
+      # Feature 017 (K-15): the nested-overlay Escape scenarios 30 times per engine and consumer.
+      - name: Nested-overlay Escape stress (three engines, 30 repetitions)
+        run: pnpm stress:overlays --consumers "${{ runner.temp }}/neshel-consumers" --variant components-plain --variant components-replace --runs 30 --report "${{ runner.temp }}/overlay-stress.json"
+      - name: Upload nested-overlay stress report
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: overlay-stress-${{ matrix.os }}
+          path: ${{ runner.temp }}/overlay-stress.json
+          if-no-files-found: ignore
       # Phase 009: the animations lab (Tilt3D input, reduced motion, engine conflicts, controllers,
       # WAAPI, ScrollScene) in Chromium, Firefox and WebKit.
       - name: Build the animations lab (playground)

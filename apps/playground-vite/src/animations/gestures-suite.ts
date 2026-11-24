@@ -854,8 +854,17 @@ export async function runGesturesSuite(): Promise<Case[]> {
         card.isConnected && card.getAttribute("aria-hidden") === "true",
         "still mounted, hidden from AT",
       );
-      await frames(3);
-      toggle.click(); // re-entry
+      // Re-enter while the exit is observably running (feature 017: a fixed 3-frame wait assumed frames
+      // under ~55 ms; at the scheduler's 66 ms delta ceiling the 220 ms exit finished first on macOS runners).
+      await until(
+        "exit in progress",
+        () => {
+          const opacity = Number(getComputedStyle(card).opacity);
+          return card.isConnected && opacity > 0 && opacity < 1;
+        },
+        () => `${card.isConnected} ${getComputedStyle(card).opacity}`,
+      );
+      toggle.click(); // re-entry, in the same task that observed the running exit
       await frame();
       check(document.getElementById("l08-card") === card, "same element on re-entry");
       await until(

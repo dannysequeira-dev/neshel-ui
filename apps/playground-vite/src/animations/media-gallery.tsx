@@ -20,9 +20,11 @@ import {
 } from "@neshel-ui/animations/ambient";
 import "@neshel-ui/animations/ambient.css";
 import { motionValue } from "@neshel-ui/animations/core";
+import { createToaster, Toaster } from "@neshel-ui/components";
+import "@neshel-ui/components/styles.css";
 import {
-  createToaster,
   DotsPulse,
+  EnterExit,
   getFeedbackDebugInfo,
   LoadingButton,
   OptimisticPulse,
@@ -34,7 +36,6 @@ import {
   SkeletonShimmer,
   Spinner,
   SuccessMark,
-  Toaster,
 } from "@neshel-ui/animations/feedback";
 import "@neshel-ui/animations/feedback.css";
 import {
@@ -555,7 +556,10 @@ function FeedbackDemos() {
         >
           Show error
         </button>
-        <Toaster toaster={toaster} />
+        {/* Feature 017: the toaster (store, regions, timers, focus) is @neshel-ui/components; F06 only moves it. */}
+        <EnterExit from="bottom" exitTo="end">
+          <Toaster toaster={toaster} motion="none" />
+        </EnterExit>
       </div>
       <div className="gallery-item" id="f07">
         <span>F07</span>

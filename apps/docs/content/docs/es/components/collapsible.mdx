@@ -1,0 +1,48 @@
+---
+title: Collapsible
+description: Un disparador que muestra y oculta una región de contenido.
+package: components
+exports: [Collapsible, CollapsibleTrigger, CollapsibleContent, CollapsibleProps, CollapsibleTriggerProps, CollapsibleContentProps]
+---
+
+<ComponentKind package="components" name="Collapsible" />
+
+## Propósito
+
+`Collapsible` revela detalle opcional ("Ver más", filtros avanzados). Es una única divulgación, no
+un Accordion de un solo elemento: no tiene heading, grupo ni valor.
+
+## Importación
+
+```tsx title="import.tsx"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@neshel-ui/components";
+```
+
+## Uso
+
+<Preview demo="components/collapsible-basic" />
+
+## API
+
+<ApiTable package="components" name="CollapsibleProps" />
+<ApiTable package="components" name="CollapsibleTriggerProps" />
+<ApiTable package="components" name="CollapsibleContentProps" />
+
+## Controlado y no controlado
+
+`open`, `defaultOpen` y `onOpenChange`, como Dialog. El contenido cerrado se desmonta salvo que se
+use `keepMounted` (oculto) o `hiddenUntilFound`.
+
+## Accesibilidad
+
+- El disparador es un botón nativo con `aria-expanded` y `aria-controls`; con `asChild` el hijo
+  debe renderizar un botón.
+- `disabled` deshabilita el disparador.
+- La transición de altura opcional se detiene con `prefers-reduced-motion`.
+
+## Teclado
+
+| Tecla           | Acción                  |
+| --------------- | ----------------------- |
+| Enter / Espacio | Alterna el contenido    |
+| Tab             | Mueve el foco como siempre |

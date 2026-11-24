@@ -153,8 +153,8 @@ Status of each decision (implemented / locally verified / CI-verified) is tracke
 ## Feature 005 decisions (2026-11-08)
 
 - Headless engines: Radix for dialogs, sheets, popovers, menus, navigation menu and tooltips;
-  Base UI (select/combobox subpaths only) for Select, MultiSelect and Combobox
-  ([ADR 0012](decisions/0012-headless-primitives.md)).
+  Base UI for Select, MultiSelect and Combobox and, since feature 017, Accordion, Collapsible and Switch
+  ([ADR 0012](decisions/0012-headless-primitives.md), feature 017 amendment accepted 2026-11-24).
 - Components reuse the style-table → manifest → renderer pipeline; manifest schema 2 adds keyframes
   and media-wrapped rules; four status colour roles join the token contract
   ([ADR 0013](decisions/0013-components-styling-and-tokens.md)).
