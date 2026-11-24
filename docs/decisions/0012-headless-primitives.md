@@ -48,10 +48,21 @@ offers no multiple Select and no Combobox.
 - Downshift / React Aria for selection: a third interaction model next to Radix; React Aria's
   hooks are heavier to theme; not requested by the owner.
 
-## Amendment — feature 017 (2026-11-24, **Proposed**, pending owner approval)
+## Amendment — feature 017 (2026-11-24)
 
-§2 limits Base UI to its `select` and `combobox` subpaths. Feature 017 also imports `accordion`, `collapsible` and
-`switch` (Accordion, Collapsible, Switch): same dependency and version, no new package
-([research R3](../../specs/017-components-completion/research.md)); the `check:pack` allow-list names the five subpaths.
+- Status: **Accepted (2026-11-24)** — owner approval recorded in PR #18.
+- Scope: explicitly allows the existing `@base-ui/react` **1.9.0** dependency's
+  `accordion`, `collapsible` and `switch` subpaths for Accordion, Collapsible and Switch.
+  The original Phase 005 decision above remains in effect.
+
+This amendment extends §2 only for Accordion, Collapsible and Switch. Reusing accessible,
+headless primitives in the already-approved Base UI dependency is preferable to rebuilding
+keyboard, focus and form behavior from scratch. Neshel continues to own its public props,
+semantic styling and regression tests. The dependency and version are unchanged, and the
+`check:pack` allow-list explicitly names the five permitted Base UI subpaths
+([feature 017 research R3](../../specs/017-components-completion/research.md)).
+Radix continues to own the overlay and navigation components. Base UI continues to own
+Select, MultiSelect and Combobox. This acceptance is **not** permission to adopt further Base UI
+subpaths or replace other Radix primitives without a new technical review and decision.
 §4's Escape layering is extended by
 [overlay-escape.md](../../specs/017-components-completion/contracts/overlay-escape.md).
