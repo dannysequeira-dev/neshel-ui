@@ -110,6 +110,30 @@ is stable on Node 24/26) and, failing before its unmount, left a mounted Toaster
 (cascade). Fix: runtime notices are not counted as React errors, the hydration test unmounts before asserting, and
 the two-Toasters test counts only its own regions.
 
+### B3 — React Router pending state on macOS (functional; A7 root cause)
+
+Run 45230008637 (`573bde7`, workflow_dispatch), `browsers / macos-latest`: `FAIL react-router 8.5.0: a slow
+route shows the real pending state before it commits` (700 ms ceiling); the same run measured 668 ms for the next
+navigation. Locally 498 ms; Next.js 34 ms. This is the latency recorded but never investigated in A7.
+Cause (confirmed with a timeline probe: click, `startViewTransition`, update callback, `finished`, `data-state`):
+data routers commit `navigation.state` inside `startTransition`; with `<PageTransition>` boundaries React wraps
+that commit in a view transition and runs **passive effects only after the transition animation finishes**
+(~400 ms). `RouteProgress` started the indicator in a passive effect, so `pending` appeared at
+`vt-finished` (+430 ms after the click on Windows, more on macOS) although the DOM was committed at +20 ms.
+Fix: the pending/done/fail transition runs in a layout effect (inside the commit). After: pending at the update
+callback, +~20 ms (probe); `check:animations:routers` React Router 498 → 60 ms, Next 34 ms. The 700 ms test
+ceiling is unchanged (it describes the expected behaviour).
+
+### B4 — `check:browser` hang when Chrome does not start (infrastructure + script defect)
+
+Run 45229978481 (`573bde7`, workflow_dispatch), `ubuntu-latest / Node 26`: `check:browser could not complete:
+browser did not start:` (Chrome printed nothing in 30 s), then the job was cancelled by its 25-minute timeout.
+Cause (confirmed): `launchBrowser` rejected without killing the child; its stderr pipe kept Node alive. Fix: kill
+the child and close the pipe on a failed start. Regression test `tests/cdp-launch.test.mjs` (a silent fake browser):
+passes in 0.6 s; with the kill removed the test process never exits (negative control, stopped manually). The slow
+Chrome start itself is a runner hiccup (not reproduced); it now fails in ~30 s with a clear message instead of
+hanging — no retry was added.
+
 ## Runs in this phase
 
 Recorded in [evidence.md](evidence.md) (every run, including failures and their attempts).

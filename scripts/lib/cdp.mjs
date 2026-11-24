@@ -94,7 +94,13 @@ class Connection {
  * Launch a headless browser and return { executable, version, newPage, close }.
  * Each page exposes goto(url), emulateColorScheme("light" | "dark"), evaluate(expression).
  */
-export async function launchBrowser(executable = findBrowser(), { webgl = false } = {}) {
+/**
+ * `startTimeout` and `prefixArgs` exist for tests (a fake browser that never prints its DevTools endpoint).
+ */
+export async function launchBrowser(
+  executable = findBrowser(),
+  { webgl = false, startTimeout = 30000, prefixArgs = [] } = {},
+) {
   if (!executable) throw new Error("no Chrome, Chromium or Edge executable found");
   const profile = mkdtempSync(join(tmpdir(), "neshel cdp ñ-"));
   const args = [
@@ -118,10 +124,22 @@ export async function launchBrowser(executable = findBrowser(), { webgl = false 
     );
   // GitHub's Ubuntu images restrict unprivileged user namespaces, which Chrome's sandbox needs.
   if (process.platform === "linux") args.unshift("--no-sandbox");
-  const child = spawn(executable, args, { stdio: ["ignore", "ignore", "pipe"] });
+  const child = spawn(executable, [...prefixArgs, ...args], {
+    stdio: ["ignore", "ignore", "pipe"],
+  });
   const endpoint = await new Promise((resolve, reject) => {
     let output = "";
-    const timer = setTimeout(() => reject(new Error(`browser did not start:\n${output}`)), 30000);
+    // Feature 017 (CI run 45229978481): on a failed start the child must be killed, or its stderr pipe keeps
+    // the Node process alive after the error and the CI job hangs until its timeout.
+    const timer = setTimeout(() => {
+      child.kill("SIGKILL");
+      child.stderr.destroy();
+      reject(
+        new Error(
+          `browser did not start within ${startTimeout / 1000} s (process killed):\n${output}`,
+        ),
+      );
+    }, startTimeout);
     child.stderr.on("data", (chunk) => {
       output += chunk;
       const found = parseDevToolsEndpoint(output);
